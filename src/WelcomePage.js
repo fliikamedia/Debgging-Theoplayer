@@ -6,9 +6,9 @@ import {
   TouchableOpacity,
   Text,
   Dimensions,
+  ActivityIndicator,
 } from "react-native";
 import { Video, AVPlaybackStatus } from "expo-av";
-import { ActivityIndicator } from "react-native";
 import { StatusBar } from "expo-status-bar";
 
 const WelcomePage = ({ navigation }) => {

@@ -8,14 +8,19 @@ import WelcomePage from "./src/WelcomePage";
 import HomeScreen from "./src/BottomScreens/HomeScreen";
 import SearchScreen from "./src/BottomScreens/SearchScreen";
 import TvShowsScreen from "./src/BottomScreens/TvShowsScreen";
+import MovieDetailScreen from "./src/MovieDetailScreen";
+import ProfileScreen from "./src/BottomScreens/ProfileScreen";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import {
   MOVIES,
   HOME,
   SEARCH,
   SHOWS,
   WELCOMESCREEN,
+  MOVIEDETAIL,
+  PROFILESCREEN,
 } from "./constants/RouteNames";
 
 // Bottom Tab Navigator
@@ -31,12 +36,16 @@ const BottomTab = () => (
           iconName = "search";
         } else if (route.name == SHOWS) {
           iconName = "television-classic";
+        } else if (route.name === PROFILESCREEN) {
+          iconName = "user";
         }
 
-        if (route.name == "TV Shows") {
+        if (route.name == SHOWS) {
           return (
             <MaterialCommunityIcons name={iconName} size={size} color={color} />
           );
+        } else if (route.name == PROFILESCREEN) {
+          return <Feather name={iconName} size={size} color={color} />;
         } else {
           return <Ionicons name={iconName} size={size} color={color} />;
         }
@@ -67,6 +76,11 @@ const BottomTab = () => (
       component={SearchScreen}
       options={{ title: " " }}
     />
+    <Tabs.Screen
+      name={PROFILESCREEN}
+      component={ProfileScreen}
+      options={{ title: " " }}
+    />
   </Tabs.Navigator>
 );
 
@@ -81,6 +95,7 @@ export default () => (
     >
       <Stack.Screen name={WELCOMESCREEN} component={WelcomePage} />
       <Stack.Screen name={MOVIES} component={BottomTab} />
+      <Stack.Screen name={MOVIEDETAIL} component={MovieDetailScreen} />
     </Stack.Navigator>
   </NavigationContainer>
 );
