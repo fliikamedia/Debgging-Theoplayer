@@ -3,6 +3,7 @@ const { width, height } = Dimensions.get("window");
 
 export const COLORS = {
   primary: "#FF002E", // Red
+  blue: "#008080",
 
   white: "#fff",
   black: "#000000",

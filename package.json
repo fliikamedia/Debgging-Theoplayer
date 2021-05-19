@@ -8,6 +8,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@bitmovin/api-sdk": "^1.71.0",
     "@react-native-community/masked-view": "0.1.10",
     "@react-navigation/bottom-tabs": "^5.11.10",
     "@react-navigation/native": "^5.9.4",
@@ -15,6 +16,7 @@
     "axios": "^0.21.1",
     "expo": "~41.0.1",
     "expo-av": "~9.1.2",
+    "expo-linear-gradient": "~9.1.0",
     "expo-status-bar": "~1.0.4",
     "expo-updates": "~0.5.4",
     "react": "16.13.1",

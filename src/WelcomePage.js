@@ -78,10 +78,11 @@ const WelcomePage = ({ navigation }) => {
           />
           <View>
             <Text style={styles.textDescriptionLg}>
-              Subscribe and get access to top movies
+              Watch African movies you love
             </Text>
             <Text style={styles.textDescriptionSm}>
-              all the Best movies and series in one place
+              Sign Up for your account today and watch amazing blockbuster
+              African movies. Save 30% if you sign up annually
             </Text>
           </View>
           <View>

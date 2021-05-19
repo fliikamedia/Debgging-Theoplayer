@@ -12,13 +12,20 @@ import {
   ScrollView,
   Image,
   ActivityIndicator,
+  RefreshControl,
 } from "react-native";
 import FliikaApi from "../api/FliikaApi";
 import { COLORS, SIZES, icons } from "../../constants";
 import { MOVIEDETAIL } from "../../constants/RouteNames";
+import {
+  FlingGestureHandler,
+  Directions,
+  State,
+} from "react-native-gesture-handler";
 import Profiles from "../components/Profiles";
 const HomeScreen = ({ navigation }) => {
   const [result, setResult] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
 
   const getMovies = useCallback(async () => {
     const response = await FliikaApi.get("/posts");
@@ -87,10 +94,10 @@ const HomeScreen = ({ navigation }) => {
                   resizeMode="cover"
                   style={{
                     width: SIZES.width * 0.85,
-                    height: SIZES.width * 0.85,
+                    height: SIZES.width * 1.2,
                     justifyContent: "flex-end",
                   }}
-                  imageStyle={{ borderRadius: 40 }}
+                  imageStyle={{ borderRadius: 3 }}
                 >
                   <View
                     style={{
@@ -160,6 +167,144 @@ const HomeScreen = ({ navigation }) => {
 
   ///// End of The new season section function
 
+  ///// Render New season second design
+  useEffect(() => {
+    Animated.spring(scrollXAnimated, {
+      toValue: scrollXIndex,
+      useNativeDriver: true,
+    }).start();
+  }, []);
+  const scrollXAnimated = React.useRef(new Animated.Value(0)).current;
+  const scrollXIndex = React.useRef(new Animated.Value(0)).current;
+  const [index, setIndex] = useState(0);
+  const setActiveIndex = useCallback((activeIndex) => {
+    scrollXIndex.setValue(activeIndex);
+    setIndex(activeIndex);
+  });
+  const OVERFLOW_HEIGHT = 70;
+  const SPACING = 10;
+  const ITEM_WIDTH = SIZES.width * 0.75;
+  const ITEM_HEIGHT = ITEM_WIDTH * 1.5;
+  const VISIBLE_ITEMS = 3;
+  const renderNewSeasonSecondDesign = () => {
+    const OverflowItems = ({ data, scrollXAnimated }) => {
+      const inputRange = [-1, 0, 1];
+      const translateY = scrollXAnimated.interpolate({
+        inputRange,
+        outputRange: [OVERFLOW_HEIGHT, 0, -OVERFLOW_HEIGHT],
+      });
+
+      return (
+        <View style={styles.overflowContainer}>
+          <Animated.View style={{ transform: [{ translateY }] }}>
+            {data.map((item, index) => {
+              return <Text key={index}>Hi</Text>;
+            })}
+          </Animated.View>
+        </View>
+      );
+    };
+
+    return (
+      <FlingGestureHandler
+        key="left"
+        direction={Directions.LEFT}
+        onHandlerStateChange={(ev) => {
+          if (ev.nativeEvent.state === State.END) {
+            if (index === result.length - 1) {
+              return;
+            }
+            setActiveIndex(index + 1);
+          }
+        }}
+      >
+        <FlingGestureHandler
+          key="right"
+          direction={Directions.RIGHT}
+          onHandlerStateChange={(ev) => {
+            if (ev.nativeEvent.state === State.END) {
+              if (index === 0) {
+                return;
+              }
+              setActiveIndex(index - 1);
+            }
+          }}
+        >
+          <SafeAreaView style={styles.containers}>
+            <FlatList
+              data={result}
+              keyExtractor={(_, index) => String(index)}
+              horizontal
+              inverted
+              contentContainerStyle={{
+                flex: 1,
+                justifyContent: "center",
+                padding: SPACING * 2,
+              }}
+              scrollEnabled={false}
+              removeClippedSubviews={false}
+              CellRendererComponent={({
+                item,
+                index,
+                children,
+                style,
+                ...props
+              }) => {
+                const newStyle = [style, { zIndex: newResults.length - index }];
+                return (
+                  <View style={newStyle} index={index} {...props}>
+                    {children}
+                  </View>
+                );
+              }}
+              renderItem={({ item, index }) => {
+                const inputRange = [index - 1, index, index + 1];
+                const translateX = scrollXAnimated.interpolate({
+                  inputRange,
+                  outputRange: [50, 0, -100],
+                });
+                const scale = scrollXAnimated.interpolate({
+                  inputRange,
+                  outputRange: [0.8, 1, 1.3],
+                });
+                const opacity = scrollXAnimated.interpolate({
+                  inputRange,
+                  outputRange: [1 - 1 / VISIBLE_ITEMS, 1, 0],
+                });
+                if (item.dvd_thumbnail_link) {
+                  return (
+                    <Animated.View
+                      style={{
+                        position: "absolute",
+                        left: -ITEM_WIDTH / 2,
+                        opacity,
+                        transform: [
+                          {
+                            translateX,
+                          },
+                          { scale },
+                        ],
+                      }}
+                    >
+                      <Image
+                        source={{ uri: item.dvd_thumbnail_link }}
+                        style={{
+                          width: ITEM_WIDTH,
+                          height: ITEM_HEIGHT,
+                          borderRadius: 3,
+                        }}
+                      />
+                    </Animated.View>
+                  );
+                }
+              }}
+            />
+          </SafeAreaView>
+        </FlingGestureHandler>
+      </FlingGestureHandler>
+    );
+  };
+  ///// End of render new season second design
   ///// The render dots function
   const renderDots = () => {
     const dotPosition = Animated.divide(newSeasonScrollX, SIZES.width);
@@ -206,6 +351,40 @@ const HomeScreen = ({ navigation }) => {
     );
   };
   //// End of the render dots function
+  ////////// Render dots for second design
+  const renderDotsSecondDesign = () => {
+    const dotPosition = scrollXIndex;
+    return (
+      <View
+        style={{
+          marginTop: SIZES.padding,
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {result.map((item, i) => {
+          const opacity = i == index ? 1 : 0.3;
+          const dotWidth = i == index ? 20 : 6;
+          const dotColor = i == index ? COLORS.primary : COLORS.lightGray;
+          return (
+            <Animated.View
+              key={`dot-${i}`}
+              opacity={opacity}
+              style={{
+                borderRadius: SIZES.radius,
+                marginHorizontal: 3,
+                width: dotWidth,
+                height: 6,
+                backgroundColor: dotColor,
+              }}
+            />
+          );
+        })}
+      </View>
+    );
+  };
+  ///////////////
   let resultLength;
   try {
     resultLength = result.length;
@@ -259,6 +438,12 @@ const HomeScreen = ({ navigation }) => {
     });
   };
 
+  //// On Refresh Control
+  const onRefresh = useCallback(() => {
+    getMovies();
+  }, []);
+  //////////////////
+
   return (
     <SafeAreaView style={styles.container}>
       {resultLength == 0 ? (
@@ -276,6 +461,9 @@ const HomeScreen = ({ navigation }) => {
             paddingBottom: 100,
             marginTop: "10%",
           }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
         >
           {renderNewSeasonSection()}
           {renderDots()}
@@ -290,6 +478,36 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.black,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: "900",
+    textTransform: "uppercase",
+    letterSpacing: -1,
+  },
+  location: {
+    fontSize: 16,
+  },
+  date: {
+    fontSize: 12,
+  },
+  itemContainer: {
+    height: 70,
+    padding: 10 * 2,
+  },
+  itemContainerRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  overflowContainer: {
+    height: 70,
+    overflow: "hidden",
+  },
+  containers: {
+    flex: 1,
+    justifyContent: "center",
+    height: SIZES.height * 0.6,
   },
 });
 

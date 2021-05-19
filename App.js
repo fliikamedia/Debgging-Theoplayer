@@ -22,6 +22,7 @@ import {
   MOVIEDETAIL,
   PROFILESCREEN,
 } from "./constants/RouteNames";
+import { COLORS } from "./constants/theme";
 
 // Bottom Tab Navigator
 const Tabs = createBottomTabNavigator();
@@ -52,7 +53,7 @@ const BottomTab = () => (
       },
     })}
     tabBarOptions={{
-      activeBackgroundColor: "red",
+      activeBackgroundColor: COLORS.blue,
       activeTintColor: "black",
       inactiveTintColor: "gray",
       keyboardHidesTabBar: true,

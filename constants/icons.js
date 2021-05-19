@@ -8,16 +8,18 @@ const right_arrow = require("../assets/icons/right-arrow.png");
 const search = require("../assets/icons/search.png");
 const star = require("../assets/icons/star.png");
 const upload = require("../assets/icons/upload.png");
+const cast = require("../assets/icons/cast.png");
 
 export default {
-    airplay,
-    home,
-    left_arrow,
-    play,
-    play_button,
-    profile,
-    right_arrow,
-    search,
-    star,
-    upload
-}
+  airplay,
+  home,
+  left_arrow,
+  play,
+  play_button,
+  profile,
+  right_arrow,
+  search,
+  star,
+  upload,
+  cast,
+};
