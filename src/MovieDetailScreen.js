@@ -10,20 +10,19 @@ import {
   TouchableOpacity,
   ImageBackground,
   Platform,
+  Share,
 } from "react-native";
 import { COLORS, SIZES, FONTS, icons, images } from ".././constants";
 import FliikaApi from "./api/FliikaApi";
 import { Video, AVPlaybackStatus } from "expo-av";
-import BitmovinApi from "@bitmovin/api-sdk";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import MovieDetailIcon from "./components/MovieDetailIcon";
 import { LinearGradient } from "expo-linear-gradient";
-
+import * as Animatable from "react-native-animatable";
+import firebase from "firebase";
+import { HOME, WELCOMESCREEN } from "../constants/RouteNames";
 const MovieDetailScreen = ({ navigation, route }) => {
   const [play, setPlay] = useState(false);
-  const bitmovinApi = new BitmovinApi({
-    apiKey: "72fc96e3-318b-452f-91c7-bed54f199dd1",
-  });
 
   const { selectedMovie } = route.params;
   const [movie, setMovie] = useState({});
@@ -43,6 +42,35 @@ const MovieDetailScreen = ({ navigation, route }) => {
   } catch (err) {}
   //const movieId = navigation.getParam("selectedMovie");
 
+  ///// share function
+  const onShare = async () => {
+    try {
+      const result = await Share.share({
+        message:
+          "Join Fliika Movies App and enjoy the best African blockbuster movies.",
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+  ///// enf of share function
+  const logOut = async () => {
+    try {
+      await firebase.auth().signOut();
+      navigation.navigate(WELCOMESCREEN);
+    } catch (err) {
+      Alert.alert("There is something wrong!", err.message);
+    }
+  };
   ///// Render Header Function
   const renderHeaderBar = () => {
     const navigateBack = () => {
@@ -54,17 +82,14 @@ const MovieDetailScreen = ({ navigation, route }) => {
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
-          marginTop: Platform.OS == "ios" ? 40 : 40,
+          marginTop: Platform.OS == "ios" ? 20 : 40,
           paddingHorizontal: SIZES.padding,
         }}
       >
         {/* Back Button */}
         <MovieDetailIcon iconFuc={navigateBack} icon={icons.left_arrow} />
         {/* Share Button */}
-        <MovieDetailIcon
-          iconFuc={() => console.log("sharing")}
-          icon={icons.cast}
-        />
+        <MovieDetailIcon iconFuc={() => logOut()} icon={icons.cast} />
       </View>
     );
   };
@@ -98,30 +123,36 @@ const MovieDetailScreen = ({ navigation, route }) => {
                 justifyContent: "space-between",
               }}
             >
-              <View
-                style={{
-                  justifyContent: "center",
-                  alignItems: "center",
-                  width: 100,
-                  height: 100,
-                  borderRadius: 60,
-                  backgroundColor: COLORS.transparentWhite,
-                  alignSelf: "flex-start",
-                  marginLeft: 20,
-                }}
+              <Animatable.View
+                animation="pulse"
+                iterationCount={"infinite"}
+                direction="alternate"
               >
-                <TouchableOpacity onPress={() => setPlay(true)}>
-                  <Image
-                    source={icons.play}
-                    resizeMode="contain"
-                    style={{
-                      width: 40,
-                      height: 40,
-                      tintColor: COLORS.white,
-                    }}
-                  />
-                </TouchableOpacity>
-              </View>
+                <View
+                  style={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: 100,
+                    height: 100,
+                    borderRadius: 60,
+                    backgroundColor: COLORS.transparentWhite,
+                    alignSelf: "flex-start",
+                    marginLeft: 20,
+                  }}
+                >
+                  <TouchableOpacity onPress={() => setPlay(true)}>
+                    <Image
+                      source={icons.play}
+                      resizeMode="contain"
+                      style={{
+                        width: 40,
+                        height: 40,
+                        tintColor: COLORS.white,
+                      }}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </Animatable.View>
               <View
                 style={{
                   flexDirection: "row",
@@ -132,11 +163,13 @@ const MovieDetailScreen = ({ navigation, route }) => {
               >
                 <Feather name="plus" size={40} color={COLORS.white} />
                 <Feather name="download" size={40} color={COLORS.white} />
-                <Ionicons
-                  name="share-social-outline"
-                  size={40}
-                  color={COLORS.white}
-                />
+                <TouchableOpacity onPress={() => onShare()}>
+                  <Ionicons
+                    name="share-social-outline"
+                    size={40}
+                    color={COLORS.white}
+                  />
+                </TouchableOpacity>
               </View>
             </View>
             <Text
@@ -228,7 +261,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
       {resultLength == 0 ? (
         <ActivityIndicator
           animating
-          color={"red"}
+          color={"teal"}
           size="large"
           style={{ flex: 1, position: "absolute", top: "50%", left: "45%" }}
         />

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -10,15 +10,29 @@ import {
 } from "react-native";
 import { Video, AVPlaybackStatus } from "expo-av";
 import { StatusBar } from "expo-status-bar";
+import { LOGIN, SIGNUP, FORGOTPASSWORD, MOVIES } from "../constants/RouteNames";
+import firebase from "firebase";
 
 const WelcomePage = ({ navigation }) => {
   const [isPreloading, setIsPreloading] = useState(true);
+  /*
+  const checkIFLoggedIn = () => {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        navigation.navigate(MOVIES);
+      }
+    });
+  };
+  useEffect(() => {
+    checkIFLoggedIn();
+  }, []);
+  */
   // Button Width Responsive
   var buttonWidth;
   if (Dimensions.get("window").width < 350) {
     buttonWidth = 230;
   } else if (Dimensions.get("window").width < 800) {
-    buttonWidth = 250;
+    buttonWidth = 300;
   } else {
     buttonWidth = 350;
   }
@@ -49,7 +63,7 @@ const WelcomePage = ({ navigation }) => {
         <View style={{ flex: 1, backgroundColor: "black" }}>
           <ActivityIndicator
             animating
-            color={"red"}
+            color={"teal"}
             size="large"
             style={{ flex: 1, position: "absolute", top: "50%", left: "45%" }}
           />
@@ -86,12 +100,15 @@ const WelcomePage = ({ navigation }) => {
             </Text>
           </View>
           <View>
-            <Text style={styles.textDescriptionSb}>signup now</Text>
-            <TouchableOpacity style={createBtn}>
+            <Text style={styles.textDescriptionSb}>join us now</Text>
+            <TouchableOpacity
+              style={createBtn}
+              onPress={() => navigation.navigate(SIGNUP)}
+            >
               <Text style={styles.createText}>create account</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => navigation.navigate("Movies")}
+              onPress={() => navigation.navigate(LOGIN)}
               style={loginBtn}
             >
               <Text style={styles.loginText}>login</Text>

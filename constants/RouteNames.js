@@ -5,3 +5,5 @@ export const WELCOMESCREEN = "Welcome Screen";
 export const MOVIES = "Movies";
 export const MOVIEDETAIL = "Movie Detail";
 export const PROFILESCREEN = "Profile Screen";
+export const SIGNUP = "Signup";
+export const LOGIN = "Login";

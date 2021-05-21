@@ -23,6 +23,9 @@ import {
   State,
 } from "react-native-gesture-handler";
 import Profiles from "../components/Profiles";
+import firebase from "firebase";
+import { StatusBar } from "expo-status-bar";
+
 const HomeScreen = ({ navigation }) => {
   const [result, setResult] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -34,6 +37,17 @@ const HomeScreen = ({ navigation }) => {
 
   useEffect(() => {
     getMovies();
+  }, []);
+
+  const checkIFLoggedIn = () => {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        //console.log(user);
+      }
+    });
+  };
+  useEffect(() => {
+    checkIFLoggedIn();
   }, []);
 
   const genreArray = result.map((r) => r.genre);
@@ -89,65 +103,66 @@ const HomeScreen = ({ navigation }) => {
                 }}
               >
                 {/* Showing Thumbnails */}
-                <ImageBackground
-                  source={{ uri: item.dvd_thumbnail_link }}
-                  resizeMode="cover"
-                  style={{
-                    width: SIZES.width * 0.85,
-                    height: SIZES.width * 1.2,
-                    justifyContent: "flex-end",
-                  }}
-                  imageStyle={{ borderRadius: 3 }}
-                >
-                  <View
+                {item.dvd_thumbnail_link ? (
+                  <ImageBackground
+                    source={{ uri: item.dvd_thumbnail_link }}
+                    resizeMode="cover"
                     style={{
-                      flexDirection: "row",
-                      width: "100%",
-                      marginBottom: SIZES.radius,
-                      paddingHorizontal: SIZES.radius,
+                      width: SIZES.width * 0.85,
+                      height: SIZES.width * 1.2,
+                      justifyContent: "flex-end",
                     }}
+                    imageStyle={{ borderRadius: 3 }}
                   >
-                    {/* Play Now */}
                     <View
                       style={{
-                        flex: 1,
                         flexDirection: "row",
-                        alignItems: "center",
+                        width: "100%",
+                        marginBottom: SIZES.radius,
+                        paddingHorizontal: SIZES.radius,
                       }}
                     >
+                      {/* Play Now */}
                       <View
                         style={{
-                          justifyContent: "center",
+                          flex: 1,
+                          flexDirection: "row",
                           alignItems: "center",
-                          width: 40,
-                          height: 40,
-                          borderRadius: 20,
-                          backgroundColor: COLORS.transparentWhite,
                         }}
                       >
-                        <Image
-                          source={icons.play}
-                          resizeMode="contain"
+                        <View
                           style={{
-                            width: 15,
-                            height: 15,
-                            tintColor: COLORS.white,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            width: 40,
+                            height: 40,
+                            borderRadius: 20,
+                            backgroundColor: COLORS.transparentWhite,
                           }}
-                        />
+                        >
+                          <Image
+                            source={icons.play}
+                            resizeMode="contain"
+                            style={{
+                              width: 15,
+                              height: 15,
+                              tintColor: COLORS.white,
+                            }}
+                          />
+                        </View>
+                        <Text
+                          style={{
+                            marginLeft: SIZES.base,
+                            color: COLORS.white,
+                            fontSize: 16,
+                          }}
+                        >
+                          Play Now
+                        </Text>
                       </View>
-                      <Text
-                        style={{
-                          marginLeft: SIZES.base,
-                          color: COLORS.white,
-                          fontSize: 16,
-                        }}
-                      >
-                        Play Now
-                      </Text>
-                    </View>
 
-                    {/* Still watching */}
-                    {/*result.length > 0 && (
+                      {/* Still watching */}
+                      {/*result.length > 0 && (
                       <View style={{ justifyContent: "center" }}>
                         <Text style={{ color: COLORS.white, fontSize: 16 }}>
                           Still Watching
@@ -155,8 +170,9 @@ const HomeScreen = ({ navigation }) => {
                         <Profiles profiles={stillWatching} />
                       </View>
                     )*/}
-                  </View>
-                </ImageBackground>
+                    </View>
+                  </ImageBackground>
+                ) : null}
               </View>
             </TouchableWithoutFeedback>
           );
@@ -450,7 +466,7 @@ const HomeScreen = ({ navigation }) => {
         <View style={{ flex: 1, backgroundColor: "black" }}>
           <ActivityIndicator
             animating
-            color={"red"}
+            color={"teal"}
             size="large"
             style={{ flex: 1, position: "absolute", top: "50%", left: "45%" }}
           />
@@ -468,6 +484,7 @@ const HomeScreen = ({ navigation }) => {
           {renderNewSeasonSection()}
           {renderDots()}
           {renderMovies()}
+          <StatusBar style="light" />
         </ScrollView>
       )}
     </SafeAreaView>
