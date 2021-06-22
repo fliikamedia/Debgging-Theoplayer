@@ -13,10 +13,12 @@ import { LOGIN, MOVIES } from "../../constants/RouteNames";
 import { TextInput, HelperText } from "react-native-paper";
 import { LogBox } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { addUser } from "../../store/actions/user";
+import { useDispatch } from "react-redux";
 
 const SignupScreen = ({ navigation }) => {
   const appState = useRef(AppState.currentState);
-
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setfullName] = useState("");
@@ -74,6 +76,7 @@ const SignupScreen = ({ navigation }) => {
       //console.log("response", currentUser);
 
       if (currentUser) {
+        addUser(email, fullName)(dispatch);
         navigation.reset({
           index: 0,
           routes: [{ name: MOVIES }],

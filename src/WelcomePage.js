@@ -32,7 +32,7 @@ const WelcomePage = ({ navigation }) => {
   if (Dimensions.get("window").width < 350) {
     buttonWidth = 230;
   } else if (Dimensions.get("window").width < 800) {
-    buttonWidth = 300;
+    buttonWidth = 250;
   } else {
     buttonWidth = 350;
   }

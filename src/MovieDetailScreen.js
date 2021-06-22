@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import {
   ScrollView,
   View,
@@ -11,9 +11,12 @@ import {
   ImageBackground,
   Platform,
   Share,
+  AppState,
+  FlatList,
 } from "react-native";
 import { COLORS, SIZES, FONTS, icons, images } from ".././constants";
 import FliikaApi from "./api/FliikaApi";
+import { baseURL } from "./api/expressApi";
 import { Video, AVPlaybackStatus } from "expo-av";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import MovieDetailIcon from "./components/MovieDetailIcon";
@@ -21,11 +24,40 @@ import { LinearGradient } from "expo-linear-gradient";
 import * as Animatable from "react-native-animatable";
 import firebase from "firebase";
 import { HOME, WELCOMESCREEN } from "../constants/RouteNames";
-const MovieDetailScreen = ({ navigation, route }) => {
-  const [play, setPlay] = useState(false);
+import { Menu } from "react-native-paper";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addToWatchList,
+  removeFromWatchList,
+  addtoWatched,
+  updateWatched,
+  addtoWatchedProfile,
+  updateWatchedProfile,
+  addToProfileWatchList,
+  removeFromProfileWatchList,
+} from "../store/actions/user";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import EpisodeItem from "./components/EmpisodeItem";
 
-  const { selectedMovie } = route.params;
+const MovieDetailScreen = ({ navigation, route }) => {
+  const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const [play, setPlay] = useState(false);
+  const appState = useRef(AppState.currentState);
+  const { selectedMovie, isSeries, seriesTitle } = route.params;
   const [movie, setMovie] = useState({});
+  const [series, setSeries] = useState([]);
+  const [season, setSeason] = useState({});
+  const [episode, setEpisode] = useState(0);
+  const [watched, setWatched] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [data, setData] = useState([]);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [seriesEpisode, setSeriesEpisode] = useState([]);
+  const [episodes, setEpisodes] = useState(true);
+  const [details, setDetails] = useState(false);
+
   const getMovie = useCallback(async () => {
     const response = await FliikaApi.get(`/posts/${selectedMovie}`);
     setMovie(response.data);
@@ -34,14 +66,167 @@ const MovieDetailScreen = ({ navigation, route }) => {
     getMovie();
   }, []);
 
-  //console.log(bitmovinApi);
-  //console.log(movie);
+  const showEpisodes = () => {
+    setEpisodes(true);
+    setDetails(false);
+  };
+
+  const showDetails = () => {
+    setEpisodes(false);
+    setDetails(true);
+  };
+
+  const saveOnLeavingPage = () => {
+    setIsPlaying(false);
+    saveMovie();
+  };
+  useEffect(() => {
+    AppState.addEventListener("change", saveOnLeavingPage());
+
+    return () => {
+      AppState.removeEventListener("change", saveOnLeavingPage());
+    };
+  }, []);
+  const isWatchList = (movieArray, movieName) => {
+    try {
+      var found = false;
+      for (var i = 0; i < movieArray.length; i++) {
+        if (movieArray[i].title == movieName) {
+          found = true;
+          break;
+        }
+      }
+      return found;
+    } catch (err) {}
+  };
+
+  const isWatched = (movieArray, movieName) => {
+    try {
+      var movieWatched = false;
+      for (var i = 0; i < movieArray.length; i++) {
+        if (movieArray[i].title == movieName) {
+          movieWatched = true;
+          break;
+        }
+      }
+      return movieWatched;
+    } catch (err) {}
+  };
+  const watchListFunc = () => {
+    try {
+      if (user.isProfile) {
+        return user.profile.watchList;
+      } else {
+        return user.user.watchList;
+      }
+    } catch (err) {}
+  };
+  // console.log(isWatched(user.user.watched, movie.title));
+  //console.log(isWatched(user.user.watched, movie.title));
+  useEffect(() => {
+    saveMovie();
+  }, [isPlaying]);
+  const saveMovie = () => {
+    if (
+      !user.isProfile &&
+      watched &&
+      !isPlaying &&
+      isWatched(user.user.watched, movie.title) == true
+    ) {
+      updateWatched(user.email, movie, duration, watched)(dispatch);
+    } else if (
+      !user.isProfile &&
+      watched &&
+      !isPlaying &&
+      isWatched(user.user.watched, movie.title) == false
+    ) {
+      addtoWatched(user.email, movie, duration, watched)(dispatch);
+    } else if (
+      user.isProfile &&
+      watched &&
+      !isPlaying &&
+      isWatched(user.profile.watched, movie.title) == false
+    ) {
+      addtoWatchedProfile(
+        user.email,
+        movie,
+        duration,
+        watched,
+        user.profileName
+      )(dispatch);
+    } else if (
+      user.isProfile &&
+      watched &&
+      !isPlaying &&
+      isWatched(user.profile.watched, movie.title) == true
+    ) {
+      updateWatchedProfile(
+        user.email,
+        movie,
+        duration,
+        watched,
+        user.profileName
+      )(dispatch);
+    }
+  };
+  /*
+  const addToWatchList = () => {
+    axios
+      .put("http://74264b614e9b.ngrok.io/users", {
+        email: "testingNew1@test.com",
+        newMovie: { title: movie.title },
+      })
+      .then(
+        (response) => {
+          //console.log(response.data);
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    fetch("http://526d7ed1513e.ngrok.io/users", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        useQueryString: true,
+      },
+      body: JSON.stringify({
+        email: "testingNew@test.com",
+        newMovie: { title: "BATMAN", watchedAt: watched },
+      }),
+      params: {
+        language_code: "en",
+      },
+    })
+      .then((response) => {
+        console.log(JSON.stringify(response.data));
+        setData(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    };
+    */
+  const getSeries = useCallback(async () => {
+    const responseSeries = await FliikaApi.get(`/posts/`);
+    setSeries(responseSeries.data);
+  }, []);
+  useEffect(() => {
+    getSeries();
+  }, []);
+
+  let currentSeries = series.filter((r) => r.title == seriesTitle);
+  useEffect(() => {
+    if (currentSeries.length > 0) {
+      setSeason(currentSeries[0]);
+    }
+  }, [series.length]);
   let resultLength;
   try {
     resultLength = Object.keys(movie).length;
   } catch (err) {}
   //const movieId = navigation.getParam("selectedMovie");
-
   ///// share function
   const onShare = async () => {
     try {
@@ -68,7 +253,10 @@ const MovieDetailScreen = ({ navigation, route }) => {
       await firebase.auth().signOut();
       navigation.navigate(WELCOMESCREEN);
     } catch (err) {
-      Alert.alert("There is something wrong!", err.message);
+      Alert.alert(
+        "There is something wrong! Please try again later",
+        err.message
+      );
     }
   };
   ///// Render Header Function
@@ -89,7 +277,10 @@ const MovieDetailScreen = ({ navigation, route }) => {
         {/* Back Button */}
         <MovieDetailIcon iconFuc={navigateBack} icon={icons.left_arrow} />
         {/* Share Button */}
-        <MovieDetailIcon iconFuc={() => logOut()} icon={icons.cast} />
+        <MovieDetailIcon
+          iconFuc={() => console.log("Tv Cast")}
+          icon={icons.cast}
+        />
       </View>
     );
   };
@@ -128,41 +319,85 @@ const MovieDetailScreen = ({ navigation, route }) => {
                 iterationCount={"infinite"}
                 direction="alternate"
               >
-                <View
-                  style={{
-                    justifyContent: "center",
-                    alignItems: "center",
-                    width: 100,
-                    height: 100,
-                    borderRadius: 60,
-                    backgroundColor: COLORS.transparentWhite,
-                    alignSelf: "flex-start",
-                    marginLeft: 20,
-                  }}
-                >
-                  <TouchableOpacity onPress={() => setPlay(true)}>
-                    <Image
-                      source={icons.play}
-                      resizeMode="contain"
-                      style={{
-                        width: 40,
-                        height: 40,
-                        tintColor: COLORS.white,
+                {isSeries == "movie" ? (
+                  <View
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                      width: 100,
+                      height: 100,
+                      borderRadius: 60,
+                      backgroundColor: COLORS.transparentWhite,
+                      alignSelf: "flex-start",
+                      marginLeft: 20,
+                    }}
+                  >
+                    <TouchableOpacity
+                      onPress={() => {
+                        setPlay(true);
                       }}
-                    />
-                  </TouchableOpacity>
-                </View>
+                    >
+                      <Image
+                        source={icons.play}
+                        resizeMode="contain"
+                        style={{
+                          width: 40,
+                          height: 40,
+                          tintColor: COLORS.white,
+                        }}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                ) : null}
               </Animatable.View>
               <View
                 style={{
                   flexDirection: "row",
-                  width: "60%",
+                  width: isSeries == "movie" ? "60%" : "40%",
                   justifyContent: "space-around",
                   alignSelf: "center",
                 }}
               >
-                <Feather name="plus" size={40} color={COLORS.white} />
-                <Feather name="download" size={40} color={COLORS.white} />
+                {isWatchList(watchListFunc(), movie.title) == true ? (
+                  <TouchableOpacity
+                    onPress={() => {
+                      if (user.isProfile) {
+                        removeFromProfileWatchList(
+                          user.email,
+                          movie,
+                          user.profileName
+                        )(dispatch);
+                      } else {
+                        removeFromWatchList(user.email, movie)(dispatch);
+                      }
+                    }}
+                  >
+                    <MaterialCommunityIcons
+                      name="book-remove-multiple-outline"
+                      size={40}
+                      color={COLORS.white}
+                    />
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity
+                    onPress={() => {
+                      if (user.isProfile) {
+                        addToProfileWatchList(
+                          user.email,
+                          movie,
+                          user.profileName
+                        )(dispatch);
+                      } else {
+                        addToWatchList(user.email, movie)(dispatch);
+                      }
+                    }}
+                  >
+                    <Feather name="plus" size={40} color={COLORS.white} />
+                  </TouchableOpacity>
+                )}
+                {isSeries == "movie" ? (
+                  <Feather name="download" size={40} color={COLORS.white} />
+                ) : null}
                 <TouchableOpacity onPress={() => onShare()}>
                   <Ionicons
                     name="share-social-outline"
@@ -172,6 +407,19 @@ const MovieDetailScreen = ({ navigation, route }) => {
                 </TouchableOpacity>
               </View>
             </View>
+            {isSeries == "series" ? (
+              <Text
+                style={{
+                  color: COLORS.white,
+                  textTransform: "uppercase",
+                  fontSize: 12,
+                  fontWeight: "bold",
+                  marginBottom: 10,
+                }}
+              >
+                {`Season ${season.season_number}`}
+              </Text>
+            ) : null}
             <Text
               style={{
                 color: COLORS.white,
@@ -231,12 +479,31 @@ const MovieDetailScreen = ({ navigation, route }) => {
   };
   ///////// end of categoy section
   /////////// render movie details
+  function msToTime(duration) {
+    var milliseconds = parseInt((duration % 1000) / 100),
+      seconds = Math.floor((duration / 1000) % 60),
+      minutes = Math.floor((duration / (1000 * 60)) % 60),
+      hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+
+    hours = hours < 10 ? "0" + hours : hours;
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    seconds = seconds < 10 ? "0" + seconds : seconds;
+
+    return hours + ":" + minutes + ":" + seconds + "." + milliseconds;
+  }
+  //console.log(msToTime(10231));
+  const [selectSeason, setSelectSeason] = useState(false);
+  const openFilter = () => {
+    setSelectSeason(true);
+  };
+  const closeFilter = () => {
+    setSelectSeason(false);
+  };
   const renderMovieDetails = () => {
     return (
       <View
         style={{
           flex: 1,
-          paddingHorizontal: SIZES.padding,
           marginTop: SIZES.padding,
           justifyContent: "space-around",
         }}
@@ -245,16 +512,224 @@ const MovieDetailScreen = ({ navigation, route }) => {
         <View>
           <View style={{ flexDirection: "row" }}></View>
         </View>
+        {/*isSeries == "series" ? (
+          <Menu
+            visible={selectSeason}
+            onPress={openFilter}
+            onDismiss={closeFilter}
+            anchor={
+              <TouchableOpacity
+                style={{
+                  borderBottomLeftRadius: 5,
+                  borderBottomRightRadius: 5,
+                  borderBottomWidth: 3,
+                  borderRightWidth: 3,
+                  borderLeftWidth: 3,
+                  borderColor: "white",
+                  marginBottom: 20,
+                  width: 120,
+                  alignSelf: "center",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  paddingHorizontal: 10,
+                  alignItems: "center",
+                  height: 50,
+                }}
+                onPress={openFilter}
+              >
+                <Text
+                  style={{
+                    color: "white",
+                    fontSize: 18,
+                    fontWeight: "bold",
+                  }}
+                >
+                  {"Season 1"}
+                </Text>
+              </TouchableOpacity>
+            }
+          >
+            <Menu.Item key={1} title="season 1" />
+            <Menu.Item key={2} title="season 2" />
+            <Menu.Item key={3} title="season 3" />
+            <Menu.Item key={4} title="season 4" />
+          </Menu>
+        ) : null*/}
         {/* watch */}
 
-        <View style={{ width: "100%", alignSelf: "center" }}>
-          <Text style={{ color: COLORS.white, textAlign: "justify" }}>
-            {movie.storyline}
-          </Text>
-        </View>
+        {isSeries == "movie" ? (
+          <>
+            <View style={{ width: "100%", paddingHorizontal: 20 }}>
+              <Text style={{ color: COLORS.white, textAlign: "justify" }}>
+                {movie.storyline}
+              </Text>
+            </View>
+            <View>
+              <Text style={styles.titleText}>Genres</Text>
+              <Text style={styles.detailText}>
+                {movie.genre.toString().replace(/,/g, ", ")}
+              </Text>
+              <Text style={styles.titleText}>Directors</Text>
+              <Text style={styles.detailText}>
+                {movie.directors.toString().replace(/,/g, ", ")}
+              </Text>
+              <Text style={styles.titleText}>Starring</Text>
+              <Text style={styles.detailText}>
+                {movie.cast.toString().replace(/,/g, ", ")}
+              </Text>
+              <Text style={styles.titleText}>Content Advisory</Text>
+              <Text style={styles.detailText}>
+                {movie.content_advisory.toString().replace(/,/g, ", ")}
+              </Text>
+              <Text style={styles.titleText}>Languages</Text>
+              <Text style={styles.detailText}>
+                {movie.languages.toString().replace(/,/g, ", ")}
+              </Text>
+              <Text style={styles.titleText}>Subtitles</Text>
+              <Text style={styles.detailText}>
+                {movie.subtitles.toString().replace(/,/g, ", ")}
+              </Text>
+            </View>
+          </>
+        ) : null}
       </View>
     );
   };
+
+  const playSeries = (serie) => {
+    setSeriesEpisode(serie);
+    setPlay(true);
+  };
+  // to fix later for series
+  if (isSeries == "series") {
+    let episodesStyle;
+    let detailsStyle;
+    if (episodes) {
+      episodesStyle = {
+        width: "50%",
+        height: 50,
+        alignItems: "center",
+        justifyContent: "center",
+        borderBottomWidth: 1,
+        borderColor: "aqua",
+        borderRadius: 5,
+      };
+      detailsStyle = {
+        width: "50%",
+        height: 50,
+        alignItems: "center",
+        justifyContent: "center",
+        borderBottomWidth: 1,
+        borderColor: "grey",
+        borderRadius: 5,
+      };
+    } else {
+      episodesStyle = {
+        width: "50%",
+        height: 50,
+        alignItems: "center",
+        justifyContent: "center",
+        borderBottomWidth: 1,
+        borderColor: "grey",
+        borderRadius: 5,
+      };
+      detailsStyle = {
+        width: "50%",
+        height: 50,
+        alignItems: "center",
+        justifyContent: "center",
+        borderBottomWidth: 1,
+        borderColor: "aqua",
+        borderRadius: 5,
+      };
+    }
+    return (
+      <ScrollView style={{ flexGrow: 1 }}>
+        {renderHeaderSection()}
+        {renderMovieDetails()}
+        {play ? (
+          <View
+            style={{ width: SIZES.width * 0.9, height: SIZES.height * 0.5 }}
+          >
+            <Video
+              useNativeControls
+              style={styles.video}
+              source={{
+                uri: `${seriesEpisode.play_url}.m3u8`,
+              }}
+              resizeMode="contain"
+              rate={1.0}
+              volume={1}
+              shouldPlay
+              isMuted={false}
+              onPlaybackStatusUpdate={(AVPlaybackStatus) => {
+                setWatched(AVPlaybackStatus.positionMillis),
+                  setDuration(AVPlaybackStatus.durationMillis),
+                  setIsPlaying(AVPlaybackStatus.isPlaying);
+              }}
+            />
+          </View>
+        ) : null}
+        {/*<FlatList
+          keyExtractor={(item) => item._id}
+          data={currentSeries}
+          renderItem={({ item }) => (
+            <EpisodeItem playSeries={playSeries} episode={item} />
+          )}
+          />*/}
+        <View style={{ flexDirection: "row" }}>
+          <TouchableOpacity
+            style={episodesStyle}
+            onPress={() => showEpisodes()}
+          >
+            <Text style={{ color: "white", fontSize: 16 }}>Episodes</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => showDetails()} style={detailsStyle}>
+            <Text style={{ color: "white", fontSize: 16 }}>More details</Text>
+          </TouchableOpacity>
+        </View>
+        {episodes
+          ? currentSeries.map((item) => {
+              return (
+                <EpisodeItem
+                  key={item._id}
+                  playSeries={playSeries}
+                  episode={item}
+                />
+              );
+            })
+          : null}
+        {details ? (
+          <View>
+            <Text style={styles.titleText}>Genres</Text>
+            <Text style={styles.detailText}>
+              {movie.genre.toString().replace(/,/g, ", ")}
+            </Text>
+            <Text style={styles.titleText}>Directors</Text>
+            <Text style={styles.detailText}>
+              {movie.directors.toString().replace(/,/g, ", ")}
+            </Text>
+            <Text style={styles.titleText}>Starring</Text>
+            <Text style={styles.detailText}>
+              {movie.cast.toString().replace(/,/g, ", ")}
+            </Text>
+            <Text style={styles.titleText}>Content Advisory</Text>
+            <Text style={styles.detailText}>
+              {movie.content_advisory.toString().replace(/,/g, ", ")}
+            </Text>
+            <Text style={styles.titleText}>Languages</Text>
+            <Text style={styles.detailText}>
+              {movie.languages.toString().replace(/,/g, ", ")}
+            </Text>
+            <Text style={styles.titleText}>Subtitles</Text>
+            <Text style={styles.detailText}>
+              {movie.subtitles.toString().replace(/,/g, ", ")}
+            </Text>
+          </View>
+        ) : null}
+      </ScrollView>
+    );
+  }
   ////////// end of render movie details
   return (
     <SafeAreaView style={styles.container}>
@@ -280,12 +755,16 @@ const MovieDetailScreen = ({ navigation, route }) => {
                 source={{
                   uri: `${movie.play_url}.m3u8`,
                 }}
-                isLooping
                 resizeMode="contain"
                 rate={1.0}
                 volume={1}
                 shouldPlay
                 isMuted={false}
+                onPlaybackStatusUpdate={(AVPlaybackStatus) => {
+                  setWatched(AVPlaybackStatus.positionMillis),
+                    setDuration(AVPlaybackStatus.durationMillis),
+                    setIsPlaying(AVPlaybackStatus.isPlaying);
+                }}
               />
             </View>
           ) : null}
@@ -452,6 +931,18 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
     borderRadius: SIZES.base,
     backgroundColor: COLORS.gray1,
+  },
+  titleText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "teal",
+    marginLeft: 5,
+  },
+  detailText: {
+    fontSize: 16,
+    color: "white",
+    marginBottom: 20,
+    marginLeft: 10,
   },
 });
 

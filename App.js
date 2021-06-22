@@ -29,8 +29,18 @@ import {
 import { COLORS } from "./constants/theme";
 import firebase from "firebase";
 import { firebaseConfig } from "./src/api/FirebaseConfig";
+import { Provider as PaperProvider } from "react-native-paper";
+import { createStore, combineReducers, applyMiddleware } from "redux";
+import { Provider as StoreProvider } from "react-redux";
+import moviesReducer from "./store/reducers/movies";
+import userReducer from "./store/reducers/user";
+import reduxThunk from "redux-thunk";
 
-firebase.initializeApp(firebaseConfig);
+const rootReducer = combineReducers({
+  user: userReducer,
+  movies: moviesReducer,
+});
+const store = createStore(rootReducer, applyMiddleware(reduxThunk));
 // Bottom Tab Navigator
 const Tabs = createBottomTabNavigator();
 const BottomTab = () => (
@@ -60,8 +70,7 @@ const BottomTab = () => (
       },
     })}
     tabBarOptions={{
-      activeBackgroundColor: COLORS.blue,
-      activeTintColor: "black",
+      activeTintColor: "aqua",
       inactiveTintColor: "gray",
       keyboardHidesTabBar: true,
       style: {
@@ -113,7 +122,7 @@ export default () => {
   React.useEffect(() => {
     checkIFLoggedIn();
   }, []);
-  console.log(route == WELCOMESCREEN);
+  //console.log(route == WELCOMESCREEN);
   return !ready && route != MOVIES && route != WELCOMESCREEN ? (
     <View style={{ flex: 1, backgroundColor: "black" }}>
       <ActivityIndicator
@@ -124,70 +133,74 @@ export default () => {
       />
     </View>
   ) : (
-    <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName={route}
-        screenOptions={{
-          animationEnabled: true,
-          headerTintColor: "teal",
-          cardStyle: { opacity: 1, backgroundColor: "black" },
-          backgroundColor: "black",
-        }}
-        detachInactiveScreens={false}
-      >
-        {route == WELCOMESCREEN ? (
-          <>
-            <Stack.Screen
-              name={WELCOMESCREEN}
-              component={WelcomePage}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name={MOVIES}
-              component={BottomTab}
-              options={{ headerShown: false }}
-            />
-          </>
-        ) : (
-          <>
-            <Stack.Screen
-              name={MOVIES}
-              component={BottomTab}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name={WELCOMESCREEN}
-              component={WelcomePage}
-              options={{ headerShown: false }}
-            />
-          </>
-        )}
-        <Stack.Screen
-          name={MOVIEDETAIL}
-          component={MovieDetailScreen}
-          options={{ headerShown: false }}
-        />
-        <Tabs.Screen
-          name={LOGIN}
-          component={LoginScreen}
-          options={{
-            title: " ",
-            headerStyle: {
+    <StoreProvider store={store}>
+      <PaperProvider>
+        <NavigationContainer>
+          <Stack.Navigator
+            initialRouteName={route}
+            screenOptions={{
+              animationEnabled: true,
+              headerTintColor: "teal",
+              cardStyle: { opacity: 1, backgroundColor: "black" },
               backgroundColor: "black",
-            },
-          }}
-        />
-        <Tabs.Screen
-          name={SIGNUP}
-          component={SignupScreen}
-          options={{
-            title: " ",
-            headerStyle: {
-              backgroundColor: "black",
-            },
-          }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+            }}
+            detachInactiveScreens={false}
+          >
+            {route == WELCOMESCREEN ? (
+              <>
+                <Stack.Screen
+                  name={WELCOMESCREEN}
+                  component={WelcomePage}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name={MOVIES}
+                  component={BottomTab}
+                  options={{ headerShown: false }}
+                />
+              </>
+            ) : (
+              <>
+                <Stack.Screen
+                  name={MOVIES}
+                  component={BottomTab}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name={WELCOMESCREEN}
+                  component={WelcomePage}
+                  options={{ headerShown: false }}
+                />
+              </>
+            )}
+            <Stack.Screen
+              name={MOVIEDETAIL}
+              component={MovieDetailScreen}
+              options={{ headerShown: false }}
+            />
+            <Tabs.Screen
+              name={LOGIN}
+              component={LoginScreen}
+              options={{
+                title: " ",
+                headerStyle: {
+                  backgroundColor: "black",
+                },
+              }}
+            />
+            <Tabs.Screen
+              name={SIGNUP}
+              component={SignupScreen}
+              options={{
+                title: " ",
+                headerStyle: {
+                  backgroundColor: "black",
+                },
+              }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </PaperProvider>
+    </StoreProvider>
   );
 };

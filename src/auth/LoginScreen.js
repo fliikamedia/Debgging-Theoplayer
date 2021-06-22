@@ -9,8 +9,11 @@ import {
 import firebase from "firebase";
 import { MOVIES, SIGNUP } from "../../constants/RouteNames";
 import { TextInput, HelperText } from "react-native-paper";
+import { setEmailFunc } from "../../store/actions/user";
+import { useDispatch } from "react-redux";
 
 const LoginScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -23,13 +26,13 @@ const LoginScreen = ({ navigation }) => {
         .then((userCredential) => {
           // Signed in
 
-          navigation.navigate(MOVIES);
-          /*
+          setEmailFunc(email)(dispatch);
           navigation.reset({
             index: 0,
             routes: [{ name: MOVIES }],
           });
-          */
+          navigation.navigate(MOVIES);
+
           var user = userCredential.user;
 
           //console.log(user);
@@ -54,7 +57,6 @@ const LoginScreen = ({ navigation }) => {
       .sendPasswordResetEmail(email)
       .then(function (user) {
         alert("Please check your email...");
-        navigation.navigate(LOGIN);
       })
       .catch(function (err) {
         console.log(err);

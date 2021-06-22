@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   SafeAreaView,
   TouchableOpacity,
@@ -13,6 +13,8 @@ import {
   Image,
   ActivityIndicator,
   RefreshControl,
+  Dimensions,
+  AppState,
 } from "react-native";
 import FliikaApi from "../api/FliikaApi";
 import { COLORS, SIZES, icons } from "../../constants";
@@ -25,20 +27,94 @@ import {
 import Profiles from "../components/Profiles";
 import firebase from "firebase";
 import { StatusBar } from "expo-status-bar";
+import Carousel from "react-native-anchor-carousel";
+import {
+  FontAwesome5,
+  Feather,
+  MaterialIcons,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import { getUser } from "../../store/actions/user";
+import { saveMovies } from "../../store/actions/movies";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addToWatchList,
+  removeFromWatchList,
+  addToProfileWatchList,
+  removeFromProfileWatchList,
+  setEmailFunc,
+} from "../../store/actions/user";
+import ProgressBar from "../components/ProgressBar";
+import { LogBox } from "react-native";
+import firestore from "@react-native-firebase/firestore";
 
 const HomeScreen = ({ navigation }) => {
+  //const db = firebase.firestore();
+  const appState = useRef(AppState.currentState);
+  LogBox.ignoreLogs(["Setting a timer"]);
+  const user = useSelector((state) => state.user);
+  //console.log(user);
+  const dispatch = useDispatch();
   const [result, setResult] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
   const getMovies = useCallback(async () => {
     const response = await FliikaApi.get("/posts");
+    saveMovies(response.data)(dispatch);
     setResult(response.data);
   }, []);
+  const { email } = firebase.auth().currentUser;
 
   useEffect(() => {
     getMovies();
+    setEmailFunc(email)(dispatch);
   }, []);
+  useEffect(() => {
+    getUser(user.email, user.profileName)(dispatch);
+  }, [user.email, user.ProfileName, result]);
+  /*
+  useEffect(() => {
+    AppState.addEventListener(
+      "change",
+      getUser(user.email, user.profileName)(dispatch)
+    );
 
+    return () => {
+      AppState.removeEventListener(
+        "change",
+        getUser(user.email, user.profileName)(dispatch)
+      );
+    };
+  }, [user.profileName]);
+  */
+  /*
+  const getUsers = async () => {
+    const response = db.collection("users");
+    const data = await response.get();
+    data.docs.forEach((item) => {
+      console.log([item.data()]);
+    });
+  };
+
+  useEffect(() => {
+    getUsers();
+  }, []);
+*/
+  /*
+  const getUsers = async () => {
+    firestore()
+      .collection("Users")
+      .get()
+      .then((querySnapshot) => {
+        console.log("Total users: ", querySnapshot);
+      });
+  };
+  useEffect(() => {
+    getUsers();
+  }, []);
+  */
+  /*
   const checkIFLoggedIn = () => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
@@ -49,8 +125,35 @@ const HomeScreen = ({ navigation }) => {
   useEffect(() => {
     checkIFLoggedIn();
   }, []);
-
-  const genreArray = result.map((r) => r.genre);
+*/
+  // check if the movie is already in watch List
+  const isWatchList = (movieArray, movieName) => {
+    try {
+      var found = false;
+      for (var i = 0; i < movieArray.length; i++) {
+        if (movieArray[i].title == movieName) {
+          found = true;
+          break;
+        }
+      }
+      return found;
+    } catch (err) {}
+  };
+  const watchListFunc = () => {
+    try {
+      if (user.isProfile) {
+        return user.profile.watchList;
+      } else {
+        return user.user.watchList;
+      }
+    } catch (err) {}
+  };
+  const resultsToShow = result.filter(
+    (c) =>
+      c.film_type == "movie" ||
+      (c.film_type == "series" && c.episode_number == 1)
+  );
+  const genreArray = resultsToShow.map((r) => r.genre);
   let allGenre = [];
   for (let i = 0; i < genreArray.length; i++) {
     allGenre.push(...genreArray[i]);
@@ -69,9 +172,9 @@ const HomeScreen = ({ navigation }) => {
       movies: result.filter((r) => r.genre.includes(genres[x])),
     });
   }
-  /////// The new season section function
+  /////// The Hero section function
   const newSeasonScrollX = React.useRef(new Animated.Value(0)).current;
-  const renderNewSeasonSection = () => {
+  const renderHeroSection = () => {
     return (
       <Animated.FlatList
         horizontal
@@ -82,7 +185,7 @@ const HomeScreen = ({ navigation }) => {
         scrollEventThrottle={16}
         decelerationRate={0}
         contentContainerStyle={{ marginTop: SIZES.radius }}
-        data={result}
+        data={resultsToShow}
         keyExtractor={(item) => `${item._id}`}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { x: newSeasonScrollX } } }],
@@ -92,7 +195,11 @@ const HomeScreen = ({ navigation }) => {
           return (
             <TouchableWithoutFeedback
               onPress={() =>
-                navigation.navigate(MOVIEDETAIL, { selectedMovie: item._id })
+                navigation.navigate(MOVIEDETAIL, {
+                  selectedMovie: item._id,
+                  isSeries: item.film_type,
+                  seriesTitle: item.title,
+                })
               }
             >
               <View
@@ -181,9 +288,9 @@ const HomeScreen = ({ navigation }) => {
     );
   };
 
-  ///// End of The new season section function
+  ///// End of The Hero section function
 
-  ///// Render New season second design
+  ///// Render Hero second design
   useEffect(() => {
     Animated.spring(scrollXAnimated, {
       toValue: scrollXIndex,
@@ -202,7 +309,7 @@ const HomeScreen = ({ navigation }) => {
   const ITEM_WIDTH = SIZES.width * 0.75;
   const ITEM_HEIGHT = ITEM_WIDTH * 1.5;
   const VISIBLE_ITEMS = 3;
-  const renderNewSeasonSecondDesign = () => {
+  const renderHeroSectionSecondDesign = () => {
     const OverflowItems = ({ data, scrollXAnimated }) => {
       const inputRange = [-1, 0, 1];
       const translateY = scrollXAnimated.interpolate({
@@ -287,32 +394,30 @@ const HomeScreen = ({ navigation }) => {
                   inputRange,
                   outputRange: [1 - 1 / VISIBLE_ITEMS, 1, 0],
                 });
-                if (item.dvd_thumbnail_link) {
-                  return (
-                    <Animated.View
+                return (
+                  <Animated.View
+                    style={{
+                      position: "absolute",
+                      left: -ITEM_WIDTH / 2,
+                      opacity,
+                      transform: [
+                        {
+                          translateX,
+                        },
+                        { scale },
+                      ],
+                    }}
+                  >
+                    <Image
+                      source={{ uri: item.dvd_thumbnail_link }}
                       style={{
-                        position: "absolute",
-                        left: -ITEM_WIDTH / 2,
-                        opacity,
-                        transform: [
-                          {
-                            translateX,
-                          },
-                          { scale },
-                        ],
+                        width: ITEM_WIDTH,
+                        height: ITEM_HEIGHT,
+                        borderRadius: 3,
                       }}
-                    >
-                      <Image
-                        source={{ uri: item.dvd_thumbnail_link }}
-                        style={{
-                          width: ITEM_WIDTH,
-                          height: ITEM_HEIGHT,
-                          borderRadius: 3,
-                        }}
-                      />
-                    </Animated.View>
-                  );
-                }
+                    />
+                  </Animated.View>
+                );
               }}
             />
           </SafeAreaView>
@@ -320,7 +425,7 @@ const HomeScreen = ({ navigation }) => {
       </FlingGestureHandler>
     );
   };
-  ///// End of render new season second design
+  ///// End of render Hero second design
   ///// The render dots function
   const renderDots = () => {
     const dotPosition = Animated.divide(newSeasonScrollX, SIZES.width);
@@ -402,13 +507,15 @@ const HomeScreen = ({ navigation }) => {
   };
   ///////////////
   let resultLength;
+  let stateLength;
   try {
     resultLength = result.length;
+    stateLength = user.user.length;
   } catch (err) {}
   const renderMovies = () => {
     return newResults.map((item, index) => {
       return (
-        <View key={item.genre}>
+        <View style={{ marginTop: 0 }} key={item.genre}>
           <Text
             style={{
               color: COLORS.white,
@@ -431,6 +538,8 @@ const HomeScreen = ({ navigation }) => {
                     onPress={() =>
                       navigation.navigate(MOVIEDETAIL, {
                         selectedMovie: item._id,
+                        isSeries: item.film_type,
+                        seriesTitle: item.title,
                       })
                     }
                   >
@@ -454,6 +563,344 @@ const HomeScreen = ({ navigation }) => {
     });
   };
 
+  //// Render continue watching section
+
+  let continueWatching = [];
+  if (user.isProfile) {
+    try {
+      for (let i = 0; i < user.profile.watched.length; i++) {
+        resultsToShow.map((r) => {
+          if (r.title == user.profile.watched[i].title) {
+            continueWatching.push(r);
+          }
+        });
+      }
+    } catch (err) {}
+  } else {
+    try {
+      for (let i = 0; i < user.user.watched.length; i++) {
+        resultsToShow.map((r) => {
+          if (r.title == user.user.watched[i].title) {
+            continueWatching.push(r);
+          }
+        });
+      }
+    } catch (err) {}
+  }
+  let continueWatchingLength;
+  try {
+    continueWatchingLength = continueWatching.length;
+  } catch (err) {}
+  const calculateProgress = (movieName) => {
+    try {
+      if (!user.isProfile) {
+        var duration = user.user.watched.find(
+          (c) => c.title == movieName
+        ).duration;
+        var watchedAt = user.user.watched.find(
+          (c) => c.title == movieName
+        ).watchedAt;
+      } else if (user.isProfile) {
+        var duration = user.profile.watched.find(
+          (c) => c.title == movieName
+        ).duration;
+        var watchedAt = user.profile.watched.find(
+          (c) => c.title == movieName
+        ).watchedAt;
+      }
+    } catch (err) {}
+    return (watchedAt / duration) * 100;
+  };
+  const renderContinueWatctionSection = () => {
+    return (
+      <View>
+        {/* Header */}
+        {continueWatchingLength > 0 ? (
+          <View
+            style={{
+              flexDirection: "row",
+              paddingHorizontal: SIZES.padding,
+              alignItems: "center",
+            }}
+          >
+            <Text
+              style={{
+                flex: 1,
+                color: COLORS.white,
+                fontSize: 20,
+                fontWeight: "bold",
+              }}
+            >
+              Continue watching
+            </Text>
+            <Image
+              source={icons.right_arrow}
+              style={{ height: 20, width: 20, tintColor: "teal" }}
+            />
+          </View>
+        ) : null}
+        {/* List */}
+        <FlatList
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ marginTop: SIZES.padding }}
+          data={continueWatching}
+          keyExtractor={(item) => item._id}
+          renderItem={({ item, index }) => {
+            if (calculateProgress(item.title) < 100) {
+              return (
+                <TouchableWithoutFeedback
+                  onPress={() =>
+                    navigation.navigate(MOVIEDETAIL, {
+                      selectedMovie: item._id,
+                      isSeries: item.film_type,
+                      seriesTitle: item.title,
+                    })
+                  }
+                >
+                  <View
+                    style={{
+                      marginLeft: index == 0 ? SIZES.padding : 20,
+                      marginRight:
+                        index == continueWatching.length - 1
+                          ? SIZES.padding
+                          : 0,
+                    }}
+                  >
+                    {/* Thumnnail */}
+                    <Image
+                      source={{ uri: item.dvd_thumbnail_link }}
+                      style={{
+                        width: SIZES.width * 0.3,
+                        height: SIZES.width * 0.3,
+                        borderRadius: 200,
+                        resizeMode: "cover",
+                      }}
+                      resizeMode="cover"
+                    />
+                    {/* Name */}
+                    <Text
+                      style={{
+                        color: COLORS.white,
+                        marginTop: SIZES.base,
+                        textAlign: "center",
+                        width: SIZES.width * 0.3,
+                      }}
+                      numberOfLines={1}
+                    >
+                      {item.title}
+                    </Text>
+                    {/* Progress Bar */}
+                    <ProgressBar
+                      containerStyle={{ marginTop: SIZES.radius }}
+                      barStyle={{ height: 3 }}
+                      percentage={calculateProgress(item.title)}
+                    />
+                  </View>
+                </TouchableWithoutFeedback>
+              );
+            }
+          }}
+        />
+      </View>
+    );
+  };
+  //// End of continue watching section
+  //// Render Hero third design
+  const title = resultsToShow.length > 0 ? resultsToShow[0].title : null;
+  const uri =
+    resultsToShow.length > 0 ? resultsToShow[0].dvd_thumbnail_link : null;
+  const stat =
+    resultsToShow.length > 0
+      ? `${resultsToShow[0].film_rating} - ${resultsToShow[0].genre
+          .toString()
+          .replace(/,/g, " ")} - ${resultsToShow[0].runtime}`
+      : null;
+  const desc = resultsToShow.length > 0 ? resultsToShow[0].storyline : null;
+  const _id = resultsToShow.length > 0 ? resultsToShow[0]._id : null;
+  const film_type =
+    resultsToShow.length > 0 ? resultsToShow[0].film_type : null;
+  const [background, setBackground] = useState({
+    uri: "",
+    name: "",
+    stat: "",
+    desc: "",
+    _id: "",
+    film_type: "",
+  });
+  useEffect(() => {
+    if (resultsToShow) {
+      setBackground({
+        uri: uri,
+        name: title,
+        stat: stat,
+        desc: desc,
+        _id: _id,
+        film_type: film_type,
+      });
+    }
+  }, [resultsToShow.length]);
+  const carouselRef = useRef(null);
+  const renderHeroSectionThirdDesign = () => {
+    const { width, height } = Dimensions.get("window");
+
+    const renderItem = ({ item, index }) => {
+      return (
+        <View>
+          <TouchableOpacity
+            onPress={() => {
+              carouselRef.current.scrollToIndex(index);
+              setBackground({
+                uri: item.dvd_thumbnail_link,
+                name: item.title,
+                stat: `${item.film_rating} - ${item.genre
+                  .toString()
+                  .replace(/,/g, " ")} - ${item.runtime}`,
+                desc: item.storyline,
+                _id: item._id,
+                film_type: item.film_type,
+              });
+            }}
+          >
+            <Image
+              source={{ uri: item.dvd_thumbnail_link }}
+              style={styles.carouselImage}
+            />
+            {/*<Text style={styles.carouselText}>{item.title}</Text>*/}
+            {isWatchList(watchListFunc(), item.title) == true ? (
+              <TouchableWithoutFeedback
+                onPress={() => {
+                  if (user.isProfile) {
+                    removeFromProfileWatchList(
+                      user.email,
+                      item,
+                      user.profileName
+                    )(dispatch);
+                  } else {
+                    removeFromWatchList(user.email, item)(dispatch);
+                  }
+                }}
+              >
+                <MaterialCommunityIcons
+                  name="book-remove-multiple-outline"
+                  size={30}
+                  color={COLORS.white}
+                  style={styles.carouselIcon}
+                />
+              </TouchableWithoutFeedback>
+            ) : (
+              <TouchableWithoutFeedback
+                onPress={() => {
+                  if (user.isProfile) {
+                    addToProfileWatchList(
+                      user.email,
+                      item,
+                      user.profileName
+                    )(dispatch);
+                  } else {
+                    addToWatchList(user.email, item)(dispatch);
+                  }
+                }}
+              >
+                <MaterialIcons
+                  name="library-add"
+                  size={30}
+                  color="white"
+                  style={styles.carouselIcon}
+                />
+              </TouchableWithoutFeedback>
+            )}
+          </TouchableOpacity>
+        </View>
+      );
+    };
+
+    return (
+      <View style={styles.carouselContentContainer}>
+        <View style={{ ...StyleSheet.absoluteFill, backgroundColor: "#000" }}>
+          <ImageBackground
+            source={{ uri: background.uri }}
+            style={styles.ImageBg}
+            blurRadius={10}
+          >
+            <LinearGradient
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
+              colors={["transparent", "#000"]}
+              style={{
+                width: "100%",
+                height: "100%",
+              }}
+            >
+              <Text
+                style={{
+                  color: "white",
+                  fontSize: 24,
+                  fontWeight: "bold",
+                  marginLeft: 10,
+                  marginTop: 40,
+                  marginBottom: 20,
+                }}
+              >
+                Fliika Originals
+              </Text>
+              <View style={styles.carouselContainerView}>
+                <Carousel
+                  style={styles.carousel}
+                  data={resultsToShow}
+                  renderItem={renderItem}
+                  itemWidth={200}
+                  containerWidth={width - 20}
+                  separatorWidth={0}
+                  ref={carouselRef}
+                  inActiveOpacity={0.4}
+                  //pagingEnable={false}
+                  //minScrollDistance={20}
+                />
+              </View>
+              <View style={styles.movieInfoContainer}>
+                <View style={{ justifyContent: "center" }}>
+                  <Text style={styles.movieName}>{background.name}</Text>
+                </View>
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate(MOVIEDETAIL, {
+                      selectedMovie: background._id,
+                      isSeries: background.film_type,
+                      seriesTitle: background.name,
+                    })
+                  }
+                  style={styles.playIconContainer}
+                >
+                  <FontAwesome5
+                    name="play"
+                    size={22}
+                    color="#02ad94"
+                    style={{ marginLeft: 4 }}
+                  />
+                </TouchableOpacity>
+              </View>
+              <Text style={styles.movieStat}>{background.stat}</Text>
+              <View style={{ paddingHorizontal: 14, marginTop: 14 }}>
+                <Text
+                  numberOfLines={4}
+                  style={{
+                    color: "white",
+                    opacity: 0.8,
+                    lineHeight: 20,
+                    marginBottom: 20,
+                  }}
+                >
+                  {background.desc}
+                </Text>
+              </View>
+            </LinearGradient>
+          </ImageBackground>
+        </View>
+      </View>
+    );
+  };
+  ///// End of Render Hero third design
   //// On Refresh Control
   const onRefresh = useCallback(() => {
     getMovies();
@@ -475,14 +922,14 @@ const HomeScreen = ({ navigation }) => {
         <ScrollView
           contentContainerStyle={{
             paddingBottom: 100,
-            marginTop: "10%",
+            //marginTop: "10%",
           }}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         >
-          {renderNewSeasonSection()}
-          {renderDots()}
+          {renderHeroSectionThirdDesign()}
+          {continueWatchingLength > 0 ? renderContinueWatctionSection() : null}
           {renderMovies()}
           <StatusBar style="light" />
         </ScrollView>
@@ -525,6 +972,80 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     height: SIZES.height * 0.6,
+  },
+  carouselImage: {
+    width: 200,
+    height: 320,
+    borderRadius: 10,
+    alignSelf: "center",
+    backgroundColor: "rgba(0,0,0,0.9)",
+  },
+  carouselText: {
+    paddingLeft: 14,
+    color: "white",
+    position: "absolute",
+    bottom: 10,
+    left: 2,
+    fontWeight: "bold",
+  },
+  carouselIcon: {
+    position: "absolute",
+    top: 15,
+    right: 15,
+  },
+  carouselContentContainer: {
+    flex: 1,
+    backgroundColor: "#000",
+    height: 680,
+    paddingHorizontal: 14,
+  },
+  ImageBg: {
+    flex: 1,
+    height: null,
+    width: null,
+    opacity: 1,
+    justifyContent: "flex-start",
+  },
+  carouselContainerView: {
+    width: "100%",
+    height: 350,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  carousel: {
+    flex: 1,
+    overflow: "visible",
+  },
+  movieInfoContainer: {
+    flexDirection: "row",
+    marginTop: 16,
+    justifyContent: "space-between",
+    width: Dimensions.get("window").width - 14,
+  },
+  movieName: {
+    paddingLeft: 14,
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 20,
+    marginBottom: 6,
+  },
+  movieStat: {
+    paddingLeft: 14,
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 14,
+    opacity: 0.8,
+  },
+  playIconContainer: {
+    backgroundColor: "#212121",
+    padding: 18,
+    borderRadius: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 25,
+    borderWidth: 4,
+    borderColor: "rgba(2, 173, 148, 0.2)",
+    marginBottom: 14,
   },
 });
 
