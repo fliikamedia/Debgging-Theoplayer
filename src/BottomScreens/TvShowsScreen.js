@@ -92,6 +92,7 @@ const TvShowsScreen = ({ navigation }) => {
                   .replace(/,/g, " ")} - ${item.runtime}`,
                 desc: item.storyline,
                 _id: item._id,
+                film_type: item.film_type,
               });
             }}
           >
@@ -114,7 +115,7 @@ const TvShowsScreen = ({ navigation }) => {
         </View>
       );
     };
-
+    console.log(background);
     return (
       <View style={styles.carouselContentContainer}>
         <View style={{ ...StyleSheet.absoluteFill, backgroundColor: "#000" }}>

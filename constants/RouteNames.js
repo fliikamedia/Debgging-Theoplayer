@@ -7,5 +7,5 @@ export const MOVIEDETAIL = "Movie Detail";
 export const PROFILESCREEN = "Profile Screen";
 export const SIGNUP = "Signup";
 export const LOGIN = "Login";
-export const SERIESEPISODESTAB = "Series episodes tab";
-export const SERIESDETAILSTAB = "Series details tab";
+export const SERIESEPISODESTAB = "Episodes";
+export const SERIESDETAILSTAB = "More details";

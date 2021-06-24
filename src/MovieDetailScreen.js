@@ -39,8 +39,15 @@ import {
 } from "../store/actions/user";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import EpisodeItem from "./components/EmpisodeItem";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import { SERIESDETAILSTAB, SERIESEPISODESTAB } from "../constants/RouteNames";
+import SeriesEpisodesTab from "./topTabScreens/SeriesEpisodesTab";
+import SeriesDetailsTab from "./topTabScreens/SeriesDetailsTab";
+import { setCurrentSeries, setMovieTitle } from "../store/actions/movies";
 
 const MovieDetailScreen = ({ navigation, route }) => {
+  const Tab = createMaterialTopTabNavigator();
+
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [play, setPlay] = useState(false);
@@ -99,7 +106,6 @@ const MovieDetailScreen = ({ navigation, route }) => {
       return found;
     } catch (err) {}
   };
-
   const isWatched = (movieArray, movieName) => {
     try {
       var movieWatched = false;
@@ -226,6 +232,11 @@ const MovieDetailScreen = ({ navigation, route }) => {
   try {
     resultLength = Object.keys(movie).length;
   } catch (err) {}
+
+  useEffect(() => {
+    setMovieTitle(movie)(dispatch);
+    setCurrentSeries(currentSeries)(dispatch);
+  }, [movie, currentSeries]);
   //const movieId = navigation.getParam("selectedMovie");
   ///// share function
   const onShare = async () => {
@@ -601,6 +612,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
     setPlay(true);
   };
   // to fix later for series
+
   if (isSeries == "series") {
     let episodesStyle;
     let detailsStyle;
@@ -677,6 +689,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
             <EpisodeItem playSeries={playSeries} episode={item} />
           )}
           />*/}
+        {/*
         <View style={{ flexDirection: "row" }}>
           <TouchableOpacity
             style={episodesStyle}
@@ -727,6 +740,23 @@ const MovieDetailScreen = ({ navigation, route }) => {
             </Text>
           </View>
         ) : null}
+        */}
+
+        <Tab.Navigator
+          tabBarOptions={{
+            labelStyle: { color: "white" },
+            style: {
+              backgroundColor: "black",
+            },
+          }}
+        >
+          <Tab.Screen
+            name={SERIESEPISODESTAB}
+            component={SeriesEpisodesTab}
+            initialParams={{ playSeries: playSeries }}
+          />
+          <Tab.Screen name={SERIESDETAILSTAB} component={SeriesDetailsTab} />
+        </Tab.Navigator>
       </ScrollView>
     );
   }

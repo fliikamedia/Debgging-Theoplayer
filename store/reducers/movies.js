@@ -5,10 +5,14 @@ import {
   ADD_TO_WATCHLIST,
   ADD_TO_WATCHLIST_SUCCESS,
   ADD_TO_WATCHLIST_FAILED,
+  SET_MOVIE,
+  SET_CURRENTSERIES,
 } from "../actions/movies";
 const initialState = {
   availableMovies: [],
   watchList: [],
+  movie: [],
+  currentSeries: [],
   isFetching: false,
 };
 
@@ -20,6 +24,10 @@ const moviesReducer = (state = initialState, { type, payload }) => {
       return { ...state, availableMovies: payload, isFetching: false };
     case FETCH_MOVIES_FAILED:
       return { ...state, isFetching: false };
+    case SET_MOVIE:
+      return { ...state, movie: payload };
+    case SET_CURRENTSERIES:
+      return { ...state, currentSeries: payload };
     default:
       return state;
   }
