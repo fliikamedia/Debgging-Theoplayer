@@ -11,12 +11,12 @@ const SeriesDetailsTab = ({ route }) => {
   } catch (err) {}
   if (!movies.movie.genre) {
     return (
-      <View style={{ backgroundColor: "black" }}>
+      <View style={{ flex: 1, backgroundColor: "black" }}>
         <ActivityIndicator
           animating
           color={"teal"}
           size="large"
-          style={{ flex: 1, position: "absolute", top: "50%", left: "45%" }}
+          style={{ flex: 1, position: "absolute", top: "10%", left: "45%" }}
         />
       </View>
     );

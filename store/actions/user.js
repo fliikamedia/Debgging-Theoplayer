@@ -30,13 +30,20 @@ export const ADD_PROFILE_WATCHED_DETAILS = "ADD_PROFILE_WATCHED_DETAILS";
 export const SET_PROFILE = "SET_PROFILE";
 export const SET_NOT_PROFILE = "SET_NOT_PROFILE";
 export const SET_EMAIL = "SET_EMAIL";
+export const UPDATE_USER_IMAGE = "UPDATE_USER_IMAGE";
+export const UPDATE_USER_IMAGE_SUCCESS = "UPDATE_USER_IMAGE_SUCCESS";
+export const UPDATE_USER_IMAGE_FAILED = "UPDATE_USER_IMAGE_FAILED";
+export const UPDATE_PROFILE = "UPDATE_PROFILE";
+export const UPDATE_PROFILE_SUCCESS = "UPDATE_PROFILE_SUCCESS";
+export const UPDATE_PROFILE_FAILED = "UPDATE_PROFILE_FAILED";
 
-export const addUser = (email, fullName) => async (dispatch) => {
+export const addUser = (email, fullName, profileImage) => async (dispatch) => {
   try {
     dispatch({ type: ADD_USER });
     const result = await expressApi.post(`/users`, {
       email: email,
       fullName: fullName,
+      profileImage: profileImage,
     });
     if (result.status == 201) {
       console.log(result.data);
@@ -355,3 +362,52 @@ export const setEmailFunc = (email) => (dispatch) => {
     dispatch({ type: SET_EMAIL, payload: email });
   } catch (err) {}
 };
+
+export const updateUserImage = (email, profileImage) => async (dispatch) => {
+  try {
+    dispatch({ type: UPDATE_USER_IMAGE });
+    const result = await expressApi.post(`/users/e`, {
+      email: email,
+      profileImage: profileImage,
+    });
+    if (result.status == 200) {
+      // console.log(result);
+      dispatch({
+        type: UPDATE_USER_IMAGE_SUCCESS,
+        payload: result.data,
+      });
+    } else {
+      dispatch({ type: UPDATE_USER_IMAGE_FAILED });
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const updateProfile =
+  (emails, profileName, newName, profileImage) => async (dispatch) => {
+    try {
+      dispatch({ type: UPDATE_PROFILE });
+      const result = await expressApi.post(`/users/profile/g`, {
+        email: emails,
+        profileName: profileName,
+        newName: newName,
+        profileImage: profileImage,
+      });
+      if (result.status == 200) {
+        console.log(result);
+        dispatch({
+          type: UPDATE_PROFILE_SUCCESS,
+          payload: result.data,
+        });
+        dispatch({
+          type: UPDATE_PROFILE_FAILED,
+          payload: result.data.profiles.find((r) => r.name == profileName),
+        });
+      } else {
+        dispatch({ type: UPDATE_PROFILE_FAILED });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };

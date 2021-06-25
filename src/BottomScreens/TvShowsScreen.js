@@ -21,10 +21,25 @@ import { MOVIEDETAIL } from "../../constants/RouteNames";
 import Profiles from "../components/Profiles";
 import { StatusBar } from "expo-status-bar";
 import Carousel from "react-native-anchor-carousel";
-import { FontAwesome5, Feather, MaterialIcons } from "@expo/vector-icons";
+import {
+  FontAwesome5,
+  Feather,
+  MaterialIcons,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-
+import {
+  addToWatchList,
+  removeFromWatchList,
+  addToProfileWatchList,
+  removeFromProfileWatchList,
+  setEmailFunc,
+} from "../../store/actions/user";
+import { useSelector, useDispatch } from "react-redux";
 const TvShowsScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
+
   const [result, setResult] = useState([]);
 
   const getSeries = useCallback(async () => {
@@ -44,6 +59,29 @@ const TvShowsScreen = ({ navigation }) => {
   try {
     resultLength = series.length;
   } catch (err) {}
+
+  const isWatchList = (movieArray, movieName) => {
+    try {
+      var found = false;
+      for (var i = 0; i < movieArray.length; i++) {
+        if (movieArray[i].title == movieName) {
+          found = true;
+          break;
+        }
+      }
+      return found;
+    } catch (err) {}
+  };
+  const watchListFunc = () => {
+    try {
+      if (user.isProfile) {
+        return user.profile.watchList;
+      } else {
+        return user.user.watchList;
+      }
+    } catch (err) {}
+  };
+
   const title = series.length > 0 ? series[0].title : null;
   const uri = series.length > 0 ? series[0].dvd_thumbnail_link : null;
   const stat =
@@ -100,22 +138,54 @@ const TvShowsScreen = ({ navigation }) => {
               source={{ uri: item.dvd_thumbnail_link }}
               style={styles.carouselImage}
             />
-            <Text style={styles.carouselText}>{item.title}</Text>
-            <TouchableWithoutFeedback
-              onPress={() => console.log("added to watch list")}
-            >
-              <MaterialIcons
-                name="library-add"
-                size={30}
-                color="white"
-                style={styles.carouselIcon}
-              />
-            </TouchableWithoutFeedback>
+            {/*<Text style={styles.carouselText}>{item.title}</Text>*/}
+            {isWatchList(watchListFunc(), item.title) == true ? (
+              <TouchableWithoutFeedback
+                onPress={() => {
+                  if (user.isProfile) {
+                    removeFromProfileWatchList(
+                      user.email,
+                      item,
+                      user.profileName
+                    )(dispatch);
+                  } else {
+                    removeFromWatchList(user.email, item)(dispatch);
+                  }
+                }}
+              >
+                <MaterialCommunityIcons
+                  name="book-remove-multiple-outline"
+                  size={30}
+                  color={COLORS.white}
+                  style={styles.carouselIcon}
+                />
+              </TouchableWithoutFeedback>
+            ) : (
+              <TouchableWithoutFeedback
+                onPress={() => {
+                  if (user.isProfile) {
+                    addToProfileWatchList(
+                      user.email,
+                      item,
+                      user.profileName
+                    )(dispatch);
+                  } else {
+                    addToWatchList(user.email, item)(dispatch);
+                  }
+                }}
+              >
+                <MaterialIcons
+                  name="library-add"
+                  size={30}
+                  color="white"
+                  style={styles.carouselIcon}
+                />
+              </TouchableWithoutFeedback>
+            )}
           </TouchableOpacity>
         </View>
       );
     };
-    console.log(background);
     return (
       <View style={styles.carouselContentContainer}>
         <View style={{ ...StyleSheet.absoluteFill, backgroundColor: "#000" }}>

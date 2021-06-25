@@ -12,6 +12,7 @@ import MovieDetailScreen from "./src/MovieDetailScreen";
 import ProfileScreen from "./src/BottomScreens/ProfileScreen";
 import LoginScreen from "./src/auth/LoginScreen";
 import SignupScreen from "./src/auth/SignupScreen";
+import EditProfile from "./src/components/EditProfile";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
@@ -25,6 +26,7 @@ import {
   PROFILESCREEN,
   LOGIN,
   SIGNUP,
+  EDITPROFILE,
 } from "./constants/RouteNames";
 import { COLORS } from "./constants/theme";
 import firebase from "firebase";
@@ -176,6 +178,11 @@ export default () => {
             <Stack.Screen
               name={MOVIEDETAIL}
               component={MovieDetailScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name={EDITPROFILE}
+              component={EditProfile}
               options={{ headerShown: false }}
             />
             <Tabs.Screen

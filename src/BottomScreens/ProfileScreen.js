@@ -17,17 +17,19 @@ import { addProfile } from "../../store/actions/user";
 import { WELCOMESCREEN } from "../../constants/RouteNames";
 import firebase from "firebase";
 import profileImgs from "../../constants/profileImgs";
+import { COLORS, SIZES, icons } from "../../constants";
+
 const ProfileScreen = ({ navigation }) => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [creating, setCreating] = useState(false);
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState("");
+  const [imageName, setImageName] = useState("");
   let profilesLength;
   try {
     profilesLength = user.user.profiles.length;
   } catch (err) {}
-
   const logOut = async () => {
     try {
       await firebase.auth().signOut();
@@ -39,14 +41,14 @@ const ProfileScreen = ({ navigation }) => {
       );
     }
   };
-  const profileImg1 = require("../../assets/profileImg/profile1.jpg");
   const creatingProfile = () => {
     if (name) {
       setName("");
-      addProfile(user.email, name, "profile1")(dispatch);
+      setImageName("");
+      addProfile(user.email, name, imageName)(dispatch);
       setCreating(false);
     } else {
-      Alert.alert("", "Please Select a name first", [
+      Alert.alert("", "Please Select a profile name first", [
         { text: "Ok", cancelable: true },
       ]);
     }
@@ -55,7 +57,13 @@ const ProfileScreen = ({ navigation }) => {
     if (creating) {
       return (
         <View>
-          <UserProfile editing={editing} main={false} name="" />
+          <UserProfile
+            image={imageName}
+            editing={editing}
+            setEditing={setEditing}
+            main={false}
+            name=""
+          />
           <TextInput
             placeholder="Name"
             placeholderTextColor="white"
@@ -63,15 +71,38 @@ const ProfileScreen = ({ navigation }) => {
             onChangeText={(newValue) => setName(newValue)}
             value={name}
           />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginVertical: 20,
+              marginHorizontal: 20,
+            }}
+          >
+            <Text style={{ color: "white" }}>Choose an image</Text>
+            <Image
+              source={icons.right_arrow}
+              style={{
+                height: 20,
+                width: 20,
+                tintColor: "teal",
+              }}
+            />
+          </View>
           <FlatList
             horizontal
             data={profileImgs}
             keyExtractor={(item) => item.name}
             renderItem={({ item, index }) => (
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => setImageName(item.name)}>
                 <Image
                   source={item.path}
-                  style={{ width: 100, height: 100, marginLeft: 20 }}
+                  style={{
+                    width: 100,
+                    height: 100,
+                    borderRadius: 120,
+                    marginLeft: 20,
+                  }}
                 />
               </TouchableOpacity>
             )}
@@ -86,6 +117,7 @@ const ProfileScreen = ({ navigation }) => {
             <TouchableOpacity
               style={styles.cancel}
               onPress={() => {
+                setImageName("");
                 setCreating(false);
               }}
             >
@@ -97,10 +129,20 @@ const ProfileScreen = ({ navigation }) => {
     } else if (editing) {
       return (
         <View>
+          <UserProfile
+            navigation={navigation}
+            main={true}
+            name={user.user.fullName}
+            image={user.user.profileImage}
+            editing={editing}
+            setEditing={setEditing}
+          />
           {user.user.profiles.map((item) => {
             return (
               <UserProfile
+                navigation={navigation}
                 editing={editing}
+                setEditing={setEditing}
                 main={false}
                 key={item.name}
                 name={item.name}
@@ -145,14 +187,16 @@ const ProfileScreen = ({ navigation }) => {
             </Text>
             <UserProfile
               editing={editing}
+              setEditing={setEditing}
               main={true}
               name={user.user.fullName}
-              image={user.image}
+              image={user.user.profileImage}
             />
             {user.user.profiles.map((item) => {
               return (
                 <UserProfile
                   editing={editing}
+                  setEditing={setEditing}
                   main={false}
                   key={item.name}
                   name={item.name}
@@ -169,27 +213,25 @@ const ProfileScreen = ({ navigation }) => {
               </TouchableOpacity>
             ) : null}
           </View>
-          {profilesLength > 0 ? (
-            <TouchableOpacity
-              onPress={() => setEditing(true)}
-              style={{
-                height: 50,
-                width: 160,
-                borderWidth: 2,
-                borderColor: "white",
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: 5,
-                alignSelf: "center",
-                marginTop: 30,
-                backgroundColor: "teal",
-              }}
-            >
-              <Text style={{ color: "white", fontWeight: "bold" }}>
-                Manage Profiles
-              </Text>
-            </TouchableOpacity>
-          ) : null}
+          <TouchableOpacity
+            onPress={() => setEditing(true)}
+            style={{
+              height: 50,
+              width: 160,
+              borderWidth: 2,
+              borderColor: "white",
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: 5,
+              alignSelf: "center",
+              marginTop: 30,
+              backgroundColor: "teal",
+            }}
+          >
+            <Text style={{ color: "white", fontWeight: "bold" }}>
+              Manage Profiles
+            </Text>
+          </TouchableOpacity>
         </View>
       );
     }
@@ -236,6 +278,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     borderRadius: 5,
     padding: 10,
+    color: "white",
   },
   btnContainer: {
     width: "80%",

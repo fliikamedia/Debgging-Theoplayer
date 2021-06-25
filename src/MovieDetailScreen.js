@@ -288,10 +288,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
         {/* Back Button */}
         <MovieDetailIcon iconFuc={navigateBack} icon={icons.left_arrow} />
         {/* Share Button */}
-        <MovieDetailIcon
-          iconFuc={() => console.log("Tv Cast")}
-          icon={icons.cast}
-        />
+        <MovieDetailIcon iconFuc={() => logOut()} icon={icons.cast} />
       </View>
     );
   };

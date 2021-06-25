@@ -7,11 +7,19 @@ import {
   Dimensions,
   Image,
 } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, FontAwesome5 } from "@expo/vector-icons";
 import { setProfile, setNotProfile } from "../../store/actions/user";
 import { useDispatch, useSelector } from "react-redux";
 import { removeProfile } from "../../store/actions/user";
-const UserProfile = ({ name, main, editing, image }) => {
+import { EDITPROFILE } from "../../constants/RouteNames";
+const UserProfile = ({
+  name,
+  main,
+  editing,
+  image,
+  navigation,
+  setEditing,
+}) => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   let borderColor;
@@ -41,8 +49,18 @@ const UserProfile = ({ name, main, editing, image }) => {
 
   if (image == "profile1") {
     profileImg = require(`../../assets/profileImg/profile1.jpg`);
-  } else {
+  } else if (image == "profile2") {
     profileImg = require(`../../assets/profileImg/profile2.jpg`);
+  } else if (image == "profile3") {
+    profileImg = require(`../../assets/profileImg/profile3.jpg`);
+  } else if (image == "profile4") {
+    profileImg = require(`../../assets/profileImg/profile4.jpg`);
+  } else if (image == "profile5") {
+    profileImg = require(`../../assets/profileImg/profile5.jpg`);
+  } else if (image == "profile6") {
+    profileImg = require(`../../assets/profileImg/profile6.jpg`);
+  } else if (image == "profile7") {
+    profileImg = require(`../../assets/profileImg/profile7.jpg`);
   }
   return (
     <View style={{ alignItems: "center", marginVertical: 10 }}>
@@ -57,21 +75,73 @@ const UserProfile = ({ name, main, editing, image }) => {
         style={container}
       >
         {image ? (
-          <Image
-            style={{
-              width: "100%",
-              height: undefined,
-              aspectRatio: 1,
-              borderRadius: 120,
-            }}
-            source={profileImg}
-          />
+          <>
+            <Image
+              style={{
+                width: "100%",
+                height: undefined,
+                aspectRatio: 1,
+                borderRadius: 120,
+              }}
+              source={profileImg}
+            />
+            {editing ? (
+              <TouchableOpacity
+                onPress={() => {
+                  setEditing(false),
+                    navigation.navigate(EDITPROFILE, {
+                      main: main,
+                      profileName: name,
+                      imageTitle: image,
+                    });
+                }}
+                style={{
+                  position: "absolute",
+                  backgroundColor: "darkgrey",
+                  height: "100%",
+                  width: "100%",
+                  borderRadius: 120,
+                  opacity: 0.7,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <FontAwesome5 name="edit" size={40} color="white" />
+              </TouchableOpacity>
+            ) : null}
+          </>
         ) : (
-          <AntDesign name="user" size={50} color="white" />
+          <>
+            <AntDesign name="user" size={50} color="white" />
+            {editing ? (
+              <TouchableOpacity
+                style={{
+                  position: "absolute",
+                  backgroundColor: "darkgrey",
+                  height: "100%",
+                  width: "100%",
+                  borderRadius: 120,
+                  opacity: 0.7,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+                onPress={() => {
+                  setEditing(false),
+                    navigation.navigate(EDITPROFILE, {
+                      main: main,
+                      profileName: name,
+                      imageTitle: image,
+                    });
+                }}
+              >
+                <FontAwesome5 name="edit" size={40} color="white" />
+              </TouchableOpacity>
+            ) : null}
+          </>
         )}
       </TouchableOpacity>
       <Text style={styles.name}>{name}</Text>
-      {editing ? (
+      {editing && !main ? (
         <View
           style={{
             flexDirection: "row",

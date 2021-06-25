@@ -76,7 +76,7 @@ const SignupScreen = ({ navigation }) => {
       //console.log("response", currentUser);
 
       if (currentUser) {
-        addUser(email, fullName)(dispatch);
+        addUser(email, fullName, "profile0")(dispatch);
         navigation.reset({
           index: 0,
           routes: [{ name: MOVIES }],

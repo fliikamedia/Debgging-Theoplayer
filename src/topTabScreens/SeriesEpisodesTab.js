@@ -17,14 +17,25 @@ const SeriesEpisodesTab = ({ route }) => {
   const { playSeries } = route.params;
   const movies = useSelector((state) => state.movies);
   //console.log(route);
-  return !movies.currentSeries ? (
-    <ActivityIndicator
-      animating
-      color={"teal"}
-      size="large"
-      style={{ flex: 1, position: "absolute", top: "50%", left: "45%" }}
-    />
-  ) : (
+
+  let currentSeriesLength;
+  try {
+    currentSeriesLength = movies.currentSeries.length;
+  } catch (err) {}
+  if (!currentSeriesLength) {
+    return (
+      <View style={{ flex: 1, backgroundColor: "black" }}>
+        <ActivityIndicator
+          animating
+          color={"teal"}
+          size="large"
+          style={{ flex: 1, position: "absolute", top: "10%", left: "45%" }}
+        />
+      </View>
+    );
+  }
+
+  return (
     <View style={{ backgroundColor: "black" }}>
       {/*<FlatList
         ListHeaderComponentStyle={

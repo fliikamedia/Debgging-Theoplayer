@@ -28,6 +28,12 @@ import {
   SET_PROFILE,
   SET_NOT_PROFILE,
   SET_EMAIL,
+  UPDATE_USER_IMAGE,
+  UPDATE_USER_IMAGE_SUCCESS,
+  UPDATE_USER_IMAGE_FAILED,
+  UPDATE_PROFILE,
+  UPDATE_PROFILE_SUCCESS,
+  UPDATE_PROFILE_FAILED,
 } from "../actions/user";
 const initialState = {
   isProfile: false,
@@ -100,6 +106,18 @@ const userReducer = (state = initialState, { type, payload }) => {
       return { ...state, isProfile: false, profileName: "" };
     case SET_EMAIL:
       return { ...state, email: payload };
+    case UPDATE_USER_IMAGE:
+      return { ...state };
+    case UPDATE_USER_IMAGE_SUCCESS:
+      return { ...state, user: payload };
+    case UPDATE_USER_IMAGE_FAILED:
+      return { ...state };
+    case UPDATE_PROFILE:
+      return { ...state };
+    case UPDATE_PROFILE_SUCCESS:
+      return { ...state, user: payload };
+    case UPDATE_PROFILE_FAILED:
+      return { ...state };
     default:
       return state;
   }
