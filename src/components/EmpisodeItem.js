@@ -1,8 +1,9 @@
 import React from "react";
 import { Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { Feather, AntDesign, FontAwesome5 } from "@expo/vector-icons";
+import { EPISODEDETAIL } from "../../constants/RouteNames";
 
-const EpisodeItem = ({ episode, playSeries }) => {
+const EpisodeItem = ({ episode, playSeries, navigation }) => {
   return (
     <View>
       <View style={styles.row}>
@@ -13,7 +14,9 @@ const EpisodeItem = ({ episode, playSeries }) => {
             alignItems: "center",
             justifyContent: "center",
           }}
-          onPress={() => playSeries(episode)}
+          onPress={() =>
+            navigation.navigate(EPISODEDETAIL, { episode: episode })
+          }
         >
           <Image
             style={styles.poster}
@@ -27,7 +30,6 @@ const EpisodeItem = ({ episode, playSeries }) => {
         </View>
         <AntDesign name="download" size={24} color="white" />
       </View>
-      <Text style={styles.plot}>{episode.episode_synopsis}</Text>
     </View>
   );
 };

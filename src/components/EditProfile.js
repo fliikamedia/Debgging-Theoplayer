@@ -30,7 +30,7 @@ const EditProfile = ({ navigation, route }) => {
       return;
     }
 
-    if (name && name != profileName) {
+    if (name) {
       updateProfile(user.email, profileName, name, imageName)(dispatch);
       navigation.goBack();
       return;

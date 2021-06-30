@@ -64,6 +64,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
   const [seriesEpisode, setSeriesEpisode] = useState([]);
   const [episodes, setEpisodes] = useState(true);
   const [details, setDetails] = useState(false);
+  const [seasonNumber, setSeasonNumber] = useState(null);
 
   const getMovie = useCallback(async () => {
     const response = await FliikaApi.get(`/posts/${selectedMovie}`);
@@ -221,22 +222,36 @@ const MovieDetailScreen = ({ navigation, route }) => {
   useEffect(() => {
     getSeries();
   }, []);
-
   let currentSeries = series.filter((r) => r.title == seriesTitle);
+
+  let totalSeasons;
+  try {
+    totalSeasons = currentSeries.map((r) => r.season_number);
+  } catch (err) {}
+  const seasons = [...new Set(totalSeasons)];
+  let seasonsLength;
+  try {
+    seasonsLength = seasons.length;
+  } catch (err) {}
   useEffect(() => {
     if (currentSeries.length > 0) {
-      setSeason(currentSeries[0]);
+      setSeason(currentSeries.filter((e) => e.season_number == seasonNumber));
     }
-  }, [series.length]);
+  }, [series.length, seasonNumber]);
+  useEffect(() => {
+    setSeasonNumber(seasons[0]);
+  }, [seasonsLength]);
+  console.log(seasonNumber);
   let resultLength;
   try {
     resultLength = Object.keys(movie).length;
   } catch (err) {}
+  //console.log(series);
 
   useEffect(() => {
-    setMovieTitle(movie)(dispatch);
-    setCurrentSeries(currentSeries)(dispatch);
-  }, [movie, currentSeries]);
+    setMovieTitle(season[0])(dispatch);
+    setCurrentSeries(season)(dispatch);
+  }, [movie, currentSeries, seasonNumber]);
   //const movieId = navigation.getParam("selectedMovie");
   ///// share function
   const onShare = async () => {
@@ -293,9 +308,13 @@ const MovieDetailScreen = ({ navigation, route }) => {
     );
   };
   const renderHeaderSection = () => {
+    let thumbnail;
+    try {
+      thumbnail = season[0].dvd_thumbnail_link;
+    } catch (err) {}
     return (
       <ImageBackground
-        source={{ uri: movie.dvd_thumbnail_link }}
+        source={{ uri: thumbnail }}
         resizeMode="cover"
         style={{
           width: "100%",
@@ -415,7 +434,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
                 </TouchableOpacity>
               </View>
             </View>
-            {isSeries == "series" ? (
+            {/*isSeries == "series" ? (
               <Text
                 style={{
                   color: COLORS.white,
@@ -425,9 +444,9 @@ const MovieDetailScreen = ({ navigation, route }) => {
                   marginBottom: 10,
                 }}
               >
-                {`Season ${season.season_number}`}
+                {`Season ${seasonNumber}`}
               </Text>
-            ) : null}
+            ) : null*/}
             <Text
               style={{
                 color: COLORS.white,
@@ -611,48 +630,14 @@ const MovieDetailScreen = ({ navigation, route }) => {
   // to fix later for series
 
   if (isSeries == "series") {
-    let episodesStyle;
-    let detailsStyle;
-    if (episodes) {
-      episodesStyle = {
-        width: "50%",
-        height: 50,
-        alignItems: "center",
-        justifyContent: "center",
-        borderBottomWidth: 1,
-        borderColor: "aqua",
-        borderRadius: 5,
-      };
-      detailsStyle = {
-        width: "50%",
-        height: 50,
-        alignItems: "center",
-        justifyContent: "center",
-        borderBottomWidth: 1,
-        borderColor: "grey",
-        borderRadius: 5,
-      };
-    } else {
-      episodesStyle = {
-        width: "50%",
-        height: 50,
-        alignItems: "center",
-        justifyContent: "center",
-        borderBottomWidth: 1,
-        borderColor: "grey",
-        borderRadius: 5,
-      };
-      detailsStyle = {
-        width: "50%",
-        height: 50,
-        alignItems: "center",
-        justifyContent: "center",
-        borderBottomWidth: 1,
-        borderColor: "aqua",
-        borderRadius: 5,
-      };
-    }
-    return (
+    return !seasonNumber ? (
+      <ActivityIndicator
+        animating
+        color={"teal"}
+        size="large"
+        style={{ flex: 1, position: "absolute", top: "50%", left: "45%" }}
+      />
+    ) : (
       <ScrollView style={{ flexGrow: 1 }}>
         {renderHeaderSection()}
         {renderMovieDetails()}
@@ -679,65 +664,51 @@ const MovieDetailScreen = ({ navigation, route }) => {
             />
           </View>
         ) : null}
-        {/*<FlatList
-          keyExtractor={(item) => item._id}
-          data={currentSeries}
-          renderItem={({ item }) => (
-            <EpisodeItem playSeries={playSeries} episode={item} />
-          )}
-          />*/}
-        {/*
-        <View style={{ flexDirection: "row" }}>
-          <TouchableOpacity
-            style={episodesStyle}
-            onPress={() => showEpisodes()}
-          >
-            <Text style={{ color: "white", fontSize: 16 }}>Episodes</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => showDetails()} style={detailsStyle}>
-            <Text style={{ color: "white", fontSize: 16 }}>More details</Text>
-          </TouchableOpacity>
-        </View>
-        {episodes
-          ? currentSeries.map((item) => {
-              return (
-                <EpisodeItem
-                  key={item._id}
-                  playSeries={playSeries}
-                  episode={item}
-                />
-              );
-            })
-          : null}
-        {details ? (
-          <View>
-            <Text style={styles.titleText}>Genres</Text>
-            <Text style={styles.detailText}>
-              {movie.genre.toString().replace(/,/g, ", ")}
-            </Text>
-            <Text style={styles.titleText}>Directors</Text>
-            <Text style={styles.detailText}>
-              {movie.directors.toString().replace(/,/g, ", ")}
-            </Text>
-            <Text style={styles.titleText}>Starring</Text>
-            <Text style={styles.detailText}>
-              {movie.cast.toString().replace(/,/g, ", ")}
-            </Text>
-            <Text style={styles.titleText}>Content Advisory</Text>
-            <Text style={styles.detailText}>
-              {movie.content_advisory.toString().replace(/,/g, ", ")}
-            </Text>
-            <Text style={styles.titleText}>Languages</Text>
-            <Text style={styles.detailText}>
-              {movie.languages.toString().replace(/,/g, ", ")}
-            </Text>
-            <Text style={styles.titleText}>Subtitles</Text>
-            <Text style={styles.detailText}>
-              {movie.subtitles.toString().replace(/,/g, ", ")}
-            </Text>
+        {isSeries == "series" ? (
+          <View style={{ alignSelf: "center" }}>
+            <Menu
+              visible={selectSeason}
+              onPress={openFilter}
+              onDismiss={closeFilter}
+              anchor={
+                <TouchableOpacity
+                  style={{
+                    width: 120,
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    height: 50,
+                  }}
+                  onPress={openFilter}
+                >
+                  <Text
+                    style={{
+                      color: "white",
+                      fontSize: 18,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {`Season ${seasonNumber}`}
+                  </Text>
+                </TouchableOpacity>
+              }
+            >
+              {seasons.map((season) => {
+                return (
+                  <Menu.Item
+                    style={{
+                      width: 120,
+                    }}
+                    key={season}
+                    onPress={() => {
+                      setSeasonNumber(season), closeFilter();
+                    }}
+                    title={`Season ${season}`}
+                  />
+                );
+              })}
+            </Menu>
           </View>
         ) : null}
-        */}
 
         <Tab.Navigator
           tabBarOptions={{

@@ -10,3 +10,4 @@ export const LOGIN = "Login";
 export const SERIESEPISODESTAB = "Episodes";
 export const SERIESDETAILSTAB = "More details";
 export const EDITPROFILE = "Edit Profile";
+export const EPISODEDETAIL = "Episode Detail";

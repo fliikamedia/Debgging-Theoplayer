@@ -38,6 +38,7 @@ import {
 const initialState = {
   isProfile: false,
   profileName: null,
+  userFetched: false,
   user: [],
   profile: {
     watched: [],
@@ -57,9 +58,9 @@ const userReducer = (state = initialState, { type, payload }) => {
     case GET_USER:
       return { ...state };
     case GET_USER_SUCCESS:
-      return { ...state, user: payload };
+      return { ...state, user: payload, userFetched: true };
     case GET_USER_FAILED:
-      return { ...state };
+      return { ...state, userFetched: false };
     case ADD_TO_WATCHLIST:
       return { ...state };
     case ADD_TO_WATCHLIST_SUCCESS:

@@ -63,6 +63,7 @@ const HomeScreen = ({ navigation }) => {
     const response = await FliikaApi.get("/posts");
     saveMovies(response.data)(dispatch);
     setResult(response.data);
+    setRefreshing(false);
   }, []);
   const { email } = firebase.auth().currentUser;
 
@@ -151,7 +152,7 @@ const HomeScreen = ({ navigation }) => {
   const resultsToShow = result.filter(
     (c) =>
       c.film_type == "movie" ||
-      (c.film_type == "series" && c.episode_number == 1)
+      (c.film_type == "series" && c.season_number == 1 && c.episode_number == 1)
   );
   const genreArray = resultsToShow.map((r) => r.genre);
   let allGenre = [];
@@ -903,13 +904,13 @@ const HomeScreen = ({ navigation }) => {
   ///// End of Render Hero third design
   //// On Refresh Control
   const onRefresh = useCallback(() => {
+    setRefreshing(true);
     getMovies();
   }, []);
   //////////////////
-
   return (
     <SafeAreaView style={styles.container}>
-      {resultLength == 0 ? (
+      {resultLength == 0 || !user.userFetched ? (
         <View style={{ flex: 1, backgroundColor: "black" }}>
           <ActivityIndicator
             animating

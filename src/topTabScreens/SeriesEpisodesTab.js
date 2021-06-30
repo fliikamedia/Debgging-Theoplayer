@@ -10,7 +10,7 @@ import {
 import EpisodeItem from "../components/EmpisodeItem";
 import { useDispatch, useSelector } from "react-redux";
 
-const SeriesEpisodesTab = ({ route }) => {
+const SeriesEpisodesTab = ({ route, navigation }) => {
   LogBox.ignoreLogs([
     "Non-serializable values were found in the navigation state",
   ]);
@@ -36,7 +36,7 @@ const SeriesEpisodesTab = ({ route }) => {
   }
 
   return (
-    <View style={{ backgroundColor: "black" }}>
+    <View style={{ flex: 1, backgroundColor: "black" }}>
       {/*<FlatList
         ListHeaderComponentStyle={
           (renderHeaderSection(), renderCategory(), renderMovieDetails())
@@ -49,7 +49,12 @@ const SeriesEpisodesTab = ({ route }) => {
         />*/}
       {movies.currentSeries.map((item) => {
         return (
-          <EpisodeItem key={item._id} playSeries={playSeries} episode={item} />
+          <EpisodeItem
+            key={item._id}
+            playSeries={playSeries}
+            episode={item}
+            navigation={navigation}
+          />
         );
       })}
       <Text>Hello</Text>

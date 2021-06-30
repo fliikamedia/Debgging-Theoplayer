@@ -41,10 +41,12 @@ const TvShowsScreen = ({ navigation }) => {
   const user = useSelector((state) => state.user);
 
   const [result, setResult] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
 
   const getSeries = useCallback(async () => {
     const response = await FliikaApi.get("/posts");
     setResult(response.data);
+    setRefreshing(false);
   }, []);
 
   useEffect(() => {
@@ -53,7 +55,10 @@ const TvShowsScreen = ({ navigation }) => {
 
   let series;
   series = result.filter(
-    (e) => e.film_type == "series" && e.episode_number == 1
+    (e) =>
+      e.film_type == "series" &&
+      e.episode_number == 1 &&
+      (e.season_number == 1 || e.season_number == 8)
   );
   let resultLength;
   try {
@@ -273,7 +278,8 @@ const TvShowsScreen = ({ navigation }) => {
   ///// End of Render Hero third design
   //// On Refresh Control
   const onRefresh = useCallback(() => {
-    getMovies();
+    setRefreshing(true);
+    getSeries();
   }, []);
   //////////////////
   const genreArray = series.map((r) => r.genre);
@@ -293,7 +299,10 @@ const TvShowsScreen = ({ navigation }) => {
     newResults.push({
       genre: genres[x],
       series: result.filter(
-        (r) => r.genre.includes(genres[x]) && r.film_type == "series"
+        (r) =>
+          r.genre.includes(genres[x]) &&
+          r.film_type == "series" &&
+          r.season_number == 1
       ),
     });
   }
@@ -361,6 +370,9 @@ const TvShowsScreen = ({ navigation }) => {
         </View>
       ) : (
         <ScrollView
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
           contentContainerStyle={{
             paddingBottom: 100,
             //marginTop: "10%",
