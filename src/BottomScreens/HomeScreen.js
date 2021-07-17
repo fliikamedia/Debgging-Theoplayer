@@ -53,6 +53,7 @@ const HomeScreen = ({ navigation }) => {
   //const db = firebase.firestore();
   const appState = useRef(AppState.currentState);
   LogBox.ignoreLogs(["Setting a timer"]);
+  LogBox.ignoreLogs(["Calling `getNode()`"]);
   const user = useSelector((state) => state.user);
   //console.log(user);
   const dispatch = useDispatch();

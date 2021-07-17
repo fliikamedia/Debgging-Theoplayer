@@ -17,13 +17,12 @@ import {
 import { COLORS, SIZES, FONTS, icons, images } from ".././constants";
 import FliikaApi from "./api/FliikaApi";
 import { baseURL } from "./api/expressApi";
-import { Video, AVPlaybackStatus } from "expo-av";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import MovieDetailIcon from "./components/MovieDetailIcon";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Animatable from "react-native-animatable";
 import firebase from "firebase";
-import { HOME, WELCOMESCREEN } from "../constants/RouteNames";
+import { BITMOVINPLAYER, HOME, WELCOMESCREEN } from "../constants/RouteNames";
 import { Menu } from "react-native-paper";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -88,6 +87,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
     setIsPlaying(false);
     saveMovie();
   };
+  /*
   useEffect(() => {
     AppState.addEventListener("change", saveOnLeavingPage());
 
@@ -95,6 +95,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
       AppState.removeEventListener("change", saveOnLeavingPage());
     };
   }, []);
+  */
   const isWatchList = (movieArray, movieName) => {
     try {
       var found = false;
@@ -361,7 +362,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
                   >
                     <TouchableOpacity
                       onPress={() => {
-                        setPlay(true);
+                        navigation.navigate(BITMOVINPLAYER, {episode: movie});
                       }}
                     >
                       <Image
@@ -645,23 +646,6 @@ const MovieDetailScreen = ({ navigation, route }) => {
           <View
             style={{ width: SIZES.width * 0.9, height: SIZES.height * 0.5 }}
           >
-            <Video
-              useNativeControls
-              style={styles.video}
-              source={{
-                uri: `${seriesEpisode.play_url}.m3u8`,
-              }}
-              resizeMode="contain"
-              rate={1.0}
-              volume={1}
-              shouldPlay
-              isMuted={false}
-              onPlaybackStatusUpdate={(AVPlaybackStatus) => {
-                setWatched(AVPlaybackStatus.positionMillis),
-                  setDuration(AVPlaybackStatus.durationMillis),
-                  setIsPlaying(AVPlaybackStatus.isPlaying);
-              }}
-            />
           </View>
         ) : null}
         {isSeries == "series" ? (
@@ -747,23 +731,6 @@ const MovieDetailScreen = ({ navigation, route }) => {
             <View
               style={{ width: SIZES.width * 0.9, height: SIZES.height * 0.5 }}
             >
-              <Video
-                useNativeControls
-                style={styles.video}
-                source={{
-                  uri: `${movie.play_url}.m3u8`,
-                }}
-                resizeMode="contain"
-                rate={1.0}
-                volume={1}
-                shouldPlay
-                isMuted={false}
-                onPlaybackStatusUpdate={(AVPlaybackStatus) => {
-                  setWatched(AVPlaybackStatus.positionMillis),
-                    setDuration(AVPlaybackStatus.durationMillis),
-                    setIsPlaying(AVPlaybackStatus.isPlaying);
-                }}
-              />
             </View>
           ) : null}
           {/*<Image

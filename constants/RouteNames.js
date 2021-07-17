@@ -11,3 +11,4 @@ export const SERIESEPISODESTAB = "Episodes";
 export const SERIESDETAILSTAB = "More details";
 export const EDITPROFILE = "Edit Profile";
 export const EPISODEDETAIL = "Episode Detail";
+export const BITMOVINPLAYER = 'Bitmovin Player';

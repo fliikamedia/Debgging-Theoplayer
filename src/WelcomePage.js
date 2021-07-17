@@ -8,10 +8,10 @@ import {
   Dimensions,
   ActivityIndicator,
 } from "react-native";
-import { Video, AVPlaybackStatus } from "expo-av";
 import { StatusBar } from "expo-status-bar";
 import { LOGIN, SIGNUP, FORGOTPASSWORD, MOVIES } from "../constants/RouteNames";
 import firebase from "firebase";
+import Video from 'react-native-video'
 
 const WelcomePage = ({ navigation }) => {
   const [isPreloading, setIsPreloading] = useState(true);

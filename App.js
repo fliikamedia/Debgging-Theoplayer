@@ -14,6 +14,7 @@ import LoginScreen from "./src/auth/LoginScreen";
 import SignupScreen from "./src/auth/SignupScreen";
 import EditProfile from "./src/components/EditProfile";
 import EpisodeDetailScreen from "./src/EpisodeDetailScreen";
+import BitmovinPlayer from './src/BitmovinPlayer';
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
@@ -28,7 +29,7 @@ import {
   LOGIN,
   SIGNUP,
   EDITPROFILE,
-  EPISODEDETAIL,
+  EPISODEDETAIL, BITMOVINPLAYER
 } from "./constants/RouteNames";
 import { COLORS } from "./constants/theme";
 import firebase from "firebase";
@@ -190,6 +191,11 @@ export default () => {
             <Stack.Screen
               name={EPISODEDETAIL}
               component={EpisodeDetailScreen}
+              options={{ headerShown: false }}
+            />
+                        <Stack.Screen
+              name={BITMOVINPLAYER}
+              component={BitmovinPlayer}
               options={{ headerShown: false }}
             />
             <Tabs.Screen
