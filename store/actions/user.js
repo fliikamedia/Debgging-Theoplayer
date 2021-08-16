@@ -36,6 +36,7 @@ export const UPDATE_USER_IMAGE_FAILED = "UPDATE_USER_IMAGE_FAILED";
 export const UPDATE_PROFILE = "UPDATE_PROFILE";
 export const UPDATE_PROFILE_SUCCESS = "UPDATE_PROFILE_SUCCESS";
 export const UPDATE_PROFILE_FAILED = "UPDATE_PROFILE_FAILED";
+export const UPDATE_MOVIE_TIME = 'UPDATE_MOVIE_TIME';
 
 export const addUser = (email, fullName, profileImage) => async (dispatch) => {
   try {
@@ -155,7 +156,7 @@ export const addtoWatched =
 
 export const updateWatched =
   (emails, movie, duration, watched) => async (dispatch) => {
-    console.log("updating");
+    console.log("updating", duration, watched);
     try {
       dispatch({ type: UPDATE_WATCHED });
       const result = await expressApi.patch(`/users/c`, {
@@ -167,7 +168,7 @@ export const updateWatched =
         },
       });
       if (result.status == 200) {
-        // console.log(result);
+         //console.log(result);
         dispatch({
           type: UPDATE_WATCHED_SUCCESS,
           payload: result.data,
@@ -411,3 +412,10 @@ export const updateProfile =
       console.log(err);
     }
   };
+
+  export const updateMovieTime = (watched, duration) => async (dispatch) => {
+try {
+  console.log('updating time');
+dispatch({type: UPDATE_MOVIE_TIME, payload: {watched: watched, duration: duration}})
+} catch (err) {}
+  }

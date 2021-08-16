@@ -1,15 +1,108 @@
-import React, {useState} from "react";
-import { View, Text, StyleSheet, StatusBar } from "react-native";
+import React, {useState, useRef, useEffect} from "react";
+import { View, Text, StyleSheet, StatusBar, AppState, Platform } from "react-native";
 import ReactNativeBitmovinPlayer, {
   ReactNativeBitmovinPlayerIntance,
 } from '@takeoffmedia/react-native-bitmovin-player';
 import Orientation from 'react-native-orientation';
+import {
+  addToWatchList,
+  removeFromWatchList,
+  addtoWatched,
+  updateWatched,
+  addtoWatchedProfile,
+  updateWatchedProfile,
+  addToProfileWatchList,
+  removeFromProfileWatchList,
+  updateMovieTime
+} from "../store/actions/user";
+import { useDispatch, useSelector } from 'react-redux';
 
 const EpisodeDetailScreen = ({ route }) => {
+  const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   const { episode } = route.params;
-  const [playing, setPlaying] = useState(false)
+  const [playing, setPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const [watched, setWatched] = useState(0);
+  const [duration, setDuration] = useState(0);
   //console.log(episode);
-  
+  const appState = useRef(AppState.currentState);
+  useEffect(() => {
+    AppState.addEventListener("change", stopPlaying());
+
+    return () => {
+      AppState.removeEventListener("change", stopPlaying());
+    };
+  }, [appState]);
+
+  const isWatched = (movieArray, movieName) => {
+    try {
+      var movieWatched = false;
+      for (var i = 0; i < movieArray.length; i++) {
+        if (movieArray[i].title == movieName) {
+          movieWatched = true;
+          break;
+        }
+      }
+      return movieWatched;
+    } catch (err) {}
+  };
+
+  const stopPlaying = () => {
+    if (Platform.OS === 'ios') {
+      ReactNativeBitmovinPlayerIntance.pause();
+    } else {
+      //ReactNativeBitmovinPlayerIntance.destroy();
+    }
+  }
+
+
+  useEffect(() => {
+    if (watched > 0 ) {
+      console.log('updating time locally');
+      updateMovieTime(watched, duration)(dispatch);
+    }
+    saveMovie()
+  }, [watched]);
+  const saveMovie = () => {
+    console.log('state',user.watchedAt, user.duration);
+    if (watched > 2){
+    if (
+      !user.isProfile &&
+      isWatched(user.user.watched, episode.title) == true
+      ) {
+        updateWatched(user.email, episode, user.duration, user.watchedAt)(dispatch);
+      } else if (
+        !user.isProfile &&
+        isWatched(user.user.watched, episode.title) == false
+        ) {
+          addtoWatched(user.email, episode, user.duration, user.watchedAt)(dispatch);
+        } else if (
+          user.isProfile &&
+      isWatched(user.profile.watched, episode.title) == false
+    ) {
+      addtoWatchedProfile(
+        user.email,
+        episode,
+        user.duration,
+        user.watchedAt,
+        user.profileName
+      )(dispatch);
+    } else if (
+      user.isProfile &&
+      isWatched(user.profile.watched, episode.title) == true
+    ) {
+      updateWatchedProfile(
+        user.email,
+        episode,
+        user.duration,
+        user.watchedAt,
+        user.profileName
+      )(dispatch);
+    }
+  }
+  };
   let playerHeight;
   let playerMargin
 if (playing) {
@@ -19,6 +112,18 @@ if (playing) {
   playerHeight = '30%'  
   playerMargin = 30;
 }
+
+let str= episode.play_url;
+let playURL;
+if (Platform.OS === 'android') {
+playURL = str.replace('m3u8-aapl','mpd-time-cmaf')
+} else if (Platform.OS == 'ios' && str.includes('mpd')) {
+  playURL = str.replace('mpd-time-csf','m3u8-aapl')
+
+} else {
+playURL = str;
+}
+console.log(playURL);
   return (
     <View
       style={{ flex: 1, backgroundColor: "black" }}
@@ -29,12 +134,12 @@ if (playing) {
         autoPlay={false}
         hasZoom={false}
         configuration={{
-          url: episode.play_url,
-          poster: episode.wide_thumbnail_link,
+          url: playURL,
+          //poster: episode.wide_thumbnail_link,
           startOffset: 0,
           hasNextEpisode: true,
           subtitles: '',
-          thumbnails: '',
+          //thumbnails: '',
           title: episode.episode_title,
           subtitle: '',
           nextPlayback: 1,
@@ -46,8 +151,9 @@ if (playing) {
         }}
         onLoad={e => console.log('Load', e)}
         onError={e => console.log('Error', e)}
-        onPlaying={e=> {console.log(e),setPlaying(true), Orientation.lockToLandscape()}}
-        onEvent={({nativeEvent}) => console.log('event', nativeEvent)}
+        onPlaying={({nativeEvent})=> {console.log(nativeEvent),setIsPlaying(true)}}
+        onEvent={({nativeEvent}) => { console.log(nativeEvent),setDuration(Math.ceil(nativeEvent.duration)), setWatched(Math.ceil(nativeEvent.time))}}
+        onPause={()=> setIsPlaying(false)}
       />
     </View>
       <Text style={styles.titleText}>Genres</Text>

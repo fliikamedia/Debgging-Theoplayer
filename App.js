@@ -86,7 +86,7 @@ import Feather from 'react-native-vector-icons/Feather'
         keyboardHidesTabBar: true,
         style: {
           backgroundColor: "black",
-          height: "7%",
+         // height: "7%",
           borderTopWidth: 0,
           justifyContent: "center",
         },

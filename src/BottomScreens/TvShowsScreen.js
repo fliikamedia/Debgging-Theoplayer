@@ -380,7 +380,7 @@ const TvShowsScreen = ({ navigation }) => {
         >
           {renderHeroSection()}
           {renderSeries()}
-          <StatusBar style="light" />
+          {/*<StatusBar style="light" />*/}
         </ScrollView>
       )}
     </SafeAreaView>

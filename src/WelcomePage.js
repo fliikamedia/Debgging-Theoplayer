@@ -116,7 +116,7 @@ const WelcomePage = ({ navigation }) => {
           </View>
         </View>
       )}
-      <StatusBar style="light" />
+      {/*<StatusBar style="light" />*/}
     </View>
   );
 };

@@ -15,7 +15,7 @@ import {
   RefreshControl,
   Dimensions,
   AppState,
-  StatusBar
+  StatusBar, Platform
 } from "react-native";
 import FliikaApi from "../api/FliikaApi";
 import { COLORS, SIZES, icons } from "../../constants";
@@ -42,7 +42,7 @@ import {
 import ProgressBar from "../components/ProgressBar";
 import { LogBox } from "react-native";
 import firestore from "@react-native-firebase/firestore";
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconAwesome from 'react-native-vector-icons/FontAwesome5';
 import IconMaterial from 'react-native-vector-icons/MaterialIcons'
 
@@ -58,6 +58,11 @@ const HomeScreen = ({ navigation }) => {
   const [result, setResult] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
+  StatusBar.setBarStyle("light-content");
+if (Platform.OS === "android") {
+  StatusBar.setBackgroundColor("rgba(0,0,0,0)");
+  StatusBar.setTranslucent(true);
+}
   const getMovies = useCallback(async () => {
     const response = await FliikaApi.get("/posts");
     saveMovies(response.data)(dispatch);
@@ -931,7 +936,7 @@ const HomeScreen = ({ navigation }) => {
           {renderHeroSectionThirdDesign()}
           {continueWatchingLength > 0 ? renderContinueWatctionSection() : null}
           {renderMovies()}
-          <StatusBar style="light" />
+          {/*<StatusBar barStyle="light-content" />*/}
         </ScrollView>
       )}
     </SafeAreaView>

@@ -34,6 +34,7 @@ import {
   UPDATE_PROFILE,
   UPDATE_PROFILE_SUCCESS,
   UPDATE_PROFILE_FAILED,
+  UPDATE_MOVIE_TIME
 } from "../actions/user";
 const initialState = {
   isProfile: false,
@@ -45,6 +46,8 @@ const initialState = {
     watchList: [],
   },
   email: "",
+  watchedAt: 0,
+  duration: 0
 };
 
 const userReducer = (state = initialState, { type, payload }) => {
@@ -119,6 +122,8 @@ const userReducer = (state = initialState, { type, payload }) => {
       return { ...state, user: payload };
     case UPDATE_PROFILE_FAILED:
       return { ...state };
+      case UPDATE_MOVIE_TIME:
+        return {...state, watchedAt: payload.watched, duration: payload.duration}
     default:
       return state;
   }

@@ -349,6 +349,11 @@ const MovieDetailScreen = ({ navigation, route }) => {
                 direction="alternate"
               >
                 {isSeries == "movie" ? (
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate(BITMOVINPLAYER, {movie: movie});
+                    }}
+                  >
                   <View
                     style={{
                       justifyContent: "center",
@@ -361,11 +366,6 @@ const MovieDetailScreen = ({ navigation, route }) => {
                       marginLeft: 20,
                     }}
                   >
-                    <TouchableOpacity
-                      onPress={() => {
-                        navigation.navigate(BITMOVINPLAYER, {episode: movie});
-                      }}
-                    >
                       <Image
                         source={icons.play}
                         resizeMode="contain"
@@ -375,8 +375,8 @@ const MovieDetailScreen = ({ navigation, route }) => {
                           tintColor: COLORS.white,
                         }}
                       />
-                    </TouchableOpacity>
                   </View>
+                    </TouchableOpacity>
                 ) : null}
               </Animatable.View>
               <View
