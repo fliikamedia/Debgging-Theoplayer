@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -6,13 +6,27 @@ import {
   TouchableOpacity,
   Text,
   Dimensions,
+  ActivityIndicator,
+  StatusBar
 } from "react-native";
-import { Video, AVPlaybackStatus } from "expo-av";
-import { ActivityIndicator } from "react-native";
-import { StatusBar } from "expo-status-bar";
+import { LOGIN, SIGNUP, FORGOTPASSWORD, MOVIES } from "../constants/RouteNames";
+import firebase from "firebase";
+import Video from 'react-native-video'
 
 const WelcomePage = ({ navigation }) => {
   const [isPreloading, setIsPreloading] = useState(true);
+  /*
+  const checkIFLoggedIn = () => {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        navigation.navigate(MOVIES);
+      }
+    });
+  };
+  useEffect(() => {
+    checkIFLoggedIn();
+  }, []);
+  */
   // Button Width Responsive
   var buttonWidth;
   if (Dimensions.get("window").width < 350) {
@@ -49,7 +63,7 @@ const WelcomePage = ({ navigation }) => {
         <View style={{ flex: 1, backgroundColor: "black" }}>
           <ActivityIndicator
             animating
-            color={"red"}
+            color={"teal"}
             size="large"
             style={{ flex: 1, position: "absolute", top: "50%", left: "45%" }}
           />
@@ -78,19 +92,23 @@ const WelcomePage = ({ navigation }) => {
           />
           <View>
             <Text style={styles.textDescriptionLg}>
-              Subscribe and get access to top movies
+              Watch African movies you love
             </Text>
             <Text style={styles.textDescriptionSm}>
-              all the Best movies and series in one place
+              Sign Up for your account today and watch amazing blockbuster
+              African movies. Save 30% if you sign up annually
             </Text>
           </View>
           <View>
-            <Text style={styles.textDescriptionSb}>signup now</Text>
-            <TouchableOpacity style={createBtn}>
+            <Text style={styles.textDescriptionSb}>join us now</Text>
+            <TouchableOpacity
+              style={createBtn}
+              onPress={() => navigation.navigate(SIGNUP)}
+            >
               <Text style={styles.createText}>create account</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => navigation.navigate("Movies")}
+              onPress={() => navigation.navigate(LOGIN)}
               style={loginBtn}
             >
               <Text style={styles.loginText}>login</Text>
@@ -98,7 +116,7 @@ const WelcomePage = ({ navigation }) => {
           </View>
         </View>
       )}
-      <StatusBar style="light" />
+      {/*<StatusBar style="light" />*/}
     </View>
   );
 };
