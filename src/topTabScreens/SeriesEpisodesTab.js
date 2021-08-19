@@ -57,7 +57,6 @@ const SeriesEpisodesTab = ({ route, navigation }) => {
           />
         );
       })}
-      <Text>Hello</Text>
     </View>
   );
 };

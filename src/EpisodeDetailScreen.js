@@ -16,6 +16,7 @@ import {
   updateMovieTime
 } from "../store/actions/user";
 import { useDispatch, useSelector } from 'react-redux';
+import AsyncStorage from "@react-native-community/async-storage";
 
 const EpisodeDetailScreen = ({ route }) => {
   const user = useSelector((state) => state.user);
@@ -29,10 +30,11 @@ const EpisodeDetailScreen = ({ route }) => {
   //console.log(episode);
   const appState = useRef(AppState.currentState);
   useEffect(() => {
-    AppState.addEventListener("change", stopPlaying());
-
+    AppState.addEventListener("change",   stopPlaying,
+    );
+    
     return () => {
-      AppState.removeEventListener("change", stopPlaying());
+      AppState.removeEventListener("change",   stopPlaying);
     };
   }, [appState]);
 
@@ -49,11 +51,17 @@ const EpisodeDetailScreen = ({ route }) => {
     } catch (err) {}
   };
 
-  const stopPlaying = () => {
+  const stopPlaying = async () => {
+    const didPlay = await AsyncStorage.getItem("didPlay")
+
     if (Platform.OS === 'ios') {
+      console.log('ios');
       ReactNativeBitmovinPlayerIntance.pause();
-    } else {
-      //ReactNativeBitmovinPlayerIntance.destroy();
+    } else if (Platform.OS == 'android' && didPlay == "true") {
+      ReactNativeBitmovinPlayerIntance.destroy();
+      AsyncStorage.setItem("didPlay", "false")
+      console.log('android');
+
     }
   }
 
@@ -151,7 +159,7 @@ console.log(playURL);
         }}
         onLoad={e => console.log('Load', e)}
         onError={e => console.log('Error', e)}
-        onPlaying={({nativeEvent})=> {console.log(nativeEvent),setIsPlaying(true)}}
+        onPlaying={async ({nativeEvent})=> {console.log(nativeEvent), await AsyncStorage.setItem("didPlay", 'true') }}
         onEvent={({nativeEvent}) => { console.log(nativeEvent),setDuration(Math.ceil(nativeEvent.duration)), setWatched(Math.ceil(nativeEvent.time))}}
         onPause={()=> setIsPlaying(false)}
       />

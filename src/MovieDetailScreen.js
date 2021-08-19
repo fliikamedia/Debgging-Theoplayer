@@ -44,6 +44,10 @@ import { setCurrentSeries, setMovieTitle } from "../store/actions/movies";
 import IconIon from 'react-native-vector-icons/Ionicons';
 import IconFeather from 'react-native-vector-icons/Feather'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import ReactNativeBitmovinPlayer, {
+  ReactNativeBitmovinPlayerIntance,
+} from '@takeoffmedia/react-native-bitmovin-player';
+import AsyncStorage from "@react-native-community/async-storage";
 
 const MovieDetailScreen = ({ navigation, route }) => {
   const Tab = createMaterialTopTabNavigator();
@@ -65,6 +69,23 @@ const MovieDetailScreen = ({ navigation, route }) => {
   const [episodes, setEpisodes] = useState(true);
   const [details, setDetails] = useState(false);
   const [seasonNumber, setSeasonNumber] = useState(null);
+
+  useEffect( () => {
+    if (Platform.OS == 'android') {
+    const unsubscribe = navigation.addListener('focus', async () => {
+      const didPlay = await AsyncStorage.getItem("didPlay")
+      console.log('focused', didPlay);
+      if (didPlay === 'true') {
+      ReactNativeBitmovinPlayerIntance.destroy();
+      AsyncStorage.setItem("didPlay", "false")
+      }
+      console.log('focused', didPlay);
+
+    });
+    return unsubscribe;
+  }
+  }, [navigation]);
+
 
   const getMovie = useCallback(async () => {
     const response = await FliikaApi.get(`/posts/${selectedMovie}`);

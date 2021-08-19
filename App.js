@@ -1,5 +1,5 @@
 import * as React from "react";
-import { View, ActivityIndicator } from "react-native";
+import { View, ActivityIndicator, StatusBar} from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -42,6 +42,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather'
 
 
+StatusBar.setBarStyle("light-content");
+if (Platform.OS === "android") {
+  StatusBar.setBackgroundColor("rgba(0,0,0,0)");
+  StatusBar.setTranslucent(true);
+}
 
   const rootReducer = combineReducers({
     user: userReducer,

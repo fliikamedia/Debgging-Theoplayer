@@ -1,14 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TextInput, ScrollView } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import MoviesItem from "../components/MoviesItem";
 import IconAnt from 'react-native-vector-icons/AntDesign';
 import IconFeather from 'react-native-vector-icons/Feather'
 import IconAwesome from 'react-native-vector-icons/FontAwesome5';
+import ReactNativeBitmovinPlayer, {
+  ReactNativeBitmovinPlayerIntance,
+} from '@takeoffmedia/react-native-bitmovin-player';
+import AsyncStorage from "@react-native-community/async-storage";
+
 
 const SearchScreen = ({ navigation }) => {
   const movies = useSelector((state) => state.movies);
   const [term, setTerm] = useState("");
+
+  useEffect( () => {
+    const unsubscribe = navigation.addListener('focus', async () => {
+      const didPlay = await AsyncStorage.getItem("didPlay")
+      console.log('focused', didPlay);
+      if (didPlay === 'true') {
+      ReactNativeBitmovinPlayerIntance.destroy();
+      AsyncStorage.setItem("didPlay", "false")
+      }
+      console.log('focused', didPlay);
+
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   let searchArray = [];
   try {
