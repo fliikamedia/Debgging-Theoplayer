@@ -71,19 +71,22 @@ const MovieDetailScreen = ({ navigation, route }) => {
   const [seasonNumber, setSeasonNumber] = useState(null);
 
   useEffect( () => {
-    if (Platform.OS == 'android') {
     const unsubscribe = navigation.addListener('focus', async () => {
+      if (Platform.OS == 'android') {
       const didPlay = await AsyncStorage.getItem("didPlay")
       console.log('focused', didPlay);
       if (didPlay === 'true') {
       ReactNativeBitmovinPlayerIntance.destroy();
       AsyncStorage.setItem("didPlay", "false")
-      }
       console.log('focused', didPlay);
-
-    });
-    return unsubscribe;
+    }
+      
+  } else {
+    console.log('focused ios');
+    ReactNativeBitmovinPlayerIntance.pause()
   }
+  return unsubscribe;
+});
   }, [navigation]);
 
 

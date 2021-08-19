@@ -15,19 +15,7 @@ const SearchScreen = ({ navigation }) => {
   const movies = useSelector((state) => state.movies);
   const [term, setTerm] = useState("");
 
-  useEffect( () => {
-    const unsubscribe = navigation.addListener('focus', async () => {
-      const didPlay = await AsyncStorage.getItem("didPlay")
-      console.log('focused', didPlay);
-      if (didPlay === 'true') {
-      ReactNativeBitmovinPlayerIntance.destroy();
-      AsyncStorage.setItem("didPlay", "false")
-      }
-      console.log('focused', didPlay);
-
-    });
-    return unsubscribe;
-  }, [navigation]);
+ 
 
   let searchArray = [];
   try {
