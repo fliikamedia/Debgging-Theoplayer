@@ -1,5 +1,5 @@
 import React, {useState, useRef, useEffect} from "react";
-import { View, Text, StyleSheet, StatusBar, AppState, Platform } from "react-native";
+import { View, Text, StyleSheet, StatusBar, AppState, Platform, Image, TouchableOpacity } from "react-native";
 import ReactNativeBitmovinPlayer, {
   ReactNativeBitmovinPlayerIntance,
 } from '@takeoffmedia/react-native-bitmovin-player';
@@ -17,8 +17,11 @@ import {
 } from "../store/actions/user";
 import { useDispatch, useSelector } from 'react-redux';
 import AsyncStorage from "@react-native-community/async-storage";
+import IconAnt from 'react-native-vector-icons/AntDesign';
+import { BITMOVINPLAYER } from "../constants/RouteNames";
 
-const EpisodeDetailScreen = ({ route }) => {
+
+const EpisodeDetailScreen = ({ navigation,route }) => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const { episode } = route.params;
@@ -28,6 +31,28 @@ const EpisodeDetailScreen = ({ route }) => {
   const [watched, setWatched] = useState(0);
   const [duration, setDuration] = useState(0);
   //console.log(episode);
+  useEffect( () => {
+    const unsubscribe = navigation.addListener('focus', async () => {
+     // Orientation.lockToPortrait();
+      console.log('timing', user.duration, user.watchedAt);
+      if (Platform.OS == 'android') {
+      const didPlay = await AsyncStorage.getItem("didPlay")
+      console.log('focused', didPlay);
+      if (didPlay === 'true') {
+      ReactNativeBitmovinPlayerIntance.destroy();
+      AsyncStorage.setItem("didPlay", "false")
+      console.log('focused', didPlay);
+    }
+      
+  } else {
+    console.log('focused ios');
+    ReactNativeBitmovinPlayerIntance.pause()
+  }
+  return unsubscribe;
+});
+  }, [navigation]);
+
+
   const appState = useRef(AppState.currentState);
   useEffect(() => {
     AppState.addEventListener("change",   stopPlaying,
@@ -53,6 +78,7 @@ const EpisodeDetailScreen = ({ route }) => {
 
   const stopPlaying = async () => {
     const didPlay = await AsyncStorage.getItem("didPlay")
+    Orientation.lockToPortrait()
 
     if (Platform.OS === 'ios') {
       console.log('ios');
@@ -136,9 +162,21 @@ console.log(playURL);
     <View
       style={{ flex: 1, backgroundColor: "black" }}
     >
+      <TouchableOpacity style={{height: '40%', width: '100%',      alignItems: "center",
+            justifyContent: "center",}} onPress={()=>                navigation.navigate(BITMOVINPLAYER, {movie: episode})
+          } >
+      <Image source={{uri: episode.wide_thumbnail_link}} style={{ position: "absolute",
+    top: 0,
+    bottom: 0,
+    right: 0,
+    left: 0,
+    resizeMode: "cover",}}   />
+      <IconAnt name="playcircleo" size={100} color="white" />
+      </TouchableOpacity>
+      {/*
        <View style={{width: '100%', height: playerHeight, marginTop: playerMargin}}>
          {playing ? <StatusBar hidden /> : null}
-      <ReactNativeBitmovinPlayer
+      {isPlaying? <ReactNativeBitmovinPlayer
         autoPlay={false}
         hasZoom={false}
         configuration={{
@@ -159,11 +197,12 @@ console.log(playURL);
         }}
         onLoad={e => console.log('Load', e)}
         onError={e => console.log('Error', e)}
-        onPlaying={async ({nativeEvent})=> {console.log(nativeEvent), await AsyncStorage.setItem("didPlay", 'true') }}
+        onPlaying={async ({nativeEvent})=> {console.log(nativeEvent),setPlaying(true),  Orientation.lockToLandscape()
+          , await AsyncStorage.setItem("didPlay", 'true') }}
         onEvent={({nativeEvent}) => { console.log(nativeEvent),setDuration(Math.ceil(nativeEvent.duration)), setWatched(Math.ceil(nativeEvent.time))}}
         onPause={()=> setIsPlaying(false)}
-      />
-    </View>
+      /> : null}
+        </View>*/}
       <Text style={styles.titleText}>Genres</Text>
       <Text style={styles.detailText}>
         {episode.genre.toString().replace(/,/g, ", ")}

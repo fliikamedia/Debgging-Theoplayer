@@ -50,6 +50,8 @@ const MoviesList = ({title, movies, index, navigation}) => {
             horizontal
             showsHorizontalScrollIndicator
             renderItem={renderItem}
+            maxToRenderPerBatch={3}
+            windowSize={4}
           />
         </View>
      )

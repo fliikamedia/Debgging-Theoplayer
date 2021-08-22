@@ -28,11 +28,10 @@ const BitmovinPlayer = ({route}) => {
   const [duration, setDuration] = useState(0);
   const appState = useRef(AppState.currentState);
 
-  useEffect(()=>{
-  //Orientation.lockToLandscape()
-  }, [])
+
   const stopPlaying = async () => {
     const didPlay = await AsyncStorage.getItem("didPlay")
+    Orientation.lockToPortrait();
 
     if (Platform.OS === 'ios') {
       ReactNativeBitmovinPlayerIntance.pause();
@@ -65,18 +64,18 @@ const BitmovinPlayer = ({route}) => {
     };
   }, [appState]);
   
-  console.log('state out',user.watchedAt, user.duration);
+  //console.log('state out',user.watchedAt, user.duration);
 
   useEffect(() => {
     if (watched > 0 ) {
+    updateMovieTime(watched, duration)(dispatch)
       console.log('updating time locally');
-      updateMovieTime(watched, duration)(dispatch);
     }
     saveMovie()
-  }, []);
+  }, [watched]);
   const saveMovie = () => {
     console.log('state',user.watchedAt, user.duration);
-    if (watched > 2){
+    if (watched > 0){
     if (
       !user.isProfile &&
       isWatched(user.user.watched, movie.title) == true
@@ -149,8 +148,9 @@ if (Platform.OS === 'android') {
         }}
         onLoad={e => console.log('Load', e)}
         onError={e => console.log('Error', e)}
-       onPlaying={async ({nativeEvent})=> {console.log(nativeEvent), await AsyncStorage.setItem("didPlay", 'true') }}
-        onEvent={({nativeEvent}) => { console.log(nativeEvent),setDuration(Math.ceil(nativeEvent.duration)), setWatched(Math.ceil(nativeEvent.time))}}
+       onPlaying={async ({nativeEvent})=> {console.log(nativeEvent)
+, await AsyncStorage.setItem("didPlay", 'true') }}
+        onEvent={({nativeEvent}) => { console.log(nativeEvent),setDuration(nativeEvent.duration), setWatched(nativeEvent.time)}}
         onPause={()=> setIsPlaying(false)}
       />            
         </View>

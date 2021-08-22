@@ -48,6 +48,8 @@ import ReactNativeBitmovinPlayer, {
   ReactNativeBitmovinPlayerIntance,
 } from '@takeoffmedia/react-native-bitmovin-player';
 import AsyncStorage from "@react-native-community/async-storage";
+import Orientation from "react-native-orientation";
+
 
 const MovieDetailScreen = ({ navigation, route }) => {
   const Tab = createMaterialTopTabNavigator();
@@ -72,6 +74,8 @@ const MovieDetailScreen = ({ navigation, route }) => {
 
   useEffect( () => {
     const unsubscribe = navigation.addListener('focus', async () => {
+     // Orientation.lockToPortrait();
+      console.log('timing', user.duration, user.watchedAt);
       if (Platform.OS == 'android') {
       const didPlay = await AsyncStorage.getItem("didPlay")
       console.log('focused', didPlay);
