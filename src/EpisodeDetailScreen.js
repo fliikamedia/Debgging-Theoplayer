@@ -1,5 +1,5 @@
 import React, {useState, useRef, useEffect} from "react";
-import { View, Text, StyleSheet, StatusBar, AppState, Platform, Image, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, StatusBar, AppState, Platform, Image, TouchableOpacity, LogBox } from "react-native";
 import ReactNativeBitmovinPlayer, {
   ReactNativeBitmovinPlayerIntance,
 } from '@takeoffmedia/react-native-bitmovin-player';
@@ -27,7 +27,7 @@ const EpisodeDetailScreen = ({ navigation,route }) => {
   const { episode } = route.params;
   const [playing, setPlaying] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-
+LogBox.ignoreAllLogs()
   const [watched, setWatched] = useState(0);
   const [duration, setDuration] = useState(0);
   //console.log(episode);

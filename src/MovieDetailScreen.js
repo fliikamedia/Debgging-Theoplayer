@@ -71,13 +71,29 @@ const MovieDetailScreen = ({ navigation, route }) => {
   const [episodes, setEpisodes] = useState(true);
   const [details, setDetails] = useState(false);
   const [seasonNumber, setSeasonNumber] = useState(null);
+  
+  const getMovie = useCallback(async () => {
+    const response = await FliikaApi.get(`/posts/${selectedMovie}`);
+    setMovie(response.data);
+  }, []);
+  useEffect(() => {
+    getMovie();
+  }, []);
 
   useEffect( () => {
     const unsubscribe = navigation.addListener('focus', async () => {
-     // Orientation.lockToPortrait();
-      console.log('timing', user.duration, user.watchedAt);
-      if (Platform.OS == 'android') {
+       Orientation.lockToPortrait();
+      
+      const whatTime = await AsyncStorage.getItem('watched');
+      const whatDuration = await AsyncStorage.getItem('duration');
       const didPlay = await AsyncStorage.getItem("didPlay")
+      const movieTitle=  await AsyncStorage.getItem("movieName")
+
+      console.log('timing', whatTime, whatDuration);
+      if (didPlay == "true"){
+        saveMovie(Number(whatDuration), Number(whatTime), movieTitle);
+      }
+      if (Platform.OS == 'android') {
       console.log('focused', didPlay);
       if (didPlay === 'true') {
       ReactNativeBitmovinPlayerIntance.destroy();
@@ -89,18 +105,13 @@ const MovieDetailScreen = ({ navigation, route }) => {
     console.log('focused ios');
     ReactNativeBitmovinPlayerIntance.pause()
   }
+
+  AsyncStorage.setItem('watched', '0');
+  AsyncStorage.setItem('duration', '0')
   return unsubscribe;
 });
   }, [navigation]);
 
-
-  const getMovie = useCallback(async () => {
-    const response = await FliikaApi.get(`/posts/${selectedMovie}`);
-    setMovie(response.data);
-  }, []);
-  useEffect(() => {
-    getMovie();
-  }, []);
 
   const showEpisodes = () => {
     setEpisodes(true);
@@ -111,11 +122,10 @@ const MovieDetailScreen = ({ navigation, route }) => {
     setEpisodes(false);
     setDetails(true);
   };
-
-  const saveOnLeavingPage = () => {
+/*   const saveOnLeavingPage = () => {
     setIsPlaying(false);
     saveMovie();
-  };
+  }; */
   /*
   useEffect(() => {
     AppState.addEventListener("change", saveOnLeavingPage());
@@ -158,50 +168,49 @@ const MovieDetailScreen = ({ navigation, route }) => {
       }
     } catch (err) {}
   };
+  
   // console.log(isWatched(user.user.watched, movie.title));
   //console.log(isWatched(user.user.watched, movie.title));
-  useEffect(() => {
+  /*   useEffect(() => {
     saveMovie();
-  }, [isPlaying]);
-  const saveMovie = () => {
+  }, [isPlaying]); */
+  console.log( 'movie current',movie);
+  const saveMovie = (x,y,z) => {
+    console.log('saving movie',x,y, movie.title);
     if (
       !user.isProfile &&
-      watched &&
-      !isPlaying &&
-      isWatched(user.user.watched, movie.title) == true
+      isWatched(user.user.watched, z) == true
     ) {
-      updateWatched(user.email, movie, duration, watched)(dispatch);
+      console.log('here 1');
+      updateWatched(user.email, z, x, y)(dispatch);
     } else if (
       !user.isProfile &&
-      watched &&
-      !isPlaying &&
-      isWatched(user.user.watched, movie.title) == false
+      isWatched(user.user.watched, z) == false
     ) {
-      addtoWatched(user.email, movie, duration, watched)(dispatch);
+      console.log('here 2');
+      addtoWatched(user.email, z, x, y)(dispatch);
     } else if (
       user.isProfile &&
-      watched &&
-      !isPlaying &&
-      isWatched(user.profile.watched, movie.title) == false
+      isWatched(user.profile.watched, z) == false
     ) {
+      console.log('here 3');
       addtoWatchedProfile(
         user.email,
-        movie,
-        duration,
-        watched,
+        z,
+        x,
+        y,
         user.profileName
       )(dispatch);
     } else if (
       user.isProfile &&
-      watched &&
-      !isPlaying &&
       isWatched(user.profile.watched, movie.title) == true
     ) {
+      console.log('here 4');
       updateWatchedProfile(
         user.email,
-        movie,
-        duration,
-        watched,
+        z,
+        x,
+        y,
         user.profileName
       )(dispatch);
     }
