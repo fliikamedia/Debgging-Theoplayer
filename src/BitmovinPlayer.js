@@ -16,7 +16,9 @@ import ReactNativeBitmovinPlayer, {
     updateMovieTime
   } from "../store/actions/user";
   import { useDispatch, useSelector } from 'react-redux';
-const BitmovinPlayer = ({route}) => {
+import AsyncStorage from '@react-native-community/async-storage';
+
+const BitmovinPlayer = ({navigation,route}) => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [isPlaying, setIsPlaying] = useState(false);
@@ -26,17 +28,27 @@ const BitmovinPlayer = ({route}) => {
   const [duration, setDuration] = useState(0);
   const appState = useRef(AppState.currentState);
 
-  useEffect(()=>{
-  //Orientation.lockToLandscape()
-  }, [])
-  const stopPlaying = () => {
+
+  const stopPlaying = async () => {
+    const didPlay = await AsyncStorage.getItem("didPlay")
+    //Orientation.lockToPortrait();
+    if (didPlay == 'true'){
+      saveMovie();
+    }
     if (Platform.OS === 'ios') {
       ReactNativeBitmovinPlayerIntance.pause();
-    } else {
-      //ReactNativeBitmovinPlayerIntance.destroy();
+      console.log('ios');
+    } else if (Platform.OS == 'android' && didPlay == "true") {
+      ReactNativeBitmovinPlayerIntance.destroy();
+      AsyncStorage.setItem("didPlay", "false")
+      console.log('android');
     }
+    AsyncStorage.setItem("movieName", "")
+   // Orientation.lockToPortrait()
   }
   
+  const stoppedPlaying = () =>
+  navigation.goBack();
   const isWatched = (movieArray, movieName) => {
     try {
       var movieWatched = false;
@@ -50,45 +62,48 @@ const BitmovinPlayer = ({route}) => {
     } catch (err) {}
   };
   useEffect(() => {
-    AppState.addEventListener("change",   stopPlaying(),
+    AppState.addEventListener("change",   stoppedPlaying,
     );
     
     return () => {
-      AppState.removeEventListener("change",   stopPlaying());
+      AppState.removeEventListener("change",   stopPlaying);
     };
   }, [appState]);
   
-  console.log('state out',user.watchedAt, user.duration);
+  //console.log('state out',user.watchedAt, user.duration);
 
-  useEffect(() => {
+/*   useEffect(() => {
     if (watched > 0 ) {
+    updateMovieTime(watched, duration)(dispatch)
       console.log('updating time locally');
-      updateMovieTime(watched, duration)(dispatch);
     }
     saveMovie()
-  }, []);
-  const saveMovie = () => {
-    console.log('state',user.watchedAt, user.duration);
-    if (watched > 2){
+  }, [watched]); */
+
+  const saveMovie = async () => {
+    const whatTime = await AsyncStorage.getItem('watched');
+    const whatDuration = await AsyncStorage.getItem('duration');
+
+    console.log('update watched', whatTime, whatDuration);
     if (
       !user.isProfile &&
       isWatched(user.user.watched, movie.title) == true
       ) {
-        updateWatched(user.email, movie, user.duration, user.watchedAt)(dispatch);
+        updateWatched(user.email, movie.title, Number(whatDuration), Number(whatTime))(dispatch);
       } else if (
         !user.isProfile &&
         isWatched(user.user.watched, movie.title) == false
         ) {
-          addtoWatched(user.email, movie, user.duration, user.watchedAt)(dispatch);
+          addtoWatched(user.email, movie.title, Number(whatDuration), Number(whatTime))(dispatch);
         } else if (
           user.isProfile &&
       isWatched(user.profile.watched, movie.title) == false
     ) {
       addtoWatchedProfile(
         user.email,
-        movie,
-        user.duration,
-        user.watchedAt,
+        movie.title,
+        Number(whatDuration),
+        Number(whatTime),
         user.profileName
       )(dispatch);
     } else if (
@@ -97,16 +112,20 @@ const BitmovinPlayer = ({route}) => {
     ) {
       updateWatchedProfile(
         user.email,
-        movie,
-        user.duration,
-        user.watchedAt,
+        movie.title,
+        Number(whatDuration),
+        Number(whatTime),
         user.profileName
       )(dispatch);
     }
-  }
   };
   
  //console.log(movie);
+ const saveTiming = (x,  y) => {
+ AsyncStorage.setItem('duration', x);
+ AsyncStorage.setItem('watched', y);
+
+ }
 
   let str= movie.play_url;
   let playURL;
@@ -142,8 +161,9 @@ if (Platform.OS === 'android') {
         }}
         onLoad={e => console.log('Load', e)}
         onError={e => console.log('Error', e)}
-       onPlaying={({nativeEvent})=> {console.log(nativeEvent),setIsPlaying(true)}}
-        onEvent={({nativeEvent}) => { console.log(nativeEvent),setDuration(Math.ceil(nativeEvent.duration)), setWatched(Math.ceil(nativeEvent.time))}}
+       onPlaying={async ({nativeEvent})=> {Orientation.lockToLandscape(),console.log(nativeEvent)
+, await AsyncStorage.setItem("didPlay", 'true'), await AsyncStorage.setItem('movieName', movie.title) }}
+        onEvent={({nativeEvent}) => { console.log(nativeEvent),saveTiming(String(nativeEvent.duration), String(nativeEvent.time))}}
         onPause={()=> setIsPlaying(false)}
       />            
         </View>

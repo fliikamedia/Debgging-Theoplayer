@@ -129,13 +129,14 @@ export const removeFromWatchList = (emails, movie) => async (dispatch) => {
 };
 
 export const addtoWatched =
-  (emails, movie, duration, watched) => async (dispatch) => {
+  (emails, title, duration, watched) => async (dispatch) => {
+    console.log('caught movie', title);
     try {
       dispatch({ type: ADD_TO_WATCHED });
       const result = await expressApi.patch(`/users`, {
         email: emails,
         newMovie: {
-          title: movie.title,
+          title: title,
           duration: duration,
           watchedAt: watched,
         },
@@ -155,14 +156,14 @@ export const addtoWatched =
   };
 
 export const updateWatched =
-  (emails, movie, duration, watched) => async (dispatch) => {
+  (emails, title, duration, watched) => async (dispatch) => {
     console.log("updating", duration, watched);
     try {
       dispatch({ type: UPDATE_WATCHED });
       const result = await expressApi.patch(`/users/c`, {
         email: emails,
         newMovie: {
-          title: movie.title,
+          title: title,
           duration: duration,
           watchedAt: watched,
         },
@@ -213,7 +214,7 @@ export const addProfile = (emails, name, image) => async (dispatch) => {
 };
 
 export const addtoWatchedProfile =
-  (emails, movie, duration, watched, profileName) => async (dispatch) => {
+  (emails, title, duration, watched, profileName) => async (dispatch) => {
     try {
       console.log("watched profile");
       dispatch({ type: ADD_TO_WATCHED_PROFILE });
@@ -221,7 +222,7 @@ export const addtoWatchedProfile =
         email: emails,
         profileName: profileName,
         newMovie: {
-          title: movie.title,
+          title: title,
           duration: duration,
           watchedAt: watched,
         },
@@ -252,7 +253,7 @@ export const setNotProfile = () => async (dispatch) => {
 };
 
 export const updateWatchedProfile =
-  (emails, movie, duration, watched, profileName) => async (dispatch) => {
+  (emails, title, duration, watched, profileName) => async (dispatch) => {
     console.log("updating profile");
     try {
       dispatch({ type: UPDATE_WATCHED });
@@ -260,7 +261,7 @@ export const updateWatchedProfile =
         email: emails,
         profileName: profileName,
         newMovie: {
-          title: movie.title,
+          title: title,
           duration: duration,
           watchedAt: watched,
         },

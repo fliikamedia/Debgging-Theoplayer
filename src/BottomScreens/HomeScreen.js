@@ -45,7 +45,7 @@ import firestore from "@react-native-firebase/firestore";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconAwesome from 'react-native-vector-icons/FontAwesome5';
 import IconMaterial from 'react-native-vector-icons/MaterialIcons'
-
+import MoviesList from "../components/MoviesList";
 
 const HomeScreen = ({ navigation }) => {
   //const db = firebase.firestore();
@@ -58,11 +58,7 @@ const HomeScreen = ({ navigation }) => {
   const [result, setResult] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
-  StatusBar.setBarStyle("light-content");
-if (Platform.OS === "android") {
-  StatusBar.setBackgroundColor("rgba(0,0,0,0)");
-  StatusBar.setTranslucent(true);
-}
+ 
   const getMovies = useCallback(async () => {
     const response = await FliikaApi.get("/posts");
     saveMovies(response.data)(dispatch);
@@ -520,6 +516,9 @@ if (Platform.OS === "android") {
   const renderMovies = () => {
     return newResults.map((item, index) => {
       return (
+        /*
+        <MoviesList title={item.title} navigation ={navigation} index={index} movies={item.movies} />
+        */
         <View style={{ marginTop: 0 }} key={item.genre}>
           <Text
             style={{
