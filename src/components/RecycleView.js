@@ -14,57 +14,45 @@ export default class RecycleView extends Component {
         super(props)
 
 
-        const movies = [];
-    for(i = 0; i < 100; i+= 1) {
-      movies.push({
-        type: 'NORMAL',
-        item: props.movie,
-      });
+         this.movies = [];
+    for(let i = 0; i < this.props.movie.length; i++) {
+      if(this.props.movie[i].dvd_thumbnail_link){
+
+        this.movies.push({
+          type: 'NORMAL',
+          item: this.props.movie[i],
+        });
+      }
     }
         this.state = {
-            list: new DataProvider((r1, r2) => r1 !== r2).cloneWithRows(props.movie),
+            list: new DataProvider((r1, r2) => r1 !== r2).cloneWithRows(this.movies),
           };
-          this.layoutProvider = new LayoutProvider(
-            index => {
-                if (index % 3 === 0) {
-                    return ViewTypes.FULL;
-                } else if (index % 3 === 1) {
-                    return ViewTypes.HALF_LEFT;
-                } else {
-                    return ViewTypes.HALF_RIGHT;
-                }
-            },
-            (type, dim) => {
-                switch (type) {
-                    case ViewTypes.HALF_LEFT:
-                        dim.width = SCREEN_WIDTH;
-                        dim.height = 160;
-                        break;
-                    case ViewTypes.HALF_RIGHT:
-                        dim.width = SCREEN_WIDTH / 2;
-                        dim.height = 160;
-                        break;
-                    case ViewTypes.FULL:
-                        dim.width = SCREEN_WIDTH;
-                        dim.height = 140;
-                        break;
-                    default:
-                        dim.width = 0;
-                        dim.height = 0;
-                }
-            }
-        );
+          this.layoutProvider = new LayoutProvider((i) => {
+            return this.state.list.getDataForIndex(i).type;
+          }, (type, dim) => {
+            switch (type) {
+              case 'NORMAL': 
+                dim.width = SCREEN_WIDTH * .35;
+                dim.height = 200;
+                break;
+              default: 
+                dim.width = 0;
+                dim.height = 0;
+                break;
+            };
+          })
 
         this.rowRenderer = (type, item) => {
-          //  const { image, name, description } = data.item;
-          if (item.dvd_thumbnail_link) {
+          const { dvd_thumbnail_link, _id, film_type, title, wide_thunbnail_link } = item.item;
+          //console.log('iteeem',item);
+          if (dvd_thumbnail_link) {
             return (
                 <TouchableWithoutFeedback
                 onPress={() =>
                   this.props.navigation.navigate(MOVIEDETAIL, {
-                    selectedMovie: item._id,
-                    isSeries: item.film_type,
-                    seriesTitle: item.title,
+                    selectedMovie: _id,
+                    isSeries: film_type,
+                    seriesTitle: title,
                   })
                 }
               >
@@ -74,22 +62,22 @@ export default class RecycleView extends Component {
                     height: SIZES.width * 0.45,
                     borderRadius: 20,
                     marginHorizontal: 5,
-                    resizeMode: "contain",
                   }}
-                  source={{ uri: item.dvd_thumbnail_link }}
+                  source={{ uri: dvd_thumbnail_link }}
                 />
               </TouchableWithoutFeedback>
             )
           }
         }
         }
-
         render() {
-            console.log(this.props.movie.length);
+           // console.log('movies',this.props.title);
             return (
               <View style={styles.container}>
+                <Text style={{color: 'white', fontSize: 24, fontWeight: 'bold', marginBottom: 10}} >{this.props.title}</Text>
                 <RecyclerListView
-                  style={{flex: 1}}
+                isHorizontal
+                  style={{height: 180}}
                   rowRenderer={this.rowRenderer}
                   dataProvider={this.state.list}
                   layoutProvider={this.layoutProvider}
@@ -102,9 +90,10 @@ export default class RecycleView extends Component {
         const styles = StyleSheet.create({
           container: {
             flex: 1,
-            backgroundColor: '#FFF',
+            backgroundColor: 'black',
             minHeight: 1,
             minWidth: 1,
+            marginVertical: 10
           },
           body: {
             marginLeft: 10,

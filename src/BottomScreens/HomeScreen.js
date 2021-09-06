@@ -546,11 +546,11 @@ const HomeScreen = ({ navigation }) => {
     return newResults.map((item, index) => {
       return (
         <View key={index}>
-        {/*<RecycleView title={item.title} navigation ={navigation} index={index} movie={item.movies}/>*/}
+        <RecycleView title={item.genre} navigation ={navigation} index={index} movie={index % 2 == 0 ? item.movies : item.movies.reverse()}/>
  {/*
         <MoviesList title={item.title} navigation ={navigation} index={index} movies={item.movies} />
  */}
-        <View style={{ marginTop: 0 }} key={item.genre}>
+        {/* <View style={{ marginTop: 0 }} key={item.genre}>
           <Text
             style={{
               color: COLORS.white,
@@ -593,7 +593,7 @@ const HomeScreen = ({ navigation }) => {
               }
             }}
           />
-        </View>
+        </View> */}
         </View>
       );
     });    
