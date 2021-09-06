@@ -46,7 +46,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconAwesome from 'react-native-vector-icons/FontAwesome5';
 import IconMaterial from 'react-native-vector-icons/MaterialIcons'
 import MoviesList from "../components/MoviesList";
-
+import RecycleView from "../components/RecycleView";
 const HomeScreen = ({ navigation }) => {
   //const db = firebase.firestore();
   const appState = useRef(AppState.currentState);
@@ -74,6 +74,7 @@ const HomeScreen = ({ navigation }) => {
   useEffect(() => {
     getUser(user.email, user.profileName)(dispatch);
   }, [user.email, user.ProfileName, result]);
+  
   /*
   useEffect(() => {
     AppState.addEventListener(
@@ -514,11 +515,41 @@ const HomeScreen = ({ navigation }) => {
     stateLength = user.user.length;
   } catch (err) {}
   const renderMovies = () => {
+    const renderItem = ({ item, index }) => {
+      if (item.dvd_thumbnail_link) {
+        return (
+          <TouchableWithoutFeedback
+            onPress={() =>
+              navigation.navigate(MOVIEDETAIL, {
+                selectedMovie: item._id,
+                isSeries: item.film_type,
+                seriesTitle: item.title,
+              })
+            }
+          >
+            <Image
+              style={{
+                width: SIZES.width * 0.3,
+                height: SIZES.width * 0.45,
+                borderRadius: 20,
+                marginHorizontal: 5,
+                resizeMode: "contain",
+              }}
+              source={{ uri: item.dvd_thumbnail_link }}
+            />
+          </TouchableWithoutFeedback>
+        );
+      }
+    }
+
+    const keyextractor = (item) => item._id.toString()
     return newResults.map((item, index) => {
       return (
-        /*
+        <View key={index}>
+        {/*<RecycleView title={item.title} navigation ={navigation} index={index} movie={item.movies}/>*/}
+ {/*
         <MoviesList title={item.title} navigation ={navigation} index={index} movies={item.movies} />
-        */
+ */}
         <View style={{ marginTop: 0 }} key={item.genre}>
           <Text
             style={{
@@ -563,8 +594,9 @@ const HomeScreen = ({ navigation }) => {
             }}
           />
         </View>
+        </View>
       );
-    });
+    });    
   };
 
   //// Render continue watching section
@@ -912,7 +944,7 @@ const HomeScreen = ({ navigation }) => {
   }, []);
   //////////////////
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {resultLength == 0 || !user.userFetched ? (
         <View style={{ flex: 1, backgroundColor: "black" }}>
           <ActivityIndicator
@@ -938,7 +970,7 @@ const HomeScreen = ({ navigation }) => {
           {/*<StatusBar barStyle="light-content" />*/}
         </ScrollView>
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 
