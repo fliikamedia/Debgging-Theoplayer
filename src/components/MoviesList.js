@@ -22,7 +22,6 @@ const MoviesList = ({title, movies, index, navigation}) => {
                   height: SIZES.width * 0.45,
                   borderRadius: 20,
                   marginHorizontal: 5,
-                  resizeMode: "contain",
                 }}
                 source={{ uri: item.dvd_thumbnail_link }}
               />

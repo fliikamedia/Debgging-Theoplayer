@@ -358,7 +358,7 @@ const TvShowsScreen = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {resultLength == 0 ? (
         <View style={{ flex: 1, backgroundColor: "black" }}>
           <ActivityIndicator
@@ -383,7 +383,7 @@ const TvShowsScreen = ({ navigation }) => {
           {/*<StatusBar style="light" />*/}
         </ScrollView>
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 

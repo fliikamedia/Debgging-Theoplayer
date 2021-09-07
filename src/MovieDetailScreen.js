@@ -335,7 +335,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
-          marginTop: Platform.OS == "ios" ? 20 : 40,
+          marginTop: Platform.OS == "ios" ? 40 : 40,
           paddingHorizontal: SIZES.padding,
         }}
       >
@@ -752,7 +752,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
   }
   ////////// end of render movie details
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {resultLength == 0 ? (
         <ActivityIndicator
           animating
@@ -903,7 +903,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
           ) : null}*/}
         </ScrollView>
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 
