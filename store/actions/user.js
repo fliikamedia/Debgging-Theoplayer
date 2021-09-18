@@ -38,13 +38,18 @@ export const UPDATE_PROFILE_SUCCESS = "UPDATE_PROFILE_SUCCESS";
 export const UPDATE_PROFILE_FAILED = "UPDATE_PROFILE_FAILED";
 export const UPDATE_MOVIE_TIME = 'UPDATE_MOVIE_TIME';
 
-export const addUser = (email, fullName, profileImage) => async (dispatch) => {
+export const addUser = (email, firstName, lastName, yearOfBirth, phoneNumber,uid, emailVerified ,profileImage) => async (dispatch) => {
   try {
     dispatch({ type: ADD_USER });
     const result = await expressApi.post(`/users`, {
       email: email,
-      fullName: fullName,
+      firstName: firstName,
+      lastName: lastName,
       profileImage: profileImage,
+      dateofBirth: yearOfBirth,
+      phone: phoneNumber,
+      uid: uid,
+      email_verified: emailVerified
     });
     if (result.status == 201) {
       console.log(result.data);

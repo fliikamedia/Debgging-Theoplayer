@@ -67,7 +67,7 @@ const BitmovinPlayer = ({navigation,route}) => {
     );
     
     return () => {
-      AppState.removeEventListener("change",   stopPlaying);
+      AppState.removeEventListener("change",   stoppedPlaying);
     };
   }, [appState]);
   
@@ -162,7 +162,7 @@ if (Platform.OS === 'android') {
         }}
         onLoad={e => console.log('Load', e)}
         onError={e => console.log('Error', e)}
-       onPlaying={async ({nativeEvent})=> {Orientation.lockToLandscapeLeft(),console.log(nativeEvent)
+       onPlaying={async ({nativeEvent})=> {Platform.OS == 'android' ?  Orientation.lockToLandscapeLeft() : Orientation.lockToLandscapeRight(),console.log(nativeEvent)
 , await AsyncStorage.setItem("didPlay", 'true'), await AsyncStorage.setItem('movieName', movie.title) }}
         onEvent={({nativeEvent}) => { console.log(nativeEvent),saveTiming(String(nativeEvent.duration), String(nativeEvent.time))}}
         onPause={()=> setIsPlaying(false)}

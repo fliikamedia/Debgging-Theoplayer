@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
   StatusBar
 } from "react-native";
-import { LOGIN, SIGNUP, FORGOTPASSWORD, MOVIES } from "../constants/RouteNames";
+import { LOGIN, SIGNUP, FORGOTPASSWORD, MOVIES, EMAILSIGNUP } from "../constants/RouteNames";
 import firebase from "firebase";
 import Video from 'react-native-video'
 
@@ -76,7 +76,7 @@ const WelcomePage = ({ navigation }) => {
         source={{
           uri: "https://fliikaimages.azureedge.net/hero-container/boxing_hero.mp4",
         }}
-        isLooping
+       repeat
         isMuted
         shouldPlay
         resizeMode="cover"
@@ -103,7 +103,7 @@ const WelcomePage = ({ navigation }) => {
             <Text style={styles.textDescriptionSb}>join us now</Text>
             <TouchableOpacity
               style={createBtn}
-              onPress={() => navigation.navigate(SIGNUP)}
+              onPress={() => navigation.navigate(EMAILSIGNUP)}
             >
               <Text style={styles.createText}>create account</Text>
             </TouchableOpacity>

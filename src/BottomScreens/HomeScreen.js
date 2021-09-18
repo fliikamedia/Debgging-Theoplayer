@@ -29,7 +29,7 @@ import Profiles from "../components/Profiles";
 import firebase from "firebase";
 import Carousel from "react-native-anchor-carousel";
 import  LinearGradient  from "react-native-linear-gradient";
-import { getUser } from "../../store/actions/user";
+import { getUser, setProfile, setNotProfile } from "../../store/actions/user";
 import { saveMovies } from "../../store/actions/movies";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -47,6 +47,10 @@ import IconAwesome from 'react-native-vector-icons/FontAwesome5';
 import IconMaterial from 'react-native-vector-icons/MaterialIcons'
 import MoviesList from "../components/MoviesList";
 import RecycleView from "../components/RecycleView";
+import AsyncStorage from "@react-native-community/async-storage";
+import KeepAwake from '@sayem314/react-native-keep-awake';
+
+
 const HomeScreen = ({ navigation }) => {
   //const db = firebase.firestore();
   const appState = useRef(AppState.currentState);
@@ -57,8 +61,8 @@ const HomeScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const [result, setResult] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [profiled, setProfiled] = useState('');
 
- 
   const getMovies = useCallback(async () => {
     const response = await FliikaApi.get("/posts");
     saveMovies(response.data)(dispatch);
@@ -69,11 +73,25 @@ const HomeScreen = ({ navigation }) => {
 
   useEffect(() => {
     getMovies();
-    setEmailFunc(email)(dispatch);
+    if(!user.email){
+      setEmailFunc(email)(dispatch);
+    }
   }, []);
+  const profileName = async () => {
+  const profiles = await AsyncStorage.getItem('profileName');
+  setProfiled(profiles)
+  }
+  useEffect(()=> {
+  profileName()
+  }, [user.profileName,profiled])
   useEffect(() => {
-    getUser(user.email, user.profileName)(dispatch);
-  }, [user.email, user.ProfileName, result]);
+    if (profiled){
+      setProfile(profiled)(dispatch);
+    } else {
+      setNotProfile()(dispatch);
+    }
+    getUser(user.email, profiled)(dispatch);
+  }, [user.email, user.ProfileName, result, user.isProfile, profiled]);
   
   /*
   useEffect(() => {
@@ -964,6 +982,7 @@ const HomeScreen = ({ navigation }) => {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         >
+          <KeepAwake />
           {renderHeroSectionThirdDesign()}
           {continueWatchingLength > 0 ? renderContinueWatctionSection() : null}
           {renderMovies()}

@@ -133,7 +133,7 @@ const ProfileScreen = ({ navigation }) => {
           <UserProfile
             navigation={navigation}
             main={true}
-            name={user.user.fullName}
+            name={user.user.firstName}
             image={user.user.profileImage}
             editing={editing}
             setEditing={setEditing}
@@ -190,7 +190,7 @@ const ProfileScreen = ({ navigation }) => {
               editing={editing}
               setEditing={setEditing}
               main={true}
-              name={user.user.fullName}
+              name={user.user.firstName}
               image={user.user.profileImage}
             />
             {user.user.profiles.map((item) => {

@@ -9,7 +9,7 @@ import {
   Dimensions,
 } from "react-native";
 import firebase from "firebase";
-import { LOGIN, MOVIES } from "../../constants/RouteNames";
+import { LOGIN, MOVIES, SIGNUP } from "../../constants/RouteNames";
 import { TextInput, HelperText } from "react-native-paper";
 import { LogBox } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -18,13 +18,12 @@ import { useDispatch } from "react-redux";
 import { firebaseConfig } from "../api/FirebaseConfig";
 
 
-const SignupScreen = ({ navigation }) => {
+const EmailSignup = ({ navigation }) => {
   const appState = useRef(AppState.currentState);
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [fullName, setfullName] = useState("");
   const [yearOfBirth, setYearOfBirth] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [doneEmail, setDoneEmail] = useState(false);
@@ -34,139 +33,61 @@ const SignupScreen = ({ navigation }) => {
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
 
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth() + 1;
-    const day = currentDate.getDate();
 
-    setDate(currentDate);
-    if (event.type == "set") {
-      setYearOfBirth(`${day}/${month}/${year}`);
-      setShow(false);
-    } else {
-      setShow(false);
-    }
-  };
-  const showMode = (currentMode) => {
-    setMode(currentMode);
-  };
-
-/*   const checkIFLoggedIn = () => {
+  const checkIFLoggedIn = () => {
     firebase.app().delete().then(function() {
-      console.log('initializing');
+      //console.log('initializing');
       firebase.initializeApp(firebaseConfig);
     }).then(function(){
       firebase.auth().onAuthStateChanged((user) => {
         if (user && user.emailVerified) {
-          console.log('success',user);
-         
+         // console.log('success',user);
+          navigation.navigate(SIGNUP)
         } else {
-          console.log('failed',user);
+          //console.log('failed',user);
         }
       });
     })
    
     
-  }; */
+  };
 
- /*  useEffect(() => {
+  useEffect(() => {
     AppState.addEventListener("change",   checkIFLoggedIn,
     );
     
     return () => {
       AppState.removeEventListener("change",   checkIFLoggedIn);
     };
-  }, [appState]); */
+  }, [appState]);
   const showDatepicker = () => {
     setShow(true);
     showMode("date");
   };
 
-  /// to be fixed
-  LogBox.ignoreLogs(["Setting a timer"]);
-  const inputColor = "teal";
-  
   const signupUser = async (email, password) => {
     try {
-      /* await firebase.auth().createUserWithEmailAndPassword(email, password);
+      await firebase.auth().createUserWithEmailAndPassword(email, password);
       const currentUser = firebase.auth().currentUser;
     
       currentUser.sendEmailVerification().then(function () {
         alert("A verification E-mail was sent to you...");
       });
     
-      console.log('current user',currentUser);
-      const db = firebase.firestore();
-      await db.collection("users").doc(currentUser.uid).set({
-        email: currentUser.email,
-        fullName: fullName,
-        yearOfBirth: yearOfBirth,
-        phoneNumber: phoneNumber,
-      }); */
-      //console.log("response", currentUser);
-      const { uid, email,emailVerified } = firebase.auth().currentUser;
-       
-        addUser(email,firstName, lastName, yearOfBirth, phoneNumber,uid, emailVerified, "profile0")(dispatch);
-        navigation.reset({
-          index: 0,
-          routes: [{ name: MOVIES }],
-        });
-        navigation.navigate(MOVIES);
-    
+      //console.log('current user',currentUser);
+
     } catch (err) {
       console.log(err);
       setError(err.message);
     }
   };
+  /// to be fixed
+  LogBox.ignoreLogs(["Setting a timer"]);
+  const inputColor = "teal";
+ 
   
-  /*
-  const checkIFLoggedIn = () => {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user && user.emailVerified) {
-        navigation.reset({
-          index: 0,
-          routes: [{ name: MOVIES }],
-        });
-        navigation.navigate(MOVIES);
-      }
-      console.log("reloading", user);
-    });
-  };
-
-  useEffect(() => {
-    checkIFLoggedIn();
-  }, [appState.current]);
-*/
-  const resetPassword = (email) => {
-    firebase
-      .auth()
-      .sendPasswordResetEmail(email)
-      .then(function (user) {
-        alert("Please check your email...");
-        navigation.navigate(LOGIN);
-      })
-      .catch(function (e) {
-        console.log(e);
-      });
-  };
   return (
     <View style={styles.container}>
-      <ScrollView
-        contentContainerStyle={{
-          flexGrow: 1,
-        }}
-      >
-        {show && (
-          <DateTimePicker
-            testID="dateTimePicker"
-            value={date}
-            mode={mode}
-            is24Hour={true}
-            display="default"
-            onChange={onChange}
-          />
-        )}
         <Text
           style={{
             color: "white",
@@ -176,33 +97,9 @@ const SignupScreen = ({ navigation }) => {
             marginTop: Dimensions.get("window").height < 900 ? 0 : 80,
           }}
         >
-          Create your account
+          Enter Your Email To Get Started
         </Text>
         <TextInput
-          label="First Name"
-          onChangeText={(firstName) => setFirstName(firstName)}
-          style={styles.textInput}
-          autoCorrect={false}
-          autoCapitalize="words"
-          value={firstName}
-          mode="outlined"
-          theme={{
-            colors: { primary: `${inputColor}`, underlineColor: "transparent" },
-          }}
-        />
-                <TextInput
-          label="Last Name"
-          onChangeText={(lastName) => setLastName(lastName)}
-          style={styles.textInput}
-          autoCorrect={false}
-          autoCapitalize="words"
-          value={lastName}
-          mode="outlined"
-          theme={{
-            colors: { primary: `${inputColor}`, underlineColor: "transparent" },
-          }}
-        />
-        {/* <TextInput
           label="Email"
           onChangeText={(email) => setEmail(email)}
           style={styles.textInput}
@@ -224,8 +121,8 @@ const SignupScreen = ({ navigation }) => {
           >
             Email address is invalid!
           </HelperText>
-        ) : null} */}
-     {/*    <TextInput
+        ) : null}
+      <TextInput
           label="Password"
           value={password}
           onChangeText={(password) => setPassword(password)}
@@ -247,64 +144,11 @@ const SignupScreen = ({ navigation }) => {
           >
             Password must be at least 6 characters long
           </HelperText>
-        ) : null} */}
-        <TextInput
-          showSoftInputOnFocus={false}
-          onFocus={() => showDatepicker()}
-          label="Date of birth"
-          value={yearOfBirth}
-          onChangeText={(yearOfBirth) => setYearOfBirth(yearOfBirth)}
-          style={styles.textInput}
-          autoCorrect={false}
-          autoCapitalize="none"
-          mode="outlined"
-          theme={{
-            colors: { primary: `${inputColor}`, underlineColor: "transparent" },
-          }}
-        />
-        <TextInput
-          label="Phone number"
-          onFocus={() => setPhoneNumber("+")}
-          value={phoneNumber}
-          onChangeText={(phoneNumber) => setPhoneNumber(phoneNumber)}
-          style={styles.textInput}
-          autoCorrect={false}
-          autoCapitalize="none"
-          mode="outlined"
-          keyboardType="numeric"
-          theme={{
-            colors: { primary: `${inputColor}`, underlineColor: "transparent" },
-          }}
-        />
-        {error == "The email address is already in use by another account." ? (
-          <View>
-            <Text style={{ color: "red", textAlign: "center" }}>{error}</Text>
-            <TouchableOpacity onPress={() => resetPassword(email)}>
-              <Text
-                style={{
-                  color: "aquamarine",
-                  textTransform: "uppercase",
-                  fontStyle: "italic",
-                  fontWeight: "bold",
-                  fontSize: 16,
-                  textDecorationLine: "underline",
-                  textAlign: "center",
-                  marginTop: 10,
-                }}
-              >
-                Reset Password?
-              </Text>
-            </TouchableOpacity>
-          </View>
         ) : null}
         <TouchableOpacity
           disabled={
-            !firstName &&
-            !lastName &&
             !email &&
-            !password &&
-            !yearOfBirth &&
-            phoneNumber.length > 1
+            !password
           }
           onPress={() => signupUser(email, password)}
           style={styles.signupBtn}
@@ -317,7 +161,7 @@ const SignupScreen = ({ navigation }) => {
               textTransform: "uppercase",
             }}
           >
-            Sign Up
+            GET STARTED
           </Text>
         </TouchableOpacity>
         <Text
@@ -344,7 +188,6 @@ const SignupScreen = ({ navigation }) => {
             Sign in
           </Text>
         </TouchableOpacity>
-      </ScrollView>
     </View>
   );
 };
@@ -384,4 +227,4 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
 });
-export default SignupScreen;
+export default EmailSignup;

@@ -13,6 +13,7 @@ import { removeProfile } from "../../store/actions/user";
 import { EDITPROFILE } from "../../constants/RouteNames";
 import IconAnt from 'react-native-vector-icons/AntDesign';
 import IconAwesome from 'react-native-vector-icons/FontAwesome5';
+import AsyncStorage from '@react-native-community/async-storage';
 
 
 
@@ -30,7 +31,7 @@ const UserProfile = ({
   try {
     if (name == user.profileName) {
       borderColor = "aqua";
-    } else if (!user.profileName && name == user.user.fullName) {
+    } else if (!user.profileName && name == user.user.firstName) {
       borderColor = "aqua";
     } else {
       borderColor = "grey";
@@ -69,11 +70,13 @@ const UserProfile = ({
   return (
     <View style={{ alignItems: "center", marginVertical: 10 }}>
       <TouchableOpacity
-        onPress={() => {
+        onPress={ async() => {
           if (main) {
             setNotProfile()(dispatch);
+            await AsyncStorage.setItem('profileName', '')
           } else {
             setProfile(name)(dispatch);
+            await AsyncStorage.setItem('profileName', name);
           }
         }}
         style={container}
