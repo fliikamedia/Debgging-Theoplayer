@@ -33,7 +33,7 @@ import { useSelector, useDispatch } from "react-redux";
 import IconAwesome from 'react-native-vector-icons/FontAwesome5';
 import IconMaterial from 'react-native-vector-icons/MaterialIcons'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
+import RecycleView from "../components/RecycleView";
 
 
 const TvShowsScreen = ({ navigation }) => {
@@ -298,7 +298,7 @@ const TvShowsScreen = ({ navigation }) => {
   for (let x = 0; x < genres.length; x++) {
     newResults.push({
       genre: genres[x],
-      series: result.filter(
+      movies: result.filter(
         (r) =>
           r.genre.includes(genres[x]) &&
           r.film_type == "series" &&
@@ -306,52 +306,12 @@ const TvShowsScreen = ({ navigation }) => {
       ),
     });
   }
+ 
   const renderSeries = () => {
     return newResults.map((item, index) => {
       return (
-        <View style={{ marginTop: 20 }} key={item.genre}>
-          <Text
-            style={{
-              color: COLORS.white,
-              fontSize: 24,
-              marginVertical: 5,
-              fontWeight: "bold",
-            }}
-          >
-            {item.genre}
-          </Text>
-          <FlatList
-            data={index % 2 == 0 ? item.series : item.series.reverse()}
-            keyExtractor={(item) => item._id}
-            horizontal
-            showsHorizontalScrollIndicator
-            renderItem={({ item, index }) => {
-              if (item.dvd_thumbnail_link) {
-                return (
-                  <TouchableWithoutFeedback
-                    onPress={() =>
-                      navigation.navigate(MOVIEDETAIL, {
-                        selectedMovie: item._id,
-                        isSeries: item.film_type,
-                        seriesTitle: item.title,
-                      })
-                    }
-                  >
-                    <Image
-                      style={{
-                        width: SIZES.width * 0.3,
-                        height: SIZES.width * 0.45,
-                        borderRadius: 20,
-                        marginHorizontal: 5,
-                        resizeMode: "contain",
-                      }}
-                      source={{ uri: item.dvd_thumbnail_link }}
-                    />
-                  </TouchableWithoutFeedback>
-                );
-              }
-            }}
-          />
+        <View key={index}>
+        <RecycleView title={item.genre} navigation ={navigation} index={index} movie={index % 2 == 0 ? item.movies : item.movies.reverse()}/>
         </View>
       );
     });

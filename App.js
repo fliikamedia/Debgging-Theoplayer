@@ -14,6 +14,7 @@ import LoginScreen from "./src/auth/LoginScreen";
 import SignupScreen from "./src/auth/SignupScreen";
 import EditProfile from "./src/components/EditProfile";
 import EpisodeDetailScreen from "./src/EpisodeDetailScreen";
+import EmailSignup from "./src/auth/EmailSignup";
 import BitmovinPlayer from './src/BitmovinPlayer';
 import {
   MOVIES,
@@ -26,7 +27,7 @@ import {
   LOGIN,
   SIGNUP,
   EDITPROFILE,
-  EPISODEDETAIL, BITMOVINPLAYER
+  EPISODEDETAIL, BITMOVINPLAYER, EMAILSIGNUP
 } from "./constants/RouteNames";
 import { COLORS } from "./constants/theme";
 import firebase from "firebase";
@@ -132,7 +133,7 @@ export default App = () => {
   
   const checkIFLoggedIn = () => {
     firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
+      if (user && user.emailVerified) {
         // console.log(user);
         setRoute(MOVIES);
         setReady(true);
@@ -140,6 +141,7 @@ export default App = () => {
         setRoute(WELCOMESCREEN);
         setReady(true);
       }
+      //console.log('user',user);
     });
   };
   React.useEffect(() => {
@@ -215,6 +217,16 @@ export default App = () => {
                 name={BITMOVINPLAYER}
                 component={BitmovinPlayer}
                 options={{ headerShown: false }}
+                />
+                  <Tabs.Screen
+                name={EMAILSIGNUP}
+                component={EmailSignup}
+                options={{
+                  title: " ",
+                  headerStyle: {
+                    backgroundColor: "black",
+                  },
+                }}
                 />
               <Tabs.Screen
                 name={LOGIN}

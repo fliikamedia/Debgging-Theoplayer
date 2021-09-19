@@ -89,7 +89,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
       const didPlay = await AsyncStorage.getItem("didPlay")
       const movieTitle=  await AsyncStorage.getItem("movieName")
 
-      console.log('timing', whatTime, whatDuration);
+      console.log('timing', whatTime, whatDuration, movieTitle);
       if (didPlay == "true"){
         saveMovie(Number(whatDuration), Number(whatTime), movieTitle);
       }
@@ -174,9 +174,9 @@ const MovieDetailScreen = ({ navigation, route }) => {
   /*   useEffect(() => {
     saveMovie();
   }, [isPlaying]); */
-  console.log( 'movie current',movie);
+  //console.log( 'movie current',movie);
   const saveMovie = (x,y,z) => {
-    console.log('saving movie',x,y, movie.title);
+    console.log('saving movie',x,y, z);
     if (
       !user.isProfile &&
       isWatched(user.user.watched, z) == true
@@ -203,7 +203,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
       )(dispatch);
     } else if (
       user.isProfile &&
-      isWatched(user.profile.watched, movie.title) == true
+      isWatched(user.profile.watched, z) == true
     ) {
       console.log('here 4');
       updateWatchedProfile(
