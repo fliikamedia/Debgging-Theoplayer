@@ -33,15 +33,12 @@ import { COLORS } from "./constants/theme";
 import firebase from "firebase";
 import { firebaseConfig } from "./src/api/FirebaseConfig";
 import { Provider as PaperProvider } from "react-native-paper";
-import { createStore, combineReducers, applyMiddleware } from "redux";
 import { Provider as StoreProvider } from "react-redux";
-import moviesReducer from "./store/reducers/movies";
-import userReducer from "./store/reducers/user";
-import reduxThunk from "redux-thunk";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Feather from 'react-native-vector-icons/Feather'
-
+import Feather from 'react-native-vector-icons/Feather';
+import {PersistGate} from 'redux-persist/integration/react'
+import {store, persistor} from './store/index'
 
 StatusBar.setBarStyle("light-content");
 if (Platform.OS === "android") {
@@ -49,11 +46,7 @@ if (Platform.OS === "android") {
   StatusBar.setTranslucent(true);
 }
 
-  const rootReducer = combineReducers({
-    user: userReducer,
-    movies: moviesReducer,
-  });
-  const store = createStore(rootReducer, applyMiddleware(reduxThunk));
+
   // Bottom Tab Navigator
   const Tabs = createBottomTabNavigator();
   const Stack = createStackNavigator();
@@ -159,6 +152,7 @@ export default App = () => {
       </View>
     ) : (
       <StoreProvider store={store}>
+        <PersistGate persistor={persistor} loading={null}>
         <PaperProvider>
           <NavigationContainer>
             <Stack.Navigator
@@ -218,7 +212,7 @@ export default App = () => {
                 component={BitmovinPlayer}
                 options={{ headerShown: false }}
                 />
-                  <Tabs.Screen
+                  <Stack.Screen
                 name={EMAILSIGNUP}
                 component={EmailSignup}
                 options={{
@@ -228,7 +222,7 @@ export default App = () => {
                   },
                 }}
                 />
-              <Tabs.Screen
+              <Stack.Screen
                 name={LOGIN}
                 component={LoginScreen}
                 options={{
@@ -238,7 +232,7 @@ export default App = () => {
                   },
                 }}
                 />
-              <Tabs.Screen
+              <Stack.Screen
                 name={SIGNUP}
                 component={SignupScreen}
                 options={{
@@ -251,6 +245,7 @@ export default App = () => {
             </Stack.Navigator>
           </NavigationContainer>
         </PaperProvider>
+        </PersistGate>
       </StoreProvider>
     );
     

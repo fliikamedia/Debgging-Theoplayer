@@ -17,6 +17,8 @@ target 'FliikaMobileRN' do
 
   pod 'RNDateTimePicker', :path => '../node_modules/@react-native-community/datetimepicker'
 
+  pod 'react-native-keep-awake', :path => '../node_modules/@sayem314/react-native-keep-awake'
+
   target 'FliikaMobileRNTests' do
     inherit! :complete
     # Pods for testing
@@ -28,7 +30,10 @@ target 'FliikaMobileRN' do
   # you should disable the next line.
   use_flipper!()
 
+
   post_install do |installer|
-    react_native_post_install(installer)
+    installer.pods_project.build_configurations.each do |config|
+      config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = "arm64"
+    end
+    end
   end
-end

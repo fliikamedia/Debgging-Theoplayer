@@ -13,6 +13,7 @@
     "@react-native-community/async-storage": "^1.12.1",
     "@react-native-community/datetimepicker": "^3.5.2",
     "@react-native-community/masked-view": "^0.1.11",
+    "@react-native-community/netinfo": "^6.0.2",
     "@react-native-firebase/app": "^12.4.0",
     "@react-native-firebase/firestore": "^12.4.0",
     "@react-navigation/bottom-tabs": "^5.11.11",
@@ -22,7 +23,8 @@
     "@sayem314/react-native-keep-awake": "^1.0.4",
     "@takeoffmedia/react-native-bitmovin-player": "0.1.37",
     "axios": "^0.21.1",
-    "firebase": "^8.8.1",
+    "firebase": "8.8.1",
+    "global": "^4.4.0",
     "react": "17.0.1",
     "react-native": "0.64.2",
     "react-native-anchor-carousel": "3.1.2",
@@ -42,6 +44,7 @@
     "recyclerlistview": "^3.0.5",
     "redux": "^4.1.0",
     "redux-devtools": "^3.7.0",
+    "redux-persist": "^6.0.0",
     "redux-thunk": "^2.3.0"
   },
   "devDependencies": {

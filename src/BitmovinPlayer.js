@@ -7,8 +7,6 @@ import ReactNativeBitmovinPlayer, {
   import {
     addToWatchList,
     removeFromWatchList,
-    addtoWatched,
-    updateWatched,
     addtoWatchedProfile,
     updateWatchedProfile,
     addToProfileWatchList,
@@ -63,11 +61,11 @@ const BitmovinPlayer = ({navigation,route}) => {
     } catch (err) {}
   };
   useEffect(() => {
-    AppState.addEventListener("change",   stoppedPlaying,
+    AppState.addEventListener("change",   stopPlaying,
     );
     
     return () => {
-      AppState.removeEventListener("change",   stoppedPlaying);
+      AppState.removeEventListener("change",   stopPlaying);
     };
   }, [appState]);
   
@@ -87,36 +85,26 @@ const BitmovinPlayer = ({navigation,route}) => {
 
     console.log('update watched', whatTime, whatDuration);
     if (
-      !user.isProfile &&
-      isWatched(user.user.watched, movie.title) == true
-      ) {
-        updateWatched(user.email, movie.title, Number(whatDuration), Number(whatTime))(dispatch);
-      } else if (
-        !user.isProfile &&
-        isWatched(user.user.watched, movie.title) == false
-        ) {
-          addtoWatched(user.email, movie.title, Number(whatDuration), Number(whatTime))(dispatch);
-        } else if (
-          user.isProfile &&
-      isWatched(user.profile.watched, movie.title) == false
+      isWatched(user.currentProfile.watched, movie.title) == false
     ) {
+      console.log('here 1');
       addtoWatchedProfile(
-        user.email,
+        user.user._id,
         movie.title,
         Number(whatDuration),
         Number(whatTime),
-        user.profileName
+        user.currentProfile._id
       )(dispatch);
     } else if (
-      user.isProfile &&
-      isWatched(user.profile.watched, movie.title) == true
+      isWatched(user.currentProfile.watched, movie.title) == true
     ) {
+      console.log('here 2');
       updateWatchedProfile(
-        user.email,
+        user.user._id,
         movie.title,
         Number(whatDuration),
         Number(whatTime),
-        user.profileName
+        user.currentProfile._id
       )(dispatch);
     }
   };

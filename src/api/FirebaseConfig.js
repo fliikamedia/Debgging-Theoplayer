@@ -1,13 +1,13 @@
 import firebase from "firebase";
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 export const firebaseConfig = {
-  apiKey: "AIzaSyBppPnNA6VuHhW-j9TBdmkilxC8VciTi-Y",
-  authDomain: "fliika-mobile-app.firebaseapp.com",
-  projectId: "fliika-mobile-app",
-  storageBucket: "fliika-mobile-app.appspot.com",
-  messagingSenderId: "632965390446",
-  appId: "1:632965390446:web:ecc884722aedb662dc467f",
-  measurementId: "G-R5S0B842GP",
+  apiKey: "AIzaSyDssG6lm2B3qHrZEsRi8SN6gr45zZ1G2mo",
+  authDomain: "sonorous-cacao-297018.firebaseapp.com",
+  projectId: "sonorous-cacao-297018",
+  storageBucket: "sonorous-cacao-297018.appspot.com",
+  messagingSenderId: "334242374492",
+  appId: "1:334242374492:web:2a1a3ddd89dfc9c5c35799",
+  measurementId: "G-V7V9Q3JNZT"
 };
 
 //firebase.initializeApp(firebaseConfig);

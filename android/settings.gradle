@@ -1,4 +1,6 @@
 rootProject.name = 'FliikaMobileRN'
+include ':@sayem314_react-native-keep-awake'
+project(':@sayem314_react-native-keep-awake').projectDir = new File(rootProject.projectDir, '../node_modules/@sayem314/react-native-keep-awake/android')
 include ':@react-native-community_datetimepicker'
 project(':@react-native-community_datetimepicker').projectDir = new File(rootProject.projectDir, '../node_modules/@react-native-community/datetimepicker/android')
 apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)

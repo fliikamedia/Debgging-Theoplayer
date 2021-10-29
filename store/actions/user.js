@@ -37,25 +37,47 @@ export const UPDATE_PROFILE = "UPDATE_PROFILE";
 export const UPDATE_PROFILE_SUCCESS = "UPDATE_PROFILE_SUCCESS";
 export const UPDATE_PROFILE_FAILED = "UPDATE_PROFILE_FAILED";
 export const UPDATE_MOVIE_TIME = 'UPDATE_MOVIE_TIME';
-
-export const addUser = (email, firstName, lastName, yearOfBirth, phoneNumber,uid, emailVerified ,profileImage) => async (dispatch) => {
+export const REMOVE_PROFILE = 'REMOVE_PROFILE';
+export const REMOVE_PROFILE_SUCCESS = 'REMOVE_PROFILE_SUCCESS';
+export const REMOVE_PROFILE_FAILED = 'REMOVE_PROFILE_FAILED';
+export const CURRENT_PROFILE = 'CURRENT_PROFILE';
+export const addUser = (email, firstName, lastName, yearOfBirth, phoneNumber,uid, emailVerified ,profileImage, authtoken) => async (dispatch) => {
+  let data = {
+    email: email,
+    firstName: firstName,
+    lastName: lastName,
+    profileImage: profileImage,
+    dateofBirth: yearOfBirth,
+    phone: phoneNumber,
+    uid: uid,
+    email_verified: emailVerified,
+    profiles: {
+      name: firstName,
+      image: profileImage,
+      isMainProfile: true
+    }
+  }
+  let headers = {
+    authtoken: authtoken
+  }
   try {
     dispatch({ type: ADD_USER });
-    const result = await expressApi.post(`/users`, {
-      email: email,
-      firstName: firstName,
-      lastName: lastName,
-      profileImage: profileImage,
-      dateofBirth: yearOfBirth,
-      phone: phoneNumber,
-      uid: uid,
-      email_verified: emailVerified
-    });
+    const result = await expressApi.post(`/users`,  data, {
+      headers: headers
+    } );
     if (result.status == 201) {
       console.log(result.data);
       dispatch({
         type: ADD_USER_SUCCESS,
         payload: result.data,
+      });
+      dispatch({
+        type: SET_PROFILE,
+        payload: firstName,
+      });
+      dispatch({
+        type: CURRENT_PROFILE,
+        payload: result.data.profiles[0],
       });
     } else {
       dispatch({ type: ADD_USER_FAILED });
@@ -65,25 +87,41 @@ export const addUser = (email, firstName, lastName, yearOfBirth, phoneNumber,uid
   }
 };
 
-export const getUser = (email, profileName) => async (dispatch) => {
+export const getUser = (email, authtoken) => async (dispatch) => {
+  let data = {
+    email: email
+  }
+  let headers = {
+    authtoken: authtoken
+  }
   try {
     dispatch({ type: GET_USER });
-    const result = await expressApi.post(`/users/a`, {
-      email: email,
+    const result = await expressApi.post(`/users/getUser`,
+    data, {
+      headers: headers
     });
     if (result.status == 200) {
-      // console.log(result.data);
+      //console.log('result',result.data.profiles[0]);
 
       dispatch({
         type: GET_USER_SUCCESS,
         payload: result.data,
       });
-      if (profileName) {
+      /* if (profileName) {
         dispatch({
           type: ADD_PROFILE_WATCHED_DETAILS,
           payload: result.data.profiles.find((r) => r.name == profileName),
         });
-      }
+      } else { */
+        dispatch({
+          type: CURRENT_PROFILE,
+          payload: result.data.profiles[0],
+        });
+        dispatch({
+          type: SET_PROFILE,
+          payload: result.data.profiles[0].name,
+        });
+      //}
     } else {
       dispatch({ type: GET_USER_FAILED });
     }
@@ -92,112 +130,17 @@ export const getUser = (email, profileName) => async (dispatch) => {
   }
 };
 
-export const addToWatchList = (emails, movie) => async (dispatch) => {
-  try {
-    dispatch({ type: ADD_TO_WATCHLIST });
-    const result = await expressApi.put(`/users`, {
-      email: emails,
-      newMovie: { title: movie.title },
-    });
-    if (result.status == 200) {
-      dispatch({
-        type: ADD_TO_WATCHLIST_SUCCESS,
-        payload: result.data,
-      });
-    } else {
-      dispatch({ type: ADD_TO_WATCHLIST_FAILED });
-    }
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-export const removeFromWatchList = (emails, movie) => async (dispatch) => {
-  try {
-    dispatch({ type: REMOVE_FROM_WATCHLIST });
-    const result = await expressApi.patch(`/users/b`, {
-      email: emails,
-      newMovie: { title: movie.title },
-    });
-    if (result.status == 200) {
-      // console.log(result);
-      dispatch({
-        type: REMOVE_FROM_WATCHLIST_SUCCESS,
-        payload: result.data,
-      });
-    } else {
-      dispatch({ type: REMOVE_FROM_WATCHLIST_FAILED });
-    }
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-export const addtoWatched =
-  (emails, title, duration, watched) => async (dispatch) => {
-    console.log('caught movie', title);
-    try {
-      dispatch({ type: ADD_TO_WATCHED });
-      const result = await expressApi.patch(`/users`, {
-        email: emails,
-        newMovie: {
-          title: title,
-          duration: duration,
-          watchedAt: watched,
-        },
-      });
-      if (result.status == 200) {
-        // console.log(result);
-        dispatch({
-          type: ADD_TO_WATCHED_SUCCESS,
-          payload: result.data,
-        });
-      } else {
-        dispatch({ type: ADD_TO_WATCHED_FAILED });
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-export const updateWatched =
-  (emails, title, duration, watched) => async (dispatch) => {
-    console.log("updating", duration, watched);
-    try {
-      dispatch({ type: UPDATE_WATCHED });
-      const result = await expressApi.patch(`/users/c`, {
-        email: emails,
-        newMovie: {
-          title: title,
-          duration: duration,
-          watchedAt: watched,
-        },
-      });
-      if (result.status == 200) {
-         //console.log(result);
-        dispatch({
-          type: UPDATE_WATCHED_SUCCESS,
-          payload: result.data,
-        });
-      } else {
-        dispatch({ type: UPDATE_WATCHED_FAILED });
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
 export const addProfile = (emails, name, image) => async (dispatch) => {
   console.log("adding profile");
   try {
     dispatch({ type: ADD_PROFILE, payload: name });
-    const result = await expressApi.post(`/users/profile`, {
+    const result = await expressApi.post(`/users/addProfile`, {
       email: emails,
       profile: {
         name: name,
         image: image,
-        watched: [],
-        watchList: [],
+        isMainProfile: false
       },
     });
     if (result.status == 200) {
@@ -219,13 +162,13 @@ export const addProfile = (emails, name, image) => async (dispatch) => {
 };
 
 export const addtoWatchedProfile =
-  (emails, title, duration, watched, profileName) => async (dispatch) => {
+  (userId, title, duration, watched, profileId) => async (dispatch) => {
     try {
       console.log("watched profile");
-      dispatch({ type: ADD_TO_WATCHED_PROFILE });
-      const result = await expressApi.patch(`/users/profile`, {
-        email: emails,
-        profileName: profileName,
+      //dispatch({ type: ADD_TO_WATCHED_PROFILE });
+      const result = await expressApi.patch(`/users/addToWatched`, {
+        userId: userId,
+        profileId: profileId,
         newMovie: {
           title: title,
           duration: duration,
@@ -233,15 +176,17 @@ export const addtoWatchedProfile =
         },
       });
       if (result.status == 200) {
-        // console.log(result);
-        dispatch({
-          type: ADD_TO_WATCHED_PROFILE_SUCCESS,
-          payload: result.data,
-        });
-        dispatch({
-          type: ADD_PROFILE_WATCHED_DETAILS,
-          payload: result.data.profiles.find((r) => r.name == profileName),
-        });
+       // console.log('result',result);
+       dispatch({
+        type: GET_USER_SUCCESS,
+        payload: result.data,
+      });
+          
+          dispatch({
+            type: CURRENT_PROFILE,
+            payload: result.data.profiles.find((r) => r._id == profileId),
+          });
+       
       } else {
         dispatch({ type: ADD_TO_WATCHED_PROFILE_FAILED });
       }
@@ -258,13 +203,13 @@ export const setNotProfile = () => async (dispatch) => {
 };
 
 export const updateWatchedProfile =
-  (emails, title, duration, watched, profileName) => async (dispatch) => {
+  (userId, title, duration, watched, profileId) => async (dispatch) => {
     console.log("updating profile");
     try {
-      dispatch({ type: UPDATE_WATCHED });
-      const result = await expressApi.post(`/users/profile/a`, {
-        email: emails,
-        profileName: profileName,
+     // dispatch({ type: UPDATE_WATCHED });
+      const result = await expressApi.put(`/users/updateWatched`, {
+        userId: userId,
+        profileId: profileId,
         newMovie: {
           title: title,
           duration: duration,
@@ -272,16 +217,17 @@ export const updateWatchedProfile =
         },
       });
       if (result.status == 200) {
-        console.log("result", result.data);
+        //console.log("result", result);
+       
         dispatch({
-          type: UPDATE_WATCHED_SUCCESS,
+          type: GET_USER_SUCCESS,
           payload: result.data,
         });
-
-        dispatch({
-          type: ADD_PROFILE_WATCHED_DETAILS,
-          payload: result.data.profiles.find((r) => r.name == profileName),
-        });
+          dispatch({
+            type: CURRENT_PROFILE,
+            payload: result.data.profiles.find((r) => r._id == profileId),
+          });
+     
       } else {
         dispatch({ type: UPDATE_WATCHED_FAILED });
       }
@@ -291,13 +237,13 @@ export const updateWatchedProfile =
   };
 
 export const addToProfileWatchList =
-  (emails, movie, profileName) => async (dispatch) => {
+  (userId, movie, profileId) => async (dispatch) => {
     try {
       dispatch({ type: ADD_TO_WATCHLIST });
-      const result = await expressApi.post(`/users/profile/b`, {
-        email: emails,
-        profileName: profileName,
+      const result = await expressApi.post(`/users/addToWatchList`, {
+        userId: userId,
         newMovie: { title: movie.title },
+        profileId: profileId,
       });
       if (result.status == 200) {
         dispatch({
@@ -305,8 +251,8 @@ export const addToProfileWatchList =
           payload: result.data,
         });
         dispatch({
-          type: ADD_PROFILE_WATCHED_DETAILS,
-          payload: result.data.profiles.find((r) => r.name == profileName),
+          type: CURRENT_PROFILE,
+          payload: result.data.profiles.find((r) => r._id == profileId),
         });
       } else {
         dispatch({ type: ADD_TO_WATCHLIST_FAILED });
@@ -317,23 +263,23 @@ export const addToProfileWatchList =
   };
 
 export const removeFromProfileWatchList =
-  (emails, movie, profileName) => async (dispatch) => {
+  (userId, movie, profileId) => async (dispatch) => {
     try {
       dispatch({ type: REMOVE_FROM_WATCHLIST });
-      const result = await expressApi.post(`/users/profile/c`, {
-        email: emails,
-        profileName: profileName,
+      const result = await expressApi.post(`/users/removeFromWatchList`, {
+        userId: userId,
         newMovie: { title: movie.title },
+        profileId: profileId,
       });
       if (result.status == 200) {
-        console.log(result);
+        //console.log(result);
         dispatch({
           type: REMOVE_FROM_WATCHLIST_SUCCESS,
           payload: result.data,
         });
         dispatch({
-          type: ADD_PROFILE_WATCHED_DETAILS,
-          payload: result.data.profiles.find((r) => r.name == profileName),
+          type: CURRENT_PROFILE,
+          payload: result.data.profiles.find((r) => r._id == profileId),
         });
       } else {
         dispatch({ type: REMOVE_FROM_WATCHLIST_FAILED });
@@ -343,19 +289,23 @@ export const removeFromProfileWatchList =
     }
   };
 
-export const removeProfile = (emails, profileName) => async (dispatch) => {
+export const removeProfile = (userId, profileId) => async (dispatch) => {
   try {
     dispatch({ type: REMOVE_FROM_WATCHLIST });
-    const result = await expressApi.post(`/users/profile/d`, {
-      email: emails,
-      profileName: profileName,
+    const result = await expressApi.post(`/users/removeProfile`, {
+      userId: userId,
+      profileId: profileId,
     });
     if (result.status == 200) {
       // console.log(result);
       dispatch({
-        type: REMOVE_FROM_WATCHLIST_SUCCESS,
+        type: GET_USER_SUCCESS,
         payload: result.data,
       });
+        dispatch({
+          type: CURRENT_PROFILE,
+          payload: result.data.profiles[0],
+        });
     } else {
       dispatch({ type: REMOVE_FROM_WATCHLIST_FAILED });
     }
@@ -370,11 +320,11 @@ export const setEmailFunc = (email) => (dispatch) => {
   } catch (err) {}
 };
 
-export const updateUserImage = (email, profileImage) => async (dispatch) => {
+export const updateUserImage = (userId, profileImage, profileId) => async (dispatch) => {
   try {
     dispatch({ type: UPDATE_USER_IMAGE });
-    const result = await expressApi.post(`/users/e`, {
-      email: email,
+    const result = await expressApi.post(`/users/updateUserImage`, {
+      userId: userId,
       profileImage: profileImage,
     });
     if (result.status == 200) {
@@ -382,6 +332,10 @@ export const updateUserImage = (email, profileImage) => async (dispatch) => {
       dispatch({
         type: UPDATE_USER_IMAGE_SUCCESS,
         payload: result.data,
+      });
+      dispatch({
+        type: CURRENT_PROFILE,
+        payload: result.data.profiles.find((r) => r._id == profileId),
       });
     } else {
       dispatch({ type: UPDATE_USER_IMAGE_FAILED });
@@ -392,25 +346,25 @@ export const updateUserImage = (email, profileImage) => async (dispatch) => {
 };
 
 export const updateProfile =
-  (emails, profileName, newName, profileImage) => async (dispatch) => {
+  (userId, profileId, newName, profileImage) => async (dispatch) => {
     try {
       dispatch({ type: UPDATE_PROFILE });
-      const result = await expressApi.post(`/users/profile/g`, {
-        email: emails,
-        profileName: profileName,
+      const result = await expressApi.post(`/users/updateProfile`, {
+        userId: userId,
+        profileId: profileId,
         newName: newName,
         profileImage: profileImage,
       });
       if (result.status == 200) {
-        console.log(result);
+        //console.log(result);
         dispatch({
-          type: UPDATE_PROFILE_SUCCESS,
+          type: GET_USER_SUCCESS,
           payload: result.data,
         });
-        dispatch({
-          type: UPDATE_PROFILE_FAILED,
-          payload: result.data.profiles.find((r) => r.name == profileName),
-        });
+          dispatch({
+            type: CURRENT_PROFILE,
+            payload: result.data.profiles.find((r) => r._id == profileId),
+          });
       } else {
         dispatch({ type: UPDATE_PROFILE_FAILED });
       }
@@ -424,4 +378,16 @@ try {
   console.log('updating time');
 dispatch({type: UPDATE_MOVIE_TIME, payload: {watched: watched, duration: duration}})
 } catch (err) {}
+  }
+
+
+  export const changeProfile = (state, profileId) => (dispatch) => {
+  try {
+    dispatch({
+      type: CURRENT_PROFILE,
+      payload: state.user.profiles.find((r) => r._id == profileId),
+    });
+  } catch (err) {
+
+  }
   }

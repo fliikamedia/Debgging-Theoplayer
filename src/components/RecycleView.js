@@ -32,7 +32,7 @@ export default class RecycleView extends Component {
           }, (type, dim) => {
             switch (type) {
               case 'NORMAL': 
-                dim.width = SCREEN_WIDTH * .35;
+                dim.width = SCREEN_WIDTH * .32;
                 dim.height = 200;
                 break;
               default: 
@@ -60,7 +60,7 @@ export default class RecycleView extends Component {
                   style={{
                     width: SIZES.width * 0.3,
                     height: SIZES.width * 0.45,
-                    borderRadius: 20,
+                    borderRadius: 2,
                     marginHorizontal: 5,
                   }}
                   source={{ uri: dvd_thumbnail_link }}
@@ -81,6 +81,7 @@ export default class RecycleView extends Component {
                   rowRenderer={this.rowRenderer}
                   dataProvider={this.state.list}
                   layoutProvider={this.layoutProvider}
+                  showsHorizontalScrollIndicator={false}
                 />
               </View>
             );

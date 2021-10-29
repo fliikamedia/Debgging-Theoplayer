@@ -34,10 +34,13 @@ import {
   UPDATE_PROFILE,
   UPDATE_PROFILE_SUCCESS,
   UPDATE_PROFILE_FAILED,
-  UPDATE_MOVIE_TIME
+  UPDATE_MOVIE_TIME,
+  REMOVE_PROFILE,
+  REMOVE_PROFILE_SUCCESS,
+  REMOVE_PROFILE_FAILED,
+  CURRENT_PROFILE
 } from "../actions/user";
 const initialState = {
-  isProfile: false,
   profileName: null,
   userFetched: false,
   user: [],
@@ -45,6 +48,7 @@ const initialState = {
     watched: [],
     watchList: [],
   },
+  currentProfile: [],
   email: "",
   watchedAt: 0,
   duration: 0
@@ -85,7 +89,7 @@ const userReducer = (state = initialState, { type, payload }) => {
     case UPDATE_WATCHED:
       return { ...state };
     case UPDATE_WATCHED_SUCCESS:
-      return { ...state, user: payload };
+      return { ...state, currentProfile: payload };
     case UPDATE_WATCHED_FAILED:
       return { ...state };
     case ADD_PROFILE:
@@ -93,21 +97,21 @@ const userReducer = (state = initialState, { type, payload }) => {
     case ADD_PROFILE_SUCCESS:
       return { ...state, user: payload, isProfile: true };
     case ADD_PROFILE_FAILED:
-      return { ...state, isProfile: false, profileName: null };
+      return { ...state, profileName: null };
     case ADD_PROFILE_DETAILS:
-      return { ...state, profile: payload };
+      return { ...state, currentProfile: payload };
     case ADD_TO_WATCHED_PROFILE:
       return { ...state };
     case ADD_TO_WATCHED_PROFILE_SUCCESS:
-      return { ...state, user: payload };
+      return { ...state, currentProfile: payload };
     case ADD_TO_WATCHED_PROFILE_FAILED:
       return { ...state };
     case ADD_PROFILE_WATCHED_DETAILS:
-      return { ...state, profile: payload };
+      return { ...state, currentProfile: payload };
     case SET_PROFILE:
-      return { ...state, isProfile: true, profileName: payload };
+      return { ...state, profileName: payload };
     case SET_NOT_PROFILE:
-      return { ...state, isProfile: false, profileName: "" };
+      return { ...state, profileName: "" };
     case SET_EMAIL:
       return { ...state, email: payload };
     case UPDATE_USER_IMAGE:
@@ -122,8 +126,16 @@ const userReducer = (state = initialState, { type, payload }) => {
       return { ...state, user: payload };
     case UPDATE_PROFILE_FAILED:
       return { ...state };
+      case REMOVE_PROFILE:
+        return { ...state };
+      case REMOVE_PROFILE_SUCCESS:
+        return { ...state, currentProfile: payload };
+      case REMOVE_PROFILE_FAILED:
+        return { ...state };
       case UPDATE_MOVIE_TIME:
         return {...state, watchedAt: payload.watched, duration: payload.duration}
+        case CURRENT_PROFILE:
+          return {...state, currentProfile: payload}
     default:
       return state;
   }

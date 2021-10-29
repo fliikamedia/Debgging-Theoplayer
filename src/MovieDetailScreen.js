@@ -28,8 +28,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   addToWatchList,
   removeFromWatchList,
-  addtoWatched,
-  updateWatched,
   addtoWatchedProfile,
   updateWatchedProfile,
   addToProfileWatchList,
@@ -71,7 +69,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
   const [episodes, setEpisodes] = useState(true);
   const [details, setDetails] = useState(false);
   const [seasonNumber, setSeasonNumber] = useState(null);
-  
+  console.log('currentProfile',user.currentProfile);
   const getMovie = useCallback(async () => {
     const response = await FliikaApi.get(`/posts/${selectedMovie}`);
     setMovie(response.data);
@@ -89,9 +87,10 @@ const MovieDetailScreen = ({ navigation, route }) => {
       const didPlay = await AsyncStorage.getItem("didPlay")
       const movieTitle=  await AsyncStorage.getItem("movieName")
 
+      let isWatchedMovie = isWatched(user.currentProfile.watched, movieTitle)
       console.log('timing', whatTime, whatDuration, movieTitle);
       if (didPlay == "true"){
-        saveMovie(Number(whatDuration), Number(whatTime), movieTitle);
+       saveMovie(Number(whatDuration), Number(whatTime), movieTitle, isWatchedMovie);
       }
       if (Platform.OS == 'android') {
       console.log('focused', didPlay);
@@ -108,8 +107,8 @@ const MovieDetailScreen = ({ navigation, route }) => {
 
   AsyncStorage.setItem('watched', '0');
   AsyncStorage.setItem('duration', '0')
-  return unsubscribe;
 });
+//return ()=> unsubscribe();
   }, [navigation]);
 
 
@@ -122,19 +121,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
     setEpisodes(false);
     setDetails(true);
   };
-/*   const saveOnLeavingPage = () => {
-    setIsPlaying(false);
-    saveMovie();
-  }; */
-  /*
-  useEffect(() => {
-    AppState.addEventListener("change", saveOnLeavingPage());
 
-    return () => {
-      AppState.removeEventListener("change", saveOnLeavingPage());
-    };
-  }, []);
-  */
   const isWatchList = (movieArray, movieName) => {
     try {
       var found = false;
@@ -159,101 +146,32 @@ const MovieDetailScreen = ({ navigation, route }) => {
       return movieWatched;
     } catch (err) {}
   };
-  const watchListFunc = () => {
-    try {
-      if (user.isProfile) {
-        return user.profile.watchList;
-      } else {
-        return user.user.watchList;
-      }
-    } catch (err) {}
-  };
-  
-  // console.log(isWatched(user.user.watched, movie.title));
-  //console.log(isWatched(user.user.watched, movie.title));
-  /*   useEffect(() => {
-    saveMovie();
-  }, [isPlaying]); */
-  //console.log( 'movie current',movie);
-  const saveMovie = (x,y,z) => {
-    console.log('saving movie',x,y, z);
-    if (
-      !user.isProfile &&
-      isWatched(user.user.watched, z) == true
+  const saveMovie = (duration,time,title, isWatchedMovie) => {
+    console.log('saving movie',duration,time, title, isWatchedMovie);
+    console.log('iswatched',   isWatched(user.currentProfile.watched, title));
+   if (
+      !isWatchedMovie
     ) {
       console.log('here 1');
-      updateWatched(user.email, z, x, y)(dispatch);
-    } else if (
-      !user.isProfile &&
-      isWatched(user.user.watched, z) == false
-    ) {
-      console.log('here 2');
-      addtoWatched(user.email, z, x, y)(dispatch);
-    } else if (
-      user.isProfile &&
-      isWatched(user.profile.watched, z) == false
-    ) {
-      console.log('here 3');
       addtoWatchedProfile(
-        user.email,
-        z,
-        x,
-        y,
-        user.profileName
+        user.user._id,
+        title,
+        duration,
+        time,
+        user.currentProfile._id
       )(dispatch);
-    } else if (
-      user.isProfile &&
-      isWatched(user.profile.watched, z) == true
-    ) {
-      console.log('here 4');
+    } else {
+      console.log('here 2');
       updateWatchedProfile(
-        user.email,
-        z,
-        x,
-        y,
-        user.profileName
+        user.user._id,
+        title,
+        duration,
+        time,
+        user.currentProfile._id
       )(dispatch);
     }
   };
-  /*
-  const addToWatchList = () => {
-    axios
-      .put("http://74264b614e9b.ngrok.io/users", {
-        email: "testingNew1@test.com",
-        newMovie: { title: movie.title },
-      })
-      .then(
-        (response) => {
-          //console.log(response.data);
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
-    fetch("http://526d7ed1513e.ngrok.io/users", {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        useQueryString: true,
-      },
-      body: JSON.stringify({
-        email: "testingNew@test.com",
-        newMovie: { title: "BATMAN", watchedAt: watched },
-      }),
-      params: {
-        language_code: "en",
-      },
-    })
-      .then((response) => {
-        console.log(JSON.stringify(response.data));
-        setData(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    };
-    */
+  
   const getSeries = useCallback(async () => {
     const responseSeries = await FliikaApi.get(`/posts/`);
     setSeries(responseSeries.data);
@@ -424,18 +342,14 @@ const MovieDetailScreen = ({ navigation, route }) => {
                   alignSelf: "center",
                 }}
               >
-                {isWatchList(watchListFunc(), movie.title) == true ? (
+                {isWatchList(user.currentProfile.watchList, movie.title) == true ? (
                   <TouchableOpacity
                     onPress={() => {
-                      if (user.isProfile) {
-                        removeFromProfileWatchList(
-                          user.email,
-                          movie,
-                          user.profileName
-                        )(dispatch);
-                      } else {
-                        removeFromWatchList(user.email, movie)(dispatch);
-                      }
+                      removeFromProfileWatchList(
+                        user.user._id,
+                        movie,
+                        user.currentProfile._id
+                      )(dispatch);
                     }}
                   >
                     <Icon
@@ -447,15 +361,12 @@ const MovieDetailScreen = ({ navigation, route }) => {
                 ) : (
                   <TouchableOpacity
                     onPress={() => {
-                      if (user.isProfile) {
-                        addToProfileWatchList(
-                          user.email,
-                          movie,
-                          user.profileName
-                        )(dispatch);
-                      } else {
-                        addToWatchList(user.email, movie)(dispatch);
-                      }
+                  addToProfileWatchList(
+                      user.user._id,
+                      movie,
+                      user.currentProfile._id
+                    )(dispatch);
+
                     }}
                   >
                     <IconFeather name="plus" size={40} color={COLORS.white} />
@@ -473,19 +384,6 @@ const MovieDetailScreen = ({ navigation, route }) => {
                 </TouchableOpacity>
               </View>
             </View>
-            {/*isSeries == "series" ? (
-              <Text
-                style={{
-                  color: COLORS.white,
-                  textTransform: "uppercase",
-                  fontSize: 12,
-                  fontWeight: "bold",
-                  marginBottom: 10,
-                }}
-              >
-                {`Season ${seasonNumber}`}
-              </Text>
-            ) : null*/}
             <Text
               style={{
                 color: COLORS.white,
@@ -578,49 +476,6 @@ const MovieDetailScreen = ({ navigation, route }) => {
         <View>
           <View style={{ flexDirection: "row" }}></View>
         </View>
-        {/*isSeries == "series" ? (
-          <Menu
-            visible={selectSeason}
-            onPress={openFilter}
-            onDismiss={closeFilter}
-            anchor={
-              <TouchableOpacity
-                style={{
-                  borderBottomLeftRadius: 5,
-                  borderBottomRightRadius: 5,
-                  borderBottomWidth: 3,
-                  borderRightWidth: 3,
-                  borderLeftWidth: 3,
-                  borderColor: "white",
-                  marginBottom: 20,
-                  width: 120,
-                  alignSelf: "center",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  paddingHorizontal: 10,
-                  alignItems: "center",
-                  height: 50,
-                }}
-                onPress={openFilter}
-              >
-                <Text
-                  style={{
-                    color: "white",
-                    fontSize: 18,
-                    fontWeight: "bold",
-                  }}
-                >
-                  {"Season 1"}
-                </Text>
-              </TouchableOpacity>
-            }
-          >
-            <Menu.Item key={1} title="season 1" />
-            <Menu.Item key={2} title="season 2" />
-            <Menu.Item key={3} title="season 3" />
-            <Menu.Item key={4} title="season 4" />
-          </Menu>
-        ) : null*/}
         {/* watch */}
 
         {isSeries == "movie" ? (
@@ -771,136 +626,6 @@ const MovieDetailScreen = ({ navigation, route }) => {
             >
             </View>
           ) : null}
-          {/*<Image
-            style={{
-              width: SIZES.width,
-              height: SIZES.height * 0.7,
-              resizeMode: "cover",
-              opacity: 0.8,
-            }}
-            source={{ uri: movie.dvd_thumbnail_link }}
-          />
-          <View>
-            <Text
-              style={{
-                color: COLORS.white,
-                fontSize: 20,
-                fontWeight: "bold",
-                textAlign: "center",
-                marginBottom: 10,
-              }}
-            >
-              {movie.title}
-            </Text>
-            <View
-              style={{
-                flexDirection: "row",
-                width: "60%",
-                justifyContent: "space-between",
-                alignSelf: "center",
-                marginBottom: 10,
-              }}
-            >
-              <Text style={{ color: "white" }}>{movie.runtime}</Text>
-              <Text style={{ color: "white" }}>{movie.film_rating}</Text>
-              <Text style={{ color: "white" }}>
-                {parseInt(movie.release_date)}
-              </Text>
-              <Text style={{ color: "white" }}>{movie.video_quality}</Text>
-            </View>
-            <View>
-              <TouchableOpacity
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  alignSelf: "center",
-                  backgroundColor: "cadetblue",
-                  width: 320,
-                  height: 60,
-                  borderRadius: 5,
-                  paddingLeft: 10,
-                }}
-                onPress={() => setPlay(true)}
-              >
-                <View
-                  style={{
-                    justifyContent: "center",
-                    alignItems: "center",
-                    width: 40,
-                    height: 40,
-                    borderRadius: 20,
-                    backgroundColor: COLORS.transparentWhite,
-                  }}
-                >
-                  <Image
-                    source={icons.play}
-                    resizeMode="contain"
-                    style={{
-                      width: 15,
-                      height: 15,
-                      tintColor: COLORS.white,
-                    }}
-                  />
-                </View>
-                <Text
-                  style={{
-                    marginLeft: SIZES.base,
-                    color: COLORS.white,
-                    fontSize: 16,
-                  }}
-                >
-                  Watch Now
-                </Text>
-              </TouchableOpacity>
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                width: "80%",
-                justifyContent: "space-around",
-                alignSelf: "center",
-                marginVertical: 20,
-              }}
-            >
-              <View style={styles.icons}>
-                <Feather name="plus" size={40} color={COLORS.white} />
-              </View>
-              <View style={styles.icons}>
-                <Feather name="download" size={40} color={COLORS.white} />
-              </View>
-              <View style={styles.icons}>
-                <Ionicons
-                  name="share-social-outline"
-                  size={40}
-                  color={COLORS.white}
-                />
-              </View>
-            </View>
-            <View style={{ width: "90%", alignSelf: "center" }}>
-              <Text style={{ color: COLORS.white, textAlign: "justify" }}>
-                {movie.storyline}
-              </Text>
-            </View>
-          </View>
-          {play ? (
-            <View
-              style={{ width: SIZES.width * 0.9, height: SIZES.height * 0.5 }}
-            >
-              <Video
-                useNativeControls
-                style={styles.video}
-                source={{
-                  uri: `${movie.play_url}.m3u8`,
-                }}
-                isLooping
-                resizeMode="contain"
-                rate={1.0}
-                volume={1}
-                shouldPlay
-                isMuted={false}
-              />
-            </View>
-          ) : null}*/}
         </ScrollView>
       )}
     </View>

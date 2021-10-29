@@ -5,10 +5,6 @@ import ReactNativeBitmovinPlayer, {
 } from '@takeoffmedia/react-native-bitmovin-player';
 import Orientation from 'react-native-orientation';
 import {
-  addToWatchList,
-  removeFromWatchList,
-  addtoWatched,
-  updateWatched,
   addtoWatchedProfile,
   updateWatchedProfile,
   addToProfileWatchList,
@@ -31,7 +27,7 @@ LogBox.ignoreAllLogs()
   const [watched, setWatched] = useState(0);
   const [duration, setDuration] = useState(0);
   //console.log(episode);
-  useEffect( () => {
+/*   useEffect( () => {
     const unsubscribe = navigation.addListener('focus', async () => {
      // Orientation.lockToPortrait();
       console.log('timing', user.duration, user.watchedAt);
@@ -50,9 +46,40 @@ LogBox.ignoreAllLogs()
   }
   return unsubscribe;
 });
+  }, [navigation]); */
+
+  useEffect( () => {
+    const unsubscribe = navigation.addListener('focus', async () => {
+       Orientation.lockToPortrait();
+      
+      const whatTime = await AsyncStorage.getItem('watched');
+      const whatDuration = await AsyncStorage.getItem('duration');
+      const didPlay = await AsyncStorage.getItem("didPlay")
+      const movieTitle=  await AsyncStorage.getItem("movieName")
+
+      let isWatchedMovie = isWatched(user.currentProfile.watched, movieTitle)
+      console.log('timing', whatTime, whatDuration, movieTitle);
+      if (didPlay == "true"){
+       saveMovie(Number(whatDuration), Number(whatTime), movieTitle, isWatchedMovie);
+      }
+      if (Platform.OS == 'android') {
+      console.log('focused', didPlay);
+      if (didPlay === 'true') {
+      ReactNativeBitmovinPlayerIntance.destroy();
+      AsyncStorage.setItem("didPlay", "false")
+      console.log('focused', didPlay);
+    }
+      
+  } else {
+    console.log('focused ios');
+    ReactNativeBitmovinPlayerIntance.pause()
+  }
+
+  AsyncStorage.setItem('watched', '0');
+  AsyncStorage.setItem('duration', '0')
+});
+//return ()=> unsubscribe();
   }, [navigation]);
-
-
   const appState = useRef(AppState.currentState);
   useEffect(() => {
     AppState.addEventListener("change",   stopPlaying,
@@ -92,51 +119,41 @@ LogBox.ignoreAllLogs()
   }
 
 
-  useEffect(() => {
+ /*  useEffect(() => {
     if (watched > 0 ) {
       console.log('updating time locally');
       updateMovieTime(watched, duration)(dispatch);
     }
     saveMovie()
-  }, [watched]);
-  const saveMovie = () => {
-    console.log('state',user.watchedAt, user.duration);
-    if (watched > 2){
-    if (
-      !user.isProfile &&
-      isWatched(user.user.watched, episode.title) == true
-      ) {
-        updateWatched(user.email, episode, user.duration, user.watchedAt)(dispatch);
-      } else if (
-        !user.isProfile &&
-        isWatched(user.user.watched, episode.title) == false
-        ) {
-          addtoWatched(user.email, episode, user.duration, user.watchedAt)(dispatch);
-        } else if (
-          user.isProfile &&
-      isWatched(user.profile.watched, episode.title) == false
+  }, [watched]); */
+  
+  
+  const saveMovie = (duration,time,title, isWatchedMovie) => {
+    console.log('saving movie',duration,time, title, isWatchedMovie);
+    console.log('iswatched',   isWatched(user.currentProfile.watched, title));
+   if (
+      !isWatchedMovie
     ) {
+      console.log('here 1');
       addtoWatchedProfile(
-        user.email,
-        episode,
-        user.duration,
-        user.watchedAt,
-        user.profileName
+        user.user._id,
+        title,
+        duration,
+        time,
+        user.currentProfile._id
       )(dispatch);
-    } else if (
-      user.isProfile &&
-      isWatched(user.profile.watched, episode.title) == true
-    ) {
+    } else {
+      console.log('here 2');
       updateWatchedProfile(
-        user.email,
-        episode,
-        user.duration,
-        user.watchedAt,
-        user.profileName
+        user.user._id,
+        title,
+        duration,
+        time,
+        user.currentProfile._id
       )(dispatch);
     }
-  }
   };
+  
   let playerHeight;
   let playerMargin
 if (playing) {
