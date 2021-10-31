@@ -19,19 +19,20 @@ import { useDispatch, useSelector } from "react-redux";
 const EditProfile = ({ navigation, route }) => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
-  const { main, profileName, imageTitle } = route.params;
+  const { main, profileName, imageTitle, profileId } = route.params;
   const [name, setName] = useState(profileName);
   const [imageName, setImageName] = useState(imageTitle);
-
+console.log(main);
   const creatingProfile = () => {
-    if (main) {
-      updateUserImage(user.email, imageName)(dispatch);
+  //  let profileId = user?.user?.profiles[0]?._id;
+  /*   if (main) {
+      updateUserImage(user.user._id, imageName, profileId)(dispatch);
       navigation.goBack();
       return;
-    }
+    } */
 
     if (name) {
-      updateProfile(user.email, profileName, name, imageName)(dispatch);
+      updateProfile(user.user._id, profileId, name, imageName)(dispatch);
       navigation.goBack();
       return;
     }
@@ -78,6 +79,7 @@ const EditProfile = ({ navigation, route }) => {
         />
       </View>
       <FlatList
+      showsHorizontalScrollIndicator={false}
         horizontal
         data={profileImgs}
         keyExtractor={(item) => item.name}

@@ -91,6 +91,7 @@ const ProfileScreen = ({ navigation }) => {
             />
           </View>
           <FlatList
+          showsHorizontalScrollIndicator={false}
             horizontal
             data={profileImgs}
             keyExtractor={(item) => item.name}
@@ -130,25 +131,26 @@ const ProfileScreen = ({ navigation }) => {
     } else if (editing) {
       return (
         <View>
-          <UserProfile
+      {/*     <UserProfile
             navigation={navigation}
             main={true}
             name={user.user.firstName}
-            image={user.user.profileImage}
+            image={user.user.profileImage || ''}
             editing={editing}
             setEditing={setEditing}
-          />
-          {user.user.profiles.map((item) => {
+          /> */}
+          {user?.user?.profiles?.map((item) => {
             return (
               <UserProfile
                 navigation={navigation}
                 editing={editing}
                 setEditing={setEditing}
-                main={false}
+                main={item.name === user.user.firstName}
                 key={item.name}
                 name={item.name}
                 image={item.image}
-              />
+                profileId={item._id}
+                />
             );
           })}
           <View>
@@ -186,26 +188,28 @@ const ProfileScreen = ({ navigation }) => {
             >
               Who's Watching ?
             </Text>
-            <UserProfile
+         {/*    <UserProfile
               editing={editing}
               setEditing={setEditing}
               main={true}
               name={user.user.firstName}
               image={user.user.profileImage}
-            />
-            {user.user.profiles.map((item) => {
+            /> */}
+            {user?.user?.profiles?.map((item) => {
               return (
                 <UserProfile
                   editing={editing}
                   setEditing={setEditing}
-                  main={false}
+                  main={item.name === user.user.firstName}
                   key={item.name}
                   name={item.name}
                   image={item.image}
+                  main={item.name === user.user.firstName}
+                  profileId={item._id}
                 />
               );
             })}
-            {profilesLength < 2 ? (
+            {profilesLength < 3 ? (
               <TouchableOpacity
                 onPress={() => setCreating(true)}
                 style={{ alignSelf: "center" }}

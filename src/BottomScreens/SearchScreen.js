@@ -14,7 +14,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 const SearchScreen = ({ navigation }) => {
   const movies = useSelector((state) => state.movies);
   const [term, setTerm] = useState("");
-
+//console.log(movies.availableMovies[0]);
  
 
   let searchArray = [];

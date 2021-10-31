@@ -39,6 +39,7 @@ import RecycleView from "../components/RecycleView";
 const TvShowsScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
+  const movies = useSelector((state) => state.movies);
 
   const [result, setResult] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -54,7 +55,7 @@ const TvShowsScreen = ({ navigation }) => {
   }, []);
 
   let series;
-  series = result.filter(
+  series = movies.availableMovies.filter(
     (e) =>
       e.film_type == "series" &&
       e.episode_number == 1 &&
@@ -75,15 +76,6 @@ const TvShowsScreen = ({ navigation }) => {
         }
       }
       return found;
-    } catch (err) {}
-  };
-  const watchListFunc = () => {
-    try {
-      if (user.isProfile) {
-        return user.profile.watchList;
-      } else {
-        return user.user.watchList;
-      }
     } catch (err) {}
   };
 
@@ -122,6 +114,7 @@ const TvShowsScreen = ({ navigation }) => {
     const { width, height } = Dimensions.get("window");
 
     const renderItem = ({ item, index }) => {
+      if (item.dvd_thumbnail_link){
       return (
         <View>
           <TouchableOpacity
@@ -144,18 +137,14 @@ const TvShowsScreen = ({ navigation }) => {
               style={styles.carouselImage}
             />
             {/*<Text style={styles.carouselText}>{item.title}</Text>*/}
-            {isWatchList(watchListFunc(), item.title) == true ? (
+            {isWatchList(user.currentProfile.watchList, item.title) == true ? (
               <TouchableWithoutFeedback
                 onPress={() => {
-                  if (user.isProfile) {
                     removeFromProfileWatchList(
-                      user.email,
+                      user.user._id,
                       item,
-                      user.profileName
+                      user.currentProfile._id
                     )(dispatch);
-                  } else {
-                    removeFromWatchList(user.email, item)(dispatch);
-                  }
                 }}
               >
                 <Icon
@@ -167,17 +156,13 @@ const TvShowsScreen = ({ navigation }) => {
               </TouchableWithoutFeedback>
             ) : (
               <TouchableWithoutFeedback
-                onPress={() => {
-                  if (user.isProfile) {
-                    addToProfileWatchList(
-                      user.email,
-                      item,
-                      user.profileName
-                    )(dispatch);
-                  } else {
-                    addToWatchList(user.email, item)(dispatch);
-                  }
-                }}
+              onPress={() => {
+                addToProfileWatchList(
+                  user.user._id,
+                  item,
+                  user.currentProfile._id
+                )(dispatch);
+            }}
               >
                 <IconMaterial
                   name="library-add"
@@ -190,6 +175,7 @@ const TvShowsScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       );
+    }
     };
     return (
       <View style={styles.carouselContentContainer}>
@@ -259,6 +245,7 @@ const TvShowsScreen = ({ navigation }) => {
               <Text style={styles.movieStat}>{background.stat}</Text>
               <View style={{ paddingHorizontal: 14, marginTop: 14 }}>
                 <Text
+                numberOfLines={5}
                   style={{
                     color: "white",
                     opacity: 0.8,
@@ -298,7 +285,7 @@ const TvShowsScreen = ({ navigation }) => {
   for (let x = 0; x < genres.length; x++) {
     newResults.push({
       genre: genres[x],
-      movies: result.filter(
+      movies: movies.availableMovies.filter(
         (r) =>
           r.genre.includes(genres[x]) &&
           r.film_type == "series" &&

@@ -7,9 +7,9 @@ import {
   Dimensions,
 } from "react-native";
 import firebase from "firebase";
-import { MOVIES, SIGNUP } from "../../constants/RouteNames";
+import { EMAILSIGNUP, MOVIES, SIGNUP } from "../../constants/RouteNames";
 import { TextInput, HelperText } from "react-native-paper";
-import { setEmailFunc } from "../../store/actions/user";
+import { setEmailFunc, getUser } from "../../store/actions/user";
 import { useDispatch } from "react-redux";
 
 const LoginScreen = ({ navigation }) => {
@@ -23,17 +23,18 @@ const LoginScreen = ({ navigation }) => {
       firebase
         .auth()
         .signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
+        .then(async (userCredential) => {
           // Signed in
+          var user = userCredential.user;
+          const idToken = await user.getIdToken();
+          getUser(user.email, idToken)(dispatch);
 
           setEmailFunc(email)(dispatch);
-          navigation.reset({
+         navigation.reset({
             index: 0,
             routes: [{ name: MOVIES }],
           });
           navigation.navigate(MOVIES);
-
-          var user = userCredential.user;
 
           //console.log(user);
           // ...
@@ -203,7 +204,7 @@ const LoginScreen = ({ navigation }) => {
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
-        onPress={() => navigation.navigate(SIGNUP)}
+        onPress={() => navigation.navigate(EMAILSIGNUP)}
         style={styles.signinBtn}
       >
         <Text

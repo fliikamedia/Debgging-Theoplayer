@@ -7,9 +7,9 @@ import {
   Dimensions,
   Image,
 } from "react-native";
-import { setProfile, setNotProfile } from "../../store/actions/user";
+import { setProfile } from "../../store/actions/user";
 import { useDispatch, useSelector } from "react-redux";
-import { removeProfile } from "../../store/actions/user";
+import { removeProfile, changeProfile } from "../../store/actions/user";
 import { EDITPROFILE } from "../../constants/RouteNames";
 import IconAnt from 'react-native-vector-icons/AntDesign';
 import IconAwesome from 'react-native-vector-icons/FontAwesome5';
@@ -24,14 +24,13 @@ const UserProfile = ({
   image,
   navigation,
   setEditing,
+  profileId
 }) => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   let borderColor;
   try {
-    if (name == user.profileName) {
-      borderColor = "aqua";
-    } else if (!user.profileName && name == user.user.firstName) {
+    if (name == user.currentProfile.name) {
       borderColor = "aqua";
     } else {
       borderColor = "grey";
@@ -44,7 +43,6 @@ const UserProfile = ({
     height: Dimensions.get("window").width * 0.3,
     borderRadius: 120,
     width: Dimensions.get("window").width * 0.3,
-    borderRadius: 120,
     marginBottom: 5,
     borderWidth: 4,
     borderColor: borderColor,
@@ -67,21 +65,18 @@ const UserProfile = ({
   } else if (image == "profile7") {
     profileImg = require(`../../assets/profileImg/profile7.jpg`);
   }
+
   return (
     <View style={{ alignItems: "center", marginVertical: 10 }}>
       <TouchableOpacity
         onPress={ async() => {
-          if (main) {
-            setNotProfile()(dispatch);
-            await AsyncStorage.setItem('profileName', '')
-          } else {
+        changeProfile(user,profileId)(dispatch);
             setProfile(name)(dispatch);
             await AsyncStorage.setItem('profileName', name);
-          }
         }}
         style={container}
       >
-        {image ? (
+        {image && image != 'profile0' ? (
           <>
             <Image
               style={{
@@ -100,6 +95,7 @@ const UserProfile = ({
                       main: main,
                       profileName: name,
                       imageTitle: image,
+                      profileId: profileId
                     });
                 }}
                 style={{
@@ -134,11 +130,12 @@ const UserProfile = ({
                 }}
                 onPress={() => {
                   setEditing(false),
-                    navigation.navigate(EDITPROFILE, {
-                      main: main,
-                      profileName: name,
-                      imageTitle: image,
-                    });
+                  navigation.navigate(EDITPROFILE, {
+                    main: main,
+                    profileName: name,
+                    imageTitle: image,
+                    profileId: profileId
+                  });
                 }}
               >
                 <IconAwesome name="edit" size={40} color="white" />
@@ -159,7 +156,7 @@ const UserProfile = ({
         >
           <Text style={{ color: "white", fontSize: 18 }}>Remove</Text>
           <TouchableOpacity
-            onPress={() => removeProfile(user.email, name)(dispatch)}
+            onPress={() => removeProfile(user.user._id, profileId)(dispatch)}
           >
             <IconAnt name="delete" size={30} color="white" />
           </TouchableOpacity>

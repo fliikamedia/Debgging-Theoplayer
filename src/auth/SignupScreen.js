@@ -106,8 +106,10 @@ const SignupScreen = ({ navigation }) => {
       }); */
       //console.log("response", currentUser);
       const { uid, email,emailVerified } = firebase.auth().currentUser;
+      const idToken = await firebase.auth().currentUser.getIdToken();
+
        
-        addUser(email,firstName, lastName, yearOfBirth, phoneNumber,uid, emailVerified, "profile0")(dispatch);
+        addUser(email,firstName, lastName, yearOfBirth, phoneNumber,uid, emailVerified, "profile0", idToken )(dispatch);
         navigation.reset({
           index: 0,
           routes: [{ name: MOVIES }],

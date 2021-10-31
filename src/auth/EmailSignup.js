@@ -7,6 +7,7 @@ import {
   ScrollView,
   AppState,
   Dimensions,
+  Alert
 } from "react-native";
 import firebase from "firebase";
 import { LOGIN, MOVIES, SIGNUP } from "../../constants/RouteNames";
@@ -32,8 +33,16 @@ const EmailSignup = ({ navigation }) => {
   const [date, setDate] = useState(new Date(1598051730000));
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
+  const [time, setTime] = useState(Date.now());
+const [signedup, setSignedup] = useState(false);
 
 
+useEffect(() => {
+  const interval = setInterval(() => setTime(Date.now()), 1000);
+  return () => {
+    clearInterval(interval);
+  };
+}, []);
   const checkIFLoggedIn = () => {
     firebase.app().delete().then(function() {
       //console.log('initializing');
@@ -42,7 +51,8 @@ const EmailSignup = ({ navigation }) => {
       firebase.auth().onAuthStateChanged((user) => {
         if (user && user.emailVerified) {
          // console.log('success',user);
-          navigation.navigate(SIGNUP)
+          navigation.navigate(SIGNUP);
+          setSignedup(false)
         } else {
           //console.log('failed',user);
         }
@@ -51,7 +61,13 @@ const EmailSignup = ({ navigation }) => {
    
     
   };
+useEffect(()=> {
+  if(signedup){
 
+    checkIFLoggedIn();
+    console.log('checking');
+  }
+}, [time])
   useEffect(() => {
     AppState.addEventListener("change",   checkIFLoggedIn,
     );
@@ -71,14 +87,21 @@ const EmailSignup = ({ navigation }) => {
       const currentUser = firebase.auth().currentUser;
     
       currentUser.sendEmailVerification().then(function () {
-        alert("A verification E-mail was sent to you...");
+        Alert.alert('', 'An Email verification was sent to you', [
+          {
+            text: 'Ok',
+            onPress: () => {
+              setSignedup(true);
+            },
+          },
+        ]);;
       });
     
-      //console.log('current user',currentUser);
+      console.log('current user',currentUser);
 
     } catch (err) {
       console.log(err);
-      setError(err.message);
+      //setError(err.message);
     }
   };
   /// to be fixed
