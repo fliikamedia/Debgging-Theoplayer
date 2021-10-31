@@ -1,7 +1,7 @@
 import React, {useRef, useEffect, useState} from 'react'
-import { View, StatusBar, AppState, Platform } from 'react-native'
+import { View, StatusBar, AppState, Platform, StyleSheet } from 'react-native'
 import ReactNativeBitmovinPlayer, {
-    ReactNativeBitmovinPlayerIntance,
+  ReactNativeBitmovinPlayerMethodsType,
   } from '@takeoffmedia/react-native-bitmovin-player';
   import Orientation from 'react-native-orientation';
   import {
@@ -21,11 +21,17 @@ const BitmovinPlayer = ({navigation,route}) => {
   const dispatch = useDispatch();
   const [isPlaying, setIsPlaying] = useState(false);
   const {movie} = route.params;
-
+console.log('tyyyyyyype',ReactNativeBitmovinPlayerMethodsType);
   const [watched, setWatched] = useState(0);
   const [duration, setDuration] = useState(0);
   const appState = useRef(AppState.currentState);
 
+  const videoUrl = Platform.select({
+    ios: 'https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8',
+    android: 'https://bitdash-a.akamaihd.net/content/sintel/sintel.mpd',
+    default: 'https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8',
+  });
+  
 
   const stopPlaying = async () => {
     const didPlay = await AsyncStorage.getItem("didPlay")
@@ -34,10 +40,10 @@ const BitmovinPlayer = ({navigation,route}) => {
       saveMovie();
     }
     if (Platform.OS === 'ios') {
-      ReactNativeBitmovinPlayerIntance.pause();
+      //ReactNativeBitmovinPlayerIntance.pause();
       console.log('ios');
     } else if (Platform.OS == 'android' && didPlay == "true") {
-      ReactNativeBitmovinPlayerIntance.destroy();
+      //ReactNativeBitmovinPlayerIntance.destroy();
       AsyncStorage.setItem("didPlay", "false")
       console.log('android');
     }
@@ -84,6 +90,7 @@ const BitmovinPlayer = ({navigation,route}) => {
     const whatDuration = await AsyncStorage.getItem('duration');
 
     console.log('update watched', whatTime, whatDuration);
+    if (whatTime > 0) {
     if (
       isWatched(user.currentProfile.watched, movie.title) == false
     ) {
@@ -107,6 +114,7 @@ const BitmovinPlayer = ({navigation,route}) => {
         user.currentProfile._id
       )(dispatch);
     }
+  }
   };
   
  //console.log(movie);
@@ -129,35 +137,90 @@ if (Platform.OS === 'android') {
     >
             <StatusBar hidden /> 
         <View style={{width: '100%', height: '100%'}}>
- <ReactNativeBitmovinPlayer
+<ReactNativeBitmovinPlayer
+      style={styles.container}
         autoPlay={true}
         hasZoom={false}
         configuration={{
           url: playURL,
          // poster: episode.wide_thumbnail_link,
           startOffset: 0,
-          hasNextEpisode: true,
+          hasNextEpisode: false,
           subtitles: '',
          // thumbnails: '',
           //title: movie.title,
-          subtitle: '',
+          subtitle: movie.title,
           nextPlayback: 1,
           hearbeat: 1,
           advisory: {
-            classification: '',
-            description: '',
+            classification: movie.film_rating,
+            description: movie.content_advisory,
           },
         }}
         onLoad={e => console.log('Load', e)}
         onError={e => console.log('Error', e)}
-       onPlaying={async ({nativeEvent})=> {Platform.OS == 'android' ?  Orientation.lockToLandscapeLeft() : Orientation.lockToLandscapeRight(),console.log(nativeEvent)
+       onPlay={async ({nativeEvent})=> {Platform.OS == 'android' ?  Orientation.lockToLandscapeLeft() : Orientation.lockToLandscapeRight(),console.log(nativeEvent)
 , await AsyncStorage.setItem("didPlay", 'true'), await AsyncStorage.setItem('movieName', movie.title) }}
         onEvent={({nativeEvent}) => { console.log(nativeEvent),saveTiming(String(nativeEvent.duration), String(nativeEvent.time))}}
         onPause={()=> setIsPlaying(false)}
-      />            
+      />  
+{/*       <ReactNativeBitmovinPlayer
+      style={styles.container}
+      autoPlay
+      hasZoom={false}
+      configuration={{
+        title: 'It works',
+        subtitle: 'S1 · E1',
+        startOffset: 10,
+        nextPlayback: 30,
+        hasNextEpisode: false,
+        advisory: {
+          classification: 'TV-PG',
+          description: 'All Drama',
+        },
+        hearbeat: 10,
+        url: videoUrl,
+        poster:
+          'https://bitmovin-a.akamaihd.net/content/MI201109210084_1/poster.jpg',
+        subtitles:
+          'https://bitdash-a.akamaihd.net/content/sintel/subtitles/subtitles_en.vtt',
+        thumbnails:
+          'https://bitdash-a.akamaihd.net/content/sintel/sprite/sprite.vtt',
+      }}
+      onReady={({ nativeEvent }) => {
+        console.log({ nativeEvent });
+      }}
+      onEvent={({ nativeEvent }) => {
+        console.log({ nativeEvent });
+      }}
+      onPause={({ nativeEvent }) => {
+        console.log({ nativeEvent });
+      }}
+      onPlay={({ nativeEvent }) => {
+        console.log({ nativeEvent });
+      }}
+      onSeek={({ nativeEvent }) => {
+        console.log({ nativeEvent });
+      }}
+      onForward={({ nativeEvent }) => {
+        console.log({ nativeEvent });
+      }}
+      onRewind={({ nativeEvent }) => {
+        console.log({ nativeEvent });
+      }}
+      onPiPEnter={({ nativeEvent }) => {
+        console.log({ nativeEvent });
+      }}
+    />   */}  
         </View>
         </View>
     )
 }
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'black',
+  },
+});
 export default BitmovinPlayer

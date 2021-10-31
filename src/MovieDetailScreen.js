@@ -95,20 +95,20 @@ const MovieDetailScreen = ({ navigation, route }) => {
       if (Platform.OS == 'android') {
       console.log('focused', didPlay);
       if (didPlay === 'true') {
-      ReactNativeBitmovinPlayerIntance.destroy();
+      //ReactNativeBitmovinPlayerIntance.destroy();
       AsyncStorage.setItem("didPlay", "false")
       console.log('focused', didPlay);
     }
       
   } else {
     console.log('focused ios');
-    ReactNativeBitmovinPlayerIntance.pause()
+    //ReactNativeBitmovinPlayerIntance.pause()
   }
 
   AsyncStorage.setItem('watched', '0');
   AsyncStorage.setItem('duration', '0')
 });
-//return ()=> unsubscribe();
+return ()=> unsubscribe();
   }, [navigation]);
 
 
@@ -149,27 +149,29 @@ const MovieDetailScreen = ({ navigation, route }) => {
   const saveMovie = (duration,time,title, isWatchedMovie) => {
     console.log('saving movie',duration,time, title, isWatchedMovie);
     console.log('iswatched',   isWatched(user.currentProfile.watched, title));
-   if (
-      !isWatchedMovie
-    ) {
-      console.log('here 1');
-      addtoWatchedProfile(
-        user.user._id,
-        title,
-        duration,
-        time,
-        user.currentProfile._id
-      )(dispatch);
-    } else {
-      console.log('here 2');
-      updateWatchedProfile(
-        user.user._id,
-        title,
-        duration,
-        time,
-        user.currentProfile._id
-      )(dispatch);
-    }
+    if(time > 0) {
+      if (
+        !isWatchedMovie
+        ) {
+          console.log('here 1');
+          addtoWatchedProfile(
+            user.user._id,
+            title,
+            duration,
+            time,
+            user.currentProfile._id
+            )(dispatch);
+          } else {
+            console.log('here 2');
+            updateWatchedProfile(
+              user.user._id,
+              title,
+              duration,
+              time,
+              user.currentProfile._id
+              )(dispatch);
+            }
+          }
   };
   
   const getSeries = useCallback(async () => {

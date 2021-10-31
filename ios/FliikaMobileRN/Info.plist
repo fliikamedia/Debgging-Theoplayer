@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>BitmovinPlayerCss</key>
+	<string>https://stagev2-app-assets.britbox.takeoffmedia.com/player/poc/css/bitmovinplayer-ui.min.css</string>
+	<key>BitmovinPlayerJs</key>
+	<string>https://stagev2-app-assets.britbox.takeoffmedia.com/player/poc/js/bitmovinplayer-ui.min.js</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>MaterialCommunityIcons.ttf</string>

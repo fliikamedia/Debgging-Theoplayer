@@ -36,6 +36,7 @@ allprojects {
              maven {
             url 'http://bitmovin.bintray.com/maven'
         }
+        maven { url 'https://artifacts.bitmovin.com/artifactory/public-releases' }
         maven { url 'https://www.jitpack.io' }
     }
 }
