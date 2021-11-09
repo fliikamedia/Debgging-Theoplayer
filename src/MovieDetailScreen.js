@@ -107,6 +107,8 @@ const MovieDetailScreen = ({ navigation, route }) => {
 
   AsyncStorage.setItem('watched', '0');
   AsyncStorage.setItem('duration', '0')
+  AsyncStorage.setItem("isWatchedBefore", "null")
+
 });
 return ()=> unsubscribe();
   }, [navigation]);

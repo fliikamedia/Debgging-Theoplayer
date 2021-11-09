@@ -56,6 +56,8 @@ setWatchedMovie()
       console.log('android');
     }
     AsyncStorage.setItem("movieName", "")
+    AsyncStorage.setItem("isWatchedBefore", "null")
+
    // Orientation.lockToPortrait()
   }
   
