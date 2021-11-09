@@ -21,7 +21,6 @@ const BitmovinPlayer = ({navigation,route}) => {
   const dispatch = useDispatch();
   const [isPlaying, setIsPlaying] = useState(false);
   const {movie} = route.params;
-console.log('tyyyyyyype',ReactNativeBitmovinPlayerMethodsType);
   const [watched, setWatched] = useState(0);
   const [duration, setDuration] = useState(0);
   const appState = useRef(AppState.currentState);
@@ -32,7 +31,16 @@ console.log('tyyyyyyype',ReactNativeBitmovinPlayerMethodsType);
     default: 'https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8',
   });
   
-
+  const setWatchedMovie = async () => {
+    if (isWatched(user.currentProfile.watched, movie.title)){
+      AsyncStorage.setItem("isWatchedBefore", "true")
+    } else {
+      AsyncStorage.setItem("isWatchedBefore", "false")
+    }
+  }
+useEffect(()=> {
+setWatchedMovie()
+}, [])
   const stopPlaying = async () => {
     const didPlay = await AsyncStorage.getItem("didPlay")
     //Orientation.lockToPortrait();
