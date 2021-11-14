@@ -18,7 +18,7 @@ import {
 import { COLORS, SIZES, icons } from "../../constants";
 import { MOVIEDETAIL } from "../../constants/RouteNames";
 import firebase from "firebase";
-import Carousel from "react-native-anchor-carousel";
+import Carousel from "react-native-snap-carousel";
 import  LinearGradient  from "react-native-linear-gradient";
 import { fetchMovies} from "../../store/actions/movies";
 import { useDispatch, useSelector } from "react-redux";
@@ -312,19 +312,13 @@ useEffect(()=> {
       return (
         <View>
           <TouchableOpacity
-            onPress={() => {
-              carouselRef.current.scrollToIndex(index);
-              setBackground({
-                uri: item.dvd_thumbnail_link,
-                name: item.title,
-                stat: `${item.film_rating} - ${item.genre
-                  .toString()
-                  .replace(/,/g, " ")} - ${item.runtime}`,
-                desc: item.storyline,
-                _id: item._id,
-                film_type: item.film_type,
-              });
-            }}
+              onPress={() =>
+                navigation.navigate(MOVIEDETAIL, {
+                  selectedMovie: item._id,
+                  isSeries: item.film_type,
+                  seriesTitle:  item.title,
+                })
+              }
           >
             <Image
               source={{ uri: item.dvd_thumbnail_link }}
@@ -406,13 +400,32 @@ useEffect(()=> {
                   style={styles.carousel}
                   data={resultsToShow}
                   renderItem={renderItem}
-                  itemWidth={200}
+                  itemWidth={230}
+                  sliderWidth={500}
                   containerWidth={width - 20}
                   separatorWidth={0}
                   ref={carouselRef}
                   inActiveOpacity={0.4}
-                  //pagingEnable={false}
-                  //minScrollDistance={20}
+                  autoplay={true}
+                  loop
+                  inactiveSlideOpacity={0.7}
+                  inactiveSlideScale={0.9}
+                  // activeAnimationType={'spring'}
+                  // activeAnimationOptions={{
+                  //     friction: 4,
+                  //     tension: 5
+                  // }}
+                  enableMomentum={true}
+                  onSnapToItem={ index => { setBackground({
+                    uri: resultsToShow[index]?.dvd_thumbnail_link,
+                    name: resultsToShow[index]?.title,
+                    stat: `${resultsToShow[index]?.film_rating} - ${resultsToShow[index]?.genre
+                      .toString()
+                      .replace(/,/g, " ")} - ${resultsToShow[index]?.runtime}`,
+                    desc: resultsToShow[index]?.storyline,
+                    _id: resultsToShow[index]?._id,
+                    film_type: resultsToShow[index]?.film_type,
+                  });} }
                 />
               </View>
               <View style={styles.movieInfoContainer}>
@@ -530,8 +543,8 @@ const styles = StyleSheet.create({
     height: SIZES.height * 0.6,
   },
   carouselImage: {
-    width: 200,
-    height: 320,
+    width: 230,
+    height: 360,
     borderRadius: 10,
     alignSelf: "center",
     backgroundColor: "rgba(0,0,0,0.9)",
@@ -564,7 +577,7 @@ const styles = StyleSheet.create({
   },
   carouselContainerView: {
     width: "100%",
-    height: 350,
+    height: 360,
     justifyContent: "center",
     alignItems: "center",
   },

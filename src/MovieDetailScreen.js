@@ -87,7 +87,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
       const didPlay = await AsyncStorage.getItem("didPlay")
       const movieTitle=  await AsyncStorage.getItem("movieName")
 
-      let isWatchedMovie = isWatched(user.currentProfile.watched, movieTitle)
+      const isWatchedMovie = await AsyncStorage.getItem("isWatchedBefore")
       console.log('timing', whatTime, whatDuration, movieTitle);
       if (didPlay == "true"){
        saveMovie(Number(whatDuration), Number(whatTime), movieTitle, isWatchedMovie);
@@ -107,6 +107,8 @@ const MovieDetailScreen = ({ navigation, route }) => {
 
   AsyncStorage.setItem('watched', '0');
   AsyncStorage.setItem('duration', '0')
+  AsyncStorage.setItem("isWatchedBefore", "null")
+
 });
 return ()=> unsubscribe();
   }, [navigation]);
@@ -148,10 +150,10 @@ return ()=> unsubscribe();
   };
   const saveMovie = (duration,time,title, isWatchedMovie) => {
     console.log('saving movie',duration,time, title, isWatchedMovie);
-    console.log('iswatched',   isWatched(user.currentProfile.watched, title));
+   // console.log('iswatched',   isWatched(user.currentProfile.watched, title));
     if(time > 0) {
       if (
-        !isWatchedMovie
+        isWatchedMovie === 'false'
         ) {
           console.log('here 1');
           addtoWatchedProfile(
