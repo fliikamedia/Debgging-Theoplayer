@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import AsyncStorage from "@react-native-community/async-storage";
 import IconAnt from 'react-native-vector-icons/AntDesign';
 import { BITMOVINPLAYER } from "../constants/RouteNames";
+import FastImage from 'react-native-fast-image'
 
 
 const EpisodeDetailScreen = ({ navigation,route }) => {
@@ -182,7 +183,7 @@ console.log(playURL);
       <TouchableOpacity style={{height: '40%', width: '100%',      alignItems: "center",
             justifyContent: "center",}} onPress={()=>                navigation.navigate(BITMOVINPLAYER, {movie: episode})
           } >
-      <Image source={{uri: episode.wide_thumbnail_link}} style={{ position: "absolute",
+      <FastImage source={{uri: episode.wide_thumbnail_link}} style={{ position: "absolute",
     top: 0,
     bottom: 0,
     right: 0,

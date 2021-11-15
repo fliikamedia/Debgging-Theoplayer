@@ -2,6 +2,7 @@ import React from "react";
 import { Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { EPISODEDETAIL } from "../../constants/RouteNames";
 import IconAnt from 'react-native-vector-icons/AntDesign';
+import FastImage from 'react-native-fast-image'
 
 const EpisodeItem = ({ episode, playSeries, navigation }) => {
   return (
@@ -18,7 +19,7 @@ const EpisodeItem = ({ episode, playSeries, navigation }) => {
             navigation.navigate(EPISODEDETAIL, { episode: episode })
           }
         >
-          <Image
+          <FastImage
             style={styles.poster}
             source={{ uri: episode.wide_thumbnail_link }}
           />

@@ -2,6 +2,7 @@ import React, {useCallback} from 'react'
 import {View, Text, StyleSheet, FlatList, TouchableWithoutFeedback, Image} from 'react-native'
 import { COLORS, SIZES, icons } from "../../constants";
 import { MOVIEDETAIL } from '../../constants/RouteNames';
+import FastImage from 'react-native-fast-image'
 
 const MoviesList = ({title, movies, index, navigation}) => {
     const renderItem = useCallback(({ item, index }) => {
@@ -16,7 +17,7 @@ const MoviesList = ({title, movies, index, navigation}) => {
                 })
               }
             >
-              <Image
+              <FastImage
                 style={{
                   width: SIZES.width * 0.3,
                   height: SIZES.width * 0.45,
