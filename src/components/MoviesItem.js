@@ -2,6 +2,7 @@ import React from "react";
 import { Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { MOVIEDETAIL } from "../../constants/RouteNames";
 import IconAnt from 'react-native-vector-icons/AntDesign';
+import FastImage from 'react-native-fast-image'
 
 
 const MoviesItem = ({ movie, navigation }) => {
@@ -23,7 +24,7 @@ const MoviesItem = ({ movie, navigation }) => {
             })
           }
         >
-          <Image
+          <FastImage
             style={styles.poster}
             source={{ uri: movie.wide_thumbnail_link }}
           />

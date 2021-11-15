@@ -34,6 +34,7 @@ import IconAwesome from 'react-native-vector-icons/FontAwesome5';
 import IconMaterial from 'react-native-vector-icons/MaterialIcons'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import RecycleView from "../components/RecycleView";
+import FastImage from 'react-native-fast-image'
 
 
 const TvShowsScreen = ({ navigation }) => {
@@ -132,7 +133,7 @@ const TvShowsScreen = ({ navigation }) => {
               });
             }}
           >
-            <Image
+            <FastImage
               source={{ uri: item.dvd_thumbnail_link }}
               style={styles.carouselImage}
             />

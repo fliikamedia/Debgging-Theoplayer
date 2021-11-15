@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, Dimensions, TouchableWithoutFeedback, Image } f
 import { RecyclerListView, DataProvider, LayoutProvider } from 'recyclerlistview';
 import { COLORS, SIZES, icons } from "../../constants";
 import { MOVIEDETAIL } from '../../constants/RouteNames';
+import FastImage from 'react-native-fast-image'
+
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const ViewTypes = {
     FULL: 0,
@@ -56,7 +58,7 @@ export default class RecycleView extends Component {
                   })
                 }
               >
-                <Image
+                <FastImage
                   style={{
                     width: SIZES.width * 0.3,
                     height: SIZES.width * 0.45,
@@ -94,7 +96,7 @@ export default class RecycleView extends Component {
             backgroundColor: 'black',
             minHeight: 1,
             minWidth: 1,
-            marginVertical: 10
+            marginVertical: 3
           },
           body: {
             marginLeft: 10,

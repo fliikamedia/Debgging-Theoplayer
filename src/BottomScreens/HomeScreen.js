@@ -34,7 +34,7 @@ import IconMaterial from 'react-native-vector-icons/MaterialIcons'
 import RecycleView from "../components/RecycleView";
 import KeepAwake from '@sayem314/react-native-keep-awake';
 import NetInfo from "@react-native-community/netinfo";
-
+import FastImage from "react-native-fast-image";
 
 const HomeScreen = ({ navigation }) => {
   const appState = useRef(AppState.currentState);
@@ -49,8 +49,6 @@ const HomeScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [profiled, setProfiled] = useState('');
   const [connected, setConnected] = useState(null)
-
-
 useEffect(()=> {
   const unsubscribe = NetInfo.addEventListener(state => {
     //console.log("Connection type", state.type);
@@ -119,7 +117,7 @@ useEffect(()=> {
               })
             }
           >
-            <Image
+            <FastImage
               style={{
                 width: SIZES.width * 0.3,
                 height: SIZES.width * 0.45,
@@ -406,7 +404,6 @@ useEffect(()=> {
                   separatorWidth={0}
                   ref={carouselRef}
                   inActiveOpacity={0.4}
-                  autoplay={true}
                   loop
                   inactiveSlideOpacity={0.7}
                   inactiveSlideScale={0.9}
@@ -543,8 +540,8 @@ const styles = StyleSheet.create({
     height: SIZES.height * 0.6,
   },
   carouselImage: {
-    width: 230,
-    height: 360,
+    width:  SIZES.width * .59,
+    height:  SIZES.height * .45,
     borderRadius: 10,
     alignSelf: "center",
     backgroundColor: "rgba(0,0,0,0.9)",
@@ -565,7 +562,7 @@ const styles = StyleSheet.create({
   carouselContentContainer: {
     flex: 1,
     backgroundColor: "#000",
-    height: 680,
+    height: SIZES.height * .85,
     paddingHorizontal: 14,
   },
   ImageBg: {
@@ -577,7 +574,7 @@ const styles = StyleSheet.create({
   },
   carouselContainerView: {
     width: "100%",
-    height: 360,
+    height: SIZES.height * .45,
     justifyContent: "center",
     alignItems: "center",
   },
