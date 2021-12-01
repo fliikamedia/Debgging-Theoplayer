@@ -43,7 +43,6 @@ const HomeScreen = ({ navigation }) => {
   const user = useSelector((state) => state.user);
   const movies = useSelector((state) => state.movies);
 //console.log('fetching',movies.isFetching);
-//console.log(user.user);
   const dispatch = useDispatch();
   const [result, setResult] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -398,8 +397,8 @@ useEffect(()=> {
                   style={styles.carousel}
                   data={resultsToShow}
                   renderItem={renderItem}
-                  itemWidth={230}
-                  sliderWidth={500}
+                  itemWidth={SIZES.width *  .586}
+                  sliderWidth={SIZES.width *  1.274}
                   containerWidth={width - 20}
                   separatorWidth={0}
                   ref={carouselRef}

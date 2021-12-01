@@ -10,13 +10,14 @@ import {
   Alert
 } from "react-native";
 import firebase from "firebase";
-import { LOGIN, MOVIES, SIGNUP } from "../../constants/RouteNames";
+import { LOGIN, MOVIES, FILLPROFILESCREEN } from "../../constants/RouteNames";
 import { TextInput, HelperText } from "react-native-paper";
 import { LogBox } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { addUser } from "../../store/actions/user";
 import { useDispatch } from "react-redux";
 import { firebaseConfig } from "../api/FirebaseConfig";
+import AsyncStorage from "@react-native-community/async-storage";
 
 
 const EmailSignup = ({ navigation }) => {
@@ -38,21 +39,24 @@ const [signedup, setSignedup] = useState(false);
 
 
 useEffect(() => {
-  const interval = setInterval(() => setTime(Date.now()), 1000);
-  return () => {
-    clearInterval(interval);
-  };
-}, []);
+  if (signedup && !error){
+    const interval = setInterval(() => setTime(Date.now()), 1000);
+    return () => {
+      clearInterval(interval);
+    };
+  }
+}, [signedup]);
   const checkIFLoggedIn = () => {
     firebase.app().delete().then(function() {
       //console.log('initializing');
       firebase.initializeApp(firebaseConfig);
     }).then(function(){
-      firebase.auth().onAuthStateChanged((user) => {
+      firebase.auth().onAuthStateChanged(async (user) => {
         if (user && user.emailVerified) {
          // console.log('success',user);
-          navigation.navigate(SIGNUP);
-          setSignedup(false)
+          await AsyncStorage.setItem("whatPhase", "Signed up")
+          navigation.navigate(FILLPROFILESCREEN);
+          setSignedup(false);
         } else {
           //console.log('failed',user);
         }
@@ -62,8 +66,7 @@ useEffect(() => {
     
   };
 useEffect(()=> {
-  if(signedup){
-
+  if(signedup && !error){
     checkIFLoggedIn();
     console.log('checking');
   }
@@ -80,7 +83,18 @@ useEffect(()=> {
     setShow(true);
     showMode("date");
   };
-
+  const resetPassword = (email) => {
+    firebase
+      .auth()
+      .sendPasswordResetEmail(email)
+      .then(function (user) {
+        alert("Please check your email...");
+        navigation.navigate(LOGIN);
+      })
+      .catch(function (e) {
+        console.log(e);
+      });
+  };
   const signupUser = async (email, password) => {
     try {
       await firebase.auth().createUserWithEmailAndPassword(email, password);
@@ -101,14 +115,14 @@ useEffect(()=> {
 
     } catch (err) {
       console.log(err);
-      //setError(err.message);
+      setError(err.message);
     }
   };
   /// to be fixed
   LogBox.ignoreLogs(["Setting a timer"]);
   const inputColor = "teal";
  
-  
+  console.log('errrr',error);
   return (
     <View style={styles.container}>
         <Text
@@ -167,6 +181,27 @@ useEffect(()=> {
           >
             Password must be at least 6 characters long
           </HelperText>
+        ) : null}
+         {error == "The email address is already in use by another account." ? (
+          <View>
+            <Text style={{ color: "red", textAlign: "center" }}>{error}</Text>
+            <TouchableOpacity onPress={() => resetPassword(email)}>
+              <Text
+                style={{
+                  color: "aquamarine",
+                  textTransform: "uppercase",
+                  fontStyle: "italic",
+                  fontWeight: "bold",
+                  fontSize: 16,
+                  textDecorationLine: "underline",
+                  textAlign: "center",
+                  marginTop: 10,
+                }}
+              >
+                Reset Password?
+              </Text>
+            </TouchableOpacity>
+          </View>
         ) : null}
         <TouchableOpacity
           disabled={

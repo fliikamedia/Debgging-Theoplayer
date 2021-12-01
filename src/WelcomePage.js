@@ -15,7 +15,7 @@ import Video from 'react-native-video'
 
 const WelcomePage = ({ navigation }) => {
   const [isPreloading, setIsPreloading] = useState(true);
-  console.log(Dimensions.get('window').height);
+  //console.log(Dimensions.get('window').height);
 
   /*
   const checkIFLoggedIn = () => {

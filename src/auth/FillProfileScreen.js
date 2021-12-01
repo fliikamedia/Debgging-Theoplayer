@@ -16,6 +16,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { addUser } from "../../store/actions/user";
 import { useDispatch } from "react-redux";
 import { firebaseConfig } from "../api/FirebaseConfig";
+import AsyncStorage from "@react-native-community/async-storage";
 
 
 const SignupScreen = ({ navigation }) => {
@@ -114,6 +115,7 @@ const SignupScreen = ({ navigation }) => {
           index: 0,
           routes: [{ name: MOVIES }],
         });
+        await AsyncStorage.setItem("whatPhase", "LoggedIn");
         navigation.navigate(MOVIES);
     
     } catch (err) {
@@ -319,7 +321,7 @@ const SignupScreen = ({ navigation }) => {
               textTransform: "uppercase",
             }}
           >
-            Sign Up
+            Submit Profile
           </Text>
         </TouchableOpacity>
         <Text
