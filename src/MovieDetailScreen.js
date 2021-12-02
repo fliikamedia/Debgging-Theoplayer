@@ -53,6 +53,8 @@ const MovieDetailScreen = ({ navigation, route }) => {
   const Tab = createMaterialTopTabNavigator();
 
   const user = useSelector((state) => state.user);
+  const movies = useSelector((state) => state.movies);
+
   const dispatch = useDispatch();
   const [play, setPlay] = useState(false);
   const appState = useRef(AppState.currentState);
@@ -69,15 +71,16 @@ const MovieDetailScreen = ({ navigation, route }) => {
   const [episodes, setEpisodes] = useState(true);
   const [details, setDetails] = useState(false);
   const [seasonNumber, setSeasonNumber] = useState(null);
-  console.log('currentProfile',user.currentProfile);
-  const getMovie = useCallback(async () => {
+  //console.log('currentProfile',user.currentProfile);
+/*   const getMovie = useCallback(async () => {
     const response = await FliikaApi.get(`/posts/${selectedMovie}`);
     setMovie(response.data);
   }, []);
   useEffect(() => {
     getMovie();
-  }, []);
-
+  }, []); */
+const currentMovie = movies.availableMovies.find(r => r._id ===selectedMovie);
+//console.log('currentMovie', currentMovie);
   useEffect( () => {
     const unsubscribe = navigation.addListener('focus', async () => {
        Orientation.lockToPortrait();
@@ -176,14 +179,14 @@ return ()=> unsubscribe();
           }
   };
   
-  const getSeries = useCallback(async () => {
+/*   const getSeries = useCallback(async () => {
     const responseSeries = await FliikaApi.get(`/posts/`);
     setSeries(responseSeries.data);
   }, []);
   useEffect(() => {
     getSeries();
-  }, []);
-  let currentSeries = series.filter((r) => r.title == seriesTitle);
+  }, []); */
+  let currentSeries = movies.availableMovies.filter((r) => r.title == seriesTitle);
 
   let totalSeasons;
   try {
@@ -202,17 +205,15 @@ return ()=> unsubscribe();
   useEffect(() => {
     setSeasonNumber(seasons[0]);
   }, [seasonsLength]);
-  console.log(seasonNumber);
   let resultLength;
   try {
     resultLength = Object.keys(movie).length;
   } catch (err) {}
-  //console.log(series);
-
+  
   useEffect(() => {
     setMovieTitle(season[0])(dispatch);
     setCurrentSeries(season)(dispatch);
-  }, [movie, currentSeries, seasonNumber]);
+  }, [season]);
   //const movieId = navigation.getParam("selectedMovie");
   ///// share function
   const onShare = async () => {
@@ -271,7 +272,7 @@ return ()=> unsubscribe();
   const renderHeaderSection = () => {
     let thumbnail;
     try {
-      thumbnail = season[0].dvd_thumbnail_link;
+      thumbnail = isSeries === 'Series' ? season[0].dvd_thumbnail_link : currentMovie.dvd_thumbnail_link;
     } catch (err) {}
     return (
       <ImageBackground
@@ -310,7 +311,7 @@ return ()=> unsubscribe();
                 {isSeries == "movie" ? (
                   <TouchableOpacity
                     onPress={() => {
-                      navigation.navigate(BITMOVINPLAYER, {movie: movie});
+                      navigation.navigate(BITMOVINPLAYER, {movie: currentMovie});
                     }}
                   >
                   <View
@@ -346,7 +347,7 @@ return ()=> unsubscribe();
                   alignSelf: "center",
                 }}
               >
-                {isWatchList(user.currentProfile.watchList, movie.title) == true ? (
+                {isWatchList(user.currentProfile.watchList, currentMovie.title) == true ? (
                   <TouchableOpacity
                     onPress={() => {
                       removeFromProfileWatchList(
@@ -396,7 +397,7 @@ return ()=> unsubscribe();
                 fontWeight: "bold",
               }}
             >
-              {movie.title}
+              {currentMovie.title}
             </Text>
           </LinearGradient>
         </View>
@@ -409,7 +410,7 @@ return ()=> unsubscribe();
   const renderCategoty = () => {
     let genres;
     try {
-      genres = movie.genre.toString().replace(/,/g, " ");
+      genres = currentMovie.genre.toString().replace(/,/g, " ");
     } catch (err) {}
     return (
       <View
@@ -421,7 +422,7 @@ return ()=> unsubscribe();
         }}
       >
         <View style={[styles.categoryContainer, { marginLeft: 0 }]}>
-          <Text style={{ color: COLORS.white }}>{movie.film_rating}</Text>
+          <Text style={{ color: COLORS.white }}>{currentMovie.film_rating}</Text>
         </View>
         <View
           style={[
@@ -439,7 +440,7 @@ return ()=> unsubscribe();
           <Text
             style={{ color: COLORS.white, justifyContent: "space-between" }}
           >
-            {movie.runtime}
+            {currentMovie.runtime}
           </Text>
         </View>
       </View>
@@ -486,33 +487,33 @@ return ()=> unsubscribe();
           <>
             <View style={{ width: "100%", paddingHorizontal: 20 }}>
               <Text style={{ color: COLORS.white, textAlign: "justify" }}>
-                {movie.storyline}
+                {currentMovie.storyline}
               </Text>
             </View>
             <View>
               <Text style={styles.titleText}>Genres</Text>
               <Text style={styles.detailText}>
-                {movie.genre.toString().replace(/,/g, ", ")}
+                {currentMovie.genre.toString().replace(/,/g, ", ")}
               </Text>
               <Text style={styles.titleText}>Directors</Text>
               <Text style={styles.detailText}>
-                {movie.directors.toString().replace(/,/g, ", ")}
+                {currentMovie.directors.toString().replace(/,/g, ", ")}
               </Text>
               <Text style={styles.titleText}>Starring</Text>
               <Text style={styles.detailText}>
-                {movie.cast.toString().replace(/,/g, ", ")}
+                {currentMovie.cast.toString().replace(/,/g, ", ")}
               </Text>
               <Text style={styles.titleText}>Content Advisory</Text>
               <Text style={styles.detailText}>
-                {movie.content_advisory.toString().replace(/,/g, ", ")}
+                {currentMovie.content_advisory.toString().replace(/,/g, ", ")}
               </Text>
               <Text style={styles.titleText}>Languages</Text>
               <Text style={styles.detailText}>
-                {movie.languages.toString().replace(/,/g, ", ")}
+                {currentMovie.languages.toString().replace(/,/g, ", ")}
               </Text>
               <Text style={styles.titleText}>Subtitles</Text>
               <Text style={styles.detailText}>
-                {movie.subtitles.toString().replace(/,/g, ", ")}
+                {currentMovie.subtitles.toString().replace(/,/g, ", ")}
               </Text>
             </View>
           </>
@@ -612,26 +613,12 @@ return ()=> unsubscribe();
   ////////// end of render movie details
   return (
     <View style={styles.container}>
-      {resultLength == 0 ? (
-        <ActivityIndicator
-          animating
-          color={"teal"}
-          size="large"
-          style={{ flex: 1, position: "absolute", top: "50%", left: "45%" }}
-        />
-      ) : (
         <ScrollView>
           {renderHeaderSection()}
           {renderCategoty()}
           {renderMovieDetails()}
-          {play ? (
-            <View
-              style={{ width: SIZES.width * 0.9, height: SIZES.height * 0.5 }}
-            >
-            </View>
-          ) : null}
         </ScrollView>
-      )}
+
     </View>
   );
 };

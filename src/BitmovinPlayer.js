@@ -149,7 +149,7 @@ if (Platform.OS === 'android') {
         <View style={{width: '100%', height: '100%'}}>
 <ReactNativeBitmovinPlayer
       style={styles.container}
-        autoPlay={true}
+        autoPlay={false}
         hasZoom={false}
         configuration={{
           url: playURL,
