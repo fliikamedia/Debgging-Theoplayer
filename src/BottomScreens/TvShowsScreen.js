@@ -383,8 +383,8 @@ const styles = StyleSheet.create({
     height: SIZES.height * 0.6,
   },
   carouselImage: {
-    width: 200,
-    height: 320,
+    width:  SIZES.width * .59,
+    height:  SIZES.height * .45,
     borderRadius: 10,
     alignSelf: "center",
     backgroundColor: "rgba(0,0,0,0.9)",
@@ -405,7 +405,7 @@ const styles = StyleSheet.create({
   carouselContentContainer: {
     flex: 1,
     backgroundColor: "#000",
-    height: 680,
+    height: SIZES.height * .85,
     paddingHorizontal: 14,
   },
   ImageBg: {
@@ -417,7 +417,7 @@ const styles = StyleSheet.create({
   },
   carouselContainerView: {
     width: "100%",
-    height: 350,
+    height: SIZES.height * .45,
     justifyContent: "center",
     alignItems: "center",
   },
