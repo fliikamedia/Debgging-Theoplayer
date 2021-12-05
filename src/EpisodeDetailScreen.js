@@ -27,7 +27,7 @@ const EpisodeDetailScreen = ({ navigation,route }) => {
 LogBox.ignoreAllLogs()
   const [watched, setWatched] = useState(0);
   const [duration, setDuration] = useState(0);
-  //console.log(episode);
+  console.log('episode',episode);
 /*   useEffect( () => {
     const unsubscribe = navigation.addListener('focus', async () => {
      // Orientation.lockToPortrait();
@@ -49,7 +49,7 @@ LogBox.ignoreAllLogs()
 });
   }, [navigation]); */
 
-  useEffect( () => {
+/*   useEffect( () => {
     const unsubscribe = navigation.addListener('focus', async () => {
        Orientation.lockToPortrait();
       
@@ -66,7 +66,7 @@ LogBox.ignoreAllLogs()
       if (Platform.OS == 'android') {
       console.log('focused', didPlay);
       if (didPlay === 'true') {
-      ReactNativeBitmovinPlayerIntance.destroy();
+    //  ReactNativeBitmovinPlayerIntance.destroy();
       AsyncStorage.setItem("didPlay", "false")
       console.log('focused', didPlay);
     }
@@ -79,18 +79,56 @@ LogBox.ignoreAllLogs()
   AsyncStorage.setItem('watched', '0');
   AsyncStorage.setItem('duration', '0')
 });
-//return ()=> unsubscribe();
-  }, [navigation]);
+return ()=> unsubscribe();
+  }, [navigation]); */
   const appState = useRef(AppState.currentState);
-  useEffect(() => {
+/*   useEffect(() => {
     AppState.addEventListener("change",   stopPlaying,
     );
     
     return () => {
       AppState.removeEventListener("change",   stopPlaying);
     };
-  }, [appState]);
+  }, [appState]); */
 
+  useEffect( () => {
+    const unsubscribe = navigation.addListener('focus', async () => {
+       Orientation.lockToPortrait();
+      
+      const whatTime = await AsyncStorage.getItem('watched');
+      const whatDuration = await AsyncStorage.getItem('duration');
+      const didPlay = await AsyncStorage.getItem("didPlay")
+      const movieTitle=  await AsyncStorage.getItem("movieName")
+      const seasonNumber=  await AsyncStorage.getItem("seasonNumber")
+      const episodeNumber=  await AsyncStorage.getItem("episodeNumber")
+      const movieId=  await AsyncStorage.getItem("movieId")
+
+      const isWatchedMovie = await AsyncStorage.getItem("isWatchedBefore")
+      //console.log('timing', whatTime, whatDuration, movieTitle);
+      if (didPlay == "true"){
+       saveMovie(Number(whatDuration), Number(whatTime), movieId, movieTitle, isWatchedMovie, Number(seasonNumber), Number(episodeNumber));
+      }
+      if (Platform.OS == 'android') {
+      console.log('focused', didPlay);
+      if (didPlay === 'true') {
+      //ReactNativeBitmovinPlayerIntance.destroy();
+      AsyncStorage.setItem("didPlay", "false")
+      console.log('focused', didPlay);
+    }
+      
+  } else {
+    console.log('focused ios');
+    //ReactNativeBitmovinPlayerIntance.pause()
+  }
+
+  AsyncStorage.setItem('watched', '0');
+  AsyncStorage.setItem('duration', '0');
+  AsyncStorage.setItem('movieName', 'null');
+  AsyncStorage.setItem("isWatchedBefore", "null")
+  AsyncStorage.setItem("movieId", "null")
+});
+return ()=> unsubscribe();
+  }, [navigation]);
   const isWatched = (movieArray, movieName) => {
     try {
       var movieWatched = false;
@@ -104,7 +142,7 @@ LogBox.ignoreAllLogs()
     } catch (err) {}
   };
 
-  const stopPlaying = async () => {
+/*   const stopPlaying = async () => {
     const didPlay = await AsyncStorage.getItem("didPlay")
     Orientation.lockToPortrait()
 
@@ -112,12 +150,12 @@ LogBox.ignoreAllLogs()
       console.log('ios');
       ReactNativeBitmovinPlayerIntance.pause();
     } else if (Platform.OS == 'android' && didPlay == "true") {
-      ReactNativeBitmovinPlayerIntance.destroy();
+      //ReactNativeBitmovinPlayerIntance.destroy();
       AsyncStorage.setItem("didPlay", "false")
       console.log('android');
 
     }
-  }
+  } */
 
 
  /*  useEffect(() => {
@@ -129,7 +167,7 @@ LogBox.ignoreAllLogs()
   }, [watched]); */
   
   
-  const saveMovie = (duration,time,title, isWatchedMovie) => {
+ /*  const saveMovie = (duration,time,title, isWatchedMovie) => {
     console.log('saving movie',duration,time, title, isWatchedMovie);
     console.log('iswatched',   isWatched(user.currentProfile.watched, title));
    if (
@@ -153,9 +191,42 @@ LogBox.ignoreAllLogs()
         user.currentProfile._id
       )(dispatch);
     }
-  };
+  }; */
   
-  let playerHeight;
+  const saveMovie = (duration,time,movieId, title, isWatchedMovie, seasonNumber, episodeNumber) => {
+    console.log('saving movie',duration,time, title, isWatchedMovie, seasonNumber, episodeNumber);
+   // console.log('iswatched',   isWatched(user.currentProfile.watched, title));
+   if(time > 0) {
+      if (
+      isWatchedMovie === 'false'
+      ) {
+                console.log('here 1 series');
+                addtoWatchedProfile(
+                  user.user._id,
+                  movieId,
+                  title,
+                  duration,
+                  time,
+                  user.currentProfile._id,
+                  seasonNumber,
+                  episodeNumber
+                  )(dispatch);
+                } else {
+                  console.log('here 2 series');
+                  updateWatchedProfile(
+                    user.user._id,
+                    movieId,
+                    title,
+                    duration,
+                    time,
+                    user.currentProfile._id,
+                    seasonNumber,
+                    episodeNumber
+                    )(dispatch);
+                  }
+        } 
+  };
+/*   let playerHeight;
   let playerMargin
 if (playing) {
   playerHeight = '100%'
@@ -175,13 +246,13 @@ playURL = str.replace('m3u8-aapl','mpd-time-cmaf')
 } else {
 playURL = str;
 }
-console.log(playURL);
+console.log(playURL); */
   return (
     <View
       style={{ flex: 1, backgroundColor: "black" }}
     >
       <TouchableOpacity style={{height: '40%', width: '100%',      alignItems: "center",
-            justifyContent: "center",}} onPress={()=>                navigation.navigate(BITMOVINPLAYER, {movie: episode})
+            justifyContent: "center",}} onPress={()=>                navigation.navigate(BITMOVINPLAYER, {movieId: episode._id, time: null})
           } >
       <FastImage source={{uri: episode.wide_thumbnail_link}} style={{ position: "absolute",
     top: 0,

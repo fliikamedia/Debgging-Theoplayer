@@ -18,13 +18,14 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 const BitmovinPlayer = ({navigation,route}) => {
   const user = useSelector((state) => state.user);
+  const movies = useSelector((state) => state.movies);
   const dispatch = useDispatch();
   const [isPlaying, setIsPlaying] = useState(false);
-  const {movie} = route.params;
+  const {movieId, time} = route.params;
   const [watched, setWatched] = useState(0);
   const [duration, setDuration] = useState(0);
   const appState = useRef(AppState.currentState);
-
+const movie = movies.availableMovies.find(r => r._id === movieId)
   const videoUrl = Platform.select({
     ios: 'https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8',
     android: 'https://bitdash-a.akamaihd.net/content/sintel/sintel.mpd',
@@ -32,11 +33,20 @@ const BitmovinPlayer = ({navigation,route}) => {
   });
   
   const setWatchedMovie = async () => {
+    if (movie.film_type == "movie"){
     if (isWatched(user.currentProfile.watched, movie.title)){
       AsyncStorage.setItem("isWatchedBefore", "true")
     } else {
       AsyncStorage.setItem("isWatchedBefore", "false")
     }
+  } else {
+    console.log('seeeeries');
+    if (isWatchedSeries(user.currentProfile.watched, movie.title, movie.season_number, movie.episode_number)){
+      AsyncStorage.setItem("isWatchedBefore", "true")
+    } else {
+      AsyncStorage.setItem("isWatchedBefore", "false")
+    }
+  }
   }
 useEffect(()=> {
 setWatchedMovie()
@@ -76,6 +86,19 @@ setWatchedMovie()
       return movieWatched;
     } catch (err) {}
   };
+
+  const isWatchedSeries = (seriesArray, seriesName,seriesSeason, seriesEpisode) => {
+    try {
+      var seriesWatched = false;
+      for (var i = 0; i < seriesArray.length; i++) {
+        if (seriesArray[i].title == seriesName && seriesArray[i].season == seriesSeason &&  seriesArray[i].episode == seriesEpisode) {
+          seriesWatched = true;
+          break;
+        }
+      }
+      return seriesWatched;
+    } catch (err) {}
+  };
   useEffect(() => {
     AppState.addEventListener("change",   stopPlaying,
     );
@@ -84,7 +107,7 @@ setWatchedMovie()
       AppState.removeEventListener("change",   stopPlaying);
     };
   }, [appState]);
-  
+
   //console.log('state out',user.watchedAt, user.duration);
 
 /*   useEffect(() => {
@@ -108,6 +131,7 @@ setWatchedMovie()
       addtoWatchedProfile(
         user.user._id,
         movie.title,
+        movie._id,
         Number(whatDuration),
         Number(whatTime),
         user.currentProfile._id
@@ -149,12 +173,12 @@ if (Platform.OS === 'android') {
         <View style={{width: '100%', height: '100%'}}>
 <ReactNativeBitmovinPlayer
       style={styles.container}
-        autoPlay={false}
+        autoPlay={true}
         hasZoom={false}
         configuration={{
           url: playURL,
          // poster: episode.wide_thumbnail_link,
-          startOffset: 0,
+          startOffset: time ? time:  0,
           hasNextEpisode: false,
           subtitles: '',
          // thumbnails: '',
@@ -170,7 +194,7 @@ if (Platform.OS === 'android') {
         onLoad={e => console.log('Load', e)}
         onError={e => console.log('Error', e)}
        onPlay={async ({nativeEvent})=> {Platform.OS == 'android' ?  Orientation.lockToLandscapeLeft() : Orientation.lockToLandscapeRight(),console.log(nativeEvent)
-, await AsyncStorage.setItem("didPlay", 'true'), await AsyncStorage.setItem('movieName', movie.title) }}
+, await AsyncStorage.setItem("didPlay", 'true'), await AsyncStorage.setItem('movieName', movie.title), await AsyncStorage.setItem('seasonNumber', String(movie.season_number)), await AsyncStorage.setItem('episodeNumber', String(movie.episode_number)), await AsyncStorage.setItem('movieId', String(movie._id)) }}
         onEvent={({nativeEvent}) => { console.log(nativeEvent),saveTiming(String(nativeEvent.duration), String(nativeEvent.time))}}
         onPause={()=> setIsPlaying(false)}
       />  

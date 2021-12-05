@@ -20,7 +20,7 @@ import FliikaApi from "../api/FliikaApi";
 import { COLORS, SIZES, icons } from "../../constants";
 import { MOVIEDETAIL } from "../../constants/RouteNames";
 import Profiles from "../components/Profiles";
-import Carousel from "react-native-anchor-carousel";
+import Carousel from "react-native-snap-carousel";
 import LinearGradient  from "react-native-linear-gradient";
 import {
   addToWatchList,
@@ -119,19 +119,13 @@ const TvShowsScreen = ({ navigation }) => {
       return (
         <View>
           <TouchableOpacity
-            onPress={() => {
-              carouselRef.current.scrollToIndex(index);
-              setBackground({
-                uri: item.dvd_thumbnail_link,
-                name: item.title,
-                stat: `${item.film_rating} - ${item.genre
-                  .toString()
-                  .replace(/,/g, " ")} - ${item.runtime}`,
-                desc: item.storyline,
-                _id: item._id,
-                film_type: item.film_type,
-              });
-            }}
+             onPress={() =>
+              navigation.navigate(MOVIEDETAIL, {
+                selectedMovie: background._id,
+                isSeries: background.film_type,
+                seriesTitle: background.name,
+              })
+            }
           >
             <FastImage
               source={{ uri: item.dvd_thumbnail_link }}
@@ -208,17 +202,35 @@ const TvShowsScreen = ({ navigation }) => {
                 Fliika Originals
               </Text>
               <View style={styles.carouselContainerView}>
-                <Carousel
+              <Carousel
                   style={styles.carousel}
                   data={series}
                   renderItem={renderItem}
-                  itemWidth={200}
+                  itemWidth={SIZES.width *  .586}
+                  sliderWidth={SIZES.width *  1.274}
                   containerWidth={width - 20}
                   separatorWidth={0}
                   ref={carouselRef}
                   inActiveOpacity={0.4}
-                  //pagingEnable={false}
-                  //minScrollDistance={20}
+                  loop
+                  inactiveSlideOpacity={0.7}
+                  inactiveSlideScale={0.9}
+                  // activeAnimationType={'spring'}
+                  // activeAnimationOptions={{
+                  //     friction: 4,
+                  //     tension: 5
+                  // }}
+                  enableMomentum={true}
+                  onSnapToItem={ index => { setBackground({
+                    uri: series[index]?.dvd_thumbnail_link,
+                    name: series[index]?.title,
+                    stat: `${series[index]?.film_rating} - ${series[index]?.genre
+                      .toString()
+                      .replace(/,/g, " ")} - ${series[index]?.runtime}`,
+                    desc: series[index]?.storyline,
+                    _id: series[index]?._id,
+                    film_type: series[index]?.film_type,
+                  });} }
                 />
               </View>
               <View style={styles.movieInfoContainer}>

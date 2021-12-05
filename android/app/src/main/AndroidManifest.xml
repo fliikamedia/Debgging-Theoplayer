@@ -20,8 +20,8 @@
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
       </activity>
-                <meta-data android:name="BITMOVIN_PLAYER_LICENSE_KEY" android:value="2ab6b979-f679-4c7d-8a18-b455e6e6992b" />
-                      <meta-data android:name="BITMOVIN_ANALYTICS_LICENSE_KEY" android:value="69bab32b-7905-4aa2-ae25-06edb1ebf460"/>
+                <meta-data android:name="BITMOVIN_PLAYER_LICENSE_KEY" android:value="72fc96e3-318b-452f-91c7-bed54f199dd1" />
+                      <meta-data android:name="BITMOVIN_ANALYTICS_LICENSE_KEY" android:value="D05E52E2-94F0-4CE9-BE45-4AD8F3A0678E"/>
       <meta-data android:name="BITMOVIN_PLAYER_CSS" android:value="https://stagev2-app-assets.britbox.takeoffmedia.com/player/poc/css/bitmovinplayer-ui.min.css"/>
       <meta-data android:name="BITMOVIN_PLAYER_JS" android:value="https://stagev2-app-assets.britbox.takeoffmedia.com/player/poc/js/bitmovinplayer-ui.min.js"/>
     </application>

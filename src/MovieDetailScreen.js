@@ -89,11 +89,13 @@ const currentMovie = movies.availableMovies.find(r => r._id ===selectedMovie);
       const whatDuration = await AsyncStorage.getItem('duration');
       const didPlay = await AsyncStorage.getItem("didPlay")
       const movieTitle=  await AsyncStorage.getItem("movieName")
-
+      const seasonNumber=  await AsyncStorage.getItem("seasonNumber")
+      const episodeNumber=  await AsyncStorage.getItem("episodeNumber")
+      const movieId=  await AsyncStorage.getItem("movieId")
       const isWatchedMovie = await AsyncStorage.getItem("isWatchedBefore")
       console.log('timing', whatTime, whatDuration, movieTitle);
       if (didPlay == "true"){
-       saveMovie(Number(whatDuration), Number(whatTime), movieTitle, isWatchedMovie);
+       saveMovie(Number(whatDuration), Number(whatTime),movieId, movieTitle, isWatchedMovie, Number(seasonNumber), Number(episodeNumber));
       }
       if (Platform.OS == 'android') {
       console.log('focused', didPlay);
@@ -111,6 +113,7 @@ const currentMovie = movies.availableMovies.find(r => r._id ===selectedMovie);
   AsyncStorage.setItem('watched', '0');
   AsyncStorage.setItem('duration', '0')
   AsyncStorage.setItem("isWatchedBefore", "null")
+  AsyncStorage.setItem("movieId", "null")
 
 });
 return ()=> unsubscribe();
@@ -151,16 +154,18 @@ return ()=> unsubscribe();
       return movieWatched;
     } catch (err) {}
   };
-  const saveMovie = (duration,time,title, isWatchedMovie) => {
-    console.log('saving movie',duration,time, title, isWatchedMovie);
+  const saveMovie = (duration,time,movieId,title, isWatchedMovie, seasonNumber, episodeNumber) => {
+    console.log('saving movie',duration,time, title, isWatchedMovie, seasonNumber, episodeNumber);
    // console.log('iswatched',   isWatched(user.currentProfile.watched, title));
-    if(time > 0) {
+   if(time > 0) {
+      if (isSeries === 'movie') {
       if (
         isWatchedMovie === 'false'
         ) {
           console.log('here 1');
           addtoWatchedProfile(
             user.user._id,
+            movieId,
             title,
             duration,
             time,
@@ -170,13 +175,17 @@ return ()=> unsubscribe();
             console.log('here 2');
             updateWatchedProfile(
               user.user._id,
+              movieId,
               title,
               duration,
               time,
               user.currentProfile._id
               )(dispatch);
             }
-          }
+          } 
+        } 
+
+        
   };
   
 /*   const getSeries = useCallback(async () => {
@@ -311,7 +320,7 @@ return ()=> unsubscribe();
                 {isSeries == "movie" ? (
                   <TouchableOpacity
                     onPress={() => {
-                      navigation.navigate(BITMOVINPLAYER, {movie: currentMovie});
+                      navigation.navigate(BITMOVINPLAYER, {movieId: currentMovie._id, time: null});
                     }}
                   >
                   <View
@@ -368,7 +377,7 @@ return ()=> unsubscribe();
                     onPress={() => {
                   addToProfileWatchList(
                       user.user._id,
-                      movie,
+                      currentMovie,
                       user.currentProfile._id
                     )(dispatch);
 

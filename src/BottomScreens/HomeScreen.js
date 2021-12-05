@@ -16,13 +16,15 @@ import {
   AppState,
 } from "react-native";
 import { COLORS, SIZES, icons } from "../../constants";
-import { MOVIEDETAIL } from "../../constants/RouteNames";
+import { BITMOVINPLAYER, MOVIEDETAIL } from "../../constants/RouteNames";
 import firebase from "firebase";
 import Carousel from "react-native-snap-carousel";
 import  LinearGradient  from "react-native-linear-gradient";
 import { fetchMovies} from "../../store/actions/movies";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  addtoWatchedProfile, 
+  updateWatchedProfile,
   addToProfileWatchList,
   removeFromProfileWatchList,
 } from "../../store/actions/user";
@@ -35,6 +37,10 @@ import RecycleView from "../components/RecycleView";
 import KeepAwake from '@sayem314/react-native-keep-awake';
 import NetInfo from "@react-native-community/netinfo";
 import FastImage from "react-native-fast-image";
+import IconAnt from 'react-native-vector-icons/AntDesign';
+import AsyncStorage from "@react-native-community/async-storage";
+import Orientation from "react-native-orientation";
+
 
 const HomeScreen = ({ navigation }) => {
   const appState = useRef(AppState.currentState);
@@ -47,7 +53,46 @@ const HomeScreen = ({ navigation }) => {
   const [result, setResult] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [profiled, setProfiled] = useState('');
-  const [connected, setConnected] = useState(null)
+  const [connected, setConnected] = useState(null);
+
+  useEffect( () => {
+    const unsubscribe = navigation.addListener('focus', async () => {
+       Orientation.lockToPortrait();
+      
+      const whatTime = await AsyncStorage.getItem('watched');
+      const whatDuration = await AsyncStorage.getItem('duration');
+      const didPlay = await AsyncStorage.getItem("didPlay")
+      const movieTitle=  await AsyncStorage.getItem("movieName")
+      const seasonNumber=  await AsyncStorage.getItem("seasonNumber")
+      const episodeNumber=  await AsyncStorage.getItem("episodeNumber")
+      const movieId=  await AsyncStorage.getItem("movieId")
+      const isWatchedMovie = await AsyncStorage.getItem("isWatchedBefore")
+      console.log('timing', whatTime, whatDuration, movieTitle);
+      if (didPlay == "true"){
+       saveMovie(Number(whatDuration), Number(whatTime),movieId, movieTitle, isWatchedMovie, Number(seasonNumber), Number(episodeNumber));
+      }
+      if (Platform.OS == 'android') {
+      console.log('focused', didPlay);
+      if (didPlay === 'true') {
+      //ReactNativeBitmovinPlayerIntance.destroy();
+      AsyncStorage.setItem("didPlay", "false")
+      console.log('focused', didPlay);
+    }
+      
+  } else {
+    console.log('focused ios');
+    //ReactNativeBitmovinPlayerIntance.pause()
+  }
+
+  AsyncStorage.setItem('watched', '0');
+  AsyncStorage.setItem('duration', '0')
+  AsyncStorage.setItem("isWatchedBefore", "null")
+  AsyncStorage.setItem("movieId", "null")
+
+});
+return ()=> unsubscribe();
+  }, [navigation]);
+
 useEffect(()=> {
   const unsubscribe = NetInfo.addEventListener(state => {
     //console.log("Connection type", state.type);
@@ -76,6 +121,37 @@ useEffect(()=> {
     } catch (err) {}
   };
 
+  const saveMovie = (duration,time,movieId,title, isWatchedMovie, seasonNumber, episodeNumber) => {
+    console.log('saving movie',duration,time, title, isWatchedMovie, seasonNumber, episodeNumber);
+   // console.log('iswatched',   isWatched(user.currentProfile.watched, title));
+   if(time > 0) {
+      if (
+        isWatchedMovie === 'false'
+        ) {
+          console.log('here 1');
+          addtoWatchedProfile(
+            user.user._id,
+            movieId,
+            title,
+            duration,
+            time,
+            user.currentProfile._id
+            )(dispatch);
+          } else {
+            console.log('here 2');
+            updateWatchedProfile(
+              user.user._id,
+              movieId,
+              title,
+              duration,
+              time,
+              user.currentProfile._id
+              )(dispatch);
+            }
+        } 
+
+        
+  };
   const resultsToShow = movies.availableMovies.filter(
     (c) =>
       c.film_type == "movie" ||
@@ -142,35 +218,42 @@ useEffect(()=> {
   };
 
   //// Render continue watching section
-
   let continueWatching = [];
 
     try {
       for (let i = 0; i < user.currentProfile.watched.length; i++) {
-        resultsToShow.map((r) => {
-          if (r.title == user.currentProfile.watched[i].title) {
-            continueWatching.push(r);
+        movies.availableMovies.map((r) => {
+          if (r.film_type === 'movie') {
+            if (r._id == user.currentProfile.watched[i].movieId) {
+              continueWatching.push({_id: r._id,title: r.title, image: r.dvd_thumbnail_link, time: user.currentProfile.watched[i].watchedAt,  movieTime: r.runtime});
+            }
+          } else {
+            if (r._id == user.currentProfile.watched[i].movieId ) {
+              continueWatching.push({_id: r._id,title: r.title, image: r.wide_thumbnail_link, time: user.currentProfile.watched[i].watchedAt, movieTime: r.runtime, season: r.season_number, episode: r.episode_number});
+            }
           }
+       
         });
       }
     } catch (err) {}
-
   let continueWatchingLength;
   try {
     continueWatchingLength = continueWatching.length;
   } catch (err) {}
-  const calculateProgress = (movieName) => {
+  const calculateProgress = (id) => {
     try {
         var duration = user.currentProfile.watched.find(
-          (c) => c.title == movieName
+          (c) => c.movieId == id
         ).duration;
         var watchedAt = user.currentProfile.watched.find(
-          (c) => c.title == movieName
+          (c) => c.movieId == id
         ).watchedAt;
      
     } catch (err) {}
     return (watchedAt / duration) * 100;
   };
+
+
   const renderContinueWatctionSection = () => {
     return (
       <View>
@@ -207,14 +290,13 @@ useEffect(()=> {
           data={continueWatching}
           keyExtractor={(item) => item._id}
           renderItem={({ item, index }) => {
-            if (calculateProgress(item.title) < 100) {
+            if (calculateProgress(item._id) < 100) {
               return (
                 <TouchableWithoutFeedback
                   onPress={() =>
-                    navigation.navigate(MOVIEDETAIL, {
-                      selectedMovie: item._id,
-                      isSeries: item.film_type,
-                      seriesTitle: item.title,
+                    navigation.navigate(BITMOVINPLAYER, {
+                      movieId: item._id,
+                      time: item.time
                     })
                   }
                 >
@@ -228,34 +310,54 @@ useEffect(()=> {
                     }}
                   >
                     {/* Thumnnail */}
+                    <View style={{width: SIZES.width * 0.27,
+                        height: SIZES.width * 0.35,
+                        alignItems: 'center', justifyContent: 'center'}}>
                     <Image
-                      source={{ uri: item.dvd_thumbnail_link }}
+                      source={{ uri: item.image}}
                       style={{
-                        width: SIZES.width * 0.3,
-                        height: SIZES.width * 0.3,
-                        borderRadius: 200,
+                        position: "absolute",
+                        top: 0,
+                        bottom: 0,
+                        right: 0,
+                        left: 0,
                         resizeMode: "cover",
+                        borderRadius: 10
                       }}
                       resizeMode="cover"
                     />
+                    <IconAnt name="playcircleo" size={50} color="white" />
+
                     {/* Name */}
+                    </View>
+                    <View style={{width: SIZES.width * 0.27}}>
                     <Text
                       style={{
                         color: COLORS.white,
                         marginTop: SIZES.base,
                         textAlign: "center",
-                        width: SIZES.width * 0.3,
                       }}
                       numberOfLines={1}
                     >
                       {item.title}
                     </Text>
+                    <Text
+                      style={{
+                        color: COLORS.white,
+                        marginTop: SIZES.base,
+                        textAlign: "center",
+                      }}
+                      numberOfLines={1}
+                    >
+                      {item.season ? `S${item.season} - E${item.episode}` :item.movieTime}
+                    </Text>
                     {/* Progress Bar */}
                     <ProgressBar
                       containerStyle={{ marginTop: SIZES.radius }}
                       barStyle={{ height: 3 }}
-                      percentage={calculateProgress(item.title)}
+                      percentage={calculateProgress(item._id)}
                     />
+                    </View>
                   </View>
                 </TouchableWithoutFeedback>
               );
