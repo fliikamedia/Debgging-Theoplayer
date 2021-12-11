@@ -472,11 +472,11 @@ useEffect(()=> {
 
     return (
       <View style={styles.carouselContentContainer}>
-        <View style={{ ...StyleSheet.absoluteFill, backgroundColor: "#000" }}>
           <ImageBackground
             source={{ uri: background.uri }}
             style={styles.ImageBg}
             blurRadius={10}
+            resizeMode="cover"
           >
             <LinearGradient
               start={{ x: 0, y: 0 }}
@@ -570,7 +570,6 @@ useEffect(()=> {
             </LinearGradient>
           </ImageBackground>
         </View>
-      </View>
     );
   };
   ///// End of Render Hero third design
@@ -593,6 +592,7 @@ useEffect(()=> {
         </View>
       ) : (
         <ScrollView
+        showsVerticalScrollIndicator={false}
           contentContainerStyle={{
             paddingBottom: 100,
           }}
@@ -668,13 +668,10 @@ const styles = StyleSheet.create({
   carouselContentContainer: {
     flex: 1,
     backgroundColor: "#000",
-    height: SIZES.height * .85,
-    paddingHorizontal: 14,
+    //height: SIZES.height * .85,
   },
   ImageBg: {
     flex: 1,
-    height: null,
-    width: null,
     opacity: 1,
     justifyContent: "flex-start",
   },
