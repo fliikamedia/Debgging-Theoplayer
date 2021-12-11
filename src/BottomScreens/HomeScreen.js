@@ -67,9 +67,11 @@ const HomeScreen = ({ navigation }) => {
       const episodeNumber=  await AsyncStorage.getItem("episodeNumber")
       const movieId=  await AsyncStorage.getItem("movieId")
       const isWatchedMovie = await AsyncStorage.getItem("isWatchedBefore")
+      const userId = await AsyncStorage.getItem("userId")
+      const profileId = await AsyncStorage.getItem("profileId")
       console.log('timing', whatTime, whatDuration, movieTitle);
       if (didPlay == "true"){
-       saveMovie(Number(whatDuration), Number(whatTime),movieId, movieTitle, isWatchedMovie, Number(seasonNumber), Number(episodeNumber));
+       saveMovie(userId, profileId,Number(whatDuration), Number(whatTime),movieId, movieTitle, isWatchedMovie, Number(seasonNumber), Number(episodeNumber));
       }
       if (Platform.OS == 'android') {
       console.log('focused', didPlay);
@@ -88,6 +90,8 @@ const HomeScreen = ({ navigation }) => {
   AsyncStorage.setItem('duration', '0')
   AsyncStorage.setItem("isWatchedBefore", "null")
   AsyncStorage.setItem("movieId", "null")
+  AsyncStorage.setItem("userId", "null")
+  AsyncStorage.setItem("profileId", "null")
 
 });
 return ()=> unsubscribe();
@@ -121,31 +125,32 @@ useEffect(()=> {
     } catch (err) {}
   };
 
-  const saveMovie = (duration,time,movieId,title, isWatchedMovie, seasonNumber, episodeNumber) => {
+  const saveMovie = (userId, profileId,duration,time,movieId,title, isWatchedMovie, seasonNumber, episodeNumber) => {
     console.log('saving movie',duration,time, title, isWatchedMovie, seasonNumber, episodeNumber);
    // console.log('iswatched',   isWatched(user.currentProfile.watched, title));
+   console.log('profileId',profileId);
    if(time > 0) {
       if (
         isWatchedMovie === 'false'
         ) {
           console.log('here 1');
           addtoWatchedProfile(
-            user.user._id,
+            userId,
             movieId,
             title,
             duration,
             time,
-            user.currentProfile._id
+            profileId
             )(dispatch);
           } else {
             console.log('here 2');
             updateWatchedProfile(
-              user.user._id,
+              userId,
               movieId,
               title,
               duration,
               time,
-              user.currentProfile._id
+              profileId
               )(dispatch);
             }
         } 

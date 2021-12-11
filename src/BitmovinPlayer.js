@@ -194,7 +194,7 @@ if (Platform.OS === 'android') {
         onLoad={e => console.log('Load', e)}
         onError={e => console.log('Error', e)}
        onPlay={async ({nativeEvent})=> {Platform.OS == 'android' ?  Orientation.lockToLandscapeLeft() : Orientation.lockToLandscapeRight(),console.log(nativeEvent)
-, await AsyncStorage.setItem("didPlay", 'true'), await AsyncStorage.setItem('movieName', movie.title), await AsyncStorage.setItem('seasonNumber', String(movie.season_number)), await AsyncStorage.setItem('episodeNumber', String(movie.episode_number)), await AsyncStorage.setItem('movieId', String(movie._id)) }}
+, await AsyncStorage.setItem("didPlay", 'true'), await AsyncStorage.setItem('movieName', movie.title), await AsyncStorage.setItem('seasonNumber', String(movie.season_number)), await AsyncStorage.setItem('episodeNumber', String(movie.episode_number)), await AsyncStorage.setItem('movieId', String(movie._id)), await AsyncStorage.setItem('userId', String(user.user._id)), await AsyncStorage.setItem('profileId', String(user.currentProfile._id)) }}
         onEvent={({nativeEvent}) => { console.log(nativeEvent),saveTiming(String(nativeEvent.duration), String(nativeEvent.time))}}
         onPause={()=> setIsPlaying(false)}
       />  
