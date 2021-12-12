@@ -34,7 +34,6 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconAwesome from 'react-native-vector-icons/FontAwesome5';
 import IconMaterial from 'react-native-vector-icons/MaterialIcons'
 import RecycleView from "../components/RecycleView";
-import KeepAwake from '@sayem314/react-native-keep-awake';
 import NetInfo from "@react-native-community/netinfo";
 import FastImage from "react-native-fast-image";
 import IconAnt from 'react-native-vector-icons/AntDesign';
@@ -69,12 +68,12 @@ const HomeScreen = ({ navigation }) => {
       const isWatchedMovie = await AsyncStorage.getItem("isWatchedBefore")
       const userId = await AsyncStorage.getItem("userId")
       const profileId = await AsyncStorage.getItem("profileId")
-      console.log('timing', whatTime, whatDuration, movieTitle);
+     // console.log('timing', whatTime, whatDuration, movieTitle);
       if (didPlay == "true"){
        saveMovie(userId, profileId,Number(whatDuration), Number(whatTime),movieId, movieTitle, isWatchedMovie, Number(seasonNumber), Number(episodeNumber));
       }
       if (Platform.OS == 'android') {
-      console.log('focused', didPlay);
+      //console.log('focused', didPlay);
       if (didPlay === 'true') {
       //ReactNativeBitmovinPlayerIntance.destroy();
       AsyncStorage.setItem("didPlay", "false")
@@ -82,7 +81,7 @@ const HomeScreen = ({ navigation }) => {
     }
       
   } else {
-    console.log('focused ios');
+   // console.log('focused ios');
     //ReactNativeBitmovinPlayerIntance.pause()
   }
 
@@ -126,14 +125,14 @@ useEffect(()=> {
   };
 
   const saveMovie = (userId, profileId,duration,time,movieId,title, isWatchedMovie, seasonNumber, episodeNumber) => {
-    console.log('saving movie',duration,time, title, isWatchedMovie, seasonNumber, episodeNumber);
+    //console.log('saving movie',duration,time, title, isWatchedMovie, seasonNumber, episodeNumber);
    // console.log('iswatched',   isWatched(user.currentProfile.watched, title));
-   console.log('profileId',profileId);
+  //console.log('profileId',profileId);
    if(time > 0) {
       if (
         isWatchedMovie === 'false'
         ) {
-          console.log('here 1');
+          //console.log('here 1');
           addtoWatchedProfile(
             userId,
             movieId,
@@ -143,7 +142,7 @@ useEffect(()=> {
             profileId
             )(dispatch);
           } else {
-            console.log('here 2');
+            //console.log('here 2');
             updateWatchedProfile(
               userId,
               movieId,
@@ -600,7 +599,7 @@ useEffect(()=> {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         >
-          <KeepAwake />
+          
           {renderHeroSectionThirdDesign()}
           {continueWatchingLength > 0 ? renderContinueWatctionSection() : null}
           {renderMovies()}

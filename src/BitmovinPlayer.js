@@ -15,6 +15,7 @@ import ReactNativeBitmovinPlayer, {
   } from "../store/actions/user";
   import { useDispatch, useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-community/async-storage';
+import KeepAwake from '@sayem314/react-native-keep-awake';
 
 const BitmovinPlayer = ({navigation,route}) => {
   const user = useSelector((state) => state.user);
@@ -122,12 +123,12 @@ setWatchedMovie()
     const whatTime = await AsyncStorage.getItem('watched');
     const whatDuration = await AsyncStorage.getItem('duration');
 
-    console.log('update watched', whatTime, whatDuration);
+    //console.log('update watched', whatTime, whatDuration);
     if (whatTime > 0) {
     if (
       isWatched(user.currentProfile.watched, movie.title) == false
     ) {
-      console.log('here 1');
+      //console.log('here 1');
       addtoWatchedProfile(
         user.user._id,
         movie.title,
@@ -139,7 +140,7 @@ setWatchedMovie()
     } else if (
       isWatched(user.currentProfile.watched, movie.title) == true
     ) {
-      console.log('here 2');
+      //console.log('here 2');
       updateWatchedProfile(
         user.user._id,
         movie.title,
@@ -170,6 +171,7 @@ if (Platform.OS === 'android') {
       style={{ flex: 1, backgroundColor: "black" }}
     >
             <StatusBar hidden /> 
+            <KeepAwake />
         <View style={{width: '100%', height: '100%'}}>
 <ReactNativeBitmovinPlayer
       style={styles.container}
@@ -193,9 +195,9 @@ if (Platform.OS === 'android') {
         }}
         onLoad={e => console.log('Load', e)}
         onError={e => console.log('Error', e)}
-       onPlay={async ({nativeEvent})=> {Platform.OS == 'android' ?  Orientation.lockToLandscapeLeft() : Orientation.lockToLandscapeRight(),console.log(nativeEvent)
+       onPlay={async ({nativeEvent})=> {Platform.OS == 'android' ?  Orientation.lockToLandscapeLeft() : Orientation.lockToLandscapeRight()
 , await AsyncStorage.setItem("didPlay", 'true'), await AsyncStorage.setItem('movieName', movie.title), await AsyncStorage.setItem('seasonNumber', String(movie.season_number)), await AsyncStorage.setItem('episodeNumber', String(movie.episode_number)), await AsyncStorage.setItem('movieId', String(movie._id)), await AsyncStorage.setItem('userId', String(user.user._id)), await AsyncStorage.setItem('profileId', String(user.currentProfile._id)) }}
-        onEvent={({nativeEvent}) => { console.log(nativeEvent),saveTiming(String(nativeEvent.duration), String(nativeEvent.time))}}
+        onEvent={({nativeEvent}) => { saveTiming(String(nativeEvent.duration), String(nativeEvent.time))}}
         onPause={()=> setIsPlaying(false)}
       />  
 {/*       <ReactNativeBitmovinPlayer
