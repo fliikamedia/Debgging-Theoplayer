@@ -39,7 +39,8 @@ import FastImage from "react-native-fast-image";
 import IconAnt from 'react-native-vector-icons/AntDesign';
 import AsyncStorage from "@react-native-community/async-storage";
 import Orientation from "react-native-orientation";
-
+import Video, {currentPlaybackTime} from 'react-native-video'
+import IonIcon from 'react-native-vector-icons/Ionicons';
 
 const HomeScreen = ({ navigation }) => {
   const appState = useRef(AppState.currentState);
@@ -53,6 +54,11 @@ const HomeScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [profiled, setProfiled] = useState('');
   const [connected, setConnected] = useState(null);
+  const video = React.useRef(null);
+  const [isPreloading, setIsPreloading] = useState(true);
+const [scrolledY, setScrolledY] = useState(0)
+const [videoPaused, setVideoPaused] = useState(false);
+const [videoMute, setVideoMute] = useState(false);
 
   useEffect( () => {
     const unsubscribe = navigation.addListener('focus', async () => {
@@ -96,6 +102,16 @@ const HomeScreen = ({ navigation }) => {
 return ()=> unsubscribe();
   }, [navigation]);
 
+  const handleScroll = (event) => {
+    console.log(event.nativeEvent.contentOffset.y);
+    setScrolledY(event.nativeEvent.contentOffset.y);
+    if(event.nativeEvent.contentOffset.y > SIZES.width) {
+      setVideoPaused(true)
+    } else {
+      setVideoPaused(false)
+    }
+
+  }
 useEffect(()=> {
   const unsubscribe = NetInfo.addEventListener(state => {
     //console.log("Connection type", state.type);
@@ -176,6 +192,121 @@ useEffect(()=> {
     });
   }
 
+  const squareVideo = () => {
+    return (  
+      <View style={{width: SIZES.width, height: SIZES.width,justifyContent: 'flex-end', alignItems: 'center'}}>
+      <Video
+     onReadyForDisplay={() => setIsPreloading(false)}
+     paused={videoPaused}
+      ref={video}
+      style={{    position: "absolute",
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0}}
+      source={{
+        uri: resultsToShow[0].square_mobile_trailer,
+      }}
+     repeat={true}
+      shouldPlay
+      resizeMode="cover"
+      rate={1.0}
+      muted={videoMute}
+      preventsDisplaySleepDuringVideoPlayback={true}
+    />
+                <LinearGradient
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
+              colors={["transparent", "#000"]}
+            >
+            <View style={{height:100, width: SIZES.width, justifyContent: 'center', alignItems: 'center'}}>
+            <View style={{ width: SIZES.width - 30,flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+            <FastImage style={{width: 130, height: 50}} source={require('../../assets/The_Batman.png')}/>
+            <View style={{flexDirection: 'row', width: '45%', justifyContent: 'space-around', alignItems: 'center'}}>
+            <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate(MOVIEDETAIL, {
+                      selectedMovie: resultsToShow[0]._id,
+                      isSeries: resultsToShow[0].film_type,
+                      seriesTitle: resultsToShow[0].name,
+                    }), setVideoPaused(true);
+                  }
+                  }
+                  style={{margin: -5}}
+                  >
+              <IonIcon name="information-circle-outline" size={40}  color="white"/>
+              </TouchableOpacity>
+            
+                  {!videoMute ? <TouchableOpacity
+                  onPress={() =>
+                   setVideoMute(true)
+                  }
+                  style={{   
+                  padding: 4,
+                  borderRadius: 100,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  elevation: 25,
+                  borderWidth: 3,
+                  borderColor: "white",
+      }}
+                  >
+            <IonIcon
+                    name="volume-mute"
+                    size={17}
+                    color="white"
+                  />
+                  </TouchableOpacity>:<TouchableOpacity
+                  onPress={() =>
+                   setVideoMute(false)
+                  }
+                  style={{   
+                  padding: 4,
+                  borderRadius: 100,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  elevation: 25,
+                  borderWidth: 3,
+                  borderColor: "white",
+      }}
+                  >
+            <IonIcon
+                    name="volume-high"
+                    size={17}
+                    color="white"
+                  />
+                  </TouchableOpacity>}
+                  <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate(BITMOVINPLAYER, {
+                      movieId: resultsToShow[0]._id,
+                    }), setVideoPaused(true);
+                  }
+                  }
+                  style={{   
+                  padding: 16,
+                  borderRadius: 100,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  elevation: 25,
+                  borderWidth: 4,
+                  borderColor: "teal",
+                  
+      }}
+                  >
+            <IconAwesome
+                    name="play"
+                    size={20}
+                    color="#B0E0E6"
+                  />
+                  </TouchableOpacity>
+                  </View>
+            </View>
+            </View>
+            </LinearGradient>
+    </View>
+    )
+  }
   ///////////////
   let resultLength;
   let stateLength;
@@ -291,7 +422,7 @@ useEffect(()=> {
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ marginTop: SIZES.padding }}
-          data={continueWatching}
+          data={continueWatching.reverse()}
           keyExtractor={(item) => item._id}
           renderItem={({ item, index }) => {
             if (calculateProgress(item._id) < 100) {
@@ -477,14 +608,18 @@ useEffect(()=> {
             blurRadius={10}
             resizeMode="cover"
           >
+             <LinearGradient
+              start={{ x: 0, y: 1 }}
+              end={{ x: 0, y: 0 }}
+              colors={["transparent", "#000"]}
+            >
+            <View style={{height:60, width: '100%'}}></View>
+            </LinearGradient>
             <LinearGradient
               start={{ x: 0, y: 0 }}
               end={{ x: 0, y: 1 }}
               colors={["transparent", "#000"]}
-              style={{
-                width: "100%",
-                height: "100%",
-              }}
+ 
             >
               <Text
                 style={{
@@ -595,11 +730,13 @@ useEffect(()=> {
           contentContainerStyle={{
             paddingBottom: 100,
           }}
+         // paused={scrolledY > 400}
+          onScroll={handleScroll}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         >
-          
+          {squareVideo()}
           {renderHeroSectionThirdDesign()}
           {continueWatchingLength > 0 ? renderContinueWatctionSection() : null}
           {renderMovies()}

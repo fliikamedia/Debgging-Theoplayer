@@ -41,7 +41,7 @@ const movie = movies.availableMovies.find(r => r._id === movieId)
       AsyncStorage.setItem("isWatchedBefore", "false")
     }
   } else {
-    console.log('seeeeries');
+    //console.log('seeeeries');
     if (isWatchedSeries(user.currentProfile.watched, movie.title, movie.season_number, movie.episode_number)){
       AsyncStorage.setItem("isWatchedBefore", "true")
     } else {
@@ -50,6 +50,7 @@ const movie = movies.availableMovies.find(r => r._id === movieId)
   }
   }
 useEffect(()=> {
+  Platform.OS == 'android' ?  Orientation.lockToLandscapeLeft() : Orientation.lockToLandscapeRight();
 setWatchedMovie()
 }, [])
   const stopPlaying = async () => {
@@ -179,7 +180,7 @@ if (Platform.OS === 'android') {
         hasZoom={false}
         configuration={{
           url: playURL,
-         // poster: episode.wide_thumbnail_link,
+          poster: movie.wide_thumbnail_link,
           startOffset: time ? time:  0,
           hasNextEpisode: false,
           subtitles: '',
@@ -195,8 +196,7 @@ if (Platform.OS === 'android') {
         }}
         onLoad={e => console.log('Load', e)}
         onError={e => console.log('Error', e)}
-       onPlay={async ({nativeEvent})=> {Platform.OS == 'android' ?  Orientation.lockToLandscapeLeft() : Orientation.lockToLandscapeRight()
-, await AsyncStorage.setItem("didPlay", 'true'), await AsyncStorage.setItem('movieName', movie.title), await AsyncStorage.setItem('seasonNumber', String(movie.season_number)), await AsyncStorage.setItem('episodeNumber', String(movie.episode_number)), await AsyncStorage.setItem('movieId', String(movie._id)), await AsyncStorage.setItem('userId', String(user.user._id)), await AsyncStorage.setItem('profileId', String(user.currentProfile._id)) }}
+       onPlay={async ({nativeEvent})=> { await AsyncStorage.setItem("didPlay", 'true'), await AsyncStorage.setItem('movieName', movie.title), await AsyncStorage.setItem('seasonNumber', String(movie.season_number)), await AsyncStorage.setItem('episodeNumber', String(movie.episode_number)), await AsyncStorage.setItem('movieId', String(movie._id)), await AsyncStorage.setItem('userId', String(user.user._id)), await AsyncStorage.setItem('profileId', String(user.currentProfile._id)) }}
         onEvent={({nativeEvent}) => { saveTiming(String(nativeEvent.duration), String(nativeEvent.time))}}
         onPause={()=> setIsPlaying(false)}
       />  

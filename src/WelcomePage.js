@@ -78,8 +78,8 @@ const WelcomePage = ({ navigation }) => {
         source={{
           uri: "https://fliikaimages.azureedge.net/hero-container/boxing_hero.mp4",
         }}
-       repeat
-        isMuted
+       repeat={true}
+        muted={true}
         shouldPlay
         resizeMode="cover"
         rate={1.0}

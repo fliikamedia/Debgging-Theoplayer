@@ -121,9 +121,9 @@ const TvShowsScreen = ({ navigation }) => {
           <TouchableOpacity
              onPress={() =>
               navigation.navigate(MOVIEDETAIL, {
-                selectedMovie: background._id,
-                isSeries: background.film_type,
-                seriesTitle: background.name,
+                selectedMovie: item._id,
+                isSeries: item.film_type,
+                seriesTitle: item.title,
               })
             }
           >
