@@ -16,13 +16,15 @@ import {
   AppState,
 } from "react-native";
 import { COLORS, SIZES, icons } from "../../constants";
-import { MOVIEDETAIL } from "../../constants/RouteNames";
+import { BITMOVINPLAYER, MOVIEDETAIL } from "../../constants/RouteNames";
 import firebase from "firebase";
 import Carousel from "react-native-snap-carousel";
 import  LinearGradient  from "react-native-linear-gradient";
 import { fetchMovies} from "../../store/actions/movies";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  addtoWatchedProfile, 
+  updateWatchedProfile,
   addToProfileWatchList,
   removeFromProfileWatchList,
 } from "../../store/actions/user";
@@ -32,9 +34,13 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconAwesome from 'react-native-vector-icons/FontAwesome5';
 import IconMaterial from 'react-native-vector-icons/MaterialIcons'
 import RecycleView from "../components/RecycleView";
-import KeepAwake from '@sayem314/react-native-keep-awake';
 import NetInfo from "@react-native-community/netinfo";
 import FastImage from "react-native-fast-image";
+import IconAnt from 'react-native-vector-icons/AntDesign';
+import AsyncStorage from "@react-native-community/async-storage";
+import Orientation from "react-native-orientation";
+import Video, {currentPlaybackTime} from 'react-native-video'
+import IonIcon from 'react-native-vector-icons/Ionicons';
 
 const HomeScreen = ({ navigation }) => {
   const appState = useRef(AppState.currentState);
@@ -43,12 +49,69 @@ const HomeScreen = ({ navigation }) => {
   const user = useSelector((state) => state.user);
   const movies = useSelector((state) => state.movies);
 //console.log('fetching',movies.isFetching);
-//console.log(user.user);
   const dispatch = useDispatch();
   const [result, setResult] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [profiled, setProfiled] = useState('');
-  const [connected, setConnected] = useState(null)
+  const [connected, setConnected] = useState(null);
+  const video = React.useRef(null);
+  const [isPreloading, setIsPreloading] = useState(true);
+const [scrolledY, setScrolledY] = useState(0)
+const [videoPaused, setVideoPaused] = useState(false);
+const [videoMute, setVideoMute] = useState(false);
+
+  useEffect( () => {
+    const unsubscribe = navigation.addListener('focus', async () => {
+       Orientation.lockToPortrait();
+      
+      const whatTime = await AsyncStorage.getItem('watched');
+      const whatDuration = await AsyncStorage.getItem('duration');
+      const didPlay = await AsyncStorage.getItem("didPlay")
+      const movieTitle=  await AsyncStorage.getItem("movieName")
+      const seasonNumber=  await AsyncStorage.getItem("seasonNumber")
+      const episodeNumber=  await AsyncStorage.getItem("episodeNumber")
+      const movieId=  await AsyncStorage.getItem("movieId")
+      const isWatchedMovie = await AsyncStorage.getItem("isWatchedBefore")
+      const userId = await AsyncStorage.getItem("userId")
+      const profileId = await AsyncStorage.getItem("profileId")
+     // console.log('timing', whatTime, whatDuration, movieTitle);
+      if (didPlay == "true"){
+       saveMovie(userId, profileId,Number(whatDuration), Number(whatTime),movieId, movieTitle, isWatchedMovie, Number(seasonNumber), Number(episodeNumber));
+      }
+      if (Platform.OS == 'android') {
+      //console.log('focused', didPlay);
+      if (didPlay === 'true') {
+      //ReactNativeBitmovinPlayerIntance.destroy();
+      AsyncStorage.setItem("didPlay", "false")
+      console.log('focused', didPlay);
+    }
+      
+  } else {
+   // console.log('focused ios');
+    //ReactNativeBitmovinPlayerIntance.pause()
+  }
+
+  AsyncStorage.setItem('watched', '0');
+  AsyncStorage.setItem('duration', '0')
+  AsyncStorage.setItem("isWatchedBefore", "null")
+  AsyncStorage.setItem("movieId", "null")
+  AsyncStorage.setItem("userId", "null")
+  AsyncStorage.setItem("profileId", "null")
+
+});
+return ()=> unsubscribe();
+  }, [navigation]);
+
+  const handleScroll = (event) => {
+    console.log(event.nativeEvent.contentOffset.y);
+    setScrolledY(event.nativeEvent.contentOffset.y);
+    if(event.nativeEvent.contentOffset.y > SIZES.width) {
+      setVideoPaused(true)
+    } else {
+      setVideoPaused(false)
+    }
+
+  }
 useEffect(()=> {
   const unsubscribe = NetInfo.addEventListener(state => {
     //console.log("Connection type", state.type);
@@ -77,6 +140,38 @@ useEffect(()=> {
     } catch (err) {}
   };
 
+  const saveMovie = (userId, profileId,duration,time,movieId,title, isWatchedMovie, seasonNumber, episodeNumber) => {
+    //console.log('saving movie',duration,time, title, isWatchedMovie, seasonNumber, episodeNumber);
+   // console.log('iswatched',   isWatched(user.currentProfile.watched, title));
+  //console.log('profileId',profileId);
+   if(time > 0) {
+      if (
+        isWatchedMovie === 'false'
+        ) {
+          //console.log('here 1');
+          addtoWatchedProfile(
+            userId,
+            movieId,
+            title,
+            duration,
+            time,
+            profileId
+            )(dispatch);
+          } else {
+            //console.log('here 2');
+            updateWatchedProfile(
+              userId,
+              movieId,
+              title,
+              duration,
+              time,
+              profileId
+              )(dispatch);
+            }
+        } 
+
+        
+  };
   const resultsToShow = movies.availableMovies.filter(
     (c) =>
       c.film_type == "movie" ||
@@ -97,6 +192,121 @@ useEffect(()=> {
     });
   }
 
+  const squareVideo = () => {
+    return (  
+      <View style={{width: SIZES.width, height: SIZES.width,justifyContent: 'flex-end', alignItems: 'center'}}>
+      <Video
+     onReadyForDisplay={() => setIsPreloading(false)}
+     paused={videoPaused}
+      ref={video}
+      style={{    position: "absolute",
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0}}
+      source={{
+        uri: resultsToShow[0].square_mobile_trailer,
+      }}
+     repeat={true}
+      shouldPlay
+      resizeMode="cover"
+      rate={1.0}
+      muted={videoMute}
+      preventsDisplaySleepDuringVideoPlayback={true}
+    />
+                <LinearGradient
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
+              colors={["transparent", "#000"]}
+            >
+            <View style={{height:100, width: SIZES.width, justifyContent: 'center', alignItems: 'center'}}>
+            <View style={{ width: SIZES.width - 30,flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+            <FastImage style={{width: 130, height: 50}} source={require('../../assets/The_Batman.png')}/>
+            <View style={{flexDirection: 'row', width: '45%', justifyContent: 'space-around', alignItems: 'center'}}>
+            <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate(MOVIEDETAIL, {
+                      selectedMovie: resultsToShow[0]._id,
+                      isSeries: resultsToShow[0].film_type,
+                      seriesTitle: resultsToShow[0].name,
+                    }), setVideoPaused(true);
+                  }
+                  }
+                  style={{margin: -5}}
+                  >
+              <IonIcon name="information-circle-outline" size={40}  color="white"/>
+              </TouchableOpacity>
+            
+                  {!videoMute ? <TouchableOpacity
+                  onPress={() =>
+                   setVideoMute(true)
+                  }
+                  style={{   
+                  padding: 4,
+                  borderRadius: 100,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  elevation: 25,
+                  borderWidth: 3,
+                  borderColor: "white",
+      }}
+                  >
+            <IonIcon
+                    name="volume-mute"
+                    size={17}
+                    color="white"
+                  />
+                  </TouchableOpacity>:<TouchableOpacity
+                  onPress={() =>
+                   setVideoMute(false)
+                  }
+                  style={{   
+                  padding: 4,
+                  borderRadius: 100,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  elevation: 25,
+                  borderWidth: 3,
+                  borderColor: "white",
+      }}
+                  >
+            <IonIcon
+                    name="volume-high"
+                    size={17}
+                    color="white"
+                  />
+                  </TouchableOpacity>}
+                  <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate(BITMOVINPLAYER, {
+                      movieId: resultsToShow[0]._id,
+                    }), setVideoPaused(true);
+                  }
+                  }
+                  style={{   
+                  padding: 16,
+                  borderRadius: 100,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  elevation: 25,
+                  borderWidth: 4,
+                  borderColor: "teal",
+                  
+      }}
+                  >
+            <IconAwesome
+                    name="play"
+                    size={20}
+                    color="#B0E0E6"
+                  />
+                  </TouchableOpacity>
+                  </View>
+            </View>
+            </View>
+            </LinearGradient>
+    </View>
+    )
+  }
   ///////////////
   let resultLength;
   let stateLength;
@@ -143,35 +353,42 @@ useEffect(()=> {
   };
 
   //// Render continue watching section
-
   let continueWatching = [];
 
     try {
       for (let i = 0; i < user.currentProfile.watched.length; i++) {
-        resultsToShow.map((r) => {
-          if (r.title == user.currentProfile.watched[i].title) {
-            continueWatching.push(r);
+        movies.availableMovies.map((r) => {
+          if (r.film_type === 'movie') {
+            if (r._id == user.currentProfile.watched[i].movieId) {
+              continueWatching.push({_id: r._id,title: r.title, image: r.dvd_thumbnail_link, time: user.currentProfile.watched[i].watchedAt,  movieTime: r.runtime});
+            }
+          } else {
+            if (r._id == user.currentProfile.watched[i].movieId ) {
+              continueWatching.push({_id: r._id,title: r.title, image: r.wide_thumbnail_link, time: user.currentProfile.watched[i].watchedAt, movieTime: r.runtime, season: r.season_number, episode: r.episode_number});
+            }
           }
+       
         });
       }
     } catch (err) {}
-
   let continueWatchingLength;
   try {
     continueWatchingLength = continueWatching.length;
   } catch (err) {}
-  const calculateProgress = (movieName) => {
+  const calculateProgress = (id) => {
     try {
         var duration = user.currentProfile.watched.find(
-          (c) => c.title == movieName
+          (c) => c.movieId == id
         ).duration;
         var watchedAt = user.currentProfile.watched.find(
-          (c) => c.title == movieName
+          (c) => c.movieId == id
         ).watchedAt;
      
     } catch (err) {}
     return (watchedAt / duration) * 100;
   };
+
+
   const renderContinueWatctionSection = () => {
     return (
       <View>
@@ -205,17 +422,16 @@ useEffect(()=> {
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ marginTop: SIZES.padding }}
-          data={continueWatching}
+          data={continueWatching.reverse()}
           keyExtractor={(item) => item._id}
           renderItem={({ item, index }) => {
-            if (calculateProgress(item.title) < 100) {
+            if (calculateProgress(item._id) < 100) {
               return (
                 <TouchableWithoutFeedback
                   onPress={() =>
-                    navigation.navigate(MOVIEDETAIL, {
-                      selectedMovie: item._id,
-                      isSeries: item.film_type,
-                      seriesTitle: item.title,
+                    navigation.navigate(BITMOVINPLAYER, {
+                      movieId: item._id,
+                      time: item.time
                     })
                   }
                 >
@@ -229,34 +445,54 @@ useEffect(()=> {
                     }}
                   >
                     {/* Thumnnail */}
+                    <View style={{width: SIZES.width * 0.27,
+                        height: SIZES.width * 0.35,
+                        alignItems: 'center', justifyContent: 'center'}}>
                     <Image
-                      source={{ uri: item.dvd_thumbnail_link }}
+                      source={{ uri: item.image}}
                       style={{
-                        width: SIZES.width * 0.3,
-                        height: SIZES.width * 0.3,
-                        borderRadius: 200,
+                        position: "absolute",
+                        top: 0,
+                        bottom: 0,
+                        right: 0,
+                        left: 0,
                         resizeMode: "cover",
+                        borderRadius: 10
                       }}
                       resizeMode="cover"
                     />
+                    <IconAnt name="playcircleo" size={50} color="white" />
+
                     {/* Name */}
+                    </View>
+                    <View style={{width: SIZES.width * 0.27}}>
                     <Text
                       style={{
                         color: COLORS.white,
                         marginTop: SIZES.base,
                         textAlign: "center",
-                        width: SIZES.width * 0.3,
                       }}
                       numberOfLines={1}
                     >
                       {item.title}
                     </Text>
+                    <Text
+                      style={{
+                        color: COLORS.white,
+                        marginTop: SIZES.base,
+                        textAlign: "center",
+                      }}
+                      numberOfLines={1}
+                    >
+                      {item.season ? `S${item.season} - E${item.episode}` :item.movieTime}
+                    </Text>
                     {/* Progress Bar */}
                     <ProgressBar
                       containerStyle={{ marginTop: SIZES.radius }}
                       barStyle={{ height: 3 }}
-                      percentage={calculateProgress(item.title)}
+                      percentage={calculateProgress(item._id)}
                     />
+                    </View>
                   </View>
                 </TouchableWithoutFeedback>
               );
@@ -366,20 +602,24 @@ useEffect(()=> {
 
     return (
       <View style={styles.carouselContentContainer}>
-        <View style={{ ...StyleSheet.absoluteFill, backgroundColor: "#000" }}>
           <ImageBackground
             source={{ uri: background.uri }}
             style={styles.ImageBg}
             blurRadius={10}
+            resizeMode="cover"
           >
+             <LinearGradient
+              start={{ x: 0, y: 1 }}
+              end={{ x: 0, y: 0 }}
+              colors={["transparent", "#000"]}
+            >
+            <View style={{height:60, width: '100%'}}></View>
+            </LinearGradient>
             <LinearGradient
               start={{ x: 0, y: 0 }}
               end={{ x: 0, y: 1 }}
               colors={["transparent", "#000"]}
-              style={{
-                width: "100%",
-                height: "100%",
-              }}
+ 
             >
               <Text
                 style={{
@@ -398,8 +638,8 @@ useEffect(()=> {
                   style={styles.carousel}
                   data={resultsToShow}
                   renderItem={renderItem}
-                  itemWidth={230}
-                  sliderWidth={500}
+                  itemWidth={SIZES.width *  .586}
+                  sliderWidth={SIZES.width *  1.274}
                   containerWidth={width - 20}
                   separatorWidth={0}
                   ref={carouselRef}
@@ -464,7 +704,6 @@ useEffect(()=> {
             </LinearGradient>
           </ImageBackground>
         </View>
-      </View>
     );
   };
   ///// End of Render Hero third design
@@ -487,14 +726,17 @@ useEffect(()=> {
         </View>
       ) : (
         <ScrollView
+        showsVerticalScrollIndicator={false}
           contentContainerStyle={{
             paddingBottom: 100,
           }}
+         // paused={scrolledY > 400}
+          onScroll={handleScroll}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         >
-          <KeepAwake />
+          {squareVideo()}
           {renderHeroSectionThirdDesign()}
           {continueWatchingLength > 0 ? renderContinueWatctionSection() : null}
           {renderMovies()}
@@ -562,13 +804,10 @@ const styles = StyleSheet.create({
   carouselContentContainer: {
     flex: 1,
     backgroundColor: "#000",
-    height: SIZES.height * .85,
-    paddingHorizontal: 14,
+    //height: SIZES.height * .85,
   },
   ImageBg: {
     flex: 1,
-    height: null,
-    width: null,
     opacity: 1,
     justifyContent: "flex-start",
   },

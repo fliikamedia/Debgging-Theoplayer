@@ -11,6 +11,7 @@ import { EMAILSIGNUP, MOVIES, SIGNUP } from "../../constants/RouteNames";
 import { TextInput, HelperText } from "react-native-paper";
 import { setEmailFunc, getUser } from "../../store/actions/user";
 import { useDispatch } from "react-redux";
+import AsyncStorage from "@react-native-community/async-storage";
 
 const LoginScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -34,6 +35,7 @@ const LoginScreen = ({ navigation }) => {
             index: 0,
             routes: [{ name: MOVIES }],
           });
+          await AsyncStorage.setItem("whatPhase", "LoggedIn");
           navigation.navigate(MOVIES);
 
           //console.log(user);

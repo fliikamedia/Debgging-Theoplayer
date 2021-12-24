@@ -11,7 +11,7 @@ import TvShowsScreen from "./src/BottomScreens/TvShowsScreen";
 import MovieDetailScreen from "./src/MovieDetailScreen";
 import ProfileScreen from "./src/BottomScreens/ProfileScreen";
 import LoginScreen from "./src/auth/LoginScreen";
-import SignupScreen from "./src/auth/SignupScreen";
+import FillProfileScreen from "./src/auth/FillProfileScreen";
 import EditProfile from "./src/components/EditProfile";
 import EpisodeDetailScreen from "./src/EpisodeDetailScreen";
 import EmailSignup from "./src/auth/EmailSignup";
@@ -25,7 +25,7 @@ import {
   MOVIEDETAIL,
   PROFILESCREEN,
   LOGIN,
-  SIGNUP,
+  FILLPROFILESCREEN,
   EDITPROFILE,
   EPISODEDETAIL, BITMOVINPLAYER, EMAILSIGNUP
 } from "./constants/RouteNames";
@@ -39,13 +39,13 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import {PersistGate} from 'redux-persist/integration/react'
 import {store, persistor} from './store/index'
+import AsyncStorage from "@react-native-community/async-storage";
 
 StatusBar.setBarStyle("light-content");
 if (Platform.OS === "android") {
   StatusBar.setBackgroundColor("rgba(0,0,0,0)");
   StatusBar.setTranslucent(true);
 }
-
 
   // Bottom Tab Navigator
   const Tabs = createBottomTabNavigator();
@@ -124,10 +124,16 @@ export default App = () => {
     firebase.app(); // if already initialized, use that one
   }
   
-  const checkIFLoggedIn = () => {
+  const checkIFLoggedIn = async () => {
+    const whatPhase = await AsyncStorage.getItem("whatPhase");
+    console.log('where',whatPhase);
     firebase.auth().onAuthStateChanged((user) => {
-      if (user && user.emailVerified) {
+      if (whatPhase === "Signed up") {
         // console.log(user);
+        setRoute(FILLPROFILESCREEN);
+        setReady(true);
+      } else if (user && user.emailVerified && whatPhase === "LoggedIn") {
+        console.log('here');
         setRoute(MOVIES);
         setReady(true);
       } else {
@@ -233,8 +239,8 @@ export default App = () => {
                 }}
                 />
               <Stack.Screen
-                name={SIGNUP}
-                component={SignupScreen}
+                name={FILLPROFILESCREEN}
+                component={FillProfileScreen}
                 options={{
                   title: " ",
                   headerStyle: {

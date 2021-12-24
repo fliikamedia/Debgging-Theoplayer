@@ -162,7 +162,7 @@ export const addProfile = (emails, name, image) => async (dispatch) => {
 };
 
 export const addtoWatchedProfile =
-  (userId, title, duration, watched, profileId) => async (dispatch) => {
+  (userId, movieId, title,  duration, watched, profileId, season = null, episode = null) => async (dispatch) => {
     try {
       console.log("watched profile");
       //dispatch({ type: ADD_TO_WATCHED_PROFILE });
@@ -170,14 +170,18 @@ export const addtoWatchedProfile =
         userId: userId,
         profileId: profileId,
         newMovie: {
+          movieId,
           title: title,
           duration: duration,
           watchedAt: watched,
+          season: season,
+          episode: episode,
+
         },
       });
       if (result.status == 200) {
-       // console.log('result',result);
-       dispatch({
+      // console.log('result',result.data);
+      dispatch({
         type: GET_USER_SUCCESS,
         payload: result.data,
       });
@@ -203,7 +207,7 @@ export const setNotProfile = () => async (dispatch) => {
 };
 
 export const updateWatchedProfile =
-  (userId, title, duration, watched, profileId) => async (dispatch) => {
+  (userId, movieId, title, duration, watched, profileId,season = null, episode = null) => async (dispatch) => {
     console.log("updating profile");
     try {
      // dispatch({ type: UPDATE_WATCHED });
@@ -211,12 +215,15 @@ export const updateWatchedProfile =
         userId: userId,
         profileId: profileId,
         newMovie: {
+          movieId,
           title: title,
           duration: duration,
           watchedAt: watched,
+          season: season,
+          episode: episode,
         },
       });
-      if (result.status == 200) {
+      if (result.status === 200) {
         //console.log("result", result);
        
         dispatch({

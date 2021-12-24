@@ -15,7 +15,7 @@ import Video from 'react-native-video'
 
 const WelcomePage = ({ navigation }) => {
   const [isPreloading, setIsPreloading] = useState(true);
-  console.log(Dimensions.get('window').height);
+  //console.log(Dimensions.get('window').height);
 
   /*
   const checkIFLoggedIn = () => {
@@ -78,8 +78,8 @@ const WelcomePage = ({ navigation }) => {
         source={{
           uri: "https://fliikaimages.azureedge.net/hero-container/boxing_hero.mp4",
         }}
-       repeat
-        isMuted
+       repeat={true}
+        muted={true}
         shouldPlay
         resizeMode="cover"
         rate={1.0}

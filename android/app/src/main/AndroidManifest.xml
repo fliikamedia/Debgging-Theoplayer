@@ -21,5 +21,8 @@
         </intent-filter>
       </activity>
                 <meta-data android:name="BITMOVIN_PLAYER_LICENSE_KEY" android:value="72fc96e3-318b-452f-91c7-bed54f199dd1" />
+                      <meta-data android:name="BITMOVIN_ANALYTICS_LICENSE_KEY" android:value="D05E52E2-94F0-4CE9-BE45-4AD8F3A0678E"/>
+      <meta-data android:name="BITMOVIN_PLAYER_CSS" android:value="https://stagev2-app-assets.britbox.takeoffmedia.com/player/poc/css/bitmovinplayer-ui.min.css"/>
+      <meta-data android:name="BITMOVIN_PLAYER_JS" android:value="https://stagev2-app-assets.britbox.takeoffmedia.com/player/poc/js/bitmovinplayer-ui.min.js"/>
     </application>
 </manifest>
