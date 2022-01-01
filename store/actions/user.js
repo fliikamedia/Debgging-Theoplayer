@@ -162,7 +162,7 @@ export const addProfile = (emails, name, image) => async (dispatch) => {
 };
 
 export const addtoWatchedProfile =
-  (userId, movieId, title,  duration, watched, profileId, season = null, episode = null) => async (dispatch) => {
+  (created,updated,userId, movieId, title,  duration, watched, profileId, season = null, episode = null) => async (dispatch) => {
     try {
       console.log("watched profile");
       //dispatch({ type: ADD_TO_WATCHED_PROFILE });
@@ -176,6 +176,8 @@ export const addtoWatchedProfile =
           watchedAt: watched,
           season: season,
           episode: episode,
+          created:created,
+          updated: updated
 
         },
       });
@@ -207,7 +209,7 @@ export const setNotProfile = () => async (dispatch) => {
 };
 
 export const updateWatchedProfile =
-  (userId, movieId, title, duration, watched, profileId,season = null, episode = null) => async (dispatch) => {
+  (updated,userId, movieId, title, duration, watched, profileId,season = null, episode = null) => async (dispatch) => {
     console.log("updating profile");
     try {
      // dispatch({ type: UPDATE_WATCHED });
@@ -221,6 +223,7 @@ export const updateWatchedProfile =
           watchedAt: watched,
           season: season,
           episode: episode,
+          updated: updated
         },
       });
       if (result.status === 200) {

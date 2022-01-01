@@ -47,7 +47,7 @@ import ReactNativeBitmovinPlayer, {
 } from '@takeoffmedia/react-native-bitmovin-player';
 import AsyncStorage from "@react-native-community/async-storage";
 import Orientation from "react-native-orientation";
-
+import moment from "moment";
 
 const MovieDetailScreen = ({ navigation, route }) => {
   const Tab = createMaterialTopTabNavigator();
@@ -164,6 +164,8 @@ return ()=> unsubscribe();
         ) {
           console.log('here 1');
           addtoWatchedProfile(
+            moment(),
+            moment(),
             user.user._id,
             movieId,
             title,
@@ -174,6 +176,7 @@ return ()=> unsubscribe();
           } else {
             console.log('here 2');
             updateWatchedProfile(
+              moment(),
               user.user._id,
               movieId,
               title,

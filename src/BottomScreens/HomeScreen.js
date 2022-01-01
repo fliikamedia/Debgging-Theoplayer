@@ -41,6 +41,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 import Orientation from "react-native-orientation";
 import Video, {currentPlaybackTime} from 'react-native-video'
 import IonIcon from 'react-native-vector-icons/Ionicons';
+import moment from "moment";
 
 const HomeScreen = ({ navigation }) => {
   const appState = useRef(AppState.currentState);
@@ -103,7 +104,7 @@ return ()=> unsubscribe();
   }, [navigation]);
 
   const handleScroll = (event) => {
-    console.log(event.nativeEvent.contentOffset.y);
+    //console.log(event.nativeEvent.contentOffset.y);
     setScrolledY(event.nativeEvent.contentOffset.y);
     if(event.nativeEvent.contentOffset.y > SIZES.width) {
       setVideoPaused(true)
@@ -150,6 +151,8 @@ useEffect(()=> {
         ) {
           //console.log('here 1');
           addtoWatchedProfile(
+            moment(),
+            moment(),
             userId,
             movieId,
             title,
@@ -160,6 +163,7 @@ useEffect(()=> {
           } else {
             //console.log('here 2');
             updateWatchedProfile(
+              moment(),
               userId,
               movieId,
               title,
@@ -366,17 +370,59 @@ useEffect(()=> {
         movies.availableMovies.map((r) => {
           if (r.film_type === 'movie') {
             if (r._id == user.currentProfile.watched[i].movieId) {
-              continueWatching.push({_id: r._id,title: r.title, image: r.dvd_thumbnail_link, time: user.currentProfile.watched[i].watchedAt,  movieTime: r.runtime});
+              continueWatching.push({_id: r._id,title: r.title, image: r.dvd_thumbnail_link, time: user.currentProfile.watched[i].watchedAt,  movieTime: r.runtime, created: moment(user.currentProfile.watched[i].created).unix(), updated: moment(user.currentProfile.watched[i].updated).unix()});
             }
           } else {
             if (r._id == user.currentProfile.watched[i].movieId ) {
-              continueWatching.push({_id: r._id,title: r.title, image: r.wide_thumbnail_link, time: user.currentProfile.watched[i].watchedAt, movieTime: r.runtime, season: r.season_number, episode: r.episode_number});
+              continueWatching.push({_id: r._id,title: r.title, image: r.wide_thumbnail_link, time: user.currentProfile.watched[i].watchedAt, movieTime: r.runtime, season: r.season_number, episode: r.episode_number,  created: moment(user.currentProfile.watched[i].created).unix(), updated: moment(user.currentProfile.watched[i].updated).unix()});
             }
           }
        
         });
       }
     } catch (err) {}
+
+   let sortedWatched = continueWatching.sort((a,b) => {
+      if(a.title < b.title) return -1;
+      return 1;
+      })
+
+      let byEpisode = [];
+        for (let i = 0; i < sortedWatched.length; i++) {
+          if (!sortedWatched[i].season) {
+            byEpisode.push(sortedWatched[i])
+          } else {
+            if (sortedWatched[i].title === sortedWatched[i - 1]?.title) {
+              if (sortedWatched[i]?.season === sortedWatched[i - 1]?.season) {
+                if (sortedWatched[i]?.episode > sortedWatched[i - 1]?.episode) {
+                  byEpisode.pop();
+                  byEpisode.push(sortedWatched[i])
+                }
+              } else if (sortedWatched[i]?.season > sortedWatched[i - 1]?.season) {
+                byEpisode.pop();
+                byEpisode.push(sortedWatched[i])
+              }
+            } else {
+              byEpisode.push(sortedWatched[i])
+            }
+           //console.log(continueWatching[i].episode > continueWatching[i - 1]?.episode);
+            //console.log(continueWatching[i].title === continueWatching[i - 1]?.title &&continueWatching[i].season >continueWatching[i - 1]?.season &&continueWatching[i].episode > continueWatching[i - 1]?.episode);
+          }
+
+        }
+
+
+        let continueWatchingToShow = [];
+
+        for (let x = 0; x < continueWatching.length; x++) {
+          for (let c = 0; c <byEpisode.length; c++) {
+            if (continueWatching[x]._id === byEpisode[c]._id) {
+              continueWatchingToShow.push(continueWatching[x])
+            }
+          }
+        }
+       continueWatchingToShow.sort((a,b) => b.updated - a.updated).map(r => r.title);
+        
   let continueWatchingLength;
   try {
     continueWatchingLength = continueWatching.length;
@@ -394,7 +440,7 @@ useEffect(()=> {
     return (watchedAt / duration) * 100;
   };
 
-
+//console.log(continueWatching);
   const renderContinueWatctionSection = () => {
     return (
       <View>
@@ -428,7 +474,7 @@ useEffect(()=> {
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ marginTop: SIZES.padding }}
-          data={continueWatching.reverse()}
+          data={continueWatchingToShow}
           keyExtractor={(item) => item._id}
           renderItem={({ item, index }) => {
             if (calculateProgress(item._id) < 100) {
@@ -445,7 +491,7 @@ useEffect(()=> {
                     style={{
                       marginLeft: index == 0 ? SIZES.padding : 20,
                       marginRight:
-                        index == continueWatching.length - 1
+                        index == byEpisode.length - 1
                           ? SIZES.padding
                           : 0,
                     }}

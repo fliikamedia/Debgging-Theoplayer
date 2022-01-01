@@ -16,7 +16,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 import IconAnt from 'react-native-vector-icons/AntDesign';
 import { BITMOVINPLAYER } from "../constants/RouteNames";
 import FastImage from 'react-native-fast-image'
-
+import moment from "moment";
 
 const EpisodeDetailScreen = ({ navigation,route }) => {
   const user = useSelector((state) => state.user);
@@ -104,9 +104,11 @@ return ()=> unsubscribe();
       const movieId=  await AsyncStorage.getItem("movieId")
 
       const isWatchedMovie = await AsyncStorage.getItem("isWatchedBefore")
+      const userId = await AsyncStorage.getItem("userId")
+      const profileId = await AsyncStorage.getItem("profileId")
       //console.log('timing', whatTime, whatDuration, movieTitle);
       if (didPlay == "true"){
-       saveMovie(Number(whatDuration), Number(whatTime), movieId, movieTitle, isWatchedMovie, Number(seasonNumber), Number(episodeNumber));
+       saveMovie(userId, profileId,Number(whatDuration), Number(whatTime), movieId, movieTitle, isWatchedMovie, Number(seasonNumber), Number(episodeNumber));
       }
       if (Platform.OS == 'android') {
       console.log('focused', didPlay);
@@ -126,6 +128,8 @@ return ()=> unsubscribe();
   AsyncStorage.setItem('movieName', 'null');
   AsyncStorage.setItem("isWatchedBefore", "null")
   AsyncStorage.setItem("movieId", "null")
+  AsyncStorage.setItem("userId", "null")
+  AsyncStorage.setItem("profileId", "null")
 });
 return ()=> unsubscribe();
   }, [navigation]);
@@ -193,7 +197,7 @@ return ()=> unsubscribe();
     }
   }; */
   
-  const saveMovie = (duration,time,movieId, title, isWatchedMovie, seasonNumber, episodeNumber) => {
+  const saveMovie = (userId, profileId,duration,time,movieId, title, isWatchedMovie, seasonNumber, episodeNumber) => {
     console.log('saving movie',duration,time, title, isWatchedMovie, seasonNumber, episodeNumber);
    // console.log('iswatched',   isWatched(user.currentProfile.watched, title));
    if(time > 0) {
@@ -202,24 +206,27 @@ return ()=> unsubscribe();
       ) {
                 console.log('here 1 series');
                 addtoWatchedProfile(
-                  user.user._id,
+                  moment(),
+                  moment(),
+                  userId,
                   movieId,
                   title,
                   duration,
                   time,
-                  user.currentProfile._id,
+                  profileId,
                   seasonNumber,
-                  episodeNumber
+                  episodeNumber,
                   )(dispatch);
                 } else {
                   console.log('here 2 series');
                   updateWatchedProfile(
-                    user.user._id,
+                    moment(),
+                    userId,
                     movieId,
                     title,
                     duration,
                     time,
-                    user.currentProfile._id,
+                    profileId,
                     seasonNumber,
                     episodeNumber
                     )(dispatch);
