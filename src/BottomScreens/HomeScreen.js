@@ -193,6 +193,12 @@ useEffect(()=> {
   }
 
   const squareVideo = () => {
+    let squareURL;
+    try {
+      squareURL = resultsToShow.find(r => r._id === "6093f7c6e91136001bf80896").square_mobile_trailer
+    } catch (err) {
+      squareURL = "https://fliikamediaservice-usea.streaming.media.azure.net/1368c5bc-1fb8-450f-ba54-104e021b4033/Batman_mobile_square.ism/manifest(format=m3u8-aapl)"
+    }
     return (  
       <View style={{width: SIZES.width, height: SIZES.width,justifyContent: 'flex-end', alignItems: 'center'}}>
       <Video
@@ -205,7 +211,7 @@ useEffect(()=> {
       left: 0,
       right: 0}}
       source={{
-        uri: resultsToShow[0].square_mobile_trailer,
+        uri:  squareURL,
       }}
      repeat={true}
       shouldPlay
