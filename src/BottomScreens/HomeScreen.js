@@ -463,7 +463,7 @@ useEffect(()=> {
             >
               Continue watching
             </Text>
-            <Image
+            <FastImage
               source={icons.right_arrow}
               style={{ height: 20, width: 20, tintColor: "teal" }}
             />
@@ -500,7 +500,7 @@ useEffect(()=> {
                     <View style={{width: SIZES.width * 0.27,
                         height: SIZES.width * 0.35,
                         alignItems: 'center', justifyContent: 'center'}}>
-                    <Image
+                    <FastImage
                       source={{ uri: item.image}}
                       style={{
                         position: "absolute",
@@ -594,7 +594,7 @@ useEffect(()=> {
     const { width, height } = Dimensions.get("window");
     
     const renderItem = ({ item, index }) => {
-      if(item.dvd_thumbnail_link) {
+      if(item?.dvd_thumbnail_link) {
       return (
         <View>
           <TouchableOpacity
@@ -606,7 +606,7 @@ useEffect(()=> {
                 })
               }
           >
-            <Image
+            <FastImage
               source={{ uri: item.dvd_thumbnail_link }}
               style={styles.carouselImage}
             />
@@ -655,7 +655,7 @@ useEffect(()=> {
     return (
       <View style={styles.carouselContentContainer}>
           <ImageBackground
-            source={{ uri: background.uri }}
+            source={{ uri: background?.uri }}
             style={styles.ImageBg}
             blurRadius={10}
             resizeMode="cover"
@@ -767,7 +767,7 @@ useEffect(()=> {
   //////////////////
   return (
     <View style={styles.container}>
-      {movies.isFetching? (
+      {!background.uri || movies.isFetching? (
         <View style={{ flex: 1, backgroundColor: "black" }}>
           <ActivityIndicator
             animating

@@ -318,7 +318,7 @@ const TvShowsScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      {resultLength == 0 ? (
+      {!background.uri || resultLength == 0 ? (
         <View style={{ flex: 1, backgroundColor: "black" }}>
           <ActivityIndicator
             animating
