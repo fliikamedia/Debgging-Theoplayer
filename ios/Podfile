@@ -19,8 +19,11 @@ target 'FliikaMobileRN' do
 
   pod 'react-native-keep-awake', :path => '../node_modules/@sayem314/react-native-keep-awake'
   pod 'takeoffmedia-react-native-bitmovin-player', :path => '../node_modules/@takeoffmedia/react-native-bitmovin-player'
-
+  
   #pod 'takeoffmedia-react-native-bitmovin-player', :path => '../..'
+  # pod 'SDWebImage', git: "https://github.com/SDWebImage/SDWebImage.git", tag: "5.1.0"
+  # pod 'SDWebImageWebPCoder', git: "https://github.com/SDWebImage/SDWebImageWebPCoder.git", tag: "0.3.0"
+  # pod 'libwebp', git: "https://github.com/SDWebImage/libwebp-Xcode", tag: "1.1.0"
 
   pod 'BitmovinAnalyticsCollector/Core', git: 'https://github.com/bitmovin/bitmovin-analytics-collector-ios.git', tag: '1.20.0-beta2'
   pod 'BitmovinAnalyticsCollector/BitmovinPlayer', git: 'https://github.com/bitmovin/bitmovin-analytics-collector-ios.git', tag: '1.20.0-beta2'
@@ -34,7 +37,7 @@ target 'FliikaMobileRN' do
   #
   # Note that if you have use_frameworks! enabled, Flipper will not work and
   # you should disable the next line.
-  use_flipper!()
+  #use_flipper!()
 
 
   post_install do |installer|

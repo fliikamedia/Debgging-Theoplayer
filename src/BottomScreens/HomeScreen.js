@@ -387,23 +387,23 @@ useEffect(()=> {
       return 1;
       })
 
-      let byEpisode = [];
+      let byOnlyLastEpisode = [];
         for (let i = 0; i < sortedWatched.length; i++) {
           if (!sortedWatched[i].season) {
-            byEpisode.push(sortedWatched[i])
+            byOnlyLastEpisode.push(sortedWatched[i])
           } else {
             if (sortedWatched[i].title === sortedWatched[i - 1]?.title) {
               if (sortedWatched[i]?.season === sortedWatched[i - 1]?.season) {
                 if (sortedWatched[i]?.episode > sortedWatched[i - 1]?.episode) {
-                  byEpisode.pop();
-                  byEpisode.push(sortedWatched[i])
+                  byOnlyLastEpisode.pop();
+                  byOnlyLastEpisode.push(sortedWatched[i])
                 }
               } else if (sortedWatched[i]?.season > sortedWatched[i - 1]?.season) {
-                byEpisode.pop();
-                byEpisode.push(sortedWatched[i])
+                byOnlyLastEpisode.pop();
+                byOnlyLastEpisode.push(sortedWatched[i])
               }
             } else {
-              byEpisode.push(sortedWatched[i])
+              byOnlyLastEpisode.push(sortedWatched[i])
             }
            //console.log(continueWatching[i].episode > continueWatching[i - 1]?.episode);
             //console.log(continueWatching[i].title === continueWatching[i - 1]?.title &&continueWatching[i].season >continueWatching[i - 1]?.season &&continueWatching[i].episode > continueWatching[i - 1]?.episode);
@@ -412,16 +412,16 @@ useEffect(()=> {
         }
 
 
-        let continueWatchingToShow = [];
+        // let continueWatchingToShow = [];
 
-        for (let x = 0; x < continueWatching.length; x++) {
-          for (let c = 0; c <byEpisode.length; c++) {
-            if (continueWatching[x]._id === byEpisode[c]._id) {
-              continueWatchingToShow.push(continueWatching[x])
-            }
-          }
-        }
-       continueWatchingToShow.sort((a,b) => b.updated - a.updated).map(r => r.title);
+        // for (let x = 0; x < continueWatching.length; x++) {
+        //   for (let c = 0; c <byOnlyLastEpisode.length; c++) {
+        //     if (continueWatching[x]._id === byEpisode[c]._id) {
+        //       continueWatchingToShow.push(continueWatching[x])
+        //     }
+        //   }
+        // }
+       byOnlyLastEpisode.sort((a,b) => b.updated - a.updated).map(r => r.title);
         
   let continueWatchingLength;
   try {
@@ -474,7 +474,7 @@ useEffect(()=> {
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ marginTop: SIZES.padding }}
-          data={continueWatchingToShow}
+          data={byOnlyLastEpisode}
           keyExtractor={(item) => item._id}
           renderItem={({ item, index }) => {
             if (calculateProgress(item._id) < 100) {
@@ -491,7 +491,7 @@ useEffect(()=> {
                     style={{
                       marginLeft: index == 0 ? SIZES.padding : 20,
                       marginRight:
-                        index == byEpisode.length - 1
+                        index == byOnlyLastEpisode.length - 1
                           ? SIZES.padding
                           : 0,
                     }}

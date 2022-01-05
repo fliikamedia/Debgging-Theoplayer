@@ -20,6 +20,8 @@ import { COLORS, SIZES, icons } from "../../constants";
 import IconAnt from 'react-native-vector-icons/AntDesign';
 import IconFeather from 'react-native-vector-icons/Feather'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import AsyncStorage from "@react-native-community/async-storage";
+
 const ProfileScreen = ({ navigation }) => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -32,6 +34,7 @@ const ProfileScreen = ({ navigation }) => {
     profilesLength = user.user.profiles.length;
   } catch (err) {}
   const logOut = async () => {
+    await AsyncStorage.setItem("whatPhase", "Null");
     try {
       await firebase.auth().signOut();
       navigation.navigate(WELCOMESCREEN);
