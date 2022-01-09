@@ -284,7 +284,7 @@ return ()=> unsubscribe();
   const renderHeaderSection = () => {
     let thumbnail;
     try {
-      thumbnail = isSeries === 'Series' ? season[0].dvd_thumbnail_link : currentMovie.dvd_thumbnail_link;
+      thumbnail = isSeries === 'series' ? season[0].dvd_thumbnail_link : currentMovie.dvd_thumbnail_link;
     } catch (err) {}
     return (
       <ImageBackground

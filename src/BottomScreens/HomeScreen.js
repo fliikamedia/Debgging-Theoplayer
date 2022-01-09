@@ -27,6 +27,7 @@ import {
   updateWatchedProfile,
   addToProfileWatchList,
   removeFromProfileWatchList,
+  deleteFromWatched
 } from "../../store/actions/user";
 import ProgressBar from "../components/ProgressBar";
 import { LogBox } from "react-native";
@@ -42,9 +43,12 @@ import Orientation from "react-native-orientation";
 import Video, {currentPlaybackTime} from 'react-native-video'
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import moment from "moment";
+import RBSheet from "react-native-raw-bottom-sheet";
 
 const HomeScreen = ({ navigation }) => {
   const appState = useRef(AppState.currentState);
+  const refRBSheet = useRef();
+
   LogBox.ignoreAllLogs();
   //LogBox.ignoreLogs(["Calling `getNode()`"]);
   const user = useSelector((state) => state.user);
@@ -60,7 +64,7 @@ const HomeScreen = ({ navigation }) => {
 const [scrolledY, setScrolledY] = useState(0)
 const [videoPaused, setVideoPaused] = useState(false);
 const [videoMute, setVideoMute] = useState(false);
-
+const [rbTitle, setRbTitle] = useState({});
   useEffect( () => {
     const unsubscribe = navigation.addListener('focus', async () => {
        Orientation.lockToPortrait();
@@ -370,11 +374,11 @@ useEffect(()=> {
         movies.availableMovies.map((r) => {
           if (r.film_type === 'movie') {
             if (r._id == user.currentProfile.watched[i].movieId) {
-              continueWatching.push({_id: r._id,title: r.title, image: r.dvd_thumbnail_link, time: user.currentProfile.watched[i].watchedAt,  movieTime: r.runtime, created: moment(user.currentProfile.watched[i].created).unix(), updated: moment(user.currentProfile.watched[i].updated).unix()});
+              continueWatching.push({type: r.film_type, _id: r._id,title: r.title, image: r.dvd_thumbnail_link, time: user.currentProfile.watched[i].watchedAt,  movieTime: r.runtime, created: moment(user.currentProfile.watched[i].created).unix(), updated: moment(user.currentProfile.watched[i].updated).unix()});
             }
           } else {
             if (r._id == user.currentProfile.watched[i].movieId ) {
-              continueWatching.push({_id: r._id,title: r.title, image: r.wide_thumbnail_link, time: user.currentProfile.watched[i].watchedAt, movieTime: r.runtime, season: r.season_number, episode: r.episode_number,  created: moment(user.currentProfile.watched[i].created).unix(), updated: moment(user.currentProfile.watched[i].updated).unix()});
+              continueWatching.push({type: r.film_type,_id: r._id,title: r.title, image: r.wide_thumbnail_link, time: user.currentProfile.watched[i].watchedAt, movieTime: r.runtime, season: r.season_number, episode: r.episode_number,  created: moment(user.currentProfile.watched[i].created).unix(), updated: moment(user.currentProfile.watched[i].updated).unix()});
             }
           }
        
@@ -410,7 +414,6 @@ useEffect(()=> {
           }
 
         }
-
 
         // let continueWatchingToShow = [];
 
@@ -480,6 +483,7 @@ useEffect(()=> {
             if (calculateProgress(item._id) < 100) {
               return (
                 <TouchableWithoutFeedback
+                onLongPress={()=> {refRBSheet.current.open(), setRbTitle({type: item.type,title:item.title, id: item._id});}}
                   onPress={() =>
                     navigation.navigate(BITMOVINPLAYER, {
                       movieId: item._id,
@@ -759,6 +763,52 @@ useEffect(()=> {
     );
   };
   ///// End of Render Hero third design
+
+  //// Botton sheet
+const renderBotomSheet = () => {
+  return (
+    <RBSheet
+    ref={refRBSheet}
+    closeOnDragDown={true}
+    closeOnPressMask={true}
+    closeOnPressBack={true}
+    customStyles={{
+      wrapper: {
+        backgroundColor: "transparent"
+      },
+      draggableIcon: {
+        backgroundColor: "#fff"
+      },
+      container: {
+        backgroundColor: 'rgb(40,40,40)',
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20
+      }
+    }}
+  >
+    <View style={{flex: 1,paddingLeft: 20, paddingBottom: 20,flexDirection: 'column', justifyContent: 'space-between'}}>
+   {/*    <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+    <IconAnt name="closecircleo" size={30} color="#fff"/>
+      </View> */}
+    <Text style={{color: '#fff', fontSize: 30, fontWeight: 'bold'}}>{rbTitle.title}</Text>
+      <View style={{ height: '40%', flexDirection: 'column', justifyContent: 'space-between'}}>
+    <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}} onPress={()=>  {refRBSheet.current.close(),navigation.navigate(MOVIEDETAIL, {
+    selectedMovie: rbTitle.id,
+    isSeries: rbTitle.type,
+    seriesTitle: rbTitle.title})}}>
+    <IconAnt name="infocirlceo" size={30} color="#fff"/>
+        <Text style={{color: '#fff', fontSize: 20, marginLeft: 10}}>Go to details</Text>
+      </TouchableOpacity>
+      <TouchableOpacity  style={{flexDirection: 'row', alignItems: 'center'}} onPress={()=> {refRBSheet.current.close(), deleteFromWatched(user.user._id, user.currentProfile._id, rbTitle.id, rbTitle.type, rbTitle.title)(dispatch)}}>
+        <IconAnt name="delete" size={30} color="#fff"/>
+        <Text style={{color: '#fff', fontSize: 20, marginLeft: 10}}>Remove from list</Text>
+      </TouchableOpacity>
+      </View>
+    </View>
+  </RBSheet>
+  )
+}
+  //// End of Bootom Sheet
   //// On Refresh Control
   const onRefresh = useCallback(() => {
     //setRefreshing(true);
@@ -792,6 +842,7 @@ useEffect(()=> {
           {renderHeroSectionThirdDesign()}
           {continueWatchingLength > 0 ? renderContinueWatctionSection() : null}
           {renderMovies()}
+          {renderBotomSheet()}
         </ScrollView>
       )}
     </View>
