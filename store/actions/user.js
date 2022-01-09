@@ -408,7 +408,6 @@ dispatch({type: UPDATE_MOVIE_TIME, payload: {watched: watched, duration: duratio
 
 
   export const deleteFromWatched =  (userId, profileId, movieId, isSeries, seriesName) =>  async dispatch => {
-    console.log(userId, profileId, movieId, isSeries, seriesName);
   try {
     dispatch({ type: REMOVE_FROM_WATCHED });
     const result = await expressApi.post(`/users/deleteFromWatched`, {
