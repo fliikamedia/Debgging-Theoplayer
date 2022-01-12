@@ -1,4 +1,6 @@
 import React from 'react';
+import { Image } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -30,10 +32,17 @@ import {
   EDITPROFILE,
   EPISODEDETAIL, BITMOVINPLAYER, EMAILSIGNUP
 } from "../../constants/RouteNames";
+import { useDispatch, useSelector } from "react-redux";
+import profileImgs from '../../constants/profileImgs';
 
 export default MoviesNavogator = ({routeName}) => {
+  const user = useSelector((state) => state.user);
+  let imageSource = profileImgs.find(r => r.name === user.currentProfile.image).path;
 
 
+  const userIconFunc = () => {
+    return <FastImage style={{width: 30, height: 30, borderRadius: 120}} source={imageSource}/>
+  }
   const Tabs = createBottomTabNavigator();
   const Stack = createStackNavigator();
   const BottomTab = () => {
@@ -59,7 +68,7 @@ export default MoviesNavogator = ({routeName}) => {
               <MaterialCommunityIcons name={iconName} size={size} color={color} />
             );
           } else if (route.name == PROFILESCREEN) {
-            return <Feather name={iconName} size={size} color={color} />;
+            return userIconFunc();
           } else {
             return <Ionicons name={iconName} size={size} color={color} />;
           }

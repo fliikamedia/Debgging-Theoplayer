@@ -7,6 +7,8 @@ import {
   ScrollView,
   AppState,
   Dimensions,
+  FlatList,
+  Image
 } from "react-native";
 import firebase from "firebase";
 import { LOGIN, MOVIES } from "../../constants/RouteNames";
@@ -17,7 +19,7 @@ import { addUser } from "../../store/actions/user";
 import { useDispatch } from "react-redux";
 import { firebaseConfig } from "../api/FirebaseConfig";
 import AsyncStorage from "@react-native-community/async-storage";
-
+import profileImgs from "../../constants/profileImgs";
 
 const SignupScreen = ({ navigation }) => {
   const appState = useRef(AppState.currentState);
@@ -34,6 +36,7 @@ const SignupScreen = ({ navigation }) => {
   const [date, setDate] = useState(new Date(1598051730000));
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
+  const [imageName, setImageName] = useState('profile0');
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -110,7 +113,7 @@ const SignupScreen = ({ navigation }) => {
       const idToken = await firebase.auth().currentUser.getIdToken();
 
        
-        addUser(email,firstName, lastName, yearOfBirth, phoneNumber,uid, emailVerified, "profile0", idToken )(dispatch);
+        addUser(email,firstName, lastName, yearOfBirth, phoneNumber,uid, emailVerified, imageName, idToken )(dispatch);
         navigation.reset({
           index: 0,
           routes: [{ name: MOVIES }],
@@ -301,6 +304,31 @@ const SignupScreen = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         ) : null}
+        <View style={{marginVertical: 20}}>
+          <Text style={{color: '#fff', fontSize: 18, marginLeft: 20, marginBottom: 20}}>Choose a profile image</Text>
+        <FlatList
+      showsHorizontalScrollIndicator={false}
+        horizontal
+        data={profileImgs}
+        keyExtractor={(item) => item.name}
+        renderItem={({ item, index }) => (
+          <TouchableOpacity onPress={() => setImageName(item.name)}>
+            <Image
+              source={item.path}
+              style={{
+                width: 100,
+                height: 100,
+                borderRadius: 120,
+                marginLeft: 20,
+                borderWidth: imageName === item.name ? 6 : 0,
+                borderColor: imageName === item.name ? 'teal' : null
+              }}
+            />
+          </TouchableOpacity>
+        )}
+      />
+        </View>
+        
         <TouchableOpacity
           disabled={
             !firstName &&
