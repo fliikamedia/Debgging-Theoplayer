@@ -38,7 +38,7 @@ import profileImgs from '../../constants/profileImgs';
 export default MoviesNavogator = ({routeName}) => {
   const user = useSelector((state) => state.user);
   let imageSource = profileImgs.find(r => r.name === user.currentProfile.image).path;
-
+console.log(user);
 
   const userIconFunc = () => {
     return <FastImage style={{width: 30, height: 30, borderRadius: 120}} source={imageSource}/>

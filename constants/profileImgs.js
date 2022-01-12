@@ -1,5 +1,9 @@
 export default ProfileImages = [
   {
+    path: require("../assets/profileImg/profile0.png"),
+    name: "profile0",
+  },
+  {
     path: require("../assets/profileImg/profile1.jpg"),
     name: "profile1",
   },
