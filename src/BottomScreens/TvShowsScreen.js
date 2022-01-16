@@ -193,7 +193,7 @@ const TvShowsScreen = ({ navigation }) => {
                 style={{
                   color: "white",
                   fontSize: 24,
-                  fontWeight: "bold",
+                  fontFamily: 'Sora-Bold',
                   marginLeft: 10,
                   marginTop: 40,
                   marginBottom: 20,
@@ -260,6 +260,7 @@ const TvShowsScreen = ({ navigation }) => {
                 <Text
                 numberOfLines={5}
                   style={{
+                    fontFamily: 'Sora-Regular',
                     color: "white",
                     opacity: 0.8,
                     lineHeight: 20,
@@ -430,14 +431,14 @@ const styles = StyleSheet.create({
   movieName: {
     paddingLeft: 14,
     color: "white",
-    fontWeight: "bold",
+    fontFamily: 'Sora-Bold',
     fontSize: 20,
     marginBottom: 6,
   },
   movieStat: {
     paddingLeft: 14,
     color: "white",
-    fontWeight: "bold",
+    fontFamily: 'Sora-Regular',
     fontSize: 14,
     opacity: 0.8,
   },

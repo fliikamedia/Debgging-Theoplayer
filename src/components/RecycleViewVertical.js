@@ -6,12 +6,13 @@ import { MOVIEDETAIL } from '../../constants/RouteNames';
 import FastImage from 'react-native-fast-image'
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
+
 const ViewTypes = {
     FULL: 0,
     HALF_LEFT: 1,
     HALF_RIGHT: 2
 };
-export default class RecycleView extends Component {
+export default class RecycleViewVertical extends Component {
     constructor(props) {
         super(props)
 
@@ -35,7 +36,7 @@ export default class RecycleView extends Component {
             switch (type) {
               case 'NORMAL': 
                 dim.width = SCREEN_WIDTH * .32;
-                dim.height = 200;
+                dim.height = SCREEN_WIDTH * .48;
                 break;
               default: 
                 dim.width = 0;
@@ -43,7 +44,6 @@ export default class RecycleView extends Component {
                 break;
             };
           })
-
         this.rowRenderer = (type, item) => {
           const { dvd_thumbnail_link, _id, film_type, title, wide_thunbnail_link } = item.item;
           //console.log('iteeem',item);
@@ -63,7 +63,6 @@ export default class RecycleView extends Component {
                     width: SIZES.width * 0.3,
                     height: SIZES.width * 0.45,
                     borderRadius: 2,
-                    marginHorizontal: 5,
                   }}
                   source={{ uri: dvd_thumbnail_link }}
                 />
@@ -73,17 +72,18 @@ export default class RecycleView extends Component {
         }
         }
         render() {
-           // console.log('movies',this.props.title);
+            const heights = this.props.movie.length >3 ? (SIZES.width * 0.45) * (this.props.movie.length / 3) + SIZES.width * 0.7 : SIZES.width * 0.7 ;
+
+           console.log('movies', heights);
             return (
               <View style={styles.container}>
-                <Text style={{color: 'white', fontSize: 24, fontFamily: 'Sora-Bold', marginBottom: 10}} >{this.props.title}</Text>
                 <RecyclerListView
-                isHorizontal
-                  style={{height: 180}}
+                isHorizontal={false}
+                  style={{ height: heights, width: SIZES.width}}
                   rowRenderer={this.rowRenderer}
                   dataProvider={this.state.list}
                   layoutProvider={this.layoutProvider}
-                  showsHorizontalScrollIndicator={false}
+                  showsVerticalScrollIndicator={false}
                 />
               </View>
             );
@@ -92,7 +92,6 @@ export default class RecycleView extends Component {
         
         const styles = StyleSheet.create({
           container: {
-            flex: 1,
             backgroundColor: 'black',
             minHeight: 1,
             minWidth: 1,

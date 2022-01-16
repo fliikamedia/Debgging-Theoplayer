@@ -65,10 +65,11 @@ const styles = StyleSheet.create({
   },
   title: {
     color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
+    fontSize: 14,
+    fontFamily: 'Sora-Bold',
   },
   duration: {
+    fontFamily: 'Sora-Regular',
     color: "darkgrey",
     fontSize: 12,
   },

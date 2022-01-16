@@ -49,7 +49,7 @@ const HomeScreen = ({ navigation }) => {
   const appState = useRef(AppState.currentState);
   const refRBSheet = useRef();
 
-  LogBox.ignoreAllLogs();
+  //LogBox.ignoreAllLogs();
   //LogBox.ignoreLogs(["Calling `getNode()`"]);
   const user = useSelector((state) => state.user);
   const movies = useSelector((state) => state.movies);
@@ -461,7 +461,7 @@ useEffect(()=> {
                 flex: 1,
                 color: COLORS.white,
                 fontSize: 20,
-                fontWeight: "bold",
+                fontFamily: 'Sora-Bold',
               }}
             >
               Continue watching
@@ -527,6 +527,7 @@ useEffect(()=> {
                         color: COLORS.white,
                         marginTop: SIZES.base,
                         textAlign: "center",
+                        fontFamily: 'Sora-Regular',
                       }}
                       numberOfLines={1}
                     >
@@ -537,6 +538,7 @@ useEffect(()=> {
                         color: COLORS.white,
                         marginTop: SIZES.base,
                         textAlign: "center",
+                        fontFamily: 'Sora-Regular',
                       }}
                       numberOfLines={1}
                     >
@@ -681,10 +683,10 @@ useEffect(()=> {
                 style={{
                   color: "white",
                   fontSize: 24,
-                  fontWeight: "bold",
                   marginLeft: 10,
                   marginTop: 40,
                   marginBottom: 20,
+                  fontFamily: 'Sora-Bold',
                 }}
               >
                 Fliika Originals
@@ -752,6 +754,7 @@ useEffect(()=> {
                     opacity: 0.8,
                     lineHeight: 20,
                     marginBottom: 20,
+                    fontFamily: 'Sora-Regular',
                   }}
                 >
                   {background.desc}
@@ -790,18 +793,18 @@ const renderBotomSheet = () => {
    {/*    <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
     <IconAnt name="closecircleo" size={30} color="#fff"/>
       </View> */}
-    <Text style={{color: '#fff', fontSize: 30, fontWeight: 'bold'}}>{rbTitle.title}</Text>
+    <Text style={{color: '#fff', fontSize: 30, fontFamily: 'Sora-Bold',}}>{rbTitle.title}</Text>
       <View style={{ height: '40%', flexDirection: 'column', justifyContent: 'space-between'}}>
     <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}} onPress={()=>  {refRBSheet.current.close(),navigation.navigate(MOVIEDETAIL, {
     selectedMovie: rbTitle.id,
     isSeries: rbTitle.type,
     seriesTitle: rbTitle.title})}}>
     <IconAnt name="infocirlceo" size={30} color="#fff"/>
-        <Text style={{color: '#fff', fontSize: 20, marginLeft: 10}}>Go to details</Text>
+        <Text style={{fontFamily: 'Sora-Regular',color: '#fff', fontSize: 20, marginLeft: 10}}>Go to details</Text>
       </TouchableOpacity>
       <TouchableOpacity  style={{flexDirection: 'row', alignItems: 'center'}} onPress={()=> {refRBSheet.current.close(), deleteFromWatched(user.user._id, user.currentProfile._id, rbTitle.id, rbTitle.type, rbTitle.title)(dispatch)}}>
         <IconAnt name="delete" size={30} color="#fff"/>
-        <Text style={{color: '#fff', fontSize: 20, marginLeft: 10}}>Remove from list</Text>
+        <Text style={{fontFamily: 'Sora-Regular',color: '#fff', fontSize: 20, marginLeft: 10}}>Remove from list</Text>
       </TouchableOpacity>
       </View>
     </View>
@@ -933,7 +936,7 @@ const styles = StyleSheet.create({
   movieName: {
     paddingLeft: 14,
     color: "white",
-    fontWeight: "bold",
+    fontFamily: 'Sora-Bold',
     fontSize: 20,
     marginBottom: 6,
   },

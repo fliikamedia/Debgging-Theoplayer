@@ -13,6 +13,7 @@ import {
   Share,
   AppState,
   FlatList,
+  TouchableWithoutFeedback
 } from "react-native";
 import { COLORS, SIZES, FONTS, icons, images } from ".././constants";
 import FliikaApi from "./api/FliikaApi";
@@ -21,7 +22,7 @@ import MovieDetailIcon from "./components/MovieDetailIcon";
 import LinearGradient  from "react-native-linear-gradient";
 import * as Animatable from "react-native-animatable";
 import firebase from "firebase";
-import { BITMOVINPLAYER, HOME, WELCOMESCREEN } from "../constants/RouteNames";
+import { BITMOVINPLAYER, HOME, WELCOMESCREEN, MOVIEDETAIL } from "../constants/RouteNames";
 import { Menu } from "react-native-paper";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -48,6 +49,7 @@ import ReactNativeBitmovinPlayer, {
 import AsyncStorage from "@react-native-community/async-storage";
 import Orientation from "react-native-orientation";
 import moment from "moment";
+import FastImage from "react-native-fast-image";
 
 const MovieDetailScreen = ({ navigation, route }) => {
   const Tab = createMaterialTopTabNavigator();
@@ -56,6 +58,8 @@ const MovieDetailScreen = ({ navigation, route }) => {
   const movies = useSelector((state) => state.movies);
 
   const dispatch = useDispatch();
+  const scrollRef = useRef();
+
   const [play, setPlay] = useState(false);
   const appState = useRef(AppState.currentState);
   const { selectedMovie, isSeries, seriesTitle } = route.params;
@@ -80,7 +84,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
     getMovie();
   }, []); */
 const currentMovie = movies.availableMovies.find(r => r._id ===selectedMovie);
-//console.log('currentMovie', currentMovie);
+
   useEffect( () => {
     const unsubscribe = navigation.addListener('focus', async () => {
        Orientation.lockToPortrait();
@@ -286,12 +290,25 @@ return ()=> unsubscribe();
     try {
       thumbnail = isSeries === 'series' ? season[0].dvd_thumbnail_link : currentMovie.dvd_thumbnail_link;
     } catch (err) {}
+
+    let producersLength;
+    let writersLength;
+    let cinematographersLength;
+    try {
+      producersLength = currentMovie?.producers[0]?.length;
+      writersLength = currentMovie?.writers[0]?.length;
+      cinematographersLength = currentMovie?.cinematographers[0]?.length;
+    } catch (err) {
+      console.log(err);
+    }
+ 
     return (
+      <View style={{flex: 1}}>
       <ImageBackground
         source={{ uri: thumbnail }}
         resizeMode="cover"
         style={{
-          width: "100%",
+          width: SIZES.width,
           height: SIZES.height < 700 ? SIZES.height * 0.6 : SIZES.height * 0.7,
         }}
       >
@@ -414,6 +431,78 @@ return ()=> unsubscribe();
           </LinearGradient>
         </View>
       </ImageBackground>
+      <View
+      style={{
+        flex: 1,
+        marginTop: SIZES.padding,
+        justifyContent: "space-around",
+      }}
+    >
+      {/* titme, running time and progress bar */}
+      <View>
+        <View style={{ flexDirection: "row" }}></View>
+      </View>
+      {/* watch */}
+        {/* Movie Details */}
+      {isSeries == "movie" ? (
+        <>
+          <View style={{ width: "100%", paddingHorizontal: 10 }}>
+            <Text style={{ fontFamily: 'Sora-Regular',color: COLORS.white, textAlign: "justify", marginBottom: 30 }}>
+              {currentMovie.storyline}
+            </Text>
+          </View>
+          <View style={{ width: "100%", paddingHorizontal: 10 }}>
+          <Text style={styles.moreText}>More Information</Text>
+          <Text style={styles.titleText}>Content Advisory</Text>
+            <Text style={styles.detailText}>
+              {currentMovie.content_advisory.toString().replace(/,/g, ", ")}
+            </Text>
+            <Text style={styles.titleText}>Languages</Text>
+            <Text style={styles.detailText}>
+              {currentMovie.languages.toString().replace(/,/g, ", ")}
+            </Text>
+            <Text style={styles.titleText}>Subtitles</Text>
+            <Text style={styles.detailText}>
+              {currentMovie.subtitles.toString().replace(/,/g, ", ")}
+            </Text>
+            <View style={{width: '95%', height: 2, backgroundColor: 'grey', alignSelf: 'center', marginVertical: 10}}></View>
+            <Text style={styles.titleTextBg}>Cast</Text>
+            <Text style={styles.detailText}>
+              {currentMovie.cast.toString().replace(/,/g, ", ")}
+            </Text>
+            <Text style={styles.titleTextBg}>Crew</Text>
+            <Text style={styles.titleText}>Directors</Text>
+            <Text style={styles.detailText}>
+              {currentMovie.directors.toString().replace(/,/g, ", ")}
+            </Text>
+           {writersLength ? <View>
+            <Text style={styles.titleText}>Writers</Text>
+            <Text style={styles.detailText}>
+              {currentMovie.writers.toString().replace(/,/g, ", ")}
+            </Text>
+            </View> : null}
+            {cinematographersLength ? <View>
+            <Text style={styles.titleText}>Cinematographers</Text>
+            <Text style={styles.detailText}>
+              {currentMovie.cinematographers.toString().replace(/,/g, ", ")}
+            </Text>
+            </View> : null}
+            {producersLength ? <View>
+            <Text style={styles.titleText}>Producers</Text>
+            <Text style={styles.detailText}>
+              {currentMovie.producers.toString().replace(/,/g, ", ")}
+            </Text>
+            </View> : null}
+           
+          </View>
+        </>
+      ) : null}
+    </View>
+    {isSeries === 'movie' ? <View>
+    <View style={{width: '90%', height: 2, backgroundColor: 'grey', alignSelf: 'center', marginVertical: 10}}></View>
+        <Text style={{fontFamily: 'Sora-Regular', color: '#fff', fontSize: 26, marginBottom: 20, marginLeft: 10}}>People Also Watched</Text>
+        </View> : null}
+    </View>
     );
   };
   ////////// End of Render header function
@@ -480,59 +569,7 @@ return ()=> unsubscribe();
   const closeFilter = () => {
     setSelectSeason(false);
   };
-  const renderMovieDetails = () => {
-    return (
-      <View
-        style={{
-          flex: 1,
-          marginTop: SIZES.padding,
-          justifyContent: "space-around",
-        }}
-      >
-        {/* titme, running time and progress bar */}
-        <View>
-          <View style={{ flexDirection: "row" }}></View>
-        </View>
-        {/* watch */}
-
-        {isSeries == "movie" ? (
-          <>
-            <View style={{ width: "100%", paddingHorizontal: 20 }}>
-              <Text style={{ color: COLORS.white, textAlign: "justify" }}>
-                {currentMovie.storyline}
-              </Text>
-            </View>
-            <View>
-              <Text style={styles.titleText}>Genres</Text>
-              <Text style={styles.detailText}>
-                {currentMovie.genre.toString().replace(/,/g, ", ")}
-              </Text>
-              <Text style={styles.titleText}>Directors</Text>
-              <Text style={styles.detailText}>
-                {currentMovie.directors.toString().replace(/,/g, ", ")}
-              </Text>
-              <Text style={styles.titleText}>Starring</Text>
-              <Text style={styles.detailText}>
-                {currentMovie.cast.toString().replace(/,/g, ", ")}
-              </Text>
-              <Text style={styles.titleText}>Content Advisory</Text>
-              <Text style={styles.detailText}>
-                {currentMovie.content_advisory.toString().replace(/,/g, ", ")}
-              </Text>
-              <Text style={styles.titleText}>Languages</Text>
-              <Text style={styles.detailText}>
-                {currentMovie.languages.toString().replace(/,/g, ", ")}
-              </Text>
-              <Text style={styles.titleText}>Subtitles</Text>
-              <Text style={styles.detailText}>
-                {currentMovie.subtitles.toString().replace(/,/g, ", ")}
-              </Text>
-            </View>
-          </>
-        ) : null}
-      </View>
-    );
-  };
+ 
 
   const playSeries = (serie) => {
     setSeriesEpisode(serie);
@@ -551,7 +588,7 @@ return ()=> unsubscribe();
     ) : (
       <ScrollView style={{ flexGrow: 1 }}>
         {renderHeaderSection()}
-        {renderMovieDetails()}
+       
         {play ? (
           <View
             style={{ width: SIZES.width * 0.9, height: SIZES.height * 0.5 }}
@@ -623,14 +660,71 @@ return ()=> unsubscribe();
     );
   }
   ////////// end of render movie details
-  return (
-    <View style={styles.container}>
-        <ScrollView>
-          {renderHeaderSection()}
-          {renderCategoty()}
-          {renderMovieDetails()}
-        </ScrollView>
 
+  //// Render people also watched
+  const peopleAlsoWatched = () => {
+    let alsoWatchIds = [];
+    for (let i = 0; i< currentMovie.genre.length; i++) {
+      for (let x = 0; x < movies.availableMovies.length; x++) {
+        if ( movies.availableMovies[x].title != currentMovie.title && movies.availableMovies[x].genre.includes(currentMovie.genre[i])&& movies.availableMovies[x]?.film_type === 'movie') {
+          alsoWatchIds.push(movies.availableMovies[x]._id)
+         // console.log(movies.availableMovies[x].title);
+        }
+      }
+    }
+
+  let alsoWatchSet = [...new Set(alsoWatchIds)];
+
+  let alsoWatch = [];
+  for (let x = 0; x < movies.availableMovies.length; x++) {
+  for (let c = 0; c < alsoWatchSet.length; c++ ) {
+    if (movies.availableMovies[x]._id === alsoWatchSet[c]) {
+      alsoWatch.push(movies.availableMovies[x])
+    }
+  }
+  }
+  const numColumns = 3;
+    return (
+      <View>
+    <FlatList
+    ref={scrollRef}
+    ListHeaderComponent={renderHeaderSection()}
+    showsVerticalScrollIndicator={false}
+    data={alsoWatch}
+    keyExtractor={item => item._id}
+    renderItem={({item, index}) => (
+      <TouchableWithoutFeedback
+      onPress={() =>{
+        scrollRef.current.scrollToOffset({ animated: true, offset: 0 });
+        navigation.navigate(MOVIEDETAIL, {
+          selectedMovie: item._id,
+          isSeries: item.film_type,
+          seriesTitle: item.title,
+        });
+      }
+      }
+    >
+      <FastImage
+      style={{
+        width: SIZES.width * 0.3,
+        height: SIZES.width * 0.45,
+        borderRadius: 2,
+        marginHorizontal: 5,
+        marginVertical: 5
+      }}
+      source={{ uri: item.dvd_thumbnail_link }}
+    />
+    </TouchableWithoutFeedback>
+    )}
+    numColumns={numColumns}
+    />
+    </View>
+    )
+  }
+  //// end of people also watched
+  return (
+    <View  style={styles.container}>
+          {peopleAlsoWatched()}
     </View>
   );
 };
@@ -663,17 +757,27 @@ const styles = StyleSheet.create({
     borderRadius: SIZES.base,
     backgroundColor: COLORS.gray1,
   },
+  moreText: {
+    fontSize: 26,
+    fontFamily: 'Sora-Regular',
+    color: "#fff",
+    marginBottom: 20
+  },
   titleText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "teal",
-    marginLeft: 5,
+    fontSize: 20,
+    fontFamily: 'Sora-Regular',
+    color: "#fff",
+  },
+  titleTextBg: {
+    fontSize: 26,
+    fontFamily: 'Sora-Regular',
+    color: "#fff",
   },
   detailText: {
-    fontSize: 16,
+    fontFamily: 'Sora-Light' ,
+    fontSize: 14,
     color: "white",
-    marginBottom: 20,
-    marginLeft: 10,
+    marginBottom: 10,
   },
 });
 
