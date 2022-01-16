@@ -333,12 +333,13 @@ useEffect(()=> {
       if (item.dvd_thumbnail_link) {
         return (
           <TouchableWithoutFeedback
-            onPress={() =>
+            onPress={() =>{setVideoPaused(true),
               navigation.navigate(MOVIEDETAIL, {
                 selectedMovie: item._id,
                 isSeries: item.film_type,
                 seriesTitle: item.title,
               })
+            }
             }
           >
             <FastImage
@@ -484,11 +485,12 @@ useEffect(()=> {
               return (
                 <TouchableWithoutFeedback
                 onLongPress={()=> {refRBSheet.current.open(), setRbTitle({type: item.type,title:item.title, id: item._id});}}
-                  onPress={() =>
+                  onPress={() => {setVideoPaused(true);
                     navigation.navigate(BITMOVINPLAYER, {
                       movieId: item._id,
                       time: item.time
                     })
+                  }
                   }
                 >
                   <View
@@ -604,12 +606,14 @@ useEffect(()=> {
       return (
         <View>
           <TouchableOpacity
-              onPress={() =>
+              onPress={() =>{
+                 setVideoPaused(true);
                 navigation.navigate(MOVIEDETAIL, {
                   selectedMovie: item._id,
                   isSeries: item.film_type,
                   seriesTitle:  item.title,
                 })
+              }
               }
           >
             <FastImage
@@ -728,12 +732,14 @@ useEffect(()=> {
                   <Text style={styles.movieName}>{background.name}</Text>
                 </View>
                 <TouchableOpacity
-                  onPress={() =>
+                  onPress={() => {
+                    setVideoPaused(true);
                     navigation.navigate(MOVIEDETAIL, {
                       selectedMovie: background._id,
                       isSeries: background.film_type,
                       seriesTitle: background.name,
                     })
+                  }
                   }
                   style={styles.playIconContainer}
                 >
@@ -798,7 +804,7 @@ const renderBotomSheet = () => {
     <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}} onPress={()=>  {refRBSheet.current.close(),navigation.navigate(MOVIEDETAIL, {
     selectedMovie: rbTitle.id,
     isSeries: rbTitle.type,
-    seriesTitle: rbTitle.title})}}>
+    seriesTitle: rbTitle.title}), setVideoPaused(true);}}>
     <IconAnt name="infocirlceo" size={30} color="#fff"/>
         <Text style={{fontFamily: 'Sora-Regular',color: '#fff', fontSize: 20, marginLeft: 10}}>Go to details</Text>
       </TouchableOpacity>
