@@ -12,7 +12,7 @@ import {
 import { LOGIN, SIGNUP, FORGOTPASSWORD, MOVIES, EMAILSIGNUP } from "../constants/RouteNames";
 import firebase from "firebase";
 import Video from 'react-native-video'
-
+import FastImage from "react-native-fast-image";
 const WelcomePage = ({ navigation }) => {
   const [isPreloading, setIsPreloading] = useState(true);
   //console.log(Dimensions.get('window').height);
@@ -86,10 +86,8 @@ const WelcomePage = ({ navigation }) => {
       />
       {isPreloading ? null : (
         <View style={styles.Wrapper}>
-          <Image
-            source={{
-              uri: "https://fliikaimages.azureedge.net/logos/FLiiKA.png",
-            }}
+          <FastImage
+            source={require('../assets/fliika-logo.png')}
             style={styles.logo}
           />
           <View>
@@ -144,13 +142,13 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   logo: {
-    height: Dimensions.get("window").width < 800 ? "5%" : "3%",
-    width: Dimensions.get("window").width < 800 ? "30%" : "20%",
+    height:  32,
+    width: 100 ,
     marginTop: 30,
   },
   textDescriptionLg: {
     color: "#f3f8ff",
-    fontSize: Dimensions.get("window").width < 350 ? 26 : 30,
+    fontSize: Dimensions.get("window").width < 350 ? 20 : 24,
     textAlign: "center",
     fontWeight: "bold",
     textTransform: "uppercase",
@@ -162,8 +160,8 @@ const styles = StyleSheet.create({
     color: "#f4f4f4",
     textAlign: "center",
     textTransform: "uppercase",
-    marginBottom: 20,
-    fontSize: Dimensions.get("window").width < 800 ? 8 : 14,
+    marginBottom: 10,
+    fontSize: Dimensions.get("window").width < 350 ? 8 : 14,
   },
   textDescriptionSb: {
     letterSpacing: 3,
@@ -171,7 +169,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     textTransform: "uppercase",
     marginBottom: 20,
-    fontSize: Dimensions.get("window").width < 800 ? 12 : 16,
+    fontSize: Dimensions.get("window").width < 350 ? 12 : 16,
   },
   createText: {
     textTransform: "uppercase",
@@ -179,7 +177,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     letterSpacing: 3,
     color: "#666",
-    fontSize: Dimensions.get("window").width < 800 ? 16 : 24,
+    fontSize: Dimensions.get("window").width < 350 ? 12 : 16,
   },
   loginText: {
     textTransform: "uppercase",
@@ -187,7 +185,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     letterSpacing: 3,
     color: "#f3f8ff",
-    fontSize: Dimensions.get("window").width < 800 ? 16 : 24,
+    fontSize: Dimensions.get("window").width < 350 ? 12 : 16,
   },
 });
 

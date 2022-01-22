@@ -15,7 +15,7 @@ import { LOGIN, MOVIES } from "../../constants/RouteNames";
 import { TextInput, HelperText } from "react-native-paper";
 import { LogBox } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { addUser } from "../../store/actions/user";
+import { addUser, loggedIn } from "../../store/actions/user";
 import { useDispatch } from "react-redux";
 import { firebaseConfig } from "../api/FirebaseConfig";
 import AsyncStorage from "@react-native-community/async-storage";
@@ -114,12 +114,13 @@ const SignupScreen = ({ navigation }) => {
 
        
         addUser(email,firstName, lastName, yearOfBirth, phoneNumber,uid, emailVerified, imageName, idToken )(dispatch);
-        navigation.reset({
+      /*   navigation.reset({
           index: 0,
           routes: [{ name: MOVIES }],
-        });
-        await AsyncStorage.setItem("whatPhase", "LoggedIn");
-        navigation.navigate(MOVIES);
+        }); */
+        //await AsyncStorage.setItem("whatPhase", "LoggedIn");
+        //navigation.navigate(MOVIES);
+        loggedIn()(dispatch);
     
     } catch (err) {
       console.log(err);

@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import UserProfile from "../components/UserProfile";
 import { useSelector, useDispatch } from "react-redux";
-import { addProfile } from "../../store/actions/user";
+import { addProfile, loggedOut } from "../../store/actions/user";
 import { WELCOMESCREEN } from "../../constants/RouteNames";
 import firebase from "firebase";
 import profileImgs from "../../constants/profileImgs";
@@ -34,10 +34,11 @@ const ProfileScreen = ({ navigation }) => {
     profilesLength = user.user.profiles.length;
   } catch (err) {}
   const logOut = async () => {
-    await AsyncStorage.setItem("whatPhase", "Null");
+   // await AsyncStorage.setItem("whatPhase", "Null");
     try {
       await firebase.auth().signOut();
-      navigation.navigate(WELCOMESCREEN);
+      loggedOut()(dispatch);
+      //navigation.navigate(WELCOMESCREEN);
     } catch (err) {
       Alert.alert(
         "There is something wrong! Please try again later",

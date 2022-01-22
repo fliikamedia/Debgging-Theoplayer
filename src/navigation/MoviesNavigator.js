@@ -1,132 +1,110 @@
 import React from 'react';
-import { Image } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import FastImage from 'react-native-fast-image';
-import { NavigationContainer } from "@react-navigation/native";
+import { getFocusedRouteNameFromRoute} from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { createDrawerNavigator} from '@react-navigation/drawer';
 import Feather from 'react-native-vector-icons/Feather';
-import WelcomePage from "../WelcomePage";
-import HomeScreen from "../BottomScreens/HomeScreen";
-import SearchScreen from "../BottomScreens/SearchScreen";
-import TvShowsScreen from "../BottomScreens/TvShowsScreen";
 import MovieDetailScreen from "../MovieDetailScreen";
-import ProfileScreen from "../BottomScreens/ProfileScreen";
-import LoginScreen from "../auth/LoginScreen";
-import FillProfileScreen from "../auth/FillProfileScreen";
 import EditProfile from "../components/EditProfile";
 import EpisodeDetailScreen from "../EpisodeDetailScreen";
-import EmailSignup from "../auth/EmailSignup";
 import BitmovinPlayer from '../BitmovinPlayer';
+import GenreScreen from '../GenreScreen';
 import {
   MOVIES,
   HOME,
   SEARCH,
   SHOWS,
-  WELCOMESCREEN,
   MOVIEDETAIL,
   PROFILESCREEN,
-  LOGIN,
-  FILLPROFILESCREEN,
   EDITPROFILE,
-  EPISODEDETAIL, BITMOVINPLAYER, EMAILSIGNUP
+  EPISODEDETAIL, BITMOVINPLAYER, GENRE
 } from "../../constants/RouteNames";
-import { useDispatch, useSelector } from "react-redux";
-import profileImgs from '../../constants/profileImgs';
+import {useNavigation} from '@react-navigation/native';
+import DrawerItems from './DrawerItems';
+import BottomNav from './BottomNav';
 
-export default MoviesNavogator = ({routeName}) => {
-  const user = useSelector((state) => state.user);
-  let imageSource = profileImgs.find(r => r.name === user.currentProfile.image).path;
+const Drawer = createDrawerNavigator();
+const Stack = createStackNavigator();
+const MoviesNavogator = (props) => {
+ 
+  const getHeaderTitle =(route) => {
+    let routeName = getFocusedRouteNameFromRoute(route);
 
-  const userIconFunc = () => {
-    return <FastImage style={{width: 30, height: 30, borderRadius: 120}} source={imageSource}/>
+   if(!routeName) {
+     routeName = HOME;
+   }
+  
+    switch (routeName) {
+      case HOME:
+        return <FastImage style={{height: 32, width: 100}} source={require("../../assets/fliika-logo.png")}/>;
+      case SEARCH:
+        return null;
+      case SHOWS:
+        return null;
+      case PROFILESCREEN:
+        return null;
+    }
   }
-  const Tabs = createBottomTabNavigator();
-  const Stack = createStackNavigator();
-  const BottomTab = () => {
-   
 
+  const getHeaderLeft = (route) => {
+
+    const {toggleDrawer} = useNavigation();
+    let routeName = getFocusedRouteNameFromRoute(route);
+
+    if(!routeName) {
+      routeName = HOME;
+    }
+   
+     switch (routeName) {
+       case HOME:
+         return  (
+         <TouchableOpacity onPress={() =>toggleDrawer()}>
+           <Feather name="menu" size={25} color="#fff" style={{marginLeft: 20}} />
+         </TouchableOpacity>
+         );
+       case SEARCH:
+         return null;
+       case SHOWS:
+         return null;
+       case PROFILESCREEN:
+         return null;
+     }
+
+  }
     return (
-    <Tabs.Navigator
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
-          if (route.name === HOME) {
-            iconName = "md-home";
-          } else if (route.name === SEARCH) {
-            iconName = "search";
-          } else if (route.name == SHOWS) {
-            iconName = "television-classic";
-          } else if (route.name === PROFILESCREEN) {
-            iconName = "user";
-          }
-  
-          if (route.name == SHOWS) {
-            return (
-              <MaterialCommunityIcons name={iconName} size={size} color={color} />
-            );
-          } else if (route.name == PROFILESCREEN) {
-            return userIconFunc();
-          } else {
-            return <Ionicons name={iconName} size={size} color={color} />;
-          }
-        },
-      })}
-      tabBarOptions={{
-        activeTintColor: "aqua",
-        inactiveTintColor: "gray",
-        keyboardHidesTabBar: true,
-        style: {
-          backgroundColor: "black",
-         // height: "7%",
-          borderTopWidth: 0,
-          justifyContent: "center",
-        },
-        labelStyle: { fontSize: 0 },
-      }}
-    >
-      <Tabs.Screen name={HOME} component={HomeScreen} options={{ title: " " }} />
-      <Tabs.Screen
-        name={SHOWS}
-        component={TvShowsScreen}
-        options={{ title: " " }}
-      />
-      <Tabs.Screen
-        name={SEARCH}
-        component={SearchScreen}
-        options={{ title: " " }}
-      />
-      <Tabs.Screen
-        name={PROFILESCREEN}
-        component={ProfileScreen}
-        options={{ title: " " }}
-      />
-    </Tabs.Navigator>
-    )
-  };
-  
-    return (
-        <NavigationContainer>
-            <Stack.Navigator
-              initialRouteName={routeName}
+      <Stack.Navigator
+      mode='modal'
+              initialRouteName={MOVIES}
               screenOptions={{
                 animationEnabled: true,
                 headerTintColor: "teal",
-                cardStyle: { opacity: 1, backgroundColor: "black" },
                 backgroundColor: "black",
+                headerTransparent: true,
+                cardStyle: { backgroundColor: 'black' },
+              cardStyleInterpolator: ({ current: { progress } }) => ({
+                cardStyle: {
+                  opacity: progress.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [0, 1],
+                  }),
+                },
+                overlayStyle: {
+                  opacity: progress.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [0, 0.5],
+                    extrapolate: 'clamp',
+                  }),
+                },
+              }),
               }}
               detachInactiveScreens={false}
               >
                   <Stack.Screen
-                    name={MOVIES}
-                    component={BottomTab}
-                    options={{ headerShown: false }}
-                    />
-                  <Stack.Screen
-                    name={WELCOMESCREEN}
-                    component={WelcomePage}
-                    options={{ headerShown: false }}
+                    name={" "}
+                    component={BottomNav}
+                    options={({route}) => ({ headerShown: true, headerTitle: () => getHeaderTitle(route), headerTitleAlign: 'center', headerLeft: () => getHeaderLeft(route) })}
+                    
                     />
               <Stack.Screen
                 name={MOVIEDETAIL}
@@ -148,30 +126,11 @@ export default MoviesNavogator = ({routeName}) => {
                 component={BitmovinPlayer}
                 options={{ headerShown: false }}
                 />
-                  <Stack.Screen
-                name={EMAILSIGNUP}
-                component={EmailSignup}
+                <Stack.Screen
+                name={GENRE}
+                component={GenreScreen}
                 options={{
-                  title: " ",
-                  headerStyle: {
-                    backgroundColor: "black",
-                  },
-                }}
-                />
-              <Stack.Screen
-                name={LOGIN}
-                component={LoginScreen}
-                options={{
-                  title: " ",
-                  headerStyle: {
-                    backgroundColor: "black",
-                  },
-                }}
-                />
-              <Stack.Screen
-                name={FILLPROFILESCREEN}
-                component={FillProfileScreen}
-                options={{
+                  headerShown: false,
                   title: " ",
                   headerStyle: {
                     backgroundColor: "black",
@@ -179,9 +138,21 @@ export default MoviesNavogator = ({routeName}) => {
                 }}
                 />
             </Stack.Navigator>
-          </NavigationContainer>
     )
-}
+              }
+
+export default MoviesStack = () => (
+  <Drawer.Navigator drawerContent={props => <DrawerItems {...props} />} initialRouteName="Home"
+  >
+ <Drawer.Screen name="Home" component={MoviesNavogator} />
+</Drawer.Navigator>
+
+)
+  
+
+  
+  
+
 
 
 

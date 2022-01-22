@@ -44,6 +44,10 @@ export const CURRENT_PROFILE = 'CURRENT_PROFILE';
 export const REMOVE_FROM_WATCHED = 'REMOVE_FROM_WATCHED';
 export const REMOVE_FROM_WATCHED_SUCCESS = 'REMOVE_FROM_WATCHED_SUCCESS';
 export const REMOVE_FROM_WATCHED_FAILED = 'REMOVE_FROM_WATCHED_FAILED';
+export const LOGGED_IN_SUCCESS = 'LOGGED_IN_SUCCESS';
+export const LOGGED_OUT_SUCCESS = 'LOGGED_OUT_SUCCESS';
+export const FILLING_PROFILE = 'FILLING_PROFILE';
+
 
 export const addUser = (email, firstName, lastName, yearOfBirth, phoneNumber,uid, emailVerified ,profileImage, authtoken) => async (dispatch) => {
   let data = {
@@ -90,7 +94,28 @@ export const addUser = (email, firstName, lastName, yearOfBirth, phoneNumber,uid
     console.log(err);
   }
 };
+export const loggedIn = () => async dispatch => {
+  try {
+    dispatch({type: LOGGED_IN_SUCCESS});
+  } catch (err) {
 
+  }
+}
+export const loggedOut = () => async dispatch => {
+  try {
+    dispatch({type: LOGGED_OUT_SUCCESS});
+  } catch (err) {
+
+  }
+}
+
+export const fillingProfile = () => async dispatch => {
+  try {
+    dispatch({type: FILLING_PROFILE});
+  } catch (err) {
+
+  }
+}
 export const getUser = (email, authtoken) => async (dispatch) => {
   let data = {
     email: email

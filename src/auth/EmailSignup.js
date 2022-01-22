@@ -14,7 +14,7 @@ import { LOGIN, MOVIES, FILLPROFILESCREEN } from "../../constants/RouteNames";
 import { TextInput, HelperText } from "react-native-paper";
 import { LogBox } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { addUser } from "../../store/actions/user";
+import { addUser, fillingProfile } from "../../store/actions/user";
 import { useDispatch } from "react-redux";
 import { firebaseConfig } from "../api/FirebaseConfig";
 import AsyncStorage from "@react-native-community/async-storage";
@@ -54,7 +54,8 @@ useEffect(() => {
       firebase.auth().onAuthStateChanged(async (user) => {
         if (user && user.emailVerified) {
          // console.log('success',user);
-          await AsyncStorage.setItem("whatPhase", "Signed up")
+         // await AsyncStorage.setItem("whatPhase", "Signed up")
+         fillingProfile()(dispatch);
           navigation.navigate(FILLPROFILESCREEN);
           setSignedup(false);
         } else {
@@ -122,7 +123,7 @@ useEffect(()=> {
   LogBox.ignoreLogs(["Setting a timer"]);
   const inputColor = "teal";
  
-  console.log('errrr',error);
+  //console.log('errrr',error);
   return (
     <View style={styles.container}>
         <Text

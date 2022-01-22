@@ -44,6 +44,7 @@ import Video, {currentPlaybackTime} from 'react-native-video'
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import moment from "moment";
 import RBSheet from "react-native-raw-bottom-sheet";
+import { HeaderTitle } from "@react-navigation/stack";
 
 const HomeScreen = ({ navigation }) => {
   const appState = useRef(AppState.currentState);
@@ -246,9 +247,15 @@ useEffect(()=> {
                     }), setVideoPaused(true);
                   }
                   }
-                  style={{margin: -5}}
+                  style={{margin: -5, padding: 4,
+                    borderRadius: 100,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    elevation: 25,
+                    borderWidth: 2,
+                    borderColor: "white",}}
                   >
-              <IonIcon name="information-circle-outline" size={40}  color="white"/>
+              <IonIcon name="information" size={18}  color="white"/>
               </TouchableOpacity>
             
                   {!videoMute ? <TouchableOpacity
@@ -261,7 +268,7 @@ useEffect(()=> {
                   justifyContent: "center",
                   alignItems: "center",
                   elevation: 25,
-                  borderWidth: 3,
+                  borderWidth: 2,
                   borderColor: "white",
       }}
                   >
@@ -280,7 +287,7 @@ useEffect(()=> {
                   justifyContent: "center",
                   alignItems: "center",
                   elevation: 25,
-                  borderWidth: 3,
+                  borderWidth: 2,
                   borderColor: "white",
       }}
                   >
@@ -299,11 +306,11 @@ useEffect(()=> {
                   }
                   style={{   
                   padding: 16,
-                  borderRadius: 100,
+                  borderRadius: 150,
                   justifyContent: "center",
                   alignItems: "center",
                   elevation: 25,
-                  borderWidth: 4,
+                  borderWidth: 2,
                   borderColor: "teal",
                   
       }}
@@ -858,6 +865,15 @@ const renderBotomSheet = () => {
   );
 };
 
+
+// HomeScreen.navigationOptions = () => {
+//   return {
+//     HeaderTitle: "Fliika",
+//     headerRight: (
+//       <Text>Hello</Text>
+//     )
+//   }
+// }
 const styles = StyleSheet.create({
   container: {
     flex: 1,

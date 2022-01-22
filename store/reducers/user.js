@@ -38,7 +38,10 @@ import {
   REMOVE_PROFILE,
   REMOVE_PROFILE_SUCCESS,
   REMOVE_PROFILE_FAILED,
-  CURRENT_PROFILE
+  CURRENT_PROFILE,
+  LOGGED_IN_SUCCESS,
+  LOGGED_OUT_SUCCESS,
+  FILLING_PROFILE
 } from "../actions/user";
 const initialState = {
   profileName: null,
@@ -51,7 +54,8 @@ const initialState = {
   currentProfile: [],
   email: "",
   watchedAt: 0,
-  duration: 0
+  duration: 0,
+  isLoggedIn: '',
 };
 
 const userReducer = (state = initialState, { type, payload }) => {
@@ -136,6 +140,12 @@ const userReducer = (state = initialState, { type, payload }) => {
         return {...state, watchedAt: payload.watched, duration: payload.duration}
         case CURRENT_PROFILE:
           return {...state, currentProfile: payload}
+        case LOGGED_IN_SUCCESS:
+          return {...state, isLoggedIn: 'loggedIn'};
+        case LOGGED_OUT_SUCCESS:
+          return {...state, isLoggedIn: 'loggedOut'};
+        case FILLING_PROFILE:
+          return {...state, isLoggedIn: 'signedUp'};
     default:
       return state;
   }
