@@ -1,45 +1,26 @@
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
 import FastImage from 'react-native-fast-image';
-import { getFocusedRouteNameFromRoute, NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createDrawerNavigator,  DrawerContentScrollView,
-  DrawerItemList,
-  DrawerItem, } from '@react-navigation/drawer';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
-import WelcomePage from "../WelcomePage";
+import Entypo from 'react-native-vector-icons/Entypo';
 import HomeScreen from "../BottomScreens/HomeScreen";
 import SearchScreen from "../BottomScreens/SearchScreen";
 import TvShowsScreen from "../BottomScreens/TvShowsScreen";
-import MovieDetailScreen from "../MovieDetailScreen";
 import ProfileScreen from "../BottomScreens/ProfileScreen";
-import LoginScreen from "../auth/LoginScreen";
-import FillProfileScreen from "../auth/FillProfileScreen";
-import EditProfile from "../components/EditProfile";
-import EpisodeDetailScreen from "../EpisodeDetailScreen";
-import EmailSignup from "../auth/EmailSignup";
-import BitmovinPlayer from '../BitmovinPlayer';
-import GenreScreen from '../GenreScreen';
 import {
   MOVIES,
   HOME,
   SEARCH,
   SHOWS,
-  WELCOMESCREEN,
-  MOVIEDETAIL,
   PROFILESCREEN,
-  LOGIN,
-  FILLPROFILESCREEN,
-  EDITPROFILE,
-  EPISODEDETAIL, BITMOVINPLAYER, EMAILSIGNUP, GENRE
+ DOWNLOADSCREEN
 } from "../../constants/RouteNames";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import profileImgs from '../../constants/profileImgs';
-import {useNavigation} from '@react-navigation/native';
-import DrawerItems from './DrawerItems';
+import DownloadsScreen from '../BottomScreens/DownloadsScreen';
+
 
 export default BottomNav = () => {
 const user = useSelector((state) => state.user);
@@ -65,13 +46,15 @@ const user = useSelector((state) => state.user);
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
           if (route.name === HOME) {
-            iconName = "md-home";
+            iconName = "home";
           } else if (route.name === SEARCH) {
             iconName = "search";
           } else if (route.name == SHOWS) {
             iconName = "television-classic";
           } else if (route.name === PROFILESCREEN) {
             iconName = "user";
+          } else if (route.name == DOWNLOADSCREEN) {
+            iconName = 'download';
           }
   
           if (route.name == SHOWS) {
@@ -80,6 +63,10 @@ const user = useSelector((state) => state.user);
             );
           } else if (route.name == PROFILESCREEN) {
             return userIconFunc();
+          } else if (route.name == HOME) {
+            return <Feather name={iconName} size={size} color={color} />;
+          } else if (route.name == DOWNLOADSCREEN) {
+            return <Entypo name={iconName} size={size} color={color} />;
           } else {
             return <Ionicons name={iconName} size={size} color={color} />;
           }
@@ -102,6 +89,11 @@ const user = useSelector((state) => state.user);
       <Tabs.Screen
         name={SHOWS}
         component={TvShowsScreen}
+        options={{ title: " " }}
+      />
+          <Tabs.Screen
+        name={DOWNLOADSCREEN}
+        component={DownloadsScreen}
         options={{ title: " " }}
       />
       <Tabs.Screen

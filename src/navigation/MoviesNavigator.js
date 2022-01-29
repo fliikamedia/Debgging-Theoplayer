@@ -131,10 +131,6 @@ const MoviesNavogator = (props) => {
                 component={GenreScreen}
                 options={{
                   headerShown: false,
-                  title: " ",
-                  headerStyle: {
-                    backgroundColor: "black",
-                  },
                 }}
                 />
             </Stack.Navigator>

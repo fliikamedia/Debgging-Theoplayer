@@ -50,7 +50,7 @@ const ProfileScreen = ({ navigation }) => {
     if (name) {
       setName("");
       setImageName("");
-      addProfile(user.email, name, imageName)(dispatch);
+      addProfile(user.user._id, name, imageName)(dispatch);
       setCreating(false);
     } else {
       Alert.alert("", "Please Select a profile name first", [

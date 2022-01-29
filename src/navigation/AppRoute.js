@@ -12,6 +12,7 @@ import WelcomeNavigator from "./WelcomeNavigator";
 import AsyncStorage from "@react-native-community/async-storage";
 import { NavigationContainer } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
+import { createStackNavigator } from '@react-navigation/stack';
 
 /* StatusBar.setBarStyle("light-content");
 if (Platform.OS === "android") {
@@ -19,17 +20,29 @@ if (Platform.OS === "android") {
   StatusBar.setTranslucent(true);
 }
  */
-  
 export default AppRoute = () => {
 
 const user = useSelector(state => state.user);
 
-console.log('user',user.isLoggedIn);
+const [verified, setVerified] = React.useState(false);
+const checkIFVerified = async () => {
+  firebase.auth().onAuthStateChanged((user) => {
+   if (user && user.emailVerified ) {
+     setVerified(true);
+    } 
+    //console.log('user verified',user?.emailVerified);
+  });
+};
+React.useEffect(() => {
+  checkIFVerified();
+}, []);
+
+//console.log('user',user.isLoggedIn);
   const navigatorFunc = () => {
 
-    if (user.isLoggedIn === 'loggedIn') {
+    if (verified && user.isLoggedIn === 'loggedIn') {
         return <MoviesNavigator routeName={MOVIES} /> 
-    } else if (user.isLoggedIn === 'signedUp' ) {
+    } else if (verified && user.isLoggedIn === 'signedUp' ) {
         return <WelcomeNavigator  routeName={FILLPROFILESCREEN} /> 
     } else {
         return <WelcomeNavigator routeName={WELCOMESCREEN} /> 

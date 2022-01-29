@@ -673,6 +673,7 @@ return ()=> unsubscribe();
       }
     }
 
+   
   let alsoWatchSet = [...new Set(alsoWatchIds)];
 
   let alsoWatch = [];
@@ -683,6 +684,21 @@ return ()=> unsubscribe();
     }
   }
   }
+  const shuffled = alsoWatch.sort(() => 0.5 - Math.random());
+
+  let availableMoviesLength;
+  try {
+    availableMoviesLength = shuffled?.length;
+  } catch (err) {}
+  let moviesToShow = [];
+
+  if (availableMoviesLength > 5) {
+  for (let i = 0; i < 6; i++) {
+    moviesToShow.push(alsoWatch[i])
+  }
+  } else {
+  moviesToShow = [...shuffled]
+  }
   const numColumns = 3;
     return (
       <View>
@@ -690,7 +706,7 @@ return ()=> unsubscribe();
     ref={scrollRef}
     ListHeaderComponent={renderHeaderSection()}
     showsVerticalScrollIndicator={false}
-    data={alsoWatch}
+    data={moviesToShow}
     keyExtractor={item => item._id}
     renderItem={({item, index}) => (
       <TouchableWithoutFeedback

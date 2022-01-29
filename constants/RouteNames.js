@@ -15,3 +15,4 @@ export const BITMOVINPLAYER = 'Bitmovin Player';
 export const EMAILSIGNUP = 'Email Signup';
 export const GENRE = 'Genre Screen';
 export const MOVIESTACK = 'Movie Stack';
+export const DOWNLOADSCREEN = 'Download Screen';

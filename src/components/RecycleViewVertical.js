@@ -72,7 +72,14 @@ export default class RecycleViewVertical extends Component {
         }
         }
         render() {
-            const heights = this.props.movie.length >3 ? (SIZES.width * 0.45) * (this.props.movie.length / 3) + SIZES.width * 0.7 : SIZES.width * 0.7 ;
+            let heights;
+            if(this.props.movie.length > 3 && this.props.movie.length % 3 !== 0) {
+              heights = (SIZES.width * 0.45) * (this.props.movie.length / 3) + SIZES.width * 0.7 ;
+            } else if (this.props.movie.length > 3 && this.props.movie.length % 3 === 0) {
+              heights = (SIZES.width * 0.5) * (this.props.movie.length / 3);
+            } else {
+             heights =  SIZES.width * 0.7 
+            }
 
            console.log('movies', heights);
             return (
@@ -96,6 +103,7 @@ export default class RecycleViewVertical extends Component {
             minHeight: 1,
             minWidth: 1,
             marginVertical: 3
+            
           },
           body: {
             marginLeft: 10,

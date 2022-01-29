@@ -160,12 +160,12 @@ export const getUser = (email, authtoken) => async (dispatch) => {
 };
 
 
-export const addProfile = (emails, name, image) => async (dispatch) => {
+export const addProfile = (userId, name, image) => async (dispatch) => {
   console.log("adding profile");
   try {
     dispatch({ type: ADD_PROFILE, payload: name });
     const result = await expressApi.post(`/users/addProfile`, {
-      email: emails,
+      userId: userId,
       profile: {
         name: name,
         image: image,

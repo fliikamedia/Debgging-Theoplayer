@@ -32,7 +32,8 @@ const LoginScreen = ({ navigation }) => {
 
           if(user) {
             loggedIn()(dispatch);
-        /*     setEmailFunc(email)(dispatch);
+            setEmailFunc(email)(dispatch);
+        /*     
             navigation.reset({
                index: 0,
                routes: [{ name: MOVIES }],

@@ -3,13 +3,11 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   ImageBackground,
-  Animated,
   View,
   Text,
   StyleSheet,
   FlatList,
   ScrollView,
-  Image,
   ActivityIndicator,
   RefreshControl,
   Dimensions,
@@ -44,7 +42,6 @@ import Video, {currentPlaybackTime} from 'react-native-video'
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import moment from "moment";
 import RBSheet from "react-native-raw-bottom-sheet";
-import { HeaderTitle } from "@react-navigation/stack";
 
 const HomeScreen = ({ navigation }) => {
   const appState = useRef(AppState.currentState);
@@ -60,14 +57,23 @@ const HomeScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [profiled, setProfiled] = useState('');
   const [connected, setConnected] = useState(null);
-  const video = React.useRef(null);
+  const videoRef = React.useRef(null);
   const [isPreloading, setIsPreloading] = useState(true);
 const [scrolledY, setScrolledY] = useState(0)
 const [videoPaused, setVideoPaused] = useState(false);
 const [videoMute, setVideoMute] = useState(false);
 const [rbTitle, setRbTitle] = useState({});
+useEffect(() => {
+  const unsubscribe = navigation.addListener('blur', () => {
+    //console.log('Leaving Home Screen');
+   setVideoPaused(true);
+  });
+
+  return unsubscribe;
+}, [navigation]);
   useEffect( () => {
     const unsubscribe = navigation.addListener('focus', async () => {
+      setVideoPaused(false);
        Orientation.lockToPortrait();
       
       const whatTime = await AsyncStorage.getItem('watched');
@@ -213,7 +219,7 @@ useEffect(()=> {
       <Video
      onReadyForDisplay={() => setIsPreloading(false)}
      paused={videoPaused}
-      ref={video}
+      ref={videoRef}
       style={{    position: "absolute",
       top: 0,
       bottom: 0,
@@ -244,7 +250,7 @@ useEffect(()=> {
                       selectedMovie: resultsToShow[0]._id,
                       isSeries: resultsToShow[0].film_type,
                       seriesTitle: resultsToShow[0].name,
-                    }), setVideoPaused(true);
+                    });
                   }
                   }
                   style={{margin: -5, padding: 4,
@@ -301,12 +307,18 @@ useEffect(()=> {
                   onPress={() => {
                     navigation.navigate(BITMOVINPLAYER, {
                       movieId: resultsToShow[0]._id,
-                    }), setVideoPaused(true);
+                    });
                   }
                   }
                   style={{   
+                  // padding: 16,
+                  // borderRadius: 150,
+                  // justifyContent: "center",
+                  // alignItems: "center",
+                  // elevation: 25,
+                  // borderColor: "teal",
                   padding: 16,
-                  borderRadius: 150,
+                  borderRadius: 40,
                   justifyContent: "center",
                   alignItems: "center",
                   elevation: 25,
@@ -315,11 +327,17 @@ useEffect(()=> {
                   
       }}
                   >
-            <IconAwesome
+                     <IconAwesome
                     name="play"
                     size={20}
                     color="#B0E0E6"
+                    style={{ marginLeft: 4 }}
                   />
+{/*             <IconAwesome
+                    name="play"
+                    size={20}
+                    color="#B0E0E6"
+                  /> */}
                   </TouchableOpacity>
                   </View>
             </View>
@@ -340,12 +358,12 @@ useEffect(()=> {
       if (item.dvd_thumbnail_link) {
         return (
           <TouchableWithoutFeedback
-            onPress={() =>{setVideoPaused(true),
+            onPress={() =>{
               navigation.navigate(MOVIEDETAIL, {
                 selectedMovie: item._id,
                 isSeries: item.film_type,
                 seriesTitle: item.title,
-              })
+              });
             }
             }
           >
@@ -492,11 +510,11 @@ useEffect(()=> {
               return (
                 <TouchableWithoutFeedback
                 onLongPress={()=> {refRBSheet.current.open(), setRbTitle({type: item.type,title:item.title, id: item._id});}}
-                  onPress={() => {setVideoPaused(true);
+                  onPress={() => {
                     navigation.navigate(BITMOVINPLAYER, {
                       movieId: item._id,
                       time: item.time
-                    })
+                    });
                   }
                   }
                 >
@@ -614,12 +632,12 @@ useEffect(()=> {
         <View>
           <TouchableOpacity
               onPress={() =>{
-                 setVideoPaused(true);
+                 
                 navigation.navigate(MOVIEDETAIL, {
                   selectedMovie: item._id,
                   isSeries: item.film_type,
                   seriesTitle:  item.title,
-                })
+                });
               }
               }
           >
@@ -735,17 +753,16 @@ useEffect(()=> {
                 />
               </View>
               <View style={styles.movieInfoContainer}>
-                <View style={{ justifyContent: "center" }}>
+                <View style={{ justifyContent: "center", maxWidth: SIZES.width / 1.8}}>
                   <Text style={styles.movieName}>{background.name}</Text>
                 </View>
                 <TouchableOpacity
                   onPress={() => {
-                    setVideoPaused(true);
                     navigation.navigate(MOVIEDETAIL, {
                       selectedMovie: background._id,
                       isSeries: background.film_type,
                       seriesTitle: background.name,
-                    })
+                    });
                   }
                   }
                   style={styles.playIconContainer}
@@ -811,7 +828,7 @@ const renderBotomSheet = () => {
     <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}} onPress={()=>  {refRBSheet.current.close(),navigation.navigate(MOVIEDETAIL, {
     selectedMovie: rbTitle.id,
     isSeries: rbTitle.type,
-    seriesTitle: rbTitle.title}), setVideoPaused(true);}}>
+    seriesTitle: rbTitle.title});}}>
     <IconAnt name="infocirlceo" size={30} color="#fff"/>
         <Text style={{fontFamily: 'Sora-Regular',color: '#fff', fontSize: 20, marginLeft: 10}}>Go to details</Text>
       </TouchableOpacity>
@@ -961,6 +978,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Sora-Bold',
     fontSize: 20,
     marginBottom: 6,
+    textAlign: 'center'
   },
   movieStat: {
     paddingLeft: 14,
