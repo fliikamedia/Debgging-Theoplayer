@@ -13,6 +13,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 import { NavigationContainer } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { createStackNavigator } from '@react-navigation/stack';
+import { loggedOut } from "../../store/actions/user";
 
 /* StatusBar.setBarStyle("light-content");
 if (Platform.OS === "android") {
@@ -44,7 +45,7 @@ React.useEffect(() => {
         return <MoviesNavigator routeName={MOVIES} /> 
     } else if (verified && user.isLoggedIn === 'signedUp' ) {
         return <WelcomeNavigator  routeName={FILLPROFILESCREEN} /> 
-    } else if (!user){
+    } else if (user.isLoggedIn === 'loggedOut' || user.isLoggedIn === ''){
         return <WelcomeNavigator routeName={WELCOMESCREEN} /> 
     }
   }
