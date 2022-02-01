@@ -1,11 +1,11 @@
 import React from 'react';
-import {Text, TouchableOpacity} from 'react-native';
+import {SafeAreaView,View, TouchableOpacity} from 'react-native';
 import { createDrawerNavigator,  DrawerContentScrollView,
     DrawerItemList,
     DrawerItem, } from '@react-navigation/drawer';
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMovies } from '../../store/actions/movies';
-import { GENRE } from '../../constants/RouteNames';
+import { GENRE, MOVIESTACK, WATCHLIST } from '../../constants/RouteNames';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 const DrawerItems = (props) => {
@@ -25,14 +25,21 @@ const dispatch = useDispatch();
 
   const genres = [...new Set(allGenre)];
   return (
-      <DrawerContentScrollView style={{backgroundColor: "rgb(40,40,40)"}} {...props}>
-         <TouchableOpacity
+    <View style={{flex: 1,backgroundColor: "rgb(40,40,40)", paddingTop: 40}}>
+           <TouchableOpacity
          style={{ marginLeft: 20}}
          onPress={() => props.navigation.closeDrawer()}
          >
          <AntDesign name="close" size={25} color="#fff"  />
          </TouchableOpacity>
-         
+             <View style={{borderBottomWidth: 2, borderBottomColor: '#fff', paddingBottom: 20}}>
+         <DrawerItem
+          label={'My watch list'}
+          labelStyle={{fontSize: 20, color: "#fff"}}
+          onPress={() => props.navigation.navigate(WATCHLIST)}
+        />
+         </View>
+      <DrawerContentScrollView  {...props}>
         {
                 genres.map((item, index) => (
                   <DrawerItem key={index} label={item} labelStyle={{fontSize: 20, color: "#fff"}} onPress={()=> {
@@ -42,6 +49,7 @@ const dispatch = useDispatch();
                 ))
               }
       </DrawerContentScrollView>
+      </View>
   )
 };
 

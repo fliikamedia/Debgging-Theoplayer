@@ -44,7 +44,7 @@ React.useEffect(() => {
         return <MoviesNavigator routeName={MOVIES} /> 
     } else if (verified && user.isLoggedIn === 'signedUp' ) {
         return <WelcomeNavigator  routeName={FILLPROFILESCREEN} /> 
-    } else {
+    } else if (!user){
         return <WelcomeNavigator routeName={WELCOMESCREEN} /> 
     }
   }

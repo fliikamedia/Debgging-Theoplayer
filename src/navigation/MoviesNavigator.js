@@ -10,6 +10,7 @@ import EditProfile from "../components/EditProfile";
 import EpisodeDetailScreen from "../EpisodeDetailScreen";
 import BitmovinPlayer from '../BitmovinPlayer';
 import GenreScreen from '../GenreScreen';
+import WatchList from '../WatchList';
 import {
   MOVIES,
   HOME,
@@ -18,7 +19,7 @@ import {
   MOVIEDETAIL,
   PROFILESCREEN,
   EDITPROFILE,
-  EPISODEDETAIL, BITMOVINPLAYER, GENRE
+  EPISODEDETAIL, BITMOVINPLAYER, GENRE, MOVIESTACK, WATCHLIST
 } from "../../constants/RouteNames";
 import {useNavigation} from '@react-navigation/native';
 import DrawerItems from './DrawerItems';
@@ -114,7 +115,7 @@ const MoviesNavogator = (props) => {
               <Stack.Screen
                 name={EDITPROFILE}
                 component={EditProfile}
-                options={{ headerShown: false }}
+                options={{ headerShown: true, headerTitle: " " }}
                 />
               <Stack.Screen
                 name={EPISODEDETAIL}
@@ -133,14 +134,22 @@ const MoviesNavogator = (props) => {
                   headerShown: false,
                 }}
                 />
+                <Stack.Screen
+                name={WATCHLIST}
+                component={WatchList}
+                options={{
+                  headerShown: true,
+                  headerTitle: " "
+                }}
+                />
             </Stack.Navigator>
     )
               }
 
 export default MoviesStack = () => (
-  <Drawer.Navigator drawerContent={props => <DrawerItems {...props} />} initialRouteName="Home"
+  <Drawer.Navigator drawerContent={props => <DrawerItems {...props} />} initialRouteName={MOVIESTACK}
   >
- <Drawer.Screen name="Home" component={MoviesNavogator} />
+ <Drawer.Screen name={MOVIESTACK} component={MoviesNavogator} />
 </Drawer.Navigator>
 
 )

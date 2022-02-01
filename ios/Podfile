@@ -15,10 +15,7 @@ target 'FliikaMobileRN' do
     :hermes_enabled => false
   )
 
-  pod 'RNDateTimePicker', :path => '../node_modules/@react-native-community/datetimepicker'
 
-  pod 'react-native-keep-awake', :path => '../node_modules/@sayem314/react-native-keep-awake'
-  pod 'takeoffmedia-react-native-bitmovin-player', :path => '../node_modules/@takeoffmedia/react-native-bitmovin-player'
   
   #pod 'takeoffmedia-react-native-bitmovin-player', :path => '../..'
   # pod 'SDWebImage', git: "https://github.com/SDWebImage/SDWebImage.git", tag: "5.1.0"

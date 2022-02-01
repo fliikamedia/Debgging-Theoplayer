@@ -122,12 +122,14 @@ for (let i = 0; i < 12; i++) {
 }
 
 
-  return <ScrollView contentContainerStyle={styles.container}>
+  return (
+    <ScrollView contentContainerStyle={styles.container}>
      {genrePoster()}
      <View style={{ marginTop: 50, marginBottom: 30}}>
-     <RecycleView movie={shuffled}  index={0} title={genre} />
+     <RecycleView movie={shuffled}  index={0} title={genre} navigation={navigation} />
      </View>
-  </ScrollView>;
+  </ScrollView>
+  );
 };
 
 const styles = StyleSheet.create({

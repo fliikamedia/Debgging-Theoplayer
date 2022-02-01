@@ -50,6 +50,8 @@ import AsyncStorage from "@react-native-community/async-storage";
 import Orientation from "react-native-orientation";
 import moment from "moment";
 import FastImage from "react-native-fast-image";
+import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
+
 
 const MovieDetailScreen = ({ navigation, route }) => {
   const Tab = createMaterialTopTabNavigator();
@@ -134,6 +136,63 @@ return ()=> unsubscribe();
     setDetails(true);
   };
 
+   // Toast config
+   const showToast = (text) => {
+    Toast.show({
+      type: 'success',
+      text2: text,
+      position: 'bottom',
+      visibilityTime: 2000
+    });
+  }
+
+  const toastConfig = {
+    /*
+      Overwrite 'success' type,
+      by modifying the existing `BaseToast` component
+    */
+    success: (props) => (
+      <BaseToast
+        {...props}
+        style={{ borderLeftColor: '#404040', backgroundColor: '#404040',width: 250, borderRadius: 30 }}
+        text2Style={{
+          fontSize: 15,
+          fontWeight: '400',
+          textAlign: 'center',
+          color: '#fff'
+        }}
+      />
+    ),
+    /*
+      Overwrite 'error' type,
+      by modifying the existing `ErrorToast` component
+    */
+    error: (props) => (
+      <ErrorToast
+        {...props}
+        text1Style={{
+          fontSize: 17
+        }}
+        text2Style={{
+          fontSize: 15
+        }}
+      />
+    ),
+    /*
+      Or create a completely new type - `tomatoToast`,
+      building the layout from scratch.
+  
+      I can consume any custom `props` I want.
+      They will be passed when calling the `show` method (see below)
+    */
+    tomatoToast: ({ text1, props }) => (
+      <View style={{ height: 60, width: '100%', backgroundColor: 'tomato' }}>
+        <Text>{text1}</Text>
+        <Text>{props.uuid}</Text>
+      </View>
+    )
+  };
+  // End of Toast
   const isWatchList = (movieArray, movieName) => {
     try {
       var found = false;
@@ -379,6 +438,7 @@ return ()=> unsubscribe();
                 {isWatchList(user.currentProfile.watchList, currentMovie.title) == true ? (
                   <TouchableOpacity
                     onPress={() => {
+                      showToast('Removed from watch list');
                       removeFromProfileWatchList(
                         user.user._id,
                         movie,
@@ -395,6 +455,7 @@ return ()=> unsubscribe();
                 ) : (
                   <TouchableOpacity
                     onPress={() => {
+                      showToast('Added to watch list');
                   addToProfileWatchList(
                       user.user._id,
                       currentMovie,
@@ -741,6 +802,7 @@ return ()=> unsubscribe();
   return (
     <View  style={styles.container}>
           {peopleAlsoWatched()}
+          <Toast config={toastConfig}/>
     </View>
   );
 };

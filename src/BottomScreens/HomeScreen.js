@@ -42,6 +42,7 @@ import Video, {currentPlaybackTime} from 'react-native-video'
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import moment from "moment";
 import RBSheet from "react-native-raw-bottom-sheet";
+import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
 
 const HomeScreen = ({ navigation }) => {
   const appState = useRef(AppState.currentState);
@@ -187,6 +188,64 @@ useEffect(()=> {
 
         
   };
+
+  // Toast config
+  const showToast = (text) => {
+    Toast.show({
+      type: 'success',
+      text2: text,
+      position: 'bottom',
+      visibilityTime: 2000
+    });
+  }
+
+  const toastConfig = {
+    /*
+      Overwrite 'success' type,
+      by modifying the existing `BaseToast` component
+    */
+    success: (props) => (
+      <BaseToast
+        {...props}
+        style={{ borderLeftColor: '#404040', backgroundColor: '#404040',width: 250, borderRadius: 30 }}
+        text2Style={{
+          fontSize: 15,
+          fontWeight: '400',
+          textAlign: 'center',
+          color: '#fff'
+        }}
+      />
+    ),
+    /*
+      Overwrite 'error' type,
+      by modifying the existing `ErrorToast` component
+    */
+    error: (props) => (
+      <ErrorToast
+        {...props}
+        text1Style={{
+          fontSize: 17
+        }}
+        text2Style={{
+          fontSize: 15
+        }}
+      />
+    ),
+    /*
+      Or create a completely new type - `tomatoToast`,
+      building the layout from scratch.
+  
+      I can consume any custom `props` I want.
+      They will be passed when calling the `show` method (see below)
+    */
+    tomatoToast: ({ text1, props }) => (
+      <View style={{ height: 60, width: '100%', backgroundColor: 'tomato' }}>
+        <Text>{text1}</Text>
+        <Text>{props.uuid}</Text>
+      </View>
+    )
+  };
+  // End of Toast
   const resultsToShow = movies.availableMovies.filter(
     (c) =>
       c.film_type == "movie" ||
@@ -649,6 +708,7 @@ useEffect(()=> {
             {isWatchList(user.currentProfile.watchList, item.title) == true ? (
               <TouchableWithoutFeedback
                 onPress={() => {
+                  showToast('Removed from watch list');
                     removeFromProfileWatchList(
                       user.user._id,
                       item,
@@ -665,7 +725,7 @@ useEffect(()=> {
               </TouchableWithoutFeedback>
             ) : (
               <TouchableWithoutFeedback
-                onPress={() => {
+                onPress={() => {showToast('Added to watch list');
                     addToProfileWatchList(
                       user.user._id,
                       item,
@@ -878,6 +938,7 @@ const renderBotomSheet = () => {
           {renderBotomSheet()}
         </ScrollView>
       )}
+      <Toast config={toastConfig}/>
     </View>
   );
 };
