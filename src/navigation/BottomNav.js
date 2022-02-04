@@ -1,6 +1,7 @@
 import React from 'react';
 import FastImage from 'react-native-fast-image';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createStackNavigator } from "@react-navigation/stack";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
@@ -20,8 +21,68 @@ import {
 import { useSelector } from "react-redux";
 import profileImgs from '../../constants/profileImgs';
 import DownloadsScreen from '../BottomScreens/DownloadsScreen';
+import { TouchableOpacity } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 
 
+const Stack = createStackNavigator();
+
+
+const getHeaderTitle =(route) => {
+
+  return <FastImage style={{height: 32, width: 100}} source={require("../../assets/fliika-logo.png")}/>;
+}
+
+const getHeaderLeft = (route) => {
+
+  const {toggleDrawer} = useNavigation();
+
+       return  (
+       <TouchableOpacity onPress={() =>toggleDrawer()}>
+         <Feather name="menu" size={25} color="#fff" style={{marginLeft: 20}} />
+       </TouchableOpacity>
+       );
+     
+
+}
+
+function HomeStackScreen() {
+  return (
+    <Stack.Navigator
+    mode='modal'
+              initialRouteName={MOVIES}
+              screenOptions={{
+                animationEnabled: true,
+                headerTintColor: "teal",
+                backgroundColor: "black",
+                headerTransparent: true,
+                cardStyle: { backgroundColor: 'black' },
+              cardStyleInterpolator: ({ current: { progress } }) => ({
+                cardStyle: {
+                  opacity: progress.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [0, 1],
+                  }),
+                },
+                overlayStyle: {
+                  opacity: progress.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [0, 0.5],
+                    extrapolate: 'clamp',
+                  }),
+                },
+              }),
+              }}
+              detachInactiveScreens={false}
+    >
+      <Stack.Screen
+        name={HOME}
+        component={HomeScreen}
+        options={({route}) => ({ headerShown: true, headerTitle: () => getHeaderTitle(route), headerTitleAlign: 'center', headerLeft: () => getHeaderLeft(route) })}
+      />
+    </Stack.Navigator>
+  );
+}
 export default BottomNav = () => {
 const user = useSelector((state) => state.user);
 
@@ -85,7 +146,7 @@ const user = useSelector((state) => state.user);
         labelStyle: { fontSize: 0 },
       }}
     >
-      <Tabs.Screen name={HOME} component={HomeScreen} options={{ title: " " }} />
+      <Tabs.Screen name={HOME} component={HomeStackScreen} options={{ title: " " }} />
       <Tabs.Screen
         name={SHOWS}
         component={TvShowsScreen}

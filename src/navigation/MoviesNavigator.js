@@ -104,7 +104,7 @@ const MoviesNavogator = (props) => {
                   <Stack.Screen
                     name={" "}
                     component={BottomNav}
-                    options={({route}) => ({ headerShown: true, headerTitle: () => getHeaderTitle(route), headerTitleAlign: 'center', headerLeft: () => getHeaderLeft(route) })}
+                    options={{ headerShown: false }}
                     
                     />
               <Stack.Screen

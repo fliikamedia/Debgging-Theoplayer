@@ -12,6 +12,7 @@ import {
   RefreshControl,
   Dimensions,
   AppState,
+  Animated
 } from "react-native";
 import { COLORS, SIZES, icons } from "../../constants";
 import { BITMOVINPLAYER, MOVIEDETAIL } from "../../constants/RouteNames";
@@ -62,8 +63,33 @@ const HomeScreen = ({ navigation }) => {
   const [isPreloading, setIsPreloading] = useState(true);
 const [scrolledY, setScrolledY] = useState(0)
 const [videoPaused, setVideoPaused] = useState(false);
-const [videoMute, setVideoMute] = useState(false);
+const [videoMute, setVideoMute] = useState(true);
 const [rbTitle, setRbTitle] = useState({});
+
+const yOffset = useRef(new Animated.Value(0)).current;
+const headerOpacity = yOffset.interpolate({
+  inputRange: [0, 200],
+  outputRange: [0, 0.8],
+  extrapolate: "clamp",
+});
+
+useEffect(() => {
+  navigation.setOptions({
+    headerStyle: {
+      opacity: 1,
+    },
+    headerBackground: () => (
+      <Animated.View
+        style={{
+          backgroundColor: "black",
+          ...StyleSheet.absoluteFillObject,
+          opacity: headerOpacity,
+        }}
+      />
+    ),
+    headerTransparent: true,
+  });
+}, [headerOpacity, navigation]);
 useEffect(() => {
   const unsubscribe = navigation.addListener('blur', () => {
     //console.log('Leaving Home Screen');
@@ -125,6 +151,7 @@ return ()=> unsubscribe();
     }
 
   }
+
 useEffect(()=> {
   const unsubscribe = NetInfo.addEventListener(state => {
     //console.log("Connection type", state.type);
@@ -317,15 +344,15 @@ useEffect(()=> {
                     justifyContent: "center",
                     alignItems: "center",
                     elevation: 25,
-                    borderWidth: 2,
+                    borderWidth: 1,
                     borderColor: "white",}}
                   >
               <IonIcon name="information" size={18}  color="white"/>
               </TouchableOpacity>
             
-                  {!videoMute ? <TouchableOpacity
+                  {videoMute ? <TouchableOpacity
                   onPress={() =>
-                   setVideoMute(true)
+                   setVideoMute(false)
                   }
                   style={{   
                   padding: 4,
@@ -333,7 +360,7 @@ useEffect(()=> {
                   justifyContent: "center",
                   alignItems: "center",
                   elevation: 25,
-                  borderWidth: 2,
+                  borderWidth: 1,
                   borderColor: "white",
       }}
                   >
@@ -344,7 +371,7 @@ useEffect(()=> {
                   />
                   </TouchableOpacity>:<TouchableOpacity
                   onPress={() =>
-                   setVideoMute(false)
+                   setVideoMute(true)
                   }
                   style={{   
                   padding: 4,
@@ -352,7 +379,7 @@ useEffect(()=> {
                   justifyContent: "center",
                   alignItems: "center",
                   elevation: 25,
-                  borderWidth: 2,
+                  borderWidth: 1,
                   borderColor: "white",
       }}
                   >
@@ -813,9 +840,10 @@ useEffect(()=> {
                 />
               </View>
               <View style={styles.movieInfoContainer}>
-                <View style={{ justifyContent: "center", maxWidth: SIZES.width / 1.8}}>
+                <View style={{ justifyContent: "center", maxWidth: SIZES.width / 1.5}}>
                   <Text style={styles.movieName}>{background.name}</Text>
                 </View>
+                <View>
                 <TouchableOpacity
                   onPress={() => {
                     navigation.navigate(MOVIEDETAIL, {
@@ -834,6 +862,7 @@ useEffect(()=> {
                     style={{ marginLeft: 4 }}
                   />
                 </TouchableOpacity>
+                </View>
               </View>
               <Text style={styles.movieStat}>{background.stat}</Text>
               <View style={{ paddingHorizontal: 14, marginTop: 14 }}>
@@ -920,23 +949,34 @@ const renderBotomSheet = () => {
           />
         </View>
       ) : (
-        <ScrollView
-        showsVerticalScrollIndicator={false}
-          contentContainerStyle={{
-            paddingBottom: 100,
-          }}
-         // paused={scrolledY > 400}
-          onScroll={handleScroll}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        >
+        <Animated.ScrollView
+  onScroll={Animated.event(
+    [
+      {
+        nativeEvent: {
+          contentOffset: {
+            y: yOffset,
+          },
+        },
+      },
+    ],
+    { useNativeDriver: true }
+  )}
+  scrollEventThrottle={16}
+  refreshControl={
+    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+  }
+  showsVerticalScrollIndicator={false}
+  contentContainerStyle={{
+    paddingBottom: 100,
+  }}
+>
           {squareVideo()}
           {renderHeroSectionThirdDesign()}
           {continueWatchingLength > 0 ? renderContinueWatctionSection() : null}
           {renderMovies()}
           {renderBotomSheet()}
-        </ScrollView>
+        </Animated.ScrollView>
       )}
       <Toast config={toastConfig}/>
     </View>
@@ -1039,7 +1079,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Sora-Bold',
     fontSize: 20,
     marginBottom: 6,
-    textAlign: 'center'
   },
   movieStat: {
     paddingLeft: 14,

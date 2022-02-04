@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchMovies } from '../../store/actions/movies';
 import { GENRE, MOVIESTACK, WATCHLIST } from '../../constants/RouteNames';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import LinearGradient from 'react-native-linear-gradient';
 
 const DrawerItems = (props) => {
 
@@ -25,30 +26,46 @@ const dispatch = useDispatch();
 
   const genres = [...new Set(allGenre)];
   return (
-    <View style={{flex: 1,backgroundColor: "rgb(40,40,40)", paddingTop: 40}}>
+    <View style={{flex: 1,backgroundColor: "black", paddingTop: 40}}>
+       <LinearGradient
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
+              colors={["black", "#000020","#000025"]}
+              style={{flex: 1}}
+            >
            <TouchableOpacity
-         style={{ marginLeft: 20}}
+         style={{ alignSelf: 'flex-end', marginRight: 30}}
          onPress={() => props.navigation.closeDrawer()}
          >
          <AntDesign name="close" size={25} color="#fff"  />
          </TouchableOpacity>
-             <View style={{borderBottomWidth: 2, borderBottomColor: '#fff', paddingBottom: 20}}>
+             <View style={{borderBottomWidth: 0.5, borderBottomColor: '#fff', paddingBottom: 20}}>
          <DrawerItem
           label={'My watch list'}
           labelStyle={{fontSize: 20, color: "#fff"}}
           onPress={() => props.navigation.navigate(WATCHLIST)}
         />
          </View>
-      <DrawerContentScrollView  {...props}>
+         <View style={{flex: 1, marginBottom: 0}}>
+      <DrawerContentScrollView contentContainerStyle={{ marginTop: -30}}  {...props}>
         {
                 genres.map((item, index) => (
-                  <DrawerItem key={index} label={item} labelStyle={{fontSize: 20, color: "#fff"}} onPress={()=> {
+                  <DrawerItem key={index} label={item} labelStyle={{fontSize: 20, color: "#fff"}} 
+                              onPress={()=> {
                       props.navigation.closeDrawer();
                       props.navigation.navigate(GENRE, {genre: item})
                   }} />
                 ))
               }
       </DrawerContentScrollView>
+      </View>
+      <View style={{borderTopWidth: 0.5, borderTopColor: '#fff', paddingBottom: 20}}>
+      <DrawerItem
+          label={`Fliika \u00A9 2022`}
+          labelStyle={{fontSize: 20, color: "#fff"}}
+        />
+        </View>
+        </LinearGradient>
       </View>
   )
 };
