@@ -311,7 +311,7 @@ const TvShowsScreen = ({ navigation }) => {
     return newResults.map((item, index) => {
       return (
         <View key={index}>
-        <RecycleView title={item.genre} navigation ={navigation} index={index} movie={index % 2 == 0 ? item.movies : item.movies.reverse()}/>
+        <RecycleView title={item.genre} navigation ={navigation} index={index} movie={index % 2 == 0 ? item.movies : item.movies.reverse()} from="tv"/>
         </View>
       );
     });

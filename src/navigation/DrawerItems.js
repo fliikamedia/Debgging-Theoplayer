@@ -24,7 +24,11 @@ const dispatch = useDispatch();
     allGenre.push(...genreArray[i]);
   }
 
-  const genres = [...new Set(allGenre)];
+  let allGenreTrimmed = [];
+  for (let i = 0; i < allGenre.length; i++) {
+    allGenreTrimmed.push(allGenre[i].trim())
+  }
+  const genres = [...new Set(allGenreTrimmed)];
   return (
     <View style={{flex: 1,backgroundColor: "black", paddingTop: 40}}>
        <LinearGradient

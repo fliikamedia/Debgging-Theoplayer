@@ -10,7 +10,6 @@ import {
   ScrollView,
   ActivityIndicator,
   RefreshControl,
-  Dimensions,
   AppState,
   Animated
 } from "react-native";
@@ -283,8 +282,11 @@ useEffect(()=> {
   for (let i = 0; i < genreArray.length; i++) {
     allGenre.push(...genreArray[i]);
   }
-
-  const genres = [...new Set(allGenre)];
+let allGenreTrimmed = [];
+  for (let i = 0; i < allGenre.length; i++) {
+    allGenreTrimmed.push(allGenre[i].trim())
+  }
+  const genres = [...new Set(allGenreTrimmed)];
   let newResults = [];
   for (let x = 0; x < genres.length; x++) {
     newResults.push({
@@ -472,7 +474,7 @@ useEffect(()=> {
     return newResults.map((item, index) => {
       return (
         <View key={index}>
-        <RecycleView title={item.genre} navigation ={navigation} index={index} movie={index % 2 == 0 ? item.movies : item.movies.reverse()}/>
+        <RecycleView title={item.genre} navigation ={navigation} index={index} movie={index % 2 == 0 ? item.movies : item.movies.reverse()} from={'Home'}/>
         </View>
       );
     });    
@@ -710,7 +712,6 @@ useEffect(()=> {
   }, [resultsToShow.length]);
   const carouselRef = useRef(null);
   const renderHeroSectionThirdDesign = () => {
-    const { width, height } = Dimensions.get("window");
     
     const renderItem = ({ item, index }) => {
       if(item?.dvd_thumbnail_link) {
@@ -814,7 +815,7 @@ useEffect(()=> {
                   renderItem={renderItem}
                   itemWidth={SIZES.width *  .586}
                   sliderWidth={SIZES.width *  1.274}
-                  containerWidth={width - 20}
+                  containerWidth={SIZES.width - 20}
                   separatorWidth={0}
                   ref={carouselRef}
                   inActiveOpacity={0.4}
@@ -1071,7 +1072,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginTop: 16,
     justifyContent: "space-between",
-    width: Dimensions.get("window").width - 14,
+    width: SIZES.width - 14,
   },
   movieName: {
     paddingLeft: 14,

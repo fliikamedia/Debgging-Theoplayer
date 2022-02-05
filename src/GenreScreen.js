@@ -1,12 +1,12 @@
 import React from 'react';
-import {View,Text, StyleSheet, ImageBackground, ScrollView} from 'react-native';
+import {View,Text, StyleSheet, ImageBackground, ScrollView, TouchableOpacity} from 'react-native';
 import { useSelector } from 'react-redux';
 import MovieDetailIcon from './components/MovieDetailIcon';
 import LinearGradient from 'react-native-linear-gradient';
-import { COLORS, SIZES, FONTS, icons, images } from "../constants";
-import FastImage from 'react-native-fast-image';
-import RecycleViewVertical from './components/RecycleViewVertical';
+import { SIZES,  icons } from "../constants";
 import RecycleView from './components/RecycleView';
+import IconAwesome from 'react-native-vector-icons/FontAwesome5';
+import { MOVIEDETAIL } from '../constants/RouteNames';
 const GenreScreen = ({route, navigation}) => {
 const movies = useSelector(state => state.movies);
 const {genre} = route.params;
@@ -15,26 +15,12 @@ const {genre} = route.params;
 const currentGenreMovies = movies.availableMovies.filter(r => r.genre.includes(genre));
 const shuffled = currentGenreMovies.sort(() => 0.5 - Math.random());
 
-let genreLength;
+let currentMovie;
+
 try {
-genreLength = currentGenreMovies.length;
-} catch (err){}
-console.log(genreLength);
+currentMovie = shuffled[0];
+} catch (err) {}
 
-
-const imageRow = (number) => {
-    let imagesArray = [];
-    for (let i = 0; i < number; i++) {
-        imagesArray.push(shuffled[i].dvd_thumbnail_link);
-    }
-    return (
-    <View  style={{flexDirection: 'row',flexWrap: 'wrap', alignItems: 'flex-start'}}>
-        {imagesArray.map((image, index) => (
-            <FastImage style={styles.imagePoster} key = {index} source={{uri: image}} />
-        ))}
-    </View>
-    )
-}
 const renderHeaderBar = () => {
     const navigateBack = () => {
       navigation.goBack();
@@ -56,18 +42,20 @@ const renderHeaderBar = () => {
   };
 const genrePoster = () => {
 
-    
-let thumbnail;
-
-try {
-thumbnail = shuffled[0].dvd_thumbnail_link;
-} catch (err) {}
-
-if(genreLength < 12) {
 return (
     <View>
+          <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate(MOVIEDETAIL, {
+                      selectedMovie: currentMovie._id,
+                      isSeries: currentMovie.film_type,
+                      seriesTitle: currentMovie.name,
+                    });
+                  }
+                  }
+                >
     <ImageBackground
-            source={{ uri: thumbnail }}
+            source={{ uri: currentMovie.dvd_thumbnail_link }}
             resizeMode="cover"
             style={{
               width: SIZES.width,
@@ -87,46 +75,49 @@ return (
                   justifyContent: "flex-end",
                 }}
               >
-                <Text
-                  style={{
-                    color: COLORS.white,
-                    textTransform: "uppercase",
-                    fontSize: 24,
-                    fontWeight: "bold",
-                  }}
+                  <View style={styles.movieInfoContainer}>
+                <View style={{ justifyContent: "center", maxWidth: SIZES.width / 1.5}}>
+                  <Text style={styles.movieName}>{currentMovie.title}</Text>
+                </View>
+                <View>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate(MOVIEDETAIL, {
+                      selectedMovie: currentMovie._id,
+                      isSeries: currentMovie.film_type,
+                      seriesTitle: currentMovie.name,
+                    });
+                  }
+                  }
+                  style={styles.playIconContainer}
                 >
-                  {genre}
-                </Text>
+                  <IconAwesome
+                    name="play"
+                    size={22}
+                    color="#fff"
+                    style={{ marginLeft: 4 }}
+                  />
+                </TouchableOpacity>
+                </View>
+                </View>
               </LinearGradient>
             </View>
           </ImageBackground>
+          </TouchableOpacity>
     </View>
     )    
-} else if (genreLength >= 24) {
 
-let gridImages = [];
-for (let i = 0; i < 12; i++) {
-    gridImages.push(shuffled[i].dvd_thumbnail_link)
-} 
-    return (
-        <View>
-       {/*  <GridImageView 
-        //heightOfGridImage={SIZES.width * 0.5}
-        data={gridImages} />
-        <Text style={{color: '#fff'}}>{genre}</Text> */}
-        {imageRow(12)}
-       </View>
-    )
-}
 
 }
 
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView 
+    showsVerticalScrollIndicator={false}
+    contentContainerStyle={styles.container}>
      {genrePoster()}
      <View style={{ marginTop: 50, marginBottom: 30}}>
-     <RecycleView movie={shuffled}  index={0} title={genre} navigation={navigation} />
+     <RecycleView movie={shuffled}  index={0} title={`Most watched ${genre} movies`} navigation={navigation} from={'genre'} />
      </View>
   </ScrollView>
   );
@@ -140,7 +131,27 @@ const styles = StyleSheet.create({
     imagePoster: {
         width: SIZES.width / 4,
         height: 100
-    }
+    },
+    movieInfoContainer: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      width: '90%',
+    },
+    movieName: {
+      color: "white",
+      fontFamily: 'Sora-Bold',
+      fontSize: 18,
+    },
+    playIconContainer: {
+      backgroundColor: "transparent",
+      padding: 18,
+      borderRadius: 40,
+      justifyContent: "center",
+      alignItems: "center",
+      elevation: 25,
+      borderWidth: 1,
+      borderColor: "#fff",
+    },
 })
 
 export default GenreScreen;

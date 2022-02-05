@@ -76,7 +76,7 @@ export default class RecycleView extends Component {
            // console.log('movies',this.props.title);
             return (
               <View style={styles.container}>
-                <Text style={{color: 'white', fontSize: 24, fontFamily: 'Sora-Bold', marginBottom: 10}} >{this.props.title}</Text>
+                <Text style={{color: 'white', fontSize:this.props.from == 'genre' ? 18: 22, fontFamily: 'Sora-Bold', marginBottom: 10}} >{this.props.title}</Text>
                 <RecyclerListView
                 isHorizontal
                   style={{height: 180}}
