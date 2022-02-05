@@ -39,13 +39,14 @@ const dispatch = useDispatch();
          >
          <AntDesign name="close" size={25} color="#fff"  />
          </TouchableOpacity>
-             <View style={{borderBottomWidth: 0.5, borderBottomColor: '#fff', paddingBottom: 20}}>
+             <View >
          <DrawerItem
-          label={'My watch list'}
+          label={'My watchlist'}
           labelStyle={{fontSize: 20, color: "#fff"}}
           onPress={() => props.navigation.navigate(WATCHLIST)}
         />
          </View>
+         <View  style={{borderTopWidth: 0.5, borderTopColor: '#fff', paddingBottom: 5, width: '90%', alignSelf: 'center'}}></View>
          <View style={{flex: 1, marginBottom: 0}}>
       <DrawerContentScrollView contentContainerStyle={{ marginTop: -30}}  {...props}>
         {
@@ -59,10 +60,11 @@ const dispatch = useDispatch();
               }
       </DrawerContentScrollView>
       </View>
-      <View style={{borderTopWidth: 0.5, borderTopColor: '#fff', paddingBottom: 20}}>
+      <View  style={{borderTopWidth: 0.5, borderTopColor: '#fff', paddingBottom: 5, width: '90%', alignSelf: 'center'}}></View>
+      <View>
       <DrawerItem
           label={`Fliika \u00A9 2022`}
-          labelStyle={{fontSize: 20, color: "#fff"}}
+          labelStyle={{fontSize: 14, color: "darkgrey", paddingBottom: 10}}
         />
         </View>
         </LinearGradient>

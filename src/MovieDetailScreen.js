@@ -483,7 +483,7 @@ return ()=> unsubscribe();
               style={{
                 color: COLORS.white,
                 textTransform: "uppercase",
-                fontSize: 24,
+                fontSize: 20,
                 fontWeight: "bold",
               }}
             >
@@ -844,17 +844,17 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: 20,
     fontFamily: 'Sora-Regular',
-    color: "#fff",
+    color: "#E8E8E8",
   },
   titleTextBg: {
     fontSize: 26,
     fontFamily: 'Sora-Regular',
-    color: "#fff",
+    color: "#E7E7E7",
   },
   detailText: {
     fontFamily: 'Sora-Light' ,
     fontSize: 14,
-    color: "white",
+    color: "#A9A9A9",
     marginBottom: 10,
   },
 });
