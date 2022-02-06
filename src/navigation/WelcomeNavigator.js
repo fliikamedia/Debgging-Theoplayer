@@ -21,7 +21,7 @@ export default WelcomeNavigator = (props) => {
               initialRouteName={props.routeName}
               screenOptions={{
                 animationEnabled: true,
-                headerTintColor: "teal",
+                headerTintColor: "#fff",
                 cardStyle: { opacity: 1, backgroundColor: "black" },
                 backgroundColor: "black",
                 cardStyle: { backgroundColor: 'transparent' },

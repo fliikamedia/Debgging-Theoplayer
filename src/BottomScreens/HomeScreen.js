@@ -25,7 +25,7 @@ import {
   updateWatchedProfile,
   addToProfileWatchList,
   removeFromProfileWatchList,
-  deleteFromWatched
+  deleteFromWatched,
 } from "../../store/actions/user";
 import ProgressBar from "../components/ProgressBar";
 import { LogBox } from "react-native";
@@ -165,6 +165,25 @@ useEffect(()=> {
       fetchMovies()(dispatch);
   }, []);
 
+  // Get all watched movies
+  // let allWatchedMovies = [];
+  // for (let i = 0; i < user?.allUsers?.length; i++) {
+  //   for (let c = 0; c < user?.allUsers[i]?.profiles?.length; c++) {
+  //   allWatchedMovies.push(...user.allUsers[i].profiles[c].watched)
+  //   }
+  // }
+
+//   const allTitles = user.allWatchedMovies.map(r => r.title);
+//   const watchedMovies = user.allWatchedMovies.reduce((acc, cur)=> {
+//     const title = cur.title;
+//     if (acc[title]) {
+//          acc[title]++;
+//     } else {
+//          acc[title] = 1;
+//     }
+//     return acc;
+// }, {});
+//   console.log('mooovies',watchedMovies);
   // check if the movie is already in watch List
   const isWatchList = (movieArray, movieName) => {
     try {
@@ -233,7 +252,7 @@ useEffect(()=> {
     success: (props) => (
       <BaseToast
         {...props}
-        style={{ borderLeftColor: '#404040', backgroundColor: '#404040',width: 250, borderRadius: 30 }}
+        style={{ borderLeftColor: '#404040', backgroundColor: '#404040',width: 250,  borderRadius: 10, height: 50 }}
         text2Style={{
           fontSize: 15,
           fontWeight: '400',
@@ -399,12 +418,6 @@ let allGenreTrimmed = [];
                   }
                   }
                   style={{   
-                  // padding: 16,
-                  // borderRadius: 150,
-                  // justifyContent: "center",
-                  // alignItems: "center",
-                  // elevation: 25,
-                  // borderColor: "teal",
                   padding: 16,
                   borderRadius: 40,
                   justifyContent: "center",
@@ -632,7 +645,25 @@ let allGenreTrimmed = [];
                       }}
                       resizeMode="cover"
                     />
-                    <IconAnt name="playcircleo" size={50} color="white" />
+                     <TouchableOpacity
+                  style={{   
+                  padding: 14,
+                  borderRadius: 40,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  elevation: 25,
+                  borderWidth: 2,
+                  borderColor: "#fff",
+                  
+      }}
+                  >
+                     <IconAwesome
+                    name="play"
+                    size={20}
+                    color="#B0E0E6"
+                    style={{ marginLeft: 4 }}
+                  />
+                  </TouchableOpacity>
 
                     {/* Name */}
                     </View>

@@ -11,7 +11,7 @@ import {
 } from "../store/actions/user";
 import { useDispatch, useSelector } from 'react-redux';
 import AsyncStorage from "@react-native-community/async-storage";
-import IconAnt from 'react-native-vector-icons/AntDesign';
+import IconAwesome from 'react-native-vector-icons/FontAwesome5';
 import { EPISODEDETAIL, MOVIEDETAIL } from "../constants/RouteNames";
 import FastImage from 'react-native-fast-image'
 import moment from "moment";
@@ -169,7 +169,25 @@ return ()=> unsubscribe();
       right: 0,
       left: 0,
 }}   />
-      <IconAnt name="playcircleo" size={100} color="white" />
+       <TouchableOpacity
+                  style={{   
+                  padding: 18,
+                  borderRadius: 40,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  elevation: 25,
+                  borderWidth: 2,
+                  borderColor: "#fff",
+                  
+      }}
+                  >
+                     <IconAwesome
+                    name="play"
+                    size={40}
+                    color="#fff"
+                    style={{ marginLeft: 4 }}
+                  />
+                  </TouchableOpacity>
       </TouchableOpacity>
   
       <View

@@ -154,7 +154,7 @@ return ()=> unsubscribe();
     success: (props) => (
       <BaseToast
         {...props}
-        style={{ borderLeftColor: '#404040', backgroundColor: '#404040',width: 250, borderRadius: 30 }}
+        style={{ borderLeftColor: '#404040', backgroundColor: '#404040',width: 250, borderRadius: 10, height: 50 }}
         text2Style={{
           fontSize: 15,
           fontWeight: '400',

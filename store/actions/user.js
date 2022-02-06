@@ -47,7 +47,10 @@ export const REMOVE_FROM_WATCHED_FAILED = 'REMOVE_FROM_WATCHED_FAILED';
 export const LOGGED_IN_SUCCESS = 'LOGGED_IN_SUCCESS';
 export const LOGGED_OUT_SUCCESS = 'LOGGED_OUT_SUCCESS';
 export const FILLING_PROFILE = 'FILLING_PROFILE';
-
+export const GET_ALL_USERS = 'GET_ALL_USERS';
+export const GET_ALL_USERS_SUCCESS = 'GET_ALL_USERS_SUCCESS';
+export const GET_ALL_USERS_FAILED = 'GET_ALL_USERS_FAILED';
+export const GET_ALL_WATCHED_MOVIES = 'GET_ALL_WATCHED_MOVIES'
 
 export const addUser = (email, firstName, lastName, yearOfBirth, phoneNumber,uid, emailVerified ,profileImage, authtoken) => async (dispatch) => {
   let data = {
@@ -459,3 +462,35 @@ dispatch({type: UPDATE_MOVIE_TIME, payload: {watched: watched, duration: duratio
     //console.log(err);
   }
   }
+
+
+  export const getAllUsers =  () =>  async dispatch => {
+    try {
+      dispatch({ type: GET_ALL_USERS });
+      const result = await expressApi.get(`/users/get-all-users`);
+      if (result.status == 200) {
+        console.log('All users',result.data);
+        dispatch({
+          type: GET_ALL_USERS_SUCCESS,
+          payload: result.data,
+        });
+
+          //Get all watched movies
+  let allWatchedMovies = [];
+  for (let i = 0; i < result.data?.length; i++) {
+    for (let c = 0; c < result.data[i]?.profiles?.length; c++) {
+    allWatchedMovies.push(...result.data[i].profiles[c].watched)
+    }
+  }
+  dispatch({
+    type: GET_ALL_WATCHED_MOVIES,
+    payload: allWatchedMovies,
+  });
+
+      } else {
+        dispatch({ type: GET_ALL_USERS_FAILED });
+      }
+    } catch (err) {
+      //console.log(err);
+    }
+    }

@@ -256,10 +256,11 @@ const ProfileScreen = ({ navigation }) => {
             justifyContent: "space-between",
             alignSelf: "center",
             marginTop: 40,
+            alignItems: 'center'
           }}
         >
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <IconFeather name="arrow-left" size={40} color="teal" />
+            <IconFeather name="arrow-left" size={30} color="#fff" />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => logOut()}>
             <Icon name="logout" size={40} color="white" />

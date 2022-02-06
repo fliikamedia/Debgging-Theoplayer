@@ -50,7 +50,7 @@ const dispatch = useDispatch();
           onPress={() => props.navigation.navigate(WATCHLIST)}
         />
          </View>
-         <View  style={{borderTopWidth: 0.5, borderTopColor: '#fff', paddingBottom: 5, width: '90%', alignSelf: 'center'}}></View>
+         <View  style={{borderTopWidth: 0.5, borderTopColor: '#fff', paddingBottom: 0, width: '90%', alignSelf: 'center', marginTop: 5}}></View>
          <View style={{flex: 1, marginBottom: 0}}>
       <DrawerContentScrollView contentContainerStyle={{ marginTop: -30}}  {...props}>
         {

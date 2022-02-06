@@ -41,7 +41,11 @@ import {
   CURRENT_PROFILE,
   LOGGED_IN_SUCCESS,
   LOGGED_OUT_SUCCESS,
-  FILLING_PROFILE
+  FILLING_PROFILE, 
+  GET_ALL_USERS,
+  GET_ALL_USERS_SUCCESS,
+  GET_ALL_USERS_FAILED,
+  GET_ALL_WATCHED_MOVIES
 } from "../actions/user";
 const initialState = {
   profileName: null,
@@ -56,6 +60,8 @@ const initialState = {
   watchedAt: 0,
   duration: 0,
   isLoggedIn: '',
+  allUsers: [],
+  allWatchedMovies: []
 };
 
 const userReducer = (state = initialState, { type, payload }) => {
@@ -146,6 +152,10 @@ const userReducer = (state = initialState, { type, payload }) => {
           return {...state, isLoggedIn: 'loggedOut'};
         case FILLING_PROFILE:
           return {...state, isLoggedIn: 'signedUp'};
+        case GET_ALL_USERS_SUCCESS:
+          return {...state, allUsers: payload};
+        case GET_ALL_WATCHED_MOVIES:
+          return {...state, allWatchedMovies: payload};
     default:
       return state;
   }

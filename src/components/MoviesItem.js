@@ -1,7 +1,8 @@
 import React from "react";
 import { Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { MOVIEDETAIL } from "../../constants/RouteNames";
-import IconAnt from 'react-native-vector-icons/AntDesign';
+import IconAwesome from 'react-native-vector-icons/FontAwesome5';
+import IconAnt from 'react-native-vector-icons/AntDesign'
 import FastImage from 'react-native-fast-image'
 
 
@@ -28,7 +29,25 @@ const MoviesItem = ({ movie, navigation }) => {
             style={styles.poster}
             source={{ uri: movie.wide_thumbnail_link }}
           />
-          <IconAnt name="playcircleo" size={50} color="white" />
+           <TouchableOpacity
+                  style={{   
+                  padding: 14,
+                  borderRadius: 40,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  elevation: 25,
+                  borderWidth: 2,
+                  borderColor: "#fff",
+                  
+      }}
+                  >
+                     <IconAwesome
+                    name="play"
+                    size={20}
+                    color="#fff"
+                    style={{ marginLeft: 4 }}
+                  />
+                  </TouchableOpacity>
         </TouchableOpacity>
         <View style={styles.titleContainer}>
           <Text style={styles.title}>{movie.title}</Text>

@@ -81,7 +81,6 @@ const MoviesNavogator = (props) => {
                 animationEnabled: true,
                 headerTintColor: "teal",
                 backgroundColor: "black",
-                headerTransparent: true,
                 cardStyle: { backgroundColor: 'black' },
               cardStyleInterpolator: ({ current: { progress } }) => ({
                 cardStyle: {
@@ -139,7 +138,12 @@ const MoviesNavogator = (props) => {
                 component={WatchList}
                 options={{
                   headerShown: true,
-                  headerTitle: " "
+                  headerTitle: "My Watchlist",
+                  headerStyle : {
+                    backgroundColor: 'black',
+                  },
+                  headerTitleAlign: 'center',
+                  headerTintColor: '#fff'
                 }}
                 />
             </Stack.Navigator>
