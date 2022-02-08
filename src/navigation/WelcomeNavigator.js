@@ -20,7 +20,7 @@ export default WelcomeNavigator = (props) => {
             mode='modal'
               initialRouteName={props.routeName}
               screenOptions={{
-                animationEnabled: true,
+                animationEnabled: false,
                 headerTintColor: "#fff",
                 cardStyle: { opacity: 1, backgroundColor: "black" },
                 backgroundColor: "black",

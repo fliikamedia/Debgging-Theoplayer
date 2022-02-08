@@ -78,7 +78,7 @@ const MoviesNavogator = (props) => {
       mode='modal'
               initialRouteName={MOVIES}
               screenOptions={{
-                animationEnabled: true,
+                animationEnabled: false,
                 headerTintColor: "teal",
                 backgroundColor: "black",
                 cardStyle: { backgroundColor: 'black' },

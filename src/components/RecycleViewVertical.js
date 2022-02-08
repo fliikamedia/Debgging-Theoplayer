@@ -81,7 +81,7 @@ export default class RecycleViewVertical extends Component {
              heights =  SIZES.width * 0.7 
             }
 
-           console.log('movies', heights);
+           //console.log('movies', heights);
             return (
               <View style={styles.container}>
                 <RecyclerListView
