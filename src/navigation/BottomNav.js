@@ -51,28 +51,28 @@ function HomeStackScreen() {
     <Stack.Navigator
     mode='modal'
               initialRouteName={MOVIES}
-              screenOptions={{
-                animationEnabled: true,
-                headerTintColor: "teal",
-                backgroundColor: "black",
-                headerTransparent: true,
-                cardStyle: { backgroundColor: 'black' },
-              cardStyleInterpolator: ({ current: { progress } }) => ({
-                cardStyle: {
-                  opacity: progress.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [0, 1],
-                  }),
-                },
-                overlayStyle: {
-                  opacity: progress.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [0, 0.5],
-                    extrapolate: 'clamp',
-                  }),
-                },
-              }),
-              }}
+              // screenOptions={{
+              //   animationEnabled: true,
+              //   headerTintColor: "teal",
+              //   backgroundColor: "black",
+              //   headerTransparent: true,
+              //   cardStyle: { backgroundColor: 'black' },
+              // cardStyleInterpolator: ({ current: { progress } }) => ({
+              //   cardStyle: {
+              //     opacity: progress.interpolate({
+              //       inputRange: [0, 1],
+              //       outputRange: [0, 1],
+              //     }),
+              //   },
+              //   overlayStyle: {
+              //     opacity: progress.interpolate({
+              //       inputRange: [0, 1],
+              //       outputRange: [0, 0.5],
+              //       extrapolate: 'clamp',
+              //     }),
+              //   },
+              // }),
+              // }}
               detachInactiveScreens={false}
     >
       <Stack.Screen
@@ -83,6 +83,9 @@ function HomeStackScreen() {
     </Stack.Navigator>
   );
 }
+
+const Tabs = createBottomTabNavigator();
+
 export default BottomNav = () => {
 const user = useSelector((state) => state.user);
 
@@ -99,7 +102,6 @@ const user = useSelector((state) => state.user);
 
 
 
-  const Tabs = createBottomTabNavigator();
 
     return (
     <Tabs.Navigator

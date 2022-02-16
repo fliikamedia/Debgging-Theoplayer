@@ -30,13 +30,14 @@ const dispatch = useDispatch();
   }
   const genres = [...new Set(allGenreTrimmed)];
   return (
-    <View style={{flex: 1,backgroundColor: "black", paddingTop: 40}}>
+    <View style={{flex: 1,backgroundColor: "black", paddingTop: 0}}>
        <LinearGradient
               start={{ x: 0, y: 0 }}
               end={{ x: 0, y: 1 }}
               colors={["black", "#000020","#000025"]}
               style={{flex: 1}}
             >
+               <DrawerContentScrollView contentContainerStyle={{ marginTop: 0}}  {...props}>
            <TouchableOpacity
          style={{ alignSelf: 'flex-end', marginRight: 30}}
          onPress={() => props.navigation.closeDrawer()}
@@ -52,7 +53,7 @@ const dispatch = useDispatch();
          </View>
          <View  style={{borderTopWidth: 0.5, borderTopColor: '#fff', paddingBottom: 0, width: '90%', alignSelf: 'center', marginTop: 5}}></View>
          <View style={{flex: 1, marginBottom: 0}}>
-      <DrawerContentScrollView contentContainerStyle={{ marginTop: -30}}  {...props}>
+     
         {
                 genres.map((item, index) => (
                   <DrawerItem key={index} label={item} labelStyle={{fontSize: 20, color: "#fff"}} 
@@ -62,15 +63,15 @@ const dispatch = useDispatch();
                   }} />
                 ))
               }
-      </DrawerContentScrollView>
       </View>
       <View  style={{borderTopWidth: 0.5, borderTopColor: '#fff', paddingBottom: 5, width: '90%', alignSelf: 'center'}}></View>
       <View>
       <DrawerItem
           label={`Fliika \u00A9 2022`}
-          labelStyle={{fontSize: 14, color: "darkgrey", paddingBottom: 10}}
-        />
+          labelStyle={{fontSize: 14, color: "darkgrey", paddingBottom: 0}}
+          />
         </View>
+          </DrawerContentScrollView>
         </LinearGradient>
       </View>
   )
