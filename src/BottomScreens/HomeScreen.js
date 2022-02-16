@@ -505,7 +505,7 @@ let allGenreTrimmed = [];
             }
           } else {
             if (r._id == user.currentProfile.watched[i].movieId ) {
-              continueWatching.push({type: r.film_type,_id: r._id,title: r.title, image: r.wide_thumbnail_link, time: user.currentProfile.watched[i].watchedAt, movieTime: r.runtime, season: r.season_number, episode: r.episode_number,  created: moment(user.currentProfile.watched[i].created).unix(), updated: moment(user.currentProfile.watched[i].updated).unix()});
+              continueWatching.push({type: r.film_type,_id: r._id,title: r.title, image: r.dvd_thumbnail_link, time: user.currentProfile.watched[i].watchedAt, movieTime: r.runtime, season: r.season_number, episode: r.episode_number,  created: moment(user.currentProfile.watched[i].created).unix(), updated: moment(user.currentProfile.watched[i].updated).unix()});
             }
           }
        
@@ -513,6 +513,13 @@ let allGenreTrimmed = [];
       }
     } catch (err) {}
 
+    try {
+      for (let i = 0; i < continueWatching.length; i++) {
+        if (!continueWatching[i].image) {
+          continueWatching[i].image = movies.availableMovies.find(r => r.title === continueWatching[i].title && r.season_number === continueWatching[i].season  && r.dvd_thumbnail_link).dvd_thumbnail_link
+        }
+      }
+    } catch (err) {}
    let sortedWatched = continueWatching.sort((a,b) => {
       if(a.title < b.title) return -1;
       return 1;
@@ -573,7 +580,7 @@ let allGenreTrimmed = [];
 //console.log(continueWatching);
   const renderContinueWatctionSection = () => {
     return (
-      <View>
+      <View style={{marginBottom: 20}}>
         {/* Header */}
         {continueWatchingLength > 0 ? (
           <View
@@ -641,7 +648,7 @@ let allGenreTrimmed = [];
                         right: 0,
                         left: 0,
                         resizeMode: "cover",
-                        borderRadius: 10
+                        borderRadius: 5
                       }}
                       resizeMode="cover"
                     />
@@ -656,6 +663,13 @@ let allGenreTrimmed = [];
                   borderColor: "#fff",
                   
       }}
+      onPress={() => {
+        navigation.navigate(BITMOVINPLAYER, {
+          movieId: item._id,
+          time: item.time
+        });
+      }
+      }
                   >
                      <IconAwesome
                     name="play"
@@ -677,9 +691,9 @@ let allGenreTrimmed = [];
                       }}
                       numberOfLines={1}
                     >
-                      {item.title}
+                      {item.season ? `S${item.season} - E${item.episode}` :item.title}
                     </Text>
-                    <Text
+                   {/*  <Text
                       style={{
                         color: COLORS.white,
                         marginTop: SIZES.base,
@@ -689,7 +703,7 @@ let allGenreTrimmed = [];
                       numberOfLines={1}
                     >
                       {item.season ? `S${item.season} - E${item.episode}` :item.movieTime}
-                    </Text>
+                    </Text> */}
                     {/* Progress Bar */}
                     <ProgressBar
                       containerStyle={{ marginTop: SIZES.radius }}

@@ -12,7 +12,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import AsyncStorage from "@react-native-community/async-storage";
 import IconAwesome from 'react-native-vector-icons/FontAwesome5';
-import { EPISODEDETAIL, MOVIEDETAIL } from "../constants/RouteNames";
+import { EPISODEDETAIL, MOVIEDETAIL, BITMOVINPLAYER } from "../constants/RouteNames";
 import FastImage from 'react-native-fast-image'
 import moment from "moment";
 import { COLORS, SIZES, icons } from ".././constants";
@@ -180,6 +180,7 @@ return ()=> unsubscribe();
                   borderColor: "#fff",
                   
       }}
+      onPress={()=> navigation.navigate(BITMOVINPLAYER, {movieId: episode._id, time: null})}
                   >
                      <IconAwesome
                     name="play"

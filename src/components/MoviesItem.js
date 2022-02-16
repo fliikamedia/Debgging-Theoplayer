@@ -40,6 +40,13 @@ const MoviesItem = ({ movie, navigation }) => {
                   borderColor: "#fff",
                   
       }}
+      onPress={() =>
+        navigation.navigate(MOVIEDETAIL, {
+          selectedMovie: movie._id,
+          isSeries: movie.film_type,
+          seriesTitle: movie.title,
+        })
+      }
                   >
                      <IconAwesome
                     name="play"

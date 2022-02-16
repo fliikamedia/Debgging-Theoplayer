@@ -34,7 +34,7 @@ export default class RecycleView extends Component {
           }, (type, dim) => {
             switch (type) {
               case 'NORMAL': 
-                dim.width = SCREEN_WIDTH * .32;
+                dim.width = SCREEN_WIDTH * .39;
                 dim.height = 200;
                 break;
               default: 
@@ -60,9 +60,9 @@ export default class RecycleView extends Component {
               >
                 <FastImage
                   style={{
-                    width: SIZES.width * 0.3,
-                    height: SIZES.width * 0.45,
-                    borderRadius: 2,
+                    width: SIZES.width * 0.37,
+                    height: SIZES.width * 0.58,
+                    borderRadius: 3,
                     marginHorizontal: 5,
                   }}
                   source={{ uri: dvd_thumbnail_link }}
@@ -79,7 +79,7 @@ export default class RecycleView extends Component {
                 <Text style={{color: 'white', fontSize:this.props.from == 'genre' ? 18: 22, fontFamily: 'Sora-Bold', marginBottom: 10}} >{this.props.title}</Text>
                 <RecyclerListView
                 isHorizontal
-                  style={{height: 180}}
+                  style={{height: 250}}
                   rowRenderer={this.rowRenderer}
                   dataProvider={this.state.list}
                   layoutProvider={this.layoutProvider}

@@ -78,7 +78,7 @@ function HomeStackScreen() {
       <Stack.Screen
         name={HOME}
         component={HomeScreen}
-        options={({route}) => ({ headerShown: true, headerTitle: () => getHeaderTitle(route), headerTitleAlign: 'center', headerLeft: () => getHeaderLeft(route) })}
+        options={({route}) => ({ headerShown: true,headerTransparent: true, headerTitle: () => getHeaderTitle(route), headerTitleAlign: 'center', headerLeft: () => getHeaderLeft(route) })}
       />
     </Stack.Navigator>
   );
