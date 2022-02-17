@@ -43,6 +43,7 @@ import { setCurrentSeries, setMovieTitle } from "../store/actions/movies";
 import IconIon from 'react-native-vector-icons/Ionicons';
 import IconFeather from 'react-native-vector-icons/Feather'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import IconAnt from 'react-native-vector-icons/AntDesign';
 import ReactNativeBitmovinPlayer, {
   ReactNativeBitmovinPlayerIntance,
 } from '@takeoffmedia/react-native-bitmovin-player';
@@ -322,6 +323,46 @@ return ()=> unsubscribe();
       );
     }
   };
+// Render Icons
+  const movieIcons = () => {
+    if (isWatchList(user.currentProfile.watchList, currentMovie.title) == true) {
+      return (
+        <TouchableOpacity
+        onPress={() => {
+          showToast('Removed from watch list');
+          removeFromProfileWatchList(
+            user.user._id,
+            movie,
+            user.currentProfile._id
+          )(dispatch);
+        }}
+      >
+        <Icon
+          name="book-remove-multiple-outline"
+          size={40}
+          color={COLORS.white}
+        />
+      </TouchableOpacity>
+      )
+    } else {
+    return (
+      <TouchableOpacity
+      onPress={() => {
+        showToast('Added to watch list');
+    addToProfileWatchList(
+        user.user._id,
+        currentMovie,
+        user.currentProfile._id
+      )(dispatch);
+
+      }}
+    >
+      <IconFeather name="plus" size={40} color={COLORS.white} />
+    </TouchableOpacity>
+    )
+    }
+  
+  }
   ///// Render Header Function
   const renderHeaderBar = () => {
     const navigateBack = () => {
@@ -361,6 +402,7 @@ return ()=> unsubscribe();
       console.log(err);
     }
  
+    
     return (
       <View style={{flex: 1}}>
       <ImageBackground
@@ -435,48 +477,18 @@ return ()=> unsubscribe();
                   alignSelf: "center",
                 }}
               >
-                {isWatchList(user.currentProfile.watchList, currentMovie.title) == true ? (
-                  <TouchableOpacity
-                    onPress={() => {
-                      showToast('Removed from watch list');
-                      removeFromProfileWatchList(
-                        user.user._id,
-                        movie,
-                        user.currentProfile._id
-                      )(dispatch);
-                    }}
-                  >
-                    <Icon
-                      name="book-remove-multiple-outline"
-                      size={40}
-                      color={COLORS.white}
-                    />
-                  </TouchableOpacity>
-                ) : (
-                  <TouchableOpacity
-                    onPress={() => {
-                      showToast('Added to watch list');
-                  addToProfileWatchList(
-                      user.user._id,
-                      currentMovie,
-                      user.currentProfile._id
-                    )(dispatch);
-
-                    }}
-                  >
-                    <IconFeather name="plus" size={40} color={COLORS.white} />
-                  </TouchableOpacity>
-                )}
+                {isSeries === 'movie' ? movieIcons() : null}
+                
                 {isSeries == "movie" ? (
                   <IconFeather name="download" size={40} color={COLORS.white} />
                 ) : null}
-                <TouchableOpacity onPress={() => onShare()}>
+                {isSeries === 'movie' ?<TouchableOpacity onPress={() => onShare()}>
                   <IconIon
                     name="share-social-outline"
                     size={40}
                     color={COLORS.white}
                   />
-                </TouchableOpacity>
+                </TouchableOpacity> : null}
               </View>
             </View>
             <Text
@@ -632,10 +644,7 @@ return ()=> unsubscribe();
   };
  
 
-  const playSeries = (serie) => {
-    setSeriesEpisode(serie);
-    setPlay(true);
-  };
+
   // to fix later for series
 
   if (isSeries == "series") {
@@ -656,8 +665,10 @@ return ()=> unsubscribe();
           >
           </View>
         ) : null}
+        <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '90%', alignSelf: 'center'}}>
+          <View>
         {isSeries == "series" ? (
-          <View style={{ alignSelf: "center" }}>
+          <View style={{ alignSelf: "center", borderRadius: 5, borderWidth: .5, borderColor: 'white' }}>
             <Menu
               visible={selectSeason}
               onPress={openFilter}
@@ -665,10 +676,12 @@ return ()=> unsubscribe();
               anchor={
                 <TouchableOpacity
                   style={{
-                    width: 120,
-                    justifyContent: "space-between",
+                    width: 130,
+                    flexDirection: 'row',
+                    justifyContent: "space-around",
                     alignItems: "center",
                     height: 50,
+                    
                   }}
                   onPress={openFilter}
                 >
@@ -681,6 +694,7 @@ return ()=> unsubscribe();
                   >
                     {`Season ${seasonNumber}`}
                   </Text>
+                  {seasons?.length > 1 ?<IconAnt name="caretdown" size={20} color="white"/>: null}
                 </TouchableOpacity>
               }
             >
@@ -688,7 +702,7 @@ return ()=> unsubscribe();
                 return (
                   <Menu.Item
                     style={{
-                      width: 120,
+                      width: 130,
                     }}
                     key={season}
                     onPress={() => {
@@ -701,7 +715,25 @@ return ()=> unsubscribe();
             </Menu>
           </View>
         ) : null}
-
+        </View>
+          <View
+                style={{
+                  flexDirection: "row",
+                  width: "35%",
+                  justifyContent: "space-around",
+                  alignSelf: "center",
+                }}
+              >
+                {isSeries === 'series' ? movieIcons() : null}
+                {isSeries === 'series' ?<TouchableOpacity onPress={() => onShare()}>
+                  <IconIon
+                    name="share-social-outline"
+                    size={40}
+                    color={COLORS.white}
+                  />
+                </TouchableOpacity> : null}
+              </View>
+              </View>
         <Tab.Navigator
           tabBarOptions={{
             labelStyle: { color: "white" },
@@ -713,7 +745,6 @@ return ()=> unsubscribe();
           <Tab.Screen
             name={SERIESEPISODESTAB}
             component={SeriesEpisodesTab}
-            initialParams={{ playSeries: playSeries }}
           />
           <Tab.Screen name={SERIESDETAILSTAB} component={SeriesDetailsTab} />
         </Tab.Navigator>

@@ -204,10 +204,11 @@ return ()=> unsubscribe();
         </View>
         {/* watch */}
             <View style={{ width: "100%", paddingHorizontal: 10 }}>
-              <Text style={{ fontFamily: 'Sora-Regular',color: COLORS.white, textAlign: "justify", marginBottom: 30 }}>
+              <Text style={{ fontFamily: 'Sora-Regular',color: COLORS.white, textAlign: "justify", marginBottom: 5 }}>
                 {episode.storyline}
               </Text>
             </View>
+            <View style={{width: '95%', height: 2, backgroundColor: 'grey', alignSelf: 'center', marginVertical: 10}}></View>
             <View style={{ width: "100%", paddingHorizontal: 10 }}>
             <Text style={styles.moreText}>More Information</Text>
             <Text style={styles.titleText}>Content Advisory</Text>

@@ -14,7 +14,6 @@ const SeriesEpisodesTab = ({ route, navigation }) => {
  /*  LogBox.ignoreLogs([
     "Non-serializable values were found in the navigation state",
   ]); */
-  const { playSeries } = route.params;
   const movies = useSelector((state) => state.movies);
   //console.log(route);
 
@@ -44,14 +43,13 @@ const SeriesEpisodesTab = ({ route, navigation }) => {
         keyExtractor={(item) => item._id}
         data={currentSeries}
         renderItem={({ item }) => (
-          <EpisodeItem playSeries={playSeries} episode={item} />
+          <EpisodeItem episode={item} />
         )}
         />*/}
       {movies.currentSeries.map((item) => {
         return (
           <EpisodeItem
             key={item._id}
-            playSeries={playSeries}
             episode={item}
             navigation={navigation}
           />
