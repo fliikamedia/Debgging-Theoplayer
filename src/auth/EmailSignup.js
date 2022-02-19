@@ -49,14 +49,14 @@ useEffect(() => {
   }
 }, [signedup]);
   const checkIFLoggedIn = () => {
-    console.log('checks');
+    //console.log('checks');
     firebase.app().delete().then(function() {
       //console.log('initializing');
       firebase.initializeApp(firebaseConfig);
     }).then(function(){
       firebase.auth().onAuthStateChanged(async (user) => {
         if (user && user.emailVerified) {
-         console.log('success');
+         //console.log('success');
          // await AsyncStorage.setItem("whatPhase", "Signed up")
          fillingProfile()(dispatch);
          setSignedup(false);

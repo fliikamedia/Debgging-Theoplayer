@@ -151,7 +151,7 @@ const MoviesNavogator = (props) => {
               }
 
 export default MoviesStack = () => (
-  <Drawer.Navigator drawerContent={props => <DrawerItems {...props} />} initialRouteName={MOVIESTACK}
+  <Drawer.Navigator sceneContainerStyle={{backgroundColor: 'black'}} drawerContent={props => <DrawerItems {...props} />} initialRouteName={MOVIESTACK}
   >
  <Drawer.Screen name={MOVIESTACK} component={MoviesNavogator} />
 </Drawer.Navigator>

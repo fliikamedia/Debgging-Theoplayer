@@ -42,7 +42,6 @@ React.useEffect(() => {
   checkIFVerified();
 }, [ready]);
 
-console.log('user',user.isLoggedIn);
 
 if (!ready) {
   return (
@@ -60,13 +59,10 @@ if (!ready) {
   const navigatorFunc = () => {
 
     if (ready && verified && user.isLoggedIn === 'loggedIn') {
-      console.log('1');
         return <MoviesNavigator routeName={MOVIES} /> 
     } else if (ready && verified && (user.isLoggedIn === 'signedUp' || user.isLoggedIn === '') ) {
-      console.log('2');
         return <WelcomeNavigator  routeName={FILLPROFILESCREEN} /> 
     } else if (ready && !verified && user.isLoggedIn === 'loggedOut' || user.isLoggedIn === ''){
-      console.log('3');
         return <WelcomeNavigator routeName={WELCOMESCREEN} /> 
     }
   }

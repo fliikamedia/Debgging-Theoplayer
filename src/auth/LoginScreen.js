@@ -36,7 +36,6 @@ const LoginScreen = ({ navigation }) => {
           if(user) {
             loggedIn()(dispatch);
             setEmailFunc(email)(dispatch);
-            console.log('checksss');
         /*     
             navigation.reset({
                index: 0,
