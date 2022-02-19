@@ -7,7 +7,8 @@ import {
   ScrollView,
   AppState,
   Dimensions,
-  Alert
+  Alert,
+  ActivityIndicator
 } from "react-native";
 import firebase from "firebase";
 import { LOGIN, MOVIES, FILLPROFILESCREEN } from "../../constants/RouteNames";
@@ -36,6 +37,7 @@ const EmailSignup = ({ navigation }) => {
   const [show, setShow] = useState(false);
   const [time, setTime] = useState(Date.now());
 const [signedup, setSignedup] = useState(false);
+const [btnClicked, setBtnClicked] = useState(false);
 
 
 useEffect(() => {
@@ -47,17 +49,19 @@ useEffect(() => {
   }
 }, [signedup]);
   const checkIFLoggedIn = () => {
+    console.log('checks');
     firebase.app().delete().then(function() {
       //console.log('initializing');
       firebase.initializeApp(firebaseConfig);
     }).then(function(){
       firebase.auth().onAuthStateChanged(async (user) => {
         if (user && user.emailVerified) {
-         // console.log('success',user);
+         console.log('success');
          // await AsyncStorage.setItem("whatPhase", "Signed up")
          fillingProfile()(dispatch);
-          navigation.navigate(FILLPROFILESCREEN);
-          setSignedup(false);
+         setSignedup(false);
+         setBtnClicked(false);
+         navigation.navigate(FILLPROFILESCREEN);
         } else {
           //console.log('failed',user);
         }
@@ -69,15 +73,15 @@ useEffect(() => {
 useEffect(()=> {
   if(signedup && !error){
     checkIFLoggedIn();
-    console.log('checking');
+    //console.log('checking');
   }
 }, [time])
   useEffect(() => {
-    AppState.addEventListener("change",   checkIFLoggedIn,
+   const subscription = AppState.addEventListener("change",   checkIFLoggedIn,
     );
     
     return () => {
-      AppState.removeEventListener("change",   checkIFLoggedIn);
+     subscription.remove();
     };
   }, [appState]);
   const showDatepicker = () => {
@@ -97,6 +101,7 @@ useEffect(()=> {
       });
   };
   const signupUser = async (email, password) => {
+    setBtnClicked(true);
     try {
       await firebase.auth().createUserWithEmailAndPassword(email, password);
       const currentUser = firebase.auth().currentUser;
@@ -112,11 +117,12 @@ useEffect(()=> {
         ]);;
       });
     
-      console.log('current user',currentUser);
+      //console.log('current user',currentUser);
 
     } catch (err) {
       console.log(err);
       setError(err.message);
+      setBtnClicked(false);
     }
   };
   /// to be fixed
@@ -206,13 +212,17 @@ useEffect(()=> {
         ) : null}
         <TouchableOpacity
           disabled={
-            !email &&
-            !password
+            (!email &&
+            !password) || btnClicked
           }
           onPress={() => signupUser(email, password)}
           style={styles.signupBtn}
         >
-          <Text
+           {btnClicked ? ( <ActivityIndicator
+            animating
+            color={"white"}
+            size="large"
+          />) : (<Text
             style={{
               color: "white",
               fontSize: 18,
@@ -221,7 +231,7 @@ useEffect(()=> {
             }}
           >
             GET STARTED
-          </Text>
+          </Text>)}
         </TouchableOpacity>
         <Text
           style={{

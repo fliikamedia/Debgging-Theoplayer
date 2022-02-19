@@ -1,5 +1,5 @@
 import * as React from "react";
-import { StatusBar} from "react-native";
+import { View,ActivityIndicator} from "react-native";
 import {
   MOVIES,
   WELCOMESCREEN,
@@ -26,26 +26,47 @@ export default AppRoute = () => {
 const user = useSelector(state => state.user);
 
 const [verified, setVerified] = React.useState(false);
+const [ready, setReady] = React.useState(false);
 const checkIFVerified = async () => {
   firebase.auth().onAuthStateChanged((user) => {
    if (user && user.emailVerified ) {
      setVerified(true);
-    } 
+     setReady(true);
+    } else {
+      setReady(true);
+    }
     //console.log('user verified',user?.emailVerified);
   });
 };
 React.useEffect(() => {
   checkIFVerified();
-}, []);
+}, [ready]);
 
-//console.log('user',user.isLoggedIn);
+console.log('user',user.isLoggedIn);
+
+if (!ready) {
+  return (
+    <View style={{  flex: 1,
+      backgroundColor: "black",}}>
+    <ActivityIndicator
+    animating
+    color={"teal"}
+    size="large"
+    style={{ flex: 1, position: "absolute", top: "50%", left: "45%" }}
+  />
+  </View>
+  )
+}
   const navigatorFunc = () => {
 
-    if (verified && user.isLoggedIn === 'loggedIn') {
+    if (ready && verified && user.isLoggedIn === 'loggedIn') {
+      console.log('1');
         return <MoviesNavigator routeName={MOVIES} /> 
-    } else if (verified && user.isLoggedIn === 'signedUp' ) {
+    } else if (ready && verified && (user.isLoggedIn === 'signedUp' || user.isLoggedIn === '') ) {
+      console.log('2');
         return <WelcomeNavigator  routeName={FILLPROFILESCREEN} /> 
-    } else if (user.isLoggedIn === 'loggedOut' || user.isLoggedIn === ''){
+    } else if (ready && !verified && user.isLoggedIn === 'loggedOut' || user.isLoggedIn === ''){
+      console.log('3');
         return <WelcomeNavigator routeName={WELCOMESCREEN} /> 
     }
   }
