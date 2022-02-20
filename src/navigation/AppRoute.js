@@ -34,6 +34,7 @@ const checkIFVerified = async () => {
      setReady(true);
     } else {
       setReady(true);
+      setVerified(false);
     }
     //console.log('user verified',user?.emailVerified);
   });
@@ -56,11 +57,12 @@ if (!ready) {
   </View>
   )
 }
+//console.log('user', ready, verified, user.isLoggedIn);
   const navigatorFunc = () => {
 
     if (ready && verified && user.isLoggedIn === 'loggedIn') {
         return <MoviesNavigator routeName={MOVIES} /> 
-    } else if (ready && verified && (user.isLoggedIn === 'signedUp' || user.isLoggedIn === '') ) {
+    } else if (( ready && user.isLoggedIn === 'signedUp' ) || (ready && verified && user.isLoggedIn === '') ) {
         return <WelcomeNavigator  routeName={FILLPROFILESCREEN} /> 
     } else if (ready && !verified && user.isLoggedIn === 'loggedOut' || user.isLoggedIn === ''){
         return <WelcomeNavigator routeName={WELCOMESCREEN} /> 
