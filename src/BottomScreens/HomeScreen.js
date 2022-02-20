@@ -141,8 +141,6 @@ return ()=> unsubscribe();
   }, [navigation]);
 
   const handleScroll = (event) => {
-    //console.log(event.nativeEvent.contentOffset.y);
-    setScrolledY(event.nativeEvent.contentOffset.y);
     if(event.nativeEvent.contentOffset.y > SIZES.width) {
       setVideoPaused(true)
     } else {
@@ -996,18 +994,10 @@ const renderBotomSheet = () => {
         </View>
       ) : (
         <Animated.ScrollView
-  onScroll={Animated.event(
-    [
-      {
-        nativeEvent: {
-          contentOffset: {
-            y: yOffset,
-          },
-        },
-      },
-    ],
-    { useNativeDriver: true }
-  )}
+  onScroll={(nativeEvent) => {
+   yOffset.setValue(nativeEvent.nativeEvent.contentOffset.y);
+    handleScroll(nativeEvent)
+  }}
   scrollEventThrottle={16}
   refreshControl={
     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

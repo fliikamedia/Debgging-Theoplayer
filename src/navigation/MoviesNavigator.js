@@ -79,8 +79,11 @@ const MoviesNavogator = (props) => {
               initialRouteName={MOVIES}
               screenOptions={{
                 animationEnabled: false,
-                headerTintColor: "teal",
+                headerTintColor: "white",
                 backgroundColor: "black",
+                headerStyle: {
+                backgroundColor: 'black'
+                },
                 cardStyle: { backgroundColor: 'black' },
               cardStyleInterpolator: ({ current: { progress } }) => ({
                 cardStyle: {
@@ -114,14 +117,14 @@ const MoviesNavogator = (props) => {
               <Stack.Screen
                 name={EDITPROFILE}
                 component={EditProfile}
-                options={{ headerShown: true, headerTitle: " " }}
+                options={{ headerShown: true, headerTitle: " "}}
                 />
               <Stack.Screen
                 name={EPISODEDETAIL}
                 component={EpisodeDetailScreen}
                 options={{ headerShown: false }}
                 />
-                          <Stack.Screen
+                <Stack.Screen
                 name={BITMOVINPLAYER}
                 component={BitmovinPlayer}
                 options={{ headerShown: false }}
