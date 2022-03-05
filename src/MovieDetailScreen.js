@@ -13,16 +13,21 @@ import {
   Share,
   AppState,
   FlatList,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
 } from "react-native";
 import { COLORS, SIZES, FONTS, icons, images } from ".././constants";
 import FliikaApi from "./api/FliikaApi";
 import { baseURL } from "./api/expressApi";
 import MovieDetailIcon from "./components/MovieDetailIcon";
-import LinearGradient  from "react-native-linear-gradient";
+import LinearGradient from "react-native-linear-gradient";
 import * as Animatable from "react-native-animatable";
 import firebase from "firebase";
-import { BITMOVINPLAYER, HOME, WELCOMESCREEN, MOVIEDETAIL } from "../constants/RouteNames";
+import {
+  BITMOVINPLAYER,
+  HOME,
+  WELCOMESCREEN,
+  MOVIEDETAIL,
+} from "../constants/RouteNames";
 import { Menu } from "react-native-paper";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -40,19 +45,21 @@ import { SERIESDETAILSTAB, SERIESEPISODESTAB } from "../constants/RouteNames";
 import SeriesEpisodesTab from "./topTabScreens/SeriesEpisodesTab";
 import SeriesDetailsTab from "./topTabScreens/SeriesDetailsTab";
 import { setCurrentSeries, setMovieTitle } from "../store/actions/movies";
-import IconIon from 'react-native-vector-icons/Ionicons';
-import IconFeather from 'react-native-vector-icons/Feather'
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import IconAnt from 'react-native-vector-icons/AntDesign';
+import IconIon from "react-native-vector-icons/Ionicons";
+import IconFeather from "react-native-vector-icons/Feather";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import IconAnt from "react-native-vector-icons/AntDesign";
 import ReactNativeBitmovinPlayer, {
   ReactNativeBitmovinPlayerIntance,
-} from '@takeoffmedia/react-native-bitmovin-player';
+} from "@takeoffmedia/react-native-bitmovin-player";
 import AsyncStorage from "@react-native-community/async-storage";
 import Orientation from "react-native-orientation";
 import moment from "moment";
 import FastImage from "react-native-fast-image";
-import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
-
+import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
+import DropDownPicker, { MyArrowUpIcon } from "react-native-dropdown-picker";
+import RBSheet from "react-native-raw-bottom-sheet";
+import SeasonItem from "./components/SeasonItem";
 
 const MovieDetailScreen = ({ navigation, route }) => {
   const Tab = createMaterialTopTabNavigator();
@@ -62,10 +69,11 @@ const MovieDetailScreen = ({ navigation, route }) => {
 
   const dispatch = useDispatch();
   const scrollRef = useRef();
+  const refRBSheet = useRef(null);
 
   const [play, setPlay] = useState(false);
   const appState = useRef(AppState.currentState);
-  const { selectedMovie, isSeries, seriesTitle } = route.params;
+  const { selectedMovie, isSeries, seriesTitle, rbSeasonNumber } = route.params;
   const [movie, setMovie] = useState({});
   const [series, setSeries] = useState([]);
   const [season, setSeason] = useState({});
@@ -78,54 +86,67 @@ const MovieDetailScreen = ({ navigation, route }) => {
   const [episodes, setEpisodes] = useState(true);
   const [details, setDetails] = useState(false);
   const [seasonNumber, setSeasonNumber] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(null);
+  const [items, setItems] = useState([
+    { label: "Apple", value: "apple" },
+    { label: "Banana", value: "banana" },
+  ]);
   //console.log('currentProfile',user.currentProfile);
-/*   const getMovie = useCallback(async () => {
+  /*   const getMovie = useCallback(async () => {
     const response = await FliikaApi.get(`/posts/${selectedMovie}`);
     setMovie(response.data);
   }, []);
   useEffect(() => {
     getMovie();
   }, []); */
-const currentMovie = movies.availableMovies.find(r => r._id ===selectedMovie);
+  const currentMovie = movies.availableMovies.find(
+    (r) => r._id === selectedMovie
+  );
 
-  useEffect( () => {
-    const unsubscribe = navigation.addListener('focus', async () => {
-       Orientation.lockToPortrait();
-      
-      const whatTime = await AsyncStorage.getItem('watched');
-      const whatDuration = await AsyncStorage.getItem('duration');
-      const didPlay = await AsyncStorage.getItem("didPlay")
-      const movieTitle=  await AsyncStorage.getItem("movieName")
-      const seasonNumber=  await AsyncStorage.getItem("seasonNumber")
-      const episodeNumber=  await AsyncStorage.getItem("episodeNumber")
-      const movieId=  await AsyncStorage.getItem("movieId")
-      const isWatchedMovie = await AsyncStorage.getItem("isWatchedBefore")
-      console.log('timing', whatTime, whatDuration, movieTitle);
-      if (didPlay == "true"){
-       saveMovie(Number(whatDuration), Number(whatTime),movieId, movieTitle, isWatchedMovie, Number(seasonNumber), Number(episodeNumber));
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", async () => {
+      Orientation.lockToPortrait();
+
+      const whatTime = await AsyncStorage.getItem("watched");
+      const whatDuration = await AsyncStorage.getItem("duration");
+      const didPlay = await AsyncStorage.getItem("didPlay");
+      const movieTitle = await AsyncStorage.getItem("movieName");
+      const seasonNumber = await AsyncStorage.getItem("seasonNumber");
+      const episodeNumber = await AsyncStorage.getItem("episodeNumber");
+      const movieId = await AsyncStorage.getItem("movieId");
+      const isWatchedMovie = await AsyncStorage.getItem("isWatchedBefore");
+      console.log("timing", whatTime, whatDuration, movieTitle);
+      if (didPlay == "true") {
+        saveMovie(
+          Number(whatDuration),
+          Number(whatTime),
+          movieId,
+          movieTitle,
+          isWatchedMovie,
+          Number(seasonNumber),
+          Number(episodeNumber)
+        );
       }
-      if (Platform.OS == 'android') {
-      console.log('focused', didPlay);
-      if (didPlay === 'true') {
-      //ReactNativeBitmovinPlayerIntance.destroy();
-      AsyncStorage.setItem("didPlay", "false")
-      console.log('focused', didPlay);
-    }
-      
-  } else {
-    console.log('focused ios');
-    //ReactNativeBitmovinPlayerIntance.pause()
-  }
+      if (Platform.OS == "android") {
+        console.log("focused", didPlay);
+        if (didPlay === "true") {
+          //ReactNativeBitmovinPlayerIntance.destroy();
+          AsyncStorage.setItem("didPlay", "false");
+          console.log("focused", didPlay);
+        }
+      } else {
+        console.log("focused ios");
+        //ReactNativeBitmovinPlayerIntance.pause()
+      }
 
-  AsyncStorage.setItem('watched', '0');
-  AsyncStorage.setItem('duration', '0')
-  AsyncStorage.setItem("isWatchedBefore", "null")
-  AsyncStorage.setItem("movieId", "null")
-
-});
-return ()=> unsubscribe();
+      AsyncStorage.setItem("watched", "0");
+      AsyncStorage.setItem("duration", "0");
+      AsyncStorage.setItem("isWatchedBefore", "null");
+      AsyncStorage.setItem("movieId", "null");
+    });
+    return () => unsubscribe();
   }, [navigation]);
-
 
   const showEpisodes = () => {
     setEpisodes(true);
@@ -137,15 +158,15 @@ return ()=> unsubscribe();
     setDetails(true);
   };
 
-   // Toast config
-   const showToast = (text) => {
+  // Toast config
+  const showToast = (text) => {
     Toast.show({
-      type: 'success',
+      type: "success",
       text2: text,
-      position: 'bottom',
-      visibilityTime: 2000
+      position: "bottom",
+      visibilityTime: 2000,
     });
-  }
+  };
 
   const toastConfig = {
     /*
@@ -155,12 +176,18 @@ return ()=> unsubscribe();
     success: (props) => (
       <BaseToast
         {...props}
-        style={{ borderLeftColor: '#404040', backgroundColor: '#404040',width: 250, borderRadius: 10, height: 50 }}
+        style={{
+          borderLeftColor: "#404040",
+          backgroundColor: "#404040",
+          width: 250,
+          borderRadius: 10,
+          height: 50,
+        }}
         text2Style={{
           fontSize: 15,
-          fontWeight: '400',
-          textAlign: 'center',
-          color: '#fff'
+          fontWeight: "400",
+          textAlign: "center",
+          color: "#fff",
         }}
       />
     ),
@@ -172,10 +199,10 @@ return ()=> unsubscribe();
       <ErrorToast
         {...props}
         text1Style={{
-          fontSize: 17
+          fontSize: 17,
         }}
         text2Style={{
-          fontSize: 15
+          fontSize: 15,
         }}
       />
     ),
@@ -187,11 +214,11 @@ return ()=> unsubscribe();
       They will be passed when calling the `show` method (see below)
     */
     tomatoToast: ({ text1, props }) => (
-      <View style={{ height: 60, width: '100%', backgroundColor: 'tomato' }}>
+      <View style={{ height: 60, width: "100%", backgroundColor: "tomato" }}>
         <Text>{text1}</Text>
         <Text>{props.uuid}</Text>
       </View>
-    )
+    ),
   };
   // End of Toast
   const isWatchList = (movieArray, movieName) => {
@@ -218,15 +245,29 @@ return ()=> unsubscribe();
       return movieWatched;
     } catch (err) {}
   };
-  const saveMovie = (duration,time,movieId,title, isWatchedMovie, seasonNumber, episodeNumber) => {
-    console.log('saving movie',duration,time, title, isWatchedMovie, seasonNumber, episodeNumber);
-   // console.log('iswatched',   isWatched(user.currentProfile.watched, title));
-   if(time > 0) {
-      if (isSeries === 'movie') {
-      if (
-        isWatchedMovie === 'false'
-        ) {
-          console.log('here 1');
+  const saveMovie = (
+    duration,
+    time,
+    movieId,
+    title,
+    isWatchedMovie,
+    seasonNumber,
+    episodeNumber
+  ) => {
+    console.log(
+      "saving movie",
+      duration,
+      time,
+      title,
+      isWatchedMovie,
+      seasonNumber,
+      episodeNumber
+    );
+    // console.log('iswatched',   isWatched(user.currentProfile.watched, title));
+    if (time > 0) {
+      if (isSeries === "movie") {
+        if (isWatchedMovie === "false") {
+          console.log("here 1");
           addtoWatchedProfile(
             moment(),
             moment(),
@@ -236,56 +277,72 @@ return ()=> unsubscribe();
             duration,
             time,
             user.currentProfile._id
-            )(dispatch);
-          } else {
-            console.log('here 2');
-            updateWatchedProfile(
-              moment(),
-              user.user._id,
-              movieId,
-              title,
-              duration,
-              time,
-              user.currentProfile._id
-              )(dispatch);
-            }
-          } 
-        } 
-
-        
+          )(dispatch);
+        } else {
+          console.log("here 2");
+          updateWatchedProfile(
+            moment(),
+            user.user._id,
+            movieId,
+            title,
+            duration,
+            time,
+            user.currentProfile._id
+          )(dispatch);
+        }
+      }
+    }
   };
-  
-/*   const getSeries = useCallback(async () => {
+
+  /*   const getSeries = useCallback(async () => {
     const responseSeries = await FliikaApi.get(`/posts/`);
     setSeries(responseSeries.data);
   }, []);
   useEffect(() => {
     getSeries();
   }, []); */
-  let currentSeries = movies.availableMovies.filter((r) => r.title == seriesTitle);
+  let currentSeries = movies.availableMovies.filter(
+    (r) => r.title == seriesTitle
+  );
 
   let totalSeasons;
   try {
     totalSeasons = currentSeries.map((r) => r.season_number);
   } catch (err) {}
   const seasons = [...new Set(totalSeasons)];
+
   let seasonsLength;
   try {
     seasonsLength = seasons.length;
   } catch (err) {}
+
+  let seasonsDropDownItems = [];
+  try {
+    for (let i = 0; i < seasonsLength; i++) {
+      seasonsDropDownItems.push({
+        label: `Season ${seasons[i]}`,
+        value: seasons[i],
+      });
+    }
+  } catch (err) {}
+
   useEffect(() => {
     if (currentSeries.length > 0) {
       setSeason(currentSeries.filter((e) => e.season_number == seasonNumber));
     }
   }, [series.length, seasonNumber]);
   useEffect(() => {
-    setSeasonNumber(seasons[0]);
+    if (!rbSeasonNumber) {
+      setSeasonNumber(seasons[0]);
+    } else {
+      setSeasonNumber(rbSeasonNumber);
+    }
   }, [seasonsLength]);
   let resultLength;
   try {
     resultLength = Object.keys(movie).length;
   } catch (err) {}
-  
+
   useEffect(() => {
     setMovieTitle(season[0])(dispatch);
     setCurrentSeries(season)(dispatch);
@@ -323,46 +380,46 @@ return ()=> unsubscribe();
       );
     }
   };
-// Render Icons
+  // Render Icons
   const movieIcons = () => {
-    if (isWatchList(user.currentProfile.watchList, currentMovie.title) == true) {
+    if (
+      isWatchList(user.currentProfile.watchList, currentMovie.title) == true
+    ) {
       return (
         <TouchableOpacity
-        onPress={() => {
-          showToast('Removed from watch list');
-          removeFromProfileWatchList(
-            user.user._id,
-            movie,
-            user.currentProfile._id
-          )(dispatch);
-        }}
-      >
-        <Icon
-          name="book-remove-multiple-outline"
-          size={40}
-          color={COLORS.white}
-        />
-      </TouchableOpacity>
-      )
+          onPress={() => {
+            showToast("Removed from watch list");
+            removeFromProfileWatchList(
+              user.user._id,
+              movie,
+              user.currentProfile._id
+            )(dispatch);
+          }}
+        >
+          <Icon
+            name="book-remove-multiple-outline"
+            size={40}
+            color={COLORS.white}
+          />
+        </TouchableOpacity>
+      );
     } else {
-    return (
-      <TouchableOpacity
-      onPress={() => {
-        showToast('Added to watch list');
-    addToProfileWatchList(
-        user.user._id,
-        currentMovie,
-        user.currentProfile._id
-      )(dispatch);
-
-      }}
-    >
-      <IconFeather name="plus" size={40} color={COLORS.white} />
-    </TouchableOpacity>
-    )
+      return (
+        <TouchableOpacity
+          onPress={() => {
+            showToast("Added to watch list");
+            addToProfileWatchList(
+              user.user._id,
+              currentMovie,
+              user.currentProfile._id
+            )(dispatch);
+          }}
+        >
+          <IconFeather name="plus" size={40} color={COLORS.white} />
+        </TouchableOpacity>
+      );
     }
-  
-  }
+  };
   ///// Render Header Function
   const renderHeaderBar = () => {
     const navigateBack = () => {
@@ -388,7 +445,10 @@ return ()=> unsubscribe();
   const renderHeaderSection = () => {
     let thumbnail;
     try {
-      thumbnail = isSeries === 'series' ? season[0].dvd_thumbnail_link : currentMovie.dvd_thumbnail_link;
+      thumbnail =
+        isSeries === "series"
+          ? season[0].dvd_thumbnail_link
+          : currentMovie.dvd_thumbnail_link;
     } catch (err) {}
 
     let producersLength;
@@ -401,181 +461,232 @@ return ()=> unsubscribe();
     } catch (err) {
       console.log(err);
     }
- 
-    
+
     return (
-      <View style={{flex: 1}}>
-      <ImageBackground
-        source={{ uri: thumbnail }}
-        resizeMode="cover"
-        style={{
-          width: SIZES.width,
-          height: SIZES.height < 700 ? SIZES.height * 0.6 : SIZES.height * 0.7,
-        }}
-      >
-        <View>{renderHeaderBar()}</View>
-        <View style={{ flex: 1, justifyContent: "flex-end" }}>
-          <LinearGradient
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
-            colors={["transparent", "#000"]}
-            style={{
-              width: "100%",
-              height: 150,
-              alignItems: "center",
-              justifyContent: "flex-end",
-            }}
-          >
-            <View
+      <View style={{ flex: 1 }}>
+        <ImageBackground
+          source={{ uri: thumbnail }}
+          resizeMode="cover"
+          style={{
+            width: SIZES.width,
+            height:
+              SIZES.height < 700 ? SIZES.height * 0.6 : SIZES.height * 0.7,
+          }}
+        >
+          <View>{renderHeaderBar()}</View>
+          <View style={{ flex: 1, justifyContent: "flex-end" }}>
+            <LinearGradient
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
+              colors={["transparent", "#000"]}
               style={{
-                flexDirection: "row",
                 width: "100%",
-                justifyContent: "space-between",
+                height: 150,
+                alignItems: "center",
+                justifyContent: "flex-end",
               }}
             >
-              <Animatable.View
-                animation="pulse"
-                iterationCount={"infinite"}
-                direction="alternate"
-              >
-                {isSeries == "movie" ? (
-                  <TouchableOpacity
-                    onPress={() => {
-                      navigation.navigate(BITMOVINPLAYER, {movieId: currentMovie._id, time: null});
-                    }}
-                  >
-                  <View
-                    style={{
-                      justifyContent: "center",
-                      alignItems: "center",
-                      width: 100,
-                      height: 100,
-                      borderRadius: 60,
-                      backgroundColor: COLORS.transparentWhite,
-                      alignSelf: "flex-start",
-                      marginLeft: 20,
-                    }}
-                  >
-                      <Image
-                        source={icons.play}
-                        resizeMode="contain"
-                        style={{
-                          width: 40,
-                          height: 40,
-                          tintColor: COLORS.white,
-                        }}
-                      />
-                  </View>
-                    </TouchableOpacity>
-                ) : null}
-              </Animatable.View>
               <View
                 style={{
                   flexDirection: "row",
-                  width: isSeries == "movie" ? "60%" : "40%",
-                  justifyContent: "space-around",
-                  alignSelf: "center",
+                  width: "100%",
+                  justifyContent: "space-between",
                 }}
               >
-                {isSeries === 'movie' ? movieIcons() : null}
-                
-                {isSeries == "movie" ? (
-                  <IconFeather name="download" size={40} color={COLORS.white} />
-                ) : null}
-                {isSeries === 'movie' ?<TouchableOpacity onPress={() => onShare()}>
-                  <IconIon
-                    name="share-social-outline"
-                    size={40}
-                    color={COLORS.white}
-                  />
-                </TouchableOpacity> : null}
+                <Animatable.View
+                  animation="pulse"
+                  iterationCount={"infinite"}
+                  direction="alternate"
+                >
+                  {isSeries == "movie" ? (
+                    <TouchableOpacity
+                      onPress={() => {
+                        navigation.navigate(BITMOVINPLAYER, {
+                          movieId: currentMovie._id,
+                          time: null,
+                        });
+                      }}
+                    >
+                      <View
+                        style={{
+                          justifyContent: "center",
+                          alignItems: "center",
+                          width: 100,
+                          height: 100,
+                          borderRadius: 60,
+                          backgroundColor: COLORS.transparentWhite,
+                          alignSelf: "flex-start",
+                          marginLeft: 20,
+                        }}
+                      >
+                        <Image
+                          source={icons.play}
+                          resizeMode="contain"
+                          style={{
+                            width: 40,
+                            height: 40,
+                            tintColor: COLORS.white,
+                          }}
+                        />
+                      </View>
+                    </TouchableOpacity>
+                  ) : null}
+                </Animatable.View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    width: isSeries == "movie" ? "60%" : "40%",
+                    justifyContent: "space-around",
+                    alignSelf: "center",
+                  }}
+                >
+                  {isSeries === "movie" ? movieIcons() : null}
+
+                  {isSeries == "movie" ? (
+                    <IconFeather
+                      name="download"
+                      size={40}
+                      color={COLORS.white}
+                    />
+                  ) : null}
+                  {isSeries === "movie" ? (
+                    <TouchableOpacity onPress={() => onShare()}>
+                      <IconIon
+                        name="share-social-outline"
+                        size={40}
+                        color={COLORS.white}
+                      />
+                    </TouchableOpacity>
+                  ) : null}
+                </View>
               </View>
-            </View>
+              <Text
+                style={{
+                  color: COLORS.white,
+                  textTransform: "uppercase",
+                  fontSize: 20,
+                  fontWeight: "bold",
+                }}
+              >
+                {currentMovie.title}
+              </Text>
+            </LinearGradient>
+          </View>
+        </ImageBackground>
+        <View
+          style={{
+            flex: 1,
+            marginTop: SIZES.padding,
+            justifyContent: "space-around",
+          }}
+        >
+          {/* titme, running time and progress bar */}
+          <View>
+            <View style={{ flexDirection: "row" }}></View>
+          </View>
+          {/* watch */}
+          {/* Movie Details */}
+          {isSeries == "movie" ? (
+            <>
+              <View style={{ width: "100%", paddingHorizontal: 10 }}>
+                <Text
+                  style={{
+                    fontFamily: "Sora-Regular",
+                    color: COLORS.white,
+                    textAlign: "justify",
+                    marginBottom: 30,
+                  }}
+                >
+                  {currentMovie.storyline}
+                </Text>
+              </View>
+              <View style={{ width: "100%", paddingHorizontal: 10 }}>
+                <Text style={styles.moreText}>More Information</Text>
+                <Text style={styles.titleText}>Content Advisory</Text>
+                <Text style={styles.detailText}>
+                  {currentMovie.content_advisory.toString().replace(/,/g, ", ")}
+                </Text>
+                <Text style={styles.titleText}>Languages</Text>
+                <Text style={styles.detailText}>
+                  {currentMovie.languages.toString().replace(/,/g, ", ")}
+                </Text>
+                <Text style={styles.titleText}>Subtitles</Text>
+                <Text style={styles.detailText}>
+                  {currentMovie.subtitles.toString().replace(/,/g, ", ")}
+                </Text>
+                <View
+                  style={{
+                    width: "95%",
+                    height: 2,
+                    backgroundColor: "grey",
+                    alignSelf: "center",
+                    marginVertical: 10,
+                  }}
+                ></View>
+                <Text style={styles.titleTextBg}>Cast</Text>
+                <Text style={styles.detailText}>
+                  {currentMovie.cast.toString().replace(/,/g, ", ")}
+                </Text>
+                <Text style={styles.titleTextBg}>Crew</Text>
+                <Text style={styles.titleText}>Directors</Text>
+                <Text style={styles.detailText}>
+                  {currentMovie.directors.toString().replace(/,/g, ", ")}
+                </Text>
+                {writersLength ? (
+                  <View>
+                    <Text style={styles.titleText}>Writers</Text>
+                    <Text style={styles.detailText}>
+                      {currentMovie.writers.toString().replace(/,/g, ", ")}
+                    </Text>
+                  </View>
+                ) : null}
+                {cinematographersLength ? (
+                  <View>
+                    <Text style={styles.titleText}>Cinematographers</Text>
+                    <Text style={styles.detailText}>
+                      {currentMovie.cinematographers
+                        .toString()
+                        .replace(/,/g, ", ")}
+                    </Text>
+                  </View>
+                ) : null}
+                {producersLength ? (
+                  <View>
+                    <Text style={styles.titleText}>Producers</Text>
+                    <Text style={styles.detailText}>
+                      {currentMovie.producers.toString().replace(/,/g, ", ")}
+                    </Text>
+                  </View>
+                ) : null}
+              </View>
+            </>
+          ) : null}
+        </View>
+        {isSeries === "movie" ? (
+          <View>
+            <View
+              style={{
+                width: "90%",
+                height: 2,
+                backgroundColor: "grey",
+                alignSelf: "center",
+                marginVertical: 10,
+              }}
+            ></View>
             <Text
               style={{
-                color: COLORS.white,
-                textTransform: "uppercase",
-                fontSize: 20,
-                fontWeight: "bold",
+                fontFamily: "Sora-Regular",
+                color: "#fff",
+                fontSize: 26,
+                marginBottom: 20,
+                marginLeft: 10,
               }}
             >
-              {currentMovie.title}
+              People Also Watched
             </Text>
-          </LinearGradient>
-        </View>
-      </ImageBackground>
-      <View
-      style={{
-        flex: 1,
-        marginTop: SIZES.padding,
-        justifyContent: "space-around",
-      }}
-    >
-      {/* titme, running time and progress bar */}
-      <View>
-        <View style={{ flexDirection: "row" }}></View>
+          </View>
+        ) : null}
       </View>
-      {/* watch */}
-        {/* Movie Details */}
-      {isSeries == "movie" ? (
-        <>
-          <View style={{ width: "100%", paddingHorizontal: 10 }}>
-            <Text style={{ fontFamily: 'Sora-Regular',color: COLORS.white, textAlign: "justify", marginBottom: 30 }}>
-              {currentMovie.storyline}
-            </Text>
-          </View>
-          <View style={{ width: "100%", paddingHorizontal: 10 }}>
-          <Text style={styles.moreText}>More Information</Text>
-          <Text style={styles.titleText}>Content Advisory</Text>
-            <Text style={styles.detailText}>
-              {currentMovie.content_advisory.toString().replace(/,/g, ", ")}
-            </Text>
-            <Text style={styles.titleText}>Languages</Text>
-            <Text style={styles.detailText}>
-              {currentMovie.languages.toString().replace(/,/g, ", ")}
-            </Text>
-            <Text style={styles.titleText}>Subtitles</Text>
-            <Text style={styles.detailText}>
-              {currentMovie.subtitles.toString().replace(/,/g, ", ")}
-            </Text>
-            <View style={{width: '95%', height: 2, backgroundColor: 'grey', alignSelf: 'center', marginVertical: 10}}></View>
-            <Text style={styles.titleTextBg}>Cast</Text>
-            <Text style={styles.detailText}>
-              {currentMovie.cast.toString().replace(/,/g, ", ")}
-            </Text>
-            <Text style={styles.titleTextBg}>Crew</Text>
-            <Text style={styles.titleText}>Directors</Text>
-            <Text style={styles.detailText}>
-              {currentMovie.directors.toString().replace(/,/g, ", ")}
-            </Text>
-           {writersLength ? <View>
-            <Text style={styles.titleText}>Writers</Text>
-            <Text style={styles.detailText}>
-              {currentMovie.writers.toString().replace(/,/g, ", ")}
-            </Text>
-            </View> : null}
-            {cinematographersLength ? <View>
-            <Text style={styles.titleText}>Cinematographers</Text>
-            <Text style={styles.detailText}>
-              {currentMovie.cinematographers.toString().replace(/,/g, ", ")}
-            </Text>
-            </View> : null}
-            {producersLength ? <View>
-            <Text style={styles.titleText}>Producers</Text>
-            <Text style={styles.detailText}>
-              {currentMovie.producers.toString().replace(/,/g, ", ")}
-            </Text>
-            </View> : null}
-           
-          </View>
-        </>
-      ) : null}
-    </View>
-    {isSeries === 'movie' ? <View>
-    <View style={{width: '90%', height: 2, backgroundColor: 'grey', alignSelf: 'center', marginVertical: 10}}></View>
-        <Text style={{fontFamily: 'Sora-Regular', color: '#fff', fontSize: 26, marginBottom: 20, marginLeft: 10}}>People Also Watched</Text>
-        </View> : null}
-    </View>
     );
   };
   ////////// End of Render header function
@@ -596,7 +707,9 @@ return ()=> unsubscribe();
         }}
       >
         <View style={[styles.categoryContainer, { marginLeft: 0 }]}>
-          <Text style={{ color: COLORS.white }}>{currentMovie.film_rating}</Text>
+          <Text style={{ color: COLORS.white }}>
+            {currentMovie.film_rating}
+          </Text>
         </View>
         <View
           style={[
@@ -642,10 +755,15 @@ return ()=> unsubscribe();
   const closeFilter = () => {
     setSelectSeason(false);
   };
- 
-
 
   // to fix later for series
+
+  const openRBSheet = () => {
+    refRBSheet.current.open();
+  };
+  const closeRBSheet = () => {
+    refRBSheet.current.close();
+  };
 
   if (isSeries == "series") {
     return !seasonNumber ? (
@@ -658,18 +776,33 @@ return ()=> unsubscribe();
     ) : (
       <ScrollView style={{ flexGrow: 1 }}>
         {renderHeaderSection()}
-       
+
         {play ? (
           <View
             style={{ width: SIZES.width * 0.9, height: SIZES.height * 0.5 }}
-          >
-          </View>
+          ></View>
         ) : null}
-        <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '90%', alignSelf: 'center'}}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            width: "90%",
+            alignSelf: "center",
+          }}
+        >
           <View>
-        {isSeries == "series" ? (
-          <View style={{ alignSelf: "center", borderRadius: 5, borderWidth: .5, borderColor: 'white' }}>
-            <Menu
+            {isSeries == "series" ? (
+              <View
+                style={{
+                  alignSelf: "center",
+                  borderRadius: 5,
+                  borderWidth: 0.7,
+                  borderColor: "white",
+                  zIndex: 50,
+                }}
+              >
+                {/* <Menu
               visible={selectSeason}
               onPress={openFilter}
               onDismiss={closeFilter}
@@ -712,28 +845,81 @@ return ()=> unsubscribe();
                   />
                 );
               })}
-            </Menu>
+            </Menu> */}
+                {/* <DropDownPicker
+                  showArrowIcon={true}
+                  // ArrowUpIconComponent={({ style }) => (
+                  //   <MyArrowUpIcon style={style} />
+                  // )}
+                  arrowIconStyle={{
+                    tintColor: "#fff",
+                  }}
+                  placeholder={`Season ${seasonNumber}`}
+                  closeOnBackPressed={true}
+                  style={{
+                    width: 140,
+                    backgroundColor: "black",
+                    borderRadius: 5,
+                  }}
+                  open={open}
+                  value={value}
+                  listMode="SCROLLVIEW"
+                  itemSeparator={true}
+                  items={seasonsDropDownItems}
+                  setOpen={setOpen}
+                  setValue={setValue}
+                  setItems={setItems}
+                  textStyle={{ color: "white", fontSize: 18 }}
+                  dropDownContainerStyle={{
+                    backgroundColor: "black",
+                    width: 140,
+                    borderColor: "grey",
+                  }}
+                  itemSeparatorStyle={{
+                    backgroundColor: "#fff",
+                    width: "90%",
+                    alignSelf: "center",
+                    opacity: 0.6,
+                  }}
+                /> */}
+                <TouchableOpacity
+                  onPress={() => openRBSheet()}
+                  style={{
+                    width: 140,
+                    height: 50,
+                    flexDirection: "row",
+                    justifyContent: "space-around",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text
+                    style={{ color: "#fff", fontSize: 20 }}
+                  >{`Season ${seasonNumber}`}</Text>
+                  <IconAnt name="down" size={20} color="#fff" />
+                </TouchableOpacity>
+              </View>
+            ) : null}
           </View>
-        ) : null}
-        </View>
           <View
-                style={{
-                  flexDirection: "row",
-                  width: "35%",
-                  justifyContent: "space-around",
-                  alignSelf: "center",
-                }}
-              >
-                {isSeries === 'series' ? movieIcons() : null}
-                {isSeries === 'series' ?<TouchableOpacity onPress={() => onShare()}>
-                  <IconIon
-                    name="share-social-outline"
-                    size={40}
-                    color={COLORS.white}
-                  />
-                </TouchableOpacity> : null}
-              </View>
-              </View>
+            style={{
+              flexDirection: "row",
+              width: "35%",
+              justifyContent: "space-around",
+              alignSelf: "center",
+            }}
+          >
+            {isSeries === "series" ? movieIcons() : null}
+            {isSeries === "series" ? (
+              <TouchableOpacity onPress={() => onShare()}>
+                <IconIon
+                  name="share-social-outline"
+                  size={40}
+                  color={COLORS.white}
+                />
+              </TouchableOpacity>
+            ) : null}
+          </View>
+        </View>
         <Tab.Navigator
           tabBarOptions={{
             labelStyle: { color: "white" },
@@ -742,12 +928,53 @@ return ()=> unsubscribe();
             },
           }}
         >
-          <Tab.Screen
-            name={SERIESEPISODESTAB}
-            component={SeriesEpisodesTab}
-          />
+          <Tab.Screen name={SERIESEPISODESTAB} component={SeriesEpisodesTab} />
           <Tab.Screen name={SERIESDETAILSTAB} component={SeriesDetailsTab} />
         </Tab.Navigator>
+        <RBSheet
+          animationType="slide"
+          ref={refRBSheet}
+          closeOnDragDown={true}
+          closeOnPressMask={true}
+          closeOnPressBack={true}
+          customStyles={{
+            wrapper: {
+              backgroundColor: "transparent",
+            },
+            draggableIcon: {
+              backgroundColor: "#fff",
+            },
+            container: {
+              backgroundColor: "rgba(0,0,0, 0.8)",
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
+              borderWidth: 0.6,
+              borderColor: "grey",
+              height: SIZES.width * 0.3 * seasonsLength,
+            },
+          }}
+        >
+          <ScrollView
+            contentContainerStyle={{
+              flexGrow: 1,
+              paddingLeft: 20,
+              paddingBottom: 20,
+              flexDirection: "column",
+              justifyContent: "space-between",
+            }}
+          >
+            {seasons.map((season, index) => (
+              <SeasonItem
+                setSeason={setSeasonNumber}
+                key={season}
+                seasonNumber={season}
+                seriesTitle={seriesTitle}
+                closeRBSheet={closeRBSheet}
+                from="movieDetails"
+              />
+            ))}
+          </ScrollView>
+        </RBSheet>
       </ScrollView>
     );
   }
@@ -756,84 +983,87 @@ return ()=> unsubscribe();
   //// Render people also watched
   const peopleAlsoWatched = () => {
     let alsoWatchIds = [];
-    for (let i = 0; i< currentMovie.genre.length; i++) {
+    for (let i = 0; i < currentMovie.genre.length; i++) {
       for (let x = 0; x < movies.availableMovies.length; x++) {
-        if ( movies.availableMovies[x].title != currentMovie.title && movies.availableMovies[x].genre.includes(currentMovie.genre[i])&& movies.availableMovies[x]?.film_type === 'movie') {
-          alsoWatchIds.push(movies.availableMovies[x]._id)
-         // console.log(movies.availableMovies[x].title);
+        if (
+          movies.availableMovies[x].title != currentMovie.title &&
+          movies.availableMovies[x].genre.includes(currentMovie.genre[i]) &&
+          movies.availableMovies[x]?.film_type === "movie"
+        ) {
+          alsoWatchIds.push(movies.availableMovies[x]._id);
+          // console.log(movies.availableMovies[x].title);
         }
       }
     }
 
-   
-  let alsoWatchSet = [...new Set(alsoWatchIds)];
+    let alsoWatchSet = [...new Set(alsoWatchIds)];
 
-  let alsoWatch = [];
-  for (let x = 0; x < movies.availableMovies.length; x++) {
-  for (let c = 0; c < alsoWatchSet.length; c++ ) {
-    if (movies.availableMovies[x]._id === alsoWatchSet[c]) {
-      alsoWatch.push(movies.availableMovies[x])
+    let alsoWatch = [];
+    for (let x = 0; x < movies.availableMovies.length; x++) {
+      for (let c = 0; c < alsoWatchSet.length; c++) {
+        if (movies.availableMovies[x]._id === alsoWatchSet[c]) {
+          alsoWatch.push(movies.availableMovies[x]);
+        }
+      }
     }
-  }
-  }
-  const shuffled = alsoWatch.sort(() => 0.5 - Math.random());
+    const shuffled = alsoWatch.sort(() => 0.5 - Math.random());
 
-  let availableMoviesLength;
-  try {
-    availableMoviesLength = shuffled?.length;
-  } catch (err) {}
-  let moviesToShow = [];
+    let availableMoviesLength;
+    try {
+      availableMoviesLength = shuffled?.length;
+    } catch (err) {}
+    let moviesToShow = [];
 
-  if (availableMoviesLength > 5) {
-  for (let i = 0; i < 6; i++) {
-    moviesToShow.push(alsoWatch[i])
-  }
-  } else {
-  moviesToShow = [...shuffled]
-  }
-  const numColumns = 3;
+    if (availableMoviesLength > 5) {
+      for (let i = 0; i < 6; i++) {
+        moviesToShow.push(alsoWatch[i]);
+      }
+    } else {
+      moviesToShow = [...shuffled];
+    }
+    const numColumns = 3;
     return (
       <View>
-    <FlatList
-    ref={scrollRef}
-    ListHeaderComponent={renderHeaderSection()}
-    showsVerticalScrollIndicator={false}
-    data={moviesToShow}
-    keyExtractor={item => item._id}
-    renderItem={({item, index}) => (
-      <TouchableWithoutFeedback
-      onPress={() =>{
-        scrollRef.current.scrollToOffset({ animated: true, offset: 0 });
-        navigation.navigate(MOVIEDETAIL, {
-          selectedMovie: item._id,
-          isSeries: item.film_type,
-          seriesTitle: item.title,
-        });
-      }
-      }
-    >
-      <FastImage
-      style={{
-        width: SIZES.width * 0.3,
-        height: SIZES.width * 0.45,
-        borderRadius: 2,
-        marginHorizontal: 5,
-        marginVertical: 5
-      }}
-      source={{ uri: item.dvd_thumbnail_link }}
-    />
-    </TouchableWithoutFeedback>
-    )}
-    numColumns={numColumns}
-    />
-    </View>
-    )
-  }
+        <FlatList
+          ref={scrollRef}
+          ListHeaderComponent={renderHeaderSection()}
+          showsVerticalScrollIndicator={false}
+          data={moviesToShow}
+          keyExtractor={(item) => item._id}
+          renderItem={({ item, index }) => (
+            <TouchableWithoutFeedback
+              onPress={() => {
+                scrollRef.current.scrollToOffset({ animated: true, offset: 0 });
+                navigation.navigate(MOVIEDETAIL, {
+                  selectedMovie: item._id,
+                  isSeries: item.film_type,
+                  seriesTitle: item.title,
+                });
+              }}
+            >
+              <FastImage
+                style={{
+                  width: SIZES.width * 0.3,
+                  height: SIZES.width * 0.45,
+                  borderRadius: 2,
+                  marginHorizontal: 5,
+                  marginVertical: 5,
+                }}
+                source={{ uri: item.dvd_thumbnail_link }}
+              />
+            </TouchableWithoutFeedback>
+          )}
+          numColumns={numColumns}
+        />
+      </View>
+    );
+  };
   //// end of people also watched
+
   return (
-    <View  style={styles.container}>
-          {peopleAlsoWatched()}
-          <Toast config={toastConfig}/>
+    <View style={styles.container}>
+      {peopleAlsoWatched()}
+      <Toast config={toastConfig} />
     </View>
   );
 };
@@ -868,22 +1098,22 @@ const styles = StyleSheet.create({
   },
   moreText: {
     fontSize: 26,
-    fontFamily: 'Sora-Regular',
+    fontFamily: "Sora-Regular",
     color: "#fff",
-    marginBottom: 20
+    marginBottom: 20,
   },
   titleText: {
     fontSize: 20,
-    fontFamily: 'Sora-Regular',
+    fontFamily: "Sora-Regular",
     color: "#E8E8E8",
   },
   titleTextBg: {
     fontSize: 26,
-    fontFamily: 'Sora-Regular',
+    fontFamily: "Sora-Regular",
     color: "#E7E7E7",
   },
   detailText: {
-    fontFamily: 'Sora-Light' ,
+    fontFamily: "Sora-Light",
     fontSize: 14,
     color: "#A9A9A9",
     marginBottom: 10,
