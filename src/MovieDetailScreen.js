@@ -290,6 +290,35 @@ const MovieDetailScreen = ({ navigation, route }) => {
             user.currentProfile._id
           )(dispatch);
         }
+      } else {
+        if (isWatchedMovie === "false") {
+          console.log("here 1 series");
+          addtoWatchedProfile(
+            moment(),
+            moment(),
+            user.user._id,
+            movieId,
+            title,
+            duration,
+            time,
+            user.currentProfile._id,
+            seasonNumber,
+            episodeNumber
+          )(dispatch);
+        } else {
+          console.log("here 2 series");
+          updateWatchedProfile(
+            moment(),
+            user.user._id,
+            movieId,
+            title,
+            duration,
+            time,
+            user.currentProfile._id,
+            seasonNumber,
+            episodeNumber
+          )(dispatch);
+        }
       }
     }
   };

@@ -1,11 +1,12 @@
 import React from "react";
 import { Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
-import { EPISODEDETAIL } from "../../constants/RouteNames";
+import { EPISODEDETAIL, BITMOVINPLAYER } from "../../constants/RouteNames";
 import IconAwesome from "react-native-vector-icons/FontAwesome5";
-import IconAnt from "react-native-vector-icons/AntDesign";
+import IonIcon from "react-native-vector-icons/Ionicons";
 import FastImage from "react-native-fast-image";
 import ProgressBar from "./ProgressBar";
 import { useSelector } from "react-redux";
+import Entypo from "react-native-vector-icons/Entypo";
 
 const EpisodeItem = ({ episode, navigation, index }) => {
   const user = useSelector((state) => state.user);
@@ -20,6 +21,7 @@ const EpisodeItem = ({ episode, navigation, index }) => {
     } catch (err) {}
     return (watchedAt / duration) * 100;
   };
+
   return (
     <View
       style={{
@@ -59,7 +61,9 @@ const EpisodeItem = ({ episode, navigation, index }) => {
               borderColor: "#fff",
             }}
             onPress={() =>
-              navigation.navigate(EPISODEDETAIL, { episode: episode })
+              navigation.navigate(BITMOVINPLAYER, {
+                movieId: episode._id,
+              })
             }
           >
             <IconAwesome
@@ -79,19 +83,87 @@ const EpisodeItem = ({ episode, navigation, index }) => {
         ) : null}
         <View
           style={{
-            flexDirection: "row",
             width: "95%",
-            alignSelf: "center",
+            flexDirection: "row",
             alignItems: "center",
+            justifyContent: "space-between",
+            marginTop: 10,
+            alignSelf: "center",
           }}
         >
-          <View style={styles.titleContainer}>
-            <Text style={styles.title}>
-              {index + 1}- {episode.episode_title}
-            </Text>
+          <Text style={styles.title}>
+            {index + 1}- {episode.episode_title}
+          </Text>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate(EPISODEDETAIL, { episode: episode })
+            }
+            style={{
+              margin: -5,
+              width: 30,
+              height: 30,
+              padding: 0,
+              borderRadius: 20,
+              justifyContent: "center",
+              alignItems: "center",
+              elevation: 25,
+              borderWidth: 1,
+              borderColor: "white",
+            }}
+          >
+            <IonIcon name="information" size={18} color="white" />
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            width: "100%",
+            height: 50,
+            alignSelf: "center",
+            alignItems: "center",
+            justifyContent: "space-around",
+            marginBottom: 5,
+          }}
+        >
+          <View>
             <Text style={styles.duration}>{episode.runtime}</Text>
           </View>
-          <IconAnt name="download" size={35} color="white" />
+          <View
+            style={{
+              width: 2,
+              height: "80%",
+              backgroundColor: "rgb(100,100,100)",
+              alignSelf: "center",
+              borderRadius: 50,
+            }}
+          ></View>
+          <View style={{ width: "60%" }}>
+            <Text numberOfLines={2} style={styles.synopsis}>
+              {episode.episode_synopsis}
+            </Text>
+          </View>
+          <View
+            style={{
+              width: 2,
+              height: "80%",
+              backgroundColor: "rgb(100,100,100)",
+              alignSelf: "center",
+              borderRadius: 50,
+            }}
+          ></View>
+          <View
+            style={{
+              // flexDirection: "row",
+              // justifyContent: "space-around",
+              // alignItems: "center",
+              // width: "25%",
+              height: "100%",
+              alignItems: "center",
+              justifyContent: "space-around",
+            }}
+          >
+            <Entypo name="download" size={25} color="#fff" />
+          </View>
         </View>
       </View>
     </View>
@@ -116,14 +188,6 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
     borderRadius: 3,
   },
-  titleContainer: {
-    flex: 1,
-    padding: 5,
-    justifyContent: "center",
-  },
-  plot: {
-    color: "darkgrey",
-  },
   title: {
     color: "white",
     fontSize: 18,
@@ -132,6 +196,11 @@ const styles = StyleSheet.create({
   duration: {
     color: "darkgrey",
     fontSize: 14,
+  },
+  synopsis: {
+    color: "#fff",
+    fontFamily: "Sora-Regular",
+    fontSize: 10.5,
   },
 });
 export default EpisodeItem;

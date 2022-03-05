@@ -17,14 +17,14 @@ const ProgressBar = ({ containerStyle, barStyle, percentage }) => {
         }}
       ></View>
       <LinearGradient
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            colors={["#87CEEB", "#4169E1"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        colors={["#87CEEB", "#4169E1"]}
         style={{
           position: "absolute",
           bottom: 0,
           left: 0,
-          width: percentage,
+          width: `${percentage}%`,
           marginTop: SIZES.base,
           ...barStyle,
         }}

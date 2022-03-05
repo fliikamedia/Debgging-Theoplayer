@@ -656,7 +656,8 @@ const HomeScreen = ({ navigation }) => {
           <View
             style={{
               flexDirection: "row",
-              paddingHorizontal: SIZES.padding,
+              //paddingHorizontal: SIZES.padding,
+              marginLeft: 15,
               alignItems: "center",
             }}
           >
@@ -704,7 +705,7 @@ const HomeScreen = ({ navigation }) => {
                 >
                   <View
                     style={{
-                      marginLeft: index == 0 ? SIZES.padding : 20,
+                      marginLeft: index == 0 ? 15 : 20,
                       marginRight:
                         index == byOnlyLastEpisode.length - 1
                           ? SIZES.padding
@@ -942,7 +943,7 @@ const HomeScreen = ({ navigation }) => {
               style={{
                 color: "white",
                 fontSize: 24,
-                marginLeft: 10,
+                marginLeft: 15,
                 marginTop: 40,
                 marginBottom: 20,
                 fontFamily: "Sora-Bold",
