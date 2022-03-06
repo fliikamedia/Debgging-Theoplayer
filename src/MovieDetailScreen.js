@@ -27,6 +27,7 @@ import {
   HOME,
   WELCOMESCREEN,
   MOVIEDETAIL,
+  SERIESEXTRASTAB,
 } from "../constants/RouteNames";
 import { Menu } from "react-native-paper";
 import axios from "axios";
@@ -60,6 +61,8 @@ import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
 import DropDownPicker, { MyArrowUpIcon } from "react-native-dropdown-picker";
 import RBSheet from "react-native-raw-bottom-sheet";
 import SeasonItem from "./components/SeasonItem";
+import ExtrasScreen from "./topTabScreens/ExtrasScreen";
+import DefaultScreen from "./topTabScreens/DefaultScreen";
 
 const MovieDetailScreen = ({ navigation, route }) => {
   const Tab = createMaterialTopTabNavigator();
@@ -92,6 +95,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
     { label: "Apple", value: "apple" },
     { label: "Banana", value: "banana" },
   ]);
+  const [activeTab, setActiveTab] = useState(SERIESEPISODESTAB);
   //console.log('currentProfile',user.currentProfile);
   /*   const getMovie = useCallback(async () => {
     const response = await FliikaApi.get(`/posts/${selectedMovie}`);
@@ -957,8 +961,29 @@ const MovieDetailScreen = ({ navigation, route }) => {
             },
           }}
         >
-          <Tab.Screen name={SERIESEPISODESTAB} component={SeriesEpisodesTab} />
-          <Tab.Screen name={SERIESDETAILSTAB} component={SeriesDetailsTab} />
+          <Tab.Screen
+            name={SERIESEPISODESTAB}
+            component={
+              activeTab === SERIESEPISODESTAB
+                ? SeriesEpisodesTab
+                : DefaultScreen
+            }
+            listeners={{ focus: () => setActiveTab(SERIESEPISODESTAB) }}
+          />
+          <Tab.Screen
+            name={SERIESDETAILSTAB}
+            component={
+              activeTab === SERIESDETAILSTAB ? SeriesDetailsTab : DefaultScreen
+            }
+            listeners={{ focus: () => setActiveTab(SERIESDETAILSTAB) }}
+          />
+          <Tab.Screen
+            name={SERIESEXTRASTAB}
+            component={
+              activeTab === SERIESEXTRASTAB ? ExtrasScreen : DefaultScreen
+            }
+            listeners={{ focus: () => setActiveTab(SERIESEXTRASTAB) }}
+          />
         </Tab.Navigator>
         <RBSheet
           animationType="slide"
