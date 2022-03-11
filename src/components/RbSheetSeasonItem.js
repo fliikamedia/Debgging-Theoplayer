@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { SIZES } from "../../constants";
 import { MOVIEDETAIL } from "../../constants/RouteNames";
 
-const SeasonItem = ({
+const RbSheetSeasonItem = ({
   seasonNumber,
   seriesTitle,
   setSeason,
@@ -131,4 +131,4 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
 });
-export default SeasonItem;
+export default RbSheetSeasonItem;

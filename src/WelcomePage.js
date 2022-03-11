@@ -7,28 +7,21 @@ import {
   Text,
   Dimensions,
   ActivityIndicator,
-  StatusBar
+  StatusBar,
 } from "react-native";
-import { LOGIN, SIGNUP, FORGOTPASSWORD, MOVIES, EMAILSIGNUP } from "../constants/RouteNames";
+import {
+  LOGIN,
+  SIGNUP,
+  FORGOTPASSWORD,
+  MOVIES,
+  EMAILSIGNUP,
+} from "../constants/RouteNames";
 import firebase from "firebase";
-import Video from 'react-native-video'
+import Video from "react-native-video";
 import FastImage from "react-native-fast-image";
 const WelcomePage = ({ navigation }) => {
   const [isPreloading, setIsPreloading] = useState(true);
-  //console.log(Dimensions.get('window').height);
 
-  /*
-  const checkIFLoggedIn = () => {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        navigation.navigate(MOVIES);
-      }
-    });
-  };
-  useEffect(() => {
-    checkIFLoggedIn();
-  }, []);
-  */
   // Button Width Responsive
   var buttonWidth;
   if (Dimensions.get("window").width < 350) {
@@ -78,7 +71,7 @@ const WelcomePage = ({ navigation }) => {
         source={{
           uri: "https://fliikaimages.azureedge.net/hero-container/boxing_hero.mp4",
         }}
-       repeat={true}
+        repeat={true}
         muted={true}
         shouldPlay
         resizeMode="cover"
@@ -87,7 +80,7 @@ const WelcomePage = ({ navigation }) => {
       {isPreloading ? null : (
         <View style={styles.Wrapper}>
           <FastImage
-            source={require('../assets/fliika-logo.png')}
+            source={require("../assets/fliika-logo.png")}
             style={styles.logo}
           />
           <View>
@@ -142,8 +135,8 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   logo: {
-    height:  32,
-    width: 100 ,
+    height: 32,
+    width: 100,
     marginTop: 30,
   },
   textDescriptionLg: {

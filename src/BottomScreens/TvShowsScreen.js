@@ -36,7 +36,7 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import RecycleView from "../components/RecycleView";
 import FastImage from "react-native-fast-image";
 import RBSheet from "react-native-raw-bottom-sheet";
-import SeasonItem from "../components/SeasonItem";
+import RbSheetSeasonItem from "../components/RbSheetSeasonItem";
 
 const TvShowsScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -404,7 +404,7 @@ const TvShowsScreen = ({ navigation }) => {
         >
           {seasons
             ? seasons.map((season, index) => (
-                <SeasonItem
+                <RbSheetSeasonItem
                   setSeason={setSeasonNumber}
                   key={season}
                   seasonNumber={season}

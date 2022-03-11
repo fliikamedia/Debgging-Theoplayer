@@ -43,7 +43,8 @@ import IonIcon from "react-native-vector-icons/Ionicons";
 import moment from "moment";
 import RBSheet from "react-native-raw-bottom-sheet";
 import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
-import SeasonItem from "../components/SeasonItem";
+import RbSheetSeasonItem from "../components/RbSheetSeasonItem";
+import RbSheetMovieItem from "../components/RbSheetMovieItem";
 
 const HomeScreen = ({ navigation }) => {
   const appState = useRef(AppState.currentState);
@@ -66,7 +67,7 @@ const HomeScreen = ({ navigation }) => {
   const [videoPaused, setVideoPaused] = useState(false);
   const [videoMute, setVideoMute] = useState(true);
   const [rbTitle, setRbTitle] = useState({});
-  const [rbSeries, setRbSeries] = useState({});
+  const [rbItem, setRbItem] = useState({});
   const [seasonNumber, setSeasonNumber] = useState(null);
 
   const yOffset = useRef(new Animated.Value(0)).current;
@@ -903,16 +904,15 @@ const HomeScreen = ({ navigation }) => {
                   />
                 </TouchableWithoutFeedback>
               )}
-              {item.film_type === "series" ? (
-                <TouchableOpacity
-                  onPress={() => {
-                    setRbSeries(item), openRBSheet();
-                  }}
-                  style={styles.carouselIconInfo}
-                >
-                  <IconMaterial name="more-vert" size={30} color="#fff" />
-                </TouchableOpacity>
-              ) : null}
+
+              <TouchableOpacity
+                onPress={() => {
+                  setRbItem(item), openRBSheet();
+                }}
+                style={styles.carouselIconInfo}
+              >
+                <IconMaterial name="more-vert" size={30} color="#fff" />
+              </TouchableOpacity>
             </TouchableOpacity>
           </View>
         );
@@ -1156,16 +1156,27 @@ const HomeScreen = ({ navigation }) => {
     let allSeasons;
     try {
       allSeasons = movies.availableMovies
-        ?.filter((r) => r.title === rbSeries.title)
+        ?.filter((r) => r.title === rbItem.title)
         ?.map((r) => r.season_number);
     } catch (err) {}
 
     const seasons = [...new Set(allSeasons)];
     let seriesTitle;
     try {
-      seriesTitle = rbSeries.title;
+      seriesTitle = rbItem.title;
     } catch (err) {}
 
+    let rbHeight;
+    if (rbItem.film_type === "series") {
+      if (seasons?.length > 1) {
+        rbHeight = SIZES.height * 0.5;
+      } else {
+        rbHeight = SIZES.height * 0.3;
+      }
+    } else {
+      rbHeight = SIZES.height * 0.38;
+      //rbHeight = SIZES.height * 0.65;
+    }
     return (
       <RBSheet
         animationType="slide"
@@ -1173,6 +1184,7 @@ const HomeScreen = ({ navigation }) => {
         closeOnDragDown={true}
         closeOnPressMask={true}
         closeOnPressBack={true}
+        closeDuration={200}
         customStyles={{
           wrapper: {
             backgroundColor: "transparent",
@@ -1181,13 +1193,15 @@ const HomeScreen = ({ navigation }) => {
             backgroundColor: "#fff",
           },
           container: {
-            backgroundColor: "rgba(0,0,0, 0.8)",
+            backgroundColor:
+              rbItem.film_type === "series"
+                ? "rgba(0,0,0, 0.8)"
+                : "rgba(0,0,0, 0.92)",
             borderTopLeftRadius: 20,
             borderTopRightRadius: 20,
             borderWidth: 0.6,
             borderColor: "grey",
-            height:
-              seasons.length > 1 ? SIZES.height * 0.5 : SIZES.height * 0.3,
+            height: rbHeight,
           },
         }}
       >
@@ -1200,20 +1214,26 @@ const HomeScreen = ({ navigation }) => {
             justifyContent: "space-between",
           }}
         >
-          {seasons
-            ? seasons.map((season, index) => (
-                <SeasonItem
-                  setSeason={setSeasonNumber}
-                  key={season}
-                  seasonNumber={season}
-                  seriesTitle={seriesTitle}
-                  closeRBSheet={closeRBSheet}
-                  from="home"
-                  navigate={navigation.navigate}
-                  seriesId={rbSeries._id}
-                />
-              ))
-            : null}
+          {rbItem.film_type === "series" && seasons ? (
+            seasons.map((season, index) => (
+              <RbSheetSeasonItem
+                setSeason={setSeasonNumber}
+                key={season}
+                seasonNumber={season}
+                seriesTitle={seriesTitle}
+                closeRBSheet={closeRBSheet}
+                from="home"
+                navigate={navigation.navigate}
+                seriesId={rbItem._id}
+              />
+            ))
+          ) : (
+            <RbSheetMovieItem
+              navigate={navigation.navigate}
+              movieTitle={rbItem.title}
+              closeRBSheet={closeRBSheet}
+            />
+          )}
         </ScrollView>
       </RBSheet>
     );
@@ -1382,6 +1402,14 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 15,
     left: 15,
+    padding: 4,
+    borderRadius: 100,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 25,
+    borderWidth: 1,
+    //borderColor: "white",
+    backgroundColor: "rgba(0,0,0,0.4)",
   },
 });
 

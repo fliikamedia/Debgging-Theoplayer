@@ -60,7 +60,7 @@ import FastImage from "react-native-fast-image";
 import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
 import DropDownPicker, { MyArrowUpIcon } from "react-native-dropdown-picker";
 import RBSheet from "react-native-raw-bottom-sheet";
-import SeasonItem from "./components/SeasonItem";
+import RbSheetSeasonItem from "./components/RbSheetSeasonItem";
 import ExtrasScreen from "./topTabScreens/ExtrasScreen";
 import DefaultScreen from "./topTabScreens/DefaultScreen";
 
@@ -1018,7 +1018,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
             }}
           >
             {seasons.map((season, index) => (
-              <SeasonItem
+              <RbSheetSeasonItem
                 setSeason={setSeasonNumber}
                 key={season}
                 seasonNumber={season}
