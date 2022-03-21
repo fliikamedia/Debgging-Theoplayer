@@ -11,10 +11,9 @@ import EpisodeItem from "../components/EmpisodeItem";
 import { useDispatch, useSelector } from "react-redux";
 
 const SeriesEpisodesTab = ({ route, navigation }) => {
-  LogBox.ignoreLogs([
+  /*  LogBox.ignoreLogs([
     "Non-serializable values were found in the navigation state",
-  ]);
-  const { playSeries } = route.params;
+  ]); */
   const movies = useSelector((state) => state.movies);
   //console.log(route);
 
@@ -36,7 +35,7 @@ const SeriesEpisodesTab = ({ route, navigation }) => {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: "black" }}>
+    <View style={{ flex: 1, backgroundColor: "black", paddingBottom: 50 }}>
       {/*<FlatList
         ListHeaderComponentStyle={
           (renderHeaderSection(), renderCategory(), renderMovieDetails())
@@ -44,16 +43,16 @@ const SeriesEpisodesTab = ({ route, navigation }) => {
         keyExtractor={(item) => item._id}
         data={currentSeries}
         renderItem={({ item }) => (
-          <EpisodeItem playSeries={playSeries} episode={item} />
+          <EpisodeItem episode={item} />
         )}
         />*/}
-      {movies.currentSeries.map((item) => {
+      {movies.currentSeries.map((item, index) => {
         return (
           <EpisodeItem
             key={item._id}
-            playSeries={playSeries}
             episode={item}
             navigation={navigation}
+            index={index}
           />
         );
       })}

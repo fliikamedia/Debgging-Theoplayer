@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import UserProfile from "../components/UserProfile";
 import { useSelector, useDispatch } from "react-redux";
-import { addProfile } from "../../store/actions/user";
+import { addProfile, loggedOut } from "../../store/actions/user";
 import { WELCOMESCREEN } from "../../constants/RouteNames";
 import firebase from "firebase";
 import profileImgs from "../../constants/profileImgs";
@@ -20,6 +20,8 @@ import { COLORS, SIZES, icons } from "../../constants";
 import IconAnt from 'react-native-vector-icons/AntDesign';
 import IconFeather from 'react-native-vector-icons/Feather'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import AsyncStorage from "@react-native-community/async-storage";
+
 const ProfileScreen = ({ navigation }) => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -32,9 +34,11 @@ const ProfileScreen = ({ navigation }) => {
     profilesLength = user.user.profiles.length;
   } catch (err) {}
   const logOut = async () => {
+   // await AsyncStorage.setItem("whatPhase", "Null");
     try {
       await firebase.auth().signOut();
-      navigation.navigate(WELCOMESCREEN);
+      loggedOut()(dispatch);
+      //navigation.navigate(WELCOMESCREEN);
     } catch (err) {
       Alert.alert(
         "There is something wrong! Please try again later",
@@ -46,7 +50,7 @@ const ProfileScreen = ({ navigation }) => {
     if (name) {
       setName("");
       setImageName("");
-      addProfile(user.email, name, imageName)(dispatch);
+      addProfile(user.user._id, name, imageName)(dispatch);
       setCreating(false);
     } else {
       Alert.alert("", "Please Select a profile name first", [
@@ -252,10 +256,11 @@ const ProfileScreen = ({ navigation }) => {
             justifyContent: "space-between",
             alignSelf: "center",
             marginTop: 40,
+            alignItems: 'center'
           }}
         >
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <IconFeather name="arrow-left" size={40} color="teal" />
+            <IconFeather name="arrow-left" size={30} color="#fff" />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => logOut()}>
             <Icon name="logout" size={40} color="white" />

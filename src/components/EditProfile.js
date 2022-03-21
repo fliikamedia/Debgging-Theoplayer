@@ -22,7 +22,7 @@ const EditProfile = ({ navigation, route }) => {
   const { main, profileName, imageTitle, profileId } = route.params;
   const [name, setName] = useState(profileName);
   const [imageName, setImageName] = useState(imageTitle);
-console.log(main);
+//console.log(main);
   const creatingProfile = () => {
   //  let profileId = user?.user?.profiles[0]?._id;
   /*   if (main) {

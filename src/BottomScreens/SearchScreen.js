@@ -57,6 +57,7 @@ const SearchScreen = ({ navigation }) => {
       return (
         <Text
           style={{
+            fontFamily: 'Sora-Regular',
             fontSize: 20,
             color: "aqua",
             textAlign: "center",

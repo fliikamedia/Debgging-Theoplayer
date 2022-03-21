@@ -41,6 +41,17 @@ export const REMOVE_PROFILE = 'REMOVE_PROFILE';
 export const REMOVE_PROFILE_SUCCESS = 'REMOVE_PROFILE_SUCCESS';
 export const REMOVE_PROFILE_FAILED = 'REMOVE_PROFILE_FAILED';
 export const CURRENT_PROFILE = 'CURRENT_PROFILE';
+export const REMOVE_FROM_WATCHED = 'REMOVE_FROM_WATCHED';
+export const REMOVE_FROM_WATCHED_SUCCESS = 'REMOVE_FROM_WATCHED_SUCCESS';
+export const REMOVE_FROM_WATCHED_FAILED = 'REMOVE_FROM_WATCHED_FAILED';
+export const LOGGED_IN_SUCCESS = 'LOGGED_IN_SUCCESS';
+export const LOGGED_OUT_SUCCESS = 'LOGGED_OUT_SUCCESS';
+export const FILLING_PROFILE = 'FILLING_PROFILE';
+export const GET_ALL_USERS = 'GET_ALL_USERS';
+export const GET_ALL_USERS_SUCCESS = 'GET_ALL_USERS_SUCCESS';
+export const GET_ALL_USERS_FAILED = 'GET_ALL_USERS_FAILED';
+export const GET_ALL_WATCHED_MOVIES = 'GET_ALL_WATCHED_MOVIES'
+
 export const addUser = (email, firstName, lastName, yearOfBirth, phoneNumber,uid, emailVerified ,profileImage, authtoken) => async (dispatch) => {
   let data = {
     email: email,
@@ -86,7 +97,28 @@ export const addUser = (email, firstName, lastName, yearOfBirth, phoneNumber,uid
     console.log(err);
   }
 };
+export const loggedIn = () => async dispatch => {
+  try {
+    dispatch({type: LOGGED_IN_SUCCESS});
+  } catch (err) {
 
+  }
+}
+export const loggedOut = () => async dispatch => {
+  try {
+    dispatch({type: LOGGED_OUT_SUCCESS});
+  } catch (err) {
+
+  }
+}
+
+export const fillingProfile = () => async dispatch => {
+  try {
+    dispatch({type: FILLING_PROFILE});
+  } catch (err) {
+
+  }
+}
 export const getUser = (email, authtoken) => async (dispatch) => {
   let data = {
     email: email
@@ -131,12 +163,12 @@ export const getUser = (email, authtoken) => async (dispatch) => {
 };
 
 
-export const addProfile = (emails, name, image) => async (dispatch) => {
+export const addProfile = (userId, name, image) => async (dispatch) => {
   console.log("adding profile");
   try {
     dispatch({ type: ADD_PROFILE, payload: name });
     const result = await expressApi.post(`/users/addProfile`, {
-      email: emails,
+      userId: userId,
       profile: {
         name: name,
         image: image,
@@ -162,7 +194,7 @@ export const addProfile = (emails, name, image) => async (dispatch) => {
 };
 
 export const addtoWatchedProfile =
-  (userId, movieId, title,  duration, watched, profileId, season = null, episode = null) => async (dispatch) => {
+  (created,updated,userId, movieId, title,  duration, watched, profileId, season = null, episode = null) => async (dispatch) => {
     try {
       console.log("watched profile");
       //dispatch({ type: ADD_TO_WATCHED_PROFILE });
@@ -176,6 +208,8 @@ export const addtoWatchedProfile =
           watchedAt: watched,
           season: season,
           episode: episode,
+          created:created,
+          updated: updated
 
         },
       });
@@ -207,7 +241,7 @@ export const setNotProfile = () => async (dispatch) => {
 };
 
 export const updateWatchedProfile =
-  (userId, movieId, title, duration, watched, profileId,season = null, episode = null) => async (dispatch) => {
+  (updated,userId, movieId, title, duration, watched, profileId,season = null, episode = null) => async (dispatch) => {
     console.log("updating profile");
     try {
      // dispatch({ type: UPDATE_WATCHED });
@@ -221,6 +255,7 @@ export const updateWatchedProfile =
           watchedAt: watched,
           season: season,
           episode: episode,
+          updated: updated
         },
       });
       if (result.status === 200) {
@@ -398,3 +433,64 @@ dispatch({type: UPDATE_MOVIE_TIME, payload: {watched: watched, duration: duratio
 
   }
   }
+
+
+  export const deleteFromWatched =  (userId, profileId, movieId, isSeries, seriesName) =>  async dispatch => {
+  try {
+    dispatch({ type: REMOVE_FROM_WATCHED });
+    const result = await expressApi.post(`/users/deleteFromWatched`, {
+      userId,
+      profileId,
+      movieId,
+      isSeries,
+      seriesName
+    });
+    if (result.status == 200) {
+      //console.log(result.data);
+      dispatch({
+        type: REMOVE_FROM_WATCHED_SUCCESS,
+        payload: result.data,
+      });
+      dispatch({
+        type: CURRENT_PROFILE,
+        payload: result.data.profiles.find((r) => r._id == profileId),
+      });
+    } else {
+      dispatch({ type: REMOVE_FROM_WATCHED_FAILED });
+    }
+  } catch (err) {
+    //console.log(err);
+  }
+  }
+
+
+  export const getAllUsers =  () =>  async dispatch => {
+    try {
+      dispatch({ type: GET_ALL_USERS });
+      const result = await expressApi.get(`/users/get-all-users`);
+      if (result.status == 200) {
+        console.log('All users',result.data);
+        dispatch({
+          type: GET_ALL_USERS_SUCCESS,
+          payload: result.data,
+        });
+
+          //Get all watched movies
+  let allWatchedMovies = [];
+  for (let i = 0; i < result.data?.length; i++) {
+    for (let c = 0; c < result.data[i]?.profiles?.length; c++) {
+    allWatchedMovies.push(...result.data[i].profiles[c].watched)
+    }
+  }
+  dispatch({
+    type: GET_ALL_WATCHED_MOVIES,
+    payload: allWatchedMovies,
+  });
+
+      } else {
+        dispatch({ type: GET_ALL_USERS_FAILED });
+      }
+    } catch (err) {
+      //console.log(err);
+    }
+    }

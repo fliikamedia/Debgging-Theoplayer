@@ -1,8 +1,6 @@
 import React, {useState, useRef, useEffect} from "react";
-import { View, Text, StyleSheet, StatusBar, AppState, Platform, Image, TouchableOpacity, LogBox } from "react-native";
-import ReactNativeBitmovinPlayer, {
-  ReactNativeBitmovinPlayerIntance,
-} from '@takeoffmedia/react-native-bitmovin-player';
+import { View, Text, StyleSheet, FlatList, ScrollView, Platform, TouchableWithoutFeedback, TouchableOpacity, LogBox } from "react-native";
+
 import Orientation from 'react-native-orientation';
 import {
   addtoWatchedProfile,
@@ -13,83 +11,25 @@ import {
 } from "../store/actions/user";
 import { useDispatch, useSelector } from 'react-redux';
 import AsyncStorage from "@react-native-community/async-storage";
-import IconAnt from 'react-native-vector-icons/AntDesign';
-import { BITMOVINPLAYER } from "../constants/RouteNames";
+import IconAwesome from 'react-native-vector-icons/FontAwesome5';
+import { EPISODEDETAIL, MOVIEDETAIL, BITMOVINPLAYER } from "../constants/RouteNames";
 import FastImage from 'react-native-fast-image'
-
+import moment from "moment";
+import { COLORS, SIZES, icons } from ".././constants";
+import MovieDetailIcon from './components/MovieDetailIcon';
+import RecycleViewVertical from "./components/RecycleViewVertical";
 
 const EpisodeDetailScreen = ({ navigation,route }) => {
   const user = useSelector((state) => state.user);
+  const movies = useSelector(state => state.movies)
   const dispatch = useDispatch();
   const { episode } = route.params;
   const [playing, setPlaying] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-LogBox.ignoreAllLogs()
+//LogBox.ignoreAllLogs()
   const [watched, setWatched] = useState(0);
   const [duration, setDuration] = useState(0);
-  console.log('episode',episode);
-/*   useEffect( () => {
-    const unsubscribe = navigation.addListener('focus', async () => {
-     // Orientation.lockToPortrait();
-      console.log('timing', user.duration, user.watchedAt);
-      if (Platform.OS == 'android') {
-      const didPlay = await AsyncStorage.getItem("didPlay")
-      console.log('focused', didPlay);
-      if (didPlay === 'true') {
-      ReactNativeBitmovinPlayerIntance.destroy();
-      AsyncStorage.setItem("didPlay", "false")
-      console.log('focused', didPlay);
-    }
-      
-  } else {
-    console.log('focused ios');
-    ReactNativeBitmovinPlayerIntance.pause()
-  }
-  return unsubscribe;
-});
-  }, [navigation]); */
 
-/*   useEffect( () => {
-    const unsubscribe = navigation.addListener('focus', async () => {
-       Orientation.lockToPortrait();
-      
-      const whatTime = await AsyncStorage.getItem('watched');
-      const whatDuration = await AsyncStorage.getItem('duration');
-      const didPlay = await AsyncStorage.getItem("didPlay")
-      const movieTitle=  await AsyncStorage.getItem("movieName")
-
-      let isWatchedMovie = isWatched(user.currentProfile.watched, movieTitle)
-      console.log('timing', whatTime, whatDuration, movieTitle);
-      if (didPlay == "true"){
-       saveMovie(Number(whatDuration), Number(whatTime), movieTitle, isWatchedMovie);
-      }
-      if (Platform.OS == 'android') {
-      console.log('focused', didPlay);
-      if (didPlay === 'true') {
-    //  ReactNativeBitmovinPlayerIntance.destroy();
-      AsyncStorage.setItem("didPlay", "false")
-      console.log('focused', didPlay);
-    }
-      
-  } else {
-    console.log('focused ios');
-    ReactNativeBitmovinPlayerIntance.pause()
-  }
-
-  AsyncStorage.setItem('watched', '0');
-  AsyncStorage.setItem('duration', '0')
-});
-return ()=> unsubscribe();
-  }, [navigation]); */
-  const appState = useRef(AppState.currentState);
-/*   useEffect(() => {
-    AppState.addEventListener("change",   stopPlaying,
-    );
-    
-    return () => {
-      AppState.removeEventListener("change",   stopPlaying);
-    };
-  }, [appState]); */
 
   useEffect( () => {
     const unsubscribe = navigation.addListener('focus', async () => {
@@ -104,9 +44,11 @@ return ()=> unsubscribe();
       const movieId=  await AsyncStorage.getItem("movieId")
 
       const isWatchedMovie = await AsyncStorage.getItem("isWatchedBefore")
+      const userId = await AsyncStorage.getItem("userId")
+      const profileId = await AsyncStorage.getItem("profileId")
       //console.log('timing', whatTime, whatDuration, movieTitle);
       if (didPlay == "true"){
-       saveMovie(Number(whatDuration), Number(whatTime), movieId, movieTitle, isWatchedMovie, Number(seasonNumber), Number(episodeNumber));
+       saveMovie(userId, profileId,Number(whatDuration), Number(whatTime), movieId, movieTitle, isWatchedMovie, Number(seasonNumber), Number(episodeNumber));
       }
       if (Platform.OS == 'android') {
       console.log('focused', didPlay);
@@ -126,6 +68,8 @@ return ()=> unsubscribe();
   AsyncStorage.setItem('movieName', 'null');
   AsyncStorage.setItem("isWatchedBefore", "null")
   AsyncStorage.setItem("movieId", "null")
+  AsyncStorage.setItem("userId", "null")
+  AsyncStorage.setItem("profileId", "null")
 });
 return ()=> unsubscribe();
   }, [navigation]);
@@ -141,59 +85,8 @@ return ()=> unsubscribe();
       return movieWatched;
     } catch (err) {}
   };
-
-/*   const stopPlaying = async () => {
-    const didPlay = await AsyncStorage.getItem("didPlay")
-    Orientation.lockToPortrait()
-
-    if (Platform.OS === 'ios') {
-      console.log('ios');
-      ReactNativeBitmovinPlayerIntance.pause();
-    } else if (Platform.OS == 'android' && didPlay == "true") {
-      //ReactNativeBitmovinPlayerIntance.destroy();
-      AsyncStorage.setItem("didPlay", "false")
-      console.log('android');
-
-    }
-  } */
-
-
- /*  useEffect(() => {
-    if (watched > 0 ) {
-      console.log('updating time locally');
-      updateMovieTime(watched, duration)(dispatch);
-    }
-    saveMovie()
-  }, [watched]); */
   
-  
- /*  const saveMovie = (duration,time,title, isWatchedMovie) => {
-    console.log('saving movie',duration,time, title, isWatchedMovie);
-    console.log('iswatched',   isWatched(user.currentProfile.watched, title));
-   if (
-      !isWatchedMovie
-    ) {
-      console.log('here 1');
-      addtoWatchedProfile(
-        user.user._id,
-        title,
-        duration,
-        time,
-        user.currentProfile._id
-      )(dispatch);
-    } else {
-      console.log('here 2');
-      updateWatchedProfile(
-        user.user._id,
-        title,
-        duration,
-        time,
-        user.currentProfile._id
-      )(dispatch);
-    }
-  }; */
-  
-  const saveMovie = (duration,time,movieId, title, isWatchedMovie, seasonNumber, episodeNumber) => {
+  const saveMovie = (userId, profileId,duration,time,movieId, title, isWatchedMovie, seasonNumber, episodeNumber) => {
     console.log('saving movie',duration,time, title, isWatchedMovie, seasonNumber, episodeNumber);
    // console.log('iswatched',   isWatched(user.currentProfile.watched, title));
    if(time > 0) {
@@ -202,136 +95,261 @@ return ()=> unsubscribe();
       ) {
                 console.log('here 1 series');
                 addtoWatchedProfile(
-                  user.user._id,
+                  moment(),
+                  moment(),
+                  userId,
                   movieId,
                   title,
                   duration,
                   time,
-                  user.currentProfile._id,
+                  profileId,
                   seasonNumber,
-                  episodeNumber
+                  episodeNumber,
                   )(dispatch);
                 } else {
                   console.log('here 2 series');
                   updateWatchedProfile(
-                    user.user._id,
+                    moment(),
+                    userId,
                     movieId,
                     title,
                     duration,
                     time,
-                    user.currentProfile._id,
+                    profileId,
                     seasonNumber,
                     episodeNumber
                     )(dispatch);
                   }
         } 
   };
-/*   let playerHeight;
-  let playerMargin
-if (playing) {
-  playerHeight = '100%'
-  playerMargin = 0;
-} else {
-  playerHeight = '30%'  
-  playerMargin = 30;
-}
 
-let str= episode.play_url;
-let playURL;
-if (Platform.OS === 'android') {
-playURL = str.replace('m3u8-aapl','mpd-time-cmaf')
-} else if (Platform.OS == 'ios' && str.includes('mpd')) {
-  playURL = str.replace('mpd-time-csf','m3u8-aapl')
-
-} else {
-playURL = str;
-}
-console.log(playURL); */
-  return (
-    <View
-      style={{ flex: 1, backgroundColor: "black" }}
-    >
-      <TouchableOpacity style={{height: '40%', width: '100%',      alignItems: "center",
-            justifyContent: "center",}} onPress={()=>                navigation.navigate(BITMOVINPLAYER, {movieId: episode._id, time: null})
-          } >
-      <FastImage source={{uri: episode.wide_thumbnail_link}} style={{ position: "absolute",
-    top: 0,
-    bottom: 0,
-    right: 0,
-    left: 0,
-    resizeMode: "cover",}}   />
-      <IconAnt name="playcircleo" size={100} color="white" />
-      </TouchableOpacity>
-      {/*
-       <View style={{width: '100%', height: playerHeight, marginTop: playerMargin}}>
-         {playing ? <StatusBar hidden /> : null}
-      {isPlaying? <ReactNativeBitmovinPlayer
-        autoPlay={false}
-        hasZoom={false}
-        configuration={{
-          url: playURL,
-          //poster: episode.wide_thumbnail_link,
-          startOffset: 0,
-          hasNextEpisode: true,
-          subtitles: '',
-          //thumbnails: '',
-          title: episode.episode_title,
-          subtitle: '',
-          nextPlayback: 1,
-          hearbeat: 1,
-          advisory: {
-            classification: '',
-            description: '',
-          },
+  const renderHeaderBar = () => {
+    const navigateBack = () => {
+      navigation.goBack();
+    };
+    return (
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginTop: Platform.OS == "ios" ? 40 : 40,
+          paddingHorizontal: SIZES.padding,
         }}
-        onLoad={e => console.log('Load', e)}
-        onError={e => console.log('Error', e)}
-        onPlaying={async ({nativeEvent})=> {console.log(nativeEvent),setPlaying(true),  Orientation.lockToLandscape()
-          , await AsyncStorage.setItem("didPlay", 'true') }}
-        onEvent={({nativeEvent}) => { console.log(nativeEvent),setDuration(Math.ceil(nativeEvent.duration)), setWatched(Math.ceil(nativeEvent.time))}}
-        onPause={()=> setIsPlaying(false)}
-      /> : null}
-        </View>*/}
-      <Text style={styles.titleText}>Genres</Text>
-      <Text style={styles.detailText}>
-        {episode.genre.toString().replace(/,/g, ", ")}
-      </Text>
-      <Text style={styles.titleText}>Directors</Text>
-      <Text style={styles.detailText}>
-        {episode.directors.toString().replace(/,/g, ", ")}
-      </Text>
-      <Text style={styles.titleText}>Starring</Text>
-      <Text style={styles.detailText}>
-        {episode.cast.toString().replace(/,/g, ", ")}
-      </Text>
-      <Text style={styles.titleText}>Content Advisory</Text>
-      <Text style={styles.detailText}>
-        {episode.content_advisory.toString().replace(/,/g, ", ")}
-      </Text>
-      <Text style={styles.titleText}>Languages</Text>
-      <Text style={styles.detailText}>
-        {episode.languages.toString().replace(/,/g, ", ")}
-      </Text>
-      <Text style={styles.titleText}>Subtitles</Text>
-      <Text style={styles.detailText}>
-        {episode.subtitles.toString().replace(/,/g, ", ")}
-      </Text>
+      >
+        {/* Back Button */}
+        <MovieDetailIcon iconFuc={navigateBack} icon={icons.left_arrow} />
+        {/* Share Button */}
+        <MovieDetailIcon iconFuc={() => console.log('cast clicked')} icon={icons.cast} />
+      </View>
+    );
+  };
+  const renderEpisodeThumbnail = () => {
+    let producersLength;
+    let writersLength;
+    let cinematographersLength;
+    try {
+      producersLength = episode?.producers[0]?.length;
+      writersLength = episode?.writers[0]?.length;
+      cinematographersLength = episode?.cinematographers[0]?.length;
+    } catch (err) {
+      console.log(err);
+    }
+   
+    return (
+      <View>
+      <TouchableOpacity 
+      style={{height: SIZES.width, width: '100%' ,alignItems: "center",
+      justifyContent: "center",}} 
+      onPress={()=> navigation.navigate(BITMOVINPLAYER, {movieId: episode._id, time: null})}
+      >
+      <FastImage source={{uri: episode.wide_thumbnail_link}} style={{ position: "absolute",
+      top: 0,
+      bottom: 0,
+      right: 0,
+      left: 0,
+}}   />
+       <TouchableOpacity
+                  style={{   
+                  padding: 18,
+                  borderRadius: 40,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  elevation: 25,
+                  borderWidth: 2,
+                  borderColor: "#fff",
+                  
+      }}
+      onPress={()=> navigation.navigate(BITMOVINPLAYER, {movieId: episode._id, time: null})}
+                  >
+                     <IconAwesome
+                    name="play"
+                    size={40}
+                    color="#fff"
+                    style={{ marginLeft: 4 }}
+                  />
+                  </TouchableOpacity>
+      </TouchableOpacity>
+  
+      <View
+        style={{
+          flex: 1,
+          marginTop: SIZES.padding,
+          justifyContent: "space-around",
+        }}
+      >
+        {/* titme, running time and progress bar */}
+        <View>
+          <View style={{ flexDirection: "row" }}></View>
+        </View>
+        {/* watch */}
+            <View style={{ width: "100%", paddingHorizontal: 10 }}>
+              <Text style={{ fontFamily: 'Sora-Regular',color: COLORS.white, textAlign: "justify", marginBottom: 5 }}>
+                {episode.storyline}
+              </Text>
+            </View>
+            <View style={{width: '95%', height: 2, backgroundColor: 'grey', alignSelf: 'center', marginVertical: 10}}></View>
+            <View style={{ width: "100%", paddingHorizontal: 10 }}>
+            <Text style={styles.moreText}>More Information</Text>
+            <Text style={styles.titleText}>Content Advisory</Text>
+              <Text style={styles.detailText}>
+                {episode.content_advisory.toString().replace(/,/g, ", ")}
+              </Text>
+              <Text style={styles.titleText}>Languages</Text>
+              <Text style={styles.detailText}>
+                {episode.languages.toString().replace(/,/g, ", ")}
+              </Text>
+              <Text style={styles.titleText}>Subtitles</Text>
+              <Text style={styles.detailText}>
+                {episode.subtitles.toString().replace(/,/g, ", ")}
+              </Text>
+              <View style={{width: '95%', height: 2, backgroundColor: 'grey', alignSelf: 'center', marginVertical: 10}}></View>
+              <Text style={styles.titleTextBg}>Cast</Text>
+              <Text style={styles.detailText}>
+                {episode.cast.toString().replace(/,/g, ", ")}
+              </Text>
+              <Text style={styles.titleTextBg}>Crew</Text>
+              <Text style={styles.titleText}>Directors</Text>
+              <Text style={styles.detailText}>
+                {episode.directors.toString().replace(/,/g, ", ")}
+              </Text>
+             {writersLength ? <View>
+              <Text style={styles.titleText}>Writers</Text>
+              <Text style={styles.detailText}>
+                {episode.writers.toString().replace(/,/g, ", ")}
+              </Text>
+              </View> : null}
+              {cinematographersLength ? <View>
+              <Text style={styles.titleText}>Cinematographers</Text>
+              <Text style={styles.detailText}>
+                {episode.cinematographers.toString().replace(/,/g, ", ")}
+              </Text>
+              </View> : null}
+              {producersLength ? <View>
+              <Text style={styles.titleText}>Producers</Text>
+              <Text style={styles.detailText}>
+                {episode.producers.toString().replace(/,/g, ", ")}
+              </Text>
+              </View> : null}
+             
+            </View>
+     
+      </View>
+      <View style={{width: '90%', height: 2, backgroundColor: 'grey', alignSelf: 'center', marginVertical: 10}}></View>
+      <Text style={{fontFamily: 'Sora-Regular', color: '#fff', fontSize: 26, marginBottom: 20, marginLeft: 10}}>People Also Watched</Text>
+      </View>
+    )
+  }
+
+
+  const peopleAlsoWatched = () => {
+    let alsoWatchIds = [];
+    for (let i = 0; i< episode.genre.length; i++) {
+      for (let x = 0; x < movies.availableMovies.length; x++) {
+        if ( movies.availableMovies[x].title != episode.title && movies.availableMovies[x].genre.includes(episode.genre[i]) && movies.availableMovies[x]?.film_type === 'movie') {
+          alsoWatchIds.push(movies.availableMovies[x]._id)
+         // console.log(movies.availableMovies[x].title);
+        }
+      }
+    }
+
+  let alsoWatchSet = [...new Set(alsoWatchIds)];
+
+  let alsoWatch = [];
+  for (let x = 0; x < movies.availableMovies.length; x++) {
+  for (let c = 0; c < alsoWatchSet.length; c++ ) {
+    if (movies.availableMovies[x]._id === alsoWatchSet[c]) {
+      alsoWatch.push(movies.availableMovies[x])
+    }
+  }
+  }
+let numColumns = 3;
+    return (
+      <View style={{marginBottom: 30}}>
+    <FlatList
+    numColumns={numColumns}
+    ListHeaderComponent={renderEpisodeThumbnail()}
+    horizontal={false}
+    showsVerticalScrollIndicator={false}
+    data={alsoWatch}
+    keyExtractor={item => item._id}
+    renderItem={({item, index}) => (
+      <TouchableWithoutFeedback
+      onPress={() =>{
+          navigation.navigate(MOVIEDETAIL, {
+            selectedMovie: item._id,
+            isSeries: item.film_type,
+            seriesTitle: item.title,
+          });
+      
+       
+      }
+      }
+    >
+      <FastImage
+      style={{
+        width: SIZES.width * 0.3,
+        height: SIZES.width * 0.45,
+        borderRadius: 2,
+        marginHorizontal: 5,
+      }}
+      source={{ uri: item.dvd_thumbnail_link }}
+    />
+    </TouchableWithoutFeedback>
+    )}
+    />
     </View>
+    )
+  }
+  return (
+      <View style={{flex: 1, backgroundColor: "black"}}>
+    {peopleAlsoWatched()}
+   </View>
   );
 };
 
 const styles = StyleSheet.create({
+  moreText: {
+    fontSize: 26,
+    fontFamily: 'Sora-Regular',
+    color: "#fff",
+    marginBottom: 20
+  },
   titleText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "teal",
-    marginLeft: 5,
+    fontSize: 20,
+    fontFamily: 'Sora-Regular',
+    color: "#fff",
+  },
+  titleTextBg: {
+    fontSize: 26,
+    fontFamily: 'Sora-Regular',
+    color: "#fff",
   },
   detailText: {
-    fontSize: 16,
+    fontFamily: 'Sora-Light' ,
+    fontSize: 14,
     color: "white",
-    marginBottom: 20,
-    marginLeft: 10,
+    marginBottom: 10,
   },
 });
 

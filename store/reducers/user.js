@@ -38,7 +38,14 @@ import {
   REMOVE_PROFILE,
   REMOVE_PROFILE_SUCCESS,
   REMOVE_PROFILE_FAILED,
-  CURRENT_PROFILE
+  CURRENT_PROFILE,
+  LOGGED_IN_SUCCESS,
+  LOGGED_OUT_SUCCESS,
+  FILLING_PROFILE, 
+  GET_ALL_USERS,
+  GET_ALL_USERS_SUCCESS,
+  GET_ALL_USERS_FAILED,
+  GET_ALL_WATCHED_MOVIES
 } from "../actions/user";
 const initialState = {
   profileName: null,
@@ -51,7 +58,10 @@ const initialState = {
   currentProfile: [],
   email: "",
   watchedAt: 0,
-  duration: 0
+  duration: 0,
+  isLoggedIn: '',
+  allUsers: [],
+  allWatchedMovies: []
 };
 
 const userReducer = (state = initialState, { type, payload }) => {
@@ -136,6 +146,16 @@ const userReducer = (state = initialState, { type, payload }) => {
         return {...state, watchedAt: payload.watched, duration: payload.duration}
         case CURRENT_PROFILE:
           return {...state, currentProfile: payload}
+        case LOGGED_IN_SUCCESS:
+          return {...state, isLoggedIn: 'loggedIn'};
+        case LOGGED_OUT_SUCCESS:
+          return {...state, isLoggedIn: 'loggedOut'};
+        case FILLING_PROFILE:
+          return {...state, isLoggedIn: 'signedUp'};
+        case GET_ALL_USERS_SUCCESS:
+          return {...state, allUsers: payload};
+        case GET_ALL_WATCHED_MOVIES:
+          return {...state, allWatchedMovies: payload};
     default:
       return state;
   }

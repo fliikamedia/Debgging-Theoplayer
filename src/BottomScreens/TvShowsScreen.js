@@ -14,14 +14,14 @@ import {
   ActivityIndicator,
   RefreshControl,
   Dimensions,
-  StatusBar
+  StatusBar,
 } from "react-native";
 import FliikaApi from "../api/FliikaApi";
 import { COLORS, SIZES, icons } from "../../constants";
 import { MOVIEDETAIL } from "../../constants/RouteNames";
 import Profiles from "../components/Profiles";
 import Carousel from "react-native-snap-carousel";
-import LinearGradient  from "react-native-linear-gradient";
+import LinearGradient from "react-native-linear-gradient";
 import {
   addToWatchList,
   removeFromWatchList,
@@ -30,21 +30,24 @@ import {
   setEmailFunc,
 } from "../../store/actions/user";
 import { useSelector, useDispatch } from "react-redux";
-import IconAwesome from 'react-native-vector-icons/FontAwesome5';
-import IconMaterial from 'react-native-vector-icons/MaterialIcons'
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import IconAwesome from "react-native-vector-icons/FontAwesome5";
+import IconMaterial from "react-native-vector-icons/MaterialIcons";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import RecycleView from "../components/RecycleView";
-import FastImage from 'react-native-fast-image'
-
+import FastImage from "react-native-fast-image";
+import RBSheet from "react-native-raw-bottom-sheet";
+import RbSheetSeasonItem from "../components/RbSheetSeasonItem";
 
 const TvShowsScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
   const movies = useSelector((state) => state.movies);
+  const refRBSheetMovies = useRef(null);
+  const [seasonNumber, setSeasonNumber] = useState(null);
 
   const [result, setResult] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
-
+  const [rbSeries, setRbSeries] = useState({});
   const getSeries = useCallback(async () => {
     const response = await FliikaApi.get("/posts");
     setResult(response.data);
@@ -115,162 +118,178 @@ const TvShowsScreen = ({ navigation }) => {
     const { width, height } = Dimensions.get("window");
 
     const renderItem = ({ item, index }) => {
-      if (item.dvd_thumbnail_link){
-      return (
-        <View>
-          <TouchableOpacity
-             onPress={() =>
-              navigation.navigate(MOVIEDETAIL, {
-                selectedMovie: item._id,
-                isSeries: item.film_type,
-                seriesTitle: item.title,
-              })
-            }
-          >
-            <FastImage
-              source={{ uri: item.dvd_thumbnail_link }}
-              style={styles.carouselImage}
-            />
-            {/*<Text style={styles.carouselText}>{item.title}</Text>*/}
-            {isWatchList(user.currentProfile.watchList, item.title) == true ? (
-              <TouchableWithoutFeedback
-                onPress={() => {
+      if (item.dvd_thumbnail_link) {
+        return (
+          <View>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate(MOVIEDETAIL, {
+                  selectedMovie: item._id,
+                  isSeries: item.film_type,
+                  seriesTitle: item.title,
+                })
+              }
+            >
+              <FastImage
+                source={{ uri: item.dvd_thumbnail_link }}
+                style={styles.carouselImage}
+              />
+              {/*<Text style={styles.carouselText}>{item.title}</Text>*/}
+              {isWatchList(user.currentProfile.watchList, item.title) ==
+              true ? (
+                <TouchableWithoutFeedback
+                  onPress={() => {
                     removeFromProfileWatchList(
                       user.user._id,
                       item,
                       user.currentProfile._id
                     )(dispatch);
-                }}
-              >
-                <Icon
-                  name="book-remove-multiple-outline"
-                  size={30}
-                  color={COLORS.white}
-                  style={styles.carouselIcon}
-                />
-              </TouchableWithoutFeedback>
-            ) : (
-              <TouchableWithoutFeedback
-              onPress={() => {
-                addToProfileWatchList(
-                  user.user._id,
-                  item,
-                  user.currentProfile._id
-                )(dispatch);
-            }}
-              >
-                <IconMaterial
-                  name="library-add"
-                  size={30}
-                  color="white"
-                  style={styles.carouselIcon}
-                />
-              </TouchableWithoutFeedback>
-            )}
-          </TouchableOpacity>
-        </View>
-      );
-    }
+                  }}
+                >
+                  <Icon
+                    name="book-remove-multiple-outline"
+                    size={30}
+                    color={COLORS.white}
+                    style={styles.carouselIcon}
+                  />
+                </TouchableWithoutFeedback>
+              ) : (
+                <TouchableWithoutFeedback
+                  onPress={() => {
+                    addToProfileWatchList(
+                      user.user._id,
+                      item,
+                      user.currentProfile._id
+                    )(dispatch);
+                  }}
+                >
+                  <IconMaterial
+                    name="library-add"
+                    size={30}
+                    color="white"
+                    style={styles.carouselIcon}
+                  />
+                </TouchableWithoutFeedback>
+              )}
+              {item.film_type === "series" ? (
+                <TouchableOpacity
+                  onPress={() => {
+                    setRbSeries(item), openRBSheet();
+                  }}
+                  style={styles.carouselIconInfo}
+                >
+                  <IconMaterial name="more-vert" size={30} color="#fff" />
+                </TouchableOpacity>
+              ) : null}
+            </TouchableOpacity>
+          </View>
+        );
+      }
     };
     return (
       <View style={styles.carouselContentContainer}>
-          <ImageBackground
-            source={{ uri: background.uri }}
-            style={styles.ImageBg}
-            blurRadius={10}
-            resizeMode="cover"
+        <ImageBackground
+          source={{ uri: background.uri }}
+          style={styles.ImageBg}
+          blurRadius={10}
+          resizeMode="cover"
+        >
+          <LinearGradient
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            colors={["transparent", "#000"]}
+            style={{
+              width: "100%",
+              height: "100%",
+            }}
           >
-            <LinearGradient
-              start={{ x: 0, y: 0 }}
-              end={{ x: 0, y: 1 }}
-              colors={["transparent", "#000"]}
+            <Text
               style={{
-                width: "100%",
-                height: "100%",
+                color: "white",
+                fontSize: 24,
+                fontFamily: "Sora-Bold",
+                marginLeft: 10,
+                marginTop: 40,
+                marginBottom: 20,
               }}
             >
-              <Text
-                style={{
-                  color: "white",
-                  fontSize: 24,
-                  fontWeight: "bold",
-                  marginLeft: 10,
-                  marginTop: 40,
-                  marginBottom: 20,
-                }}
-              >
-                Fliika Originals
-              </Text>
-              <View style={styles.carouselContainerView}>
+              Fliika Originals
+            </Text>
+            <View style={styles.carouselContainerView}>
               <Carousel
-                  style={styles.carousel}
-                  data={series}
-                  renderItem={renderItem}
-                  itemWidth={SIZES.width *  .586}
-                  sliderWidth={SIZES.width *  1.274}
-                  containerWidth={width - 20}
-                  separatorWidth={0}
-                  ref={carouselRef}
-                  inActiveOpacity={0.4}
-                  loop
-                  inactiveSlideOpacity={0.7}
-                  inactiveSlideScale={0.9}
-                  // activeAnimationType={'spring'}
-                  // activeAnimationOptions={{
-                  //     friction: 4,
-                  //     tension: 5
-                  // }}
-                  enableMomentum={true}
-                  onSnapToItem={ index => { setBackground({
+                style={styles.carousel}
+                data={series}
+                renderItem={renderItem}
+                itemWidth={SIZES.width * 0.586}
+                sliderWidth={SIZES.width * 1.274}
+                containerWidth={width - 20}
+                separatorWidth={0}
+                ref={carouselRef}
+                inActiveOpacity={0.4}
+                loop
+                inactiveSlideOpacity={0.7}
+                inactiveSlideScale={0.9}
+                // activeAnimationType={'spring'}
+                // activeAnimationOptions={{
+                //     friction: 4,
+                //     tension: 5
+                // }}
+                enableMomentum={true}
+                onSnapToItem={(index) => {
+                  setBackground({
                     uri: series[index]?.dvd_thumbnail_link,
                     name: series[index]?.title,
-                    stat: `${series[index]?.film_rating} - ${series[index]?.genre
+                    stat: `${series[index]?.film_rating} - ${series[
+                      index
+                    ]?.genre
                       .toString()
                       .replace(/,/g, " ")} - ${series[index]?.runtime}`,
                     desc: series[index]?.storyline,
                     _id: series[index]?._id,
                     film_type: series[index]?.film_type,
-                  });} }
+                  });
+                }}
+              />
+            </View>
+            <View style={styles.movieInfoContainer}>
+              <View style={{ justifyContent: "center" }}>
+                <Text style={styles.movieName}>{background.name}</Text>
+              </View>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate(MOVIEDETAIL, {
+                    selectedMovie: background._id,
+                    isSeries: background.film_type,
+                    seriesTitle: background.name,
+                  })
+                }
+                style={styles.playIconContainer}
+              >
+                <IconAwesome
+                  name="play"
+                  size={22}
+                  color="#02ad94"
+                  style={{ marginLeft: 4 }}
                 />
-              </View>
-              <View style={styles.movieInfoContainer}>
-                <View style={{ justifyContent: "center" }}>
-                  <Text style={styles.movieName}>{background.name}</Text>
-                </View>
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate(MOVIEDETAIL, {
-                      selectedMovie: background._id,
-                      isSeries: background.film_type,
-                      seriesTitle: background.name,
-                    })
-                  }
-                  style={styles.playIconContainer}
-                >
-                  <IconAwesome
-                    name="play"
-                    size={22}
-                    color="#02ad94"
-                    style={{ marginLeft: 4 }}
-                  />
-                </TouchableOpacity>
-              </View>
-              <Text style={styles.movieStat}>{background.stat}</Text>
-              <View style={{ paddingHorizontal: 14, marginTop: 14 }}>
-                <Text
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.movieStat}>{background.stat}</Text>
+            <View style={{ paddingHorizontal: 14, marginTop: 14 }}>
+              <Text
                 numberOfLines={5}
-                  style={{
-                    color: "white",
-                    opacity: 0.8,
-                    lineHeight: 20,
-                    marginBottom: 20,
-                  }}
-                >
-                  {background.desc}
-                </Text>
-              </View>
-            </LinearGradient>
-          </ImageBackground>
+                style={{
+                  fontFamily: "Sora-Regular",
+                  color: "white",
+                  opacity: 0.8,
+                  lineHeight: 20,
+                  marginBottom: 20,
+                }}
+              >
+                {background.desc}
+              </Text>
+            </View>
+          </LinearGradient>
+        </ImageBackground>
       </View>
     );
   };
@@ -305,20 +324,106 @@ const TvShowsScreen = ({ navigation }) => {
       ),
     });
   }
- 
+
   const renderSeries = () => {
     return newResults.map((item, index) => {
       return (
         <View key={index}>
-        <RecycleView title={item.genre} navigation ={navigation} index={index} movie={index % 2 == 0 ? item.movies : item.movies.reverse()}/>
+          <RecycleView
+            title={item.genre}
+            navigation={navigation}
+            index={index}
+            movie={index % 2 == 0 ? item.movies : item.movies.reverse()}
+            from="tv"
+          />
         </View>
       );
     });
   };
 
+  /// Bottom Sheet movies
+
+  const openRBSheet = () => {
+    refRBSheetMovies.current.open();
+  };
+  const closeRBSheet = () => {
+    refRBSheetMovies.current.close();
+  };
+  const renderBottomSheetMovies = () => {
+    let firstSeries;
+    try {
+      firstSeries = series[0];
+    } catch (err) {}
+
+    let allSeasons;
+    try {
+      allSeasons = movies.availableMovies
+        ?.filter((r) => r.title === rbSeries.title)
+        ?.map((r) => r.season_number);
+    } catch (err) {}
+
+    const seasons = [...new Set(allSeasons)];
+    let seriesTitle;
+    try {
+      seriesTitle = rbSeries.title;
+    } catch (err) {}
+
+    return (
+      <RBSheet
+        animationType="slide"
+        ref={refRBSheetMovies}
+        closeOnDragDown={true}
+        closeOnPressMask={true}
+        closeOnPressBack={true}
+        customStyles={{
+          wrapper: {
+            backgroundColor: "transparent",
+          },
+          draggableIcon: {
+            backgroundColor: "#fff",
+          },
+          container: {
+            backgroundColor: "rgba(0,0,0, 0.8)",
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+            borderWidth: 0.6,
+            borderColor: "grey",
+            height:
+              seasons.length > 1 ? SIZES.height * 0.5 : SIZES.height * 0.3,
+          },
+        }}
+      >
+        <ScrollView
+          contentContainerStyle={{
+            flexGrow: 1,
+            paddingLeft: 20,
+            paddingBottom: 20,
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}
+        >
+          {seasons
+            ? seasons.map((season, index) => (
+                <RbSheetSeasonItem
+                  setSeason={setSeasonNumber}
+                  key={season}
+                  seasonNumber={season}
+                  seriesTitle={seriesTitle}
+                  closeRBSheet={closeRBSheet}
+                  from="home"
+                  navigate={navigation.navigate}
+                  seriesId={rbSeries._id}
+                />
+              ))
+            : null}
+        </ScrollView>
+      </RBSheet>
+    );
+  };
+  /// End of bottom sheet movies
   return (
     <View style={styles.container}>
-      {resultLength == 0 ? (
+      {!background.uri || resultLength == 0 ? (
         <View style={{ flex: 1, backgroundColor: "black" }}>
           <ActivityIndicator
             animating
@@ -329,7 +434,7 @@ const TvShowsScreen = ({ navigation }) => {
         </View>
       ) : (
         <ScrollView
-        showsVerticalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
@@ -341,6 +446,7 @@ const TvShowsScreen = ({ navigation }) => {
           {renderHeroSection()}
           {renderSeries()}
           {/*<StatusBar style="light" />*/}
+          {renderBottomSheetMovies()}
         </ScrollView>
       )}
     </View>
@@ -383,8 +489,8 @@ const styles = StyleSheet.create({
     height: SIZES.height * 0.6,
   },
   carouselImage: {
-    width:  SIZES.width * .59,
-    height:  SIZES.height * .45,
+    width: SIZES.width * 0.59,
+    height: SIZES.height * 0.45,
     borderRadius: 10,
     alignSelf: "center",
     backgroundColor: "rgba(0,0,0,0.9)",
@@ -413,7 +519,7 @@ const styles = StyleSheet.create({
   },
   carouselContainerView: {
     width: "100%",
-    height: SIZES.height * .45,
+    height: SIZES.height * 0.45,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -430,14 +536,14 @@ const styles = StyleSheet.create({
   movieName: {
     paddingLeft: 14,
     color: "white",
-    fontWeight: "bold",
+    fontFamily: "Sora-Bold",
     fontSize: 20,
     marginBottom: 6,
   },
   movieStat: {
     paddingLeft: 14,
     color: "white",
-    fontWeight: "bold",
+    fontFamily: "Sora-Regular",
     fontSize: 14,
     opacity: 0.8,
   },
@@ -451,6 +557,11 @@ const styles = StyleSheet.create({
     borderWidth: 4,
     borderColor: "rgba(2, 173, 148, 0.2)",
     marginBottom: 14,
+  },
+  carouselIconInfo: {
+    position: "absolute",
+    bottom: 15,
+    left: 15,
   },
 });
 export default TvShowsScreen;

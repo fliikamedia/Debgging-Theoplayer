@@ -16,6 +16,7 @@ import ReactNativeBitmovinPlayer, {
   import { useDispatch, useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-community/async-storage';
 import KeepAwake from '@sayem314/react-native-keep-awake';
+import moment from 'moment';
 
 const BitmovinPlayer = ({navigation,route}) => {
   const user = useSelector((state) => state.user);
@@ -131,18 +132,21 @@ setWatchedMovie()
     ) {
       //console.log('here 1');
       addtoWatchedProfile(
+        moment(),
+        moment(),
         user.user._id,
         movie.title,
         movie._id,
         Number(whatDuration),
         Number(whatTime),
-        user.currentProfile._id
+        user.currentProfile._id,
       )(dispatch);
     } else if (
       isWatched(user.currentProfile.watched, movie.title) == true
     ) {
       //console.log('here 2');
       updateWatchedProfile(
+        moment(),
         user.user._id,
         movie.title,
         Number(whatDuration),

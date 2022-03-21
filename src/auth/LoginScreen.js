@@ -5,11 +5,12 @@ import {
   TouchableOpacity,
   View,
   Dimensions,
+  ActivityIndicator
 } from "react-native";
 import firebase from "firebase";
 import { EMAILSIGNUP, MOVIES, SIGNUP } from "../../constants/RouteNames";
 import { TextInput, HelperText } from "react-native-paper";
-import { setEmailFunc, getUser } from "../../store/actions/user";
+import { setEmailFunc, getUser, loggedIn } from "../../store/actions/user";
 import { useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-community/async-storage";
 
@@ -18,8 +19,10 @@ const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-
+  const [btnClicked, setBtnClicked] = useState(false);
   const loginUser = async (email, password) => {
+    if (!email || !password) return;
+    setBtnClicked(true);
     try {
       firebase
         .auth()
@@ -30,13 +33,21 @@ const LoginScreen = ({ navigation }) => {
           const idToken = await user.getIdToken();
           getUser(user.email, idToken)(dispatch);
 
-          setEmailFunc(email)(dispatch);
-         navigation.reset({
-            index: 0,
-            routes: [{ name: MOVIES }],
-          });
-          await AsyncStorage.setItem("whatPhase", "LoggedIn");
-          navigation.navigate(MOVIES);
+          if(user) {
+            loggedIn()(dispatch);
+            setEmailFunc(email)(dispatch);
+        /*     
+            navigation.reset({
+               index: 0,
+               routes: [{ name: MOVIES }],
+             });
+             await AsyncStorage.setItem("whatPhase", "LoggedIn");
+             navigation.navigate(MOVIES); */
+          } else {
+            console.log('back to false');
+            setBtnClicked(false);
+          }
+         
 
           //console.log(user);
           // ...
@@ -46,9 +57,12 @@ const LoginScreen = ({ navigation }) => {
           var errorMessage = error.message;
           console.log(errorMessage);
           setError(errorMessage);
+          setBtnClicked(false);
+
         });
     } catch (err) {
       console.log(err);
+      setBtnClicked(false);
     }
   };
 
@@ -176,10 +190,15 @@ const LoginScreen = ({ navigation }) => {
         </View>
       ) : null}
       <TouchableOpacity
-        onPress={() => loginUser(email, password)}
+        onPress={() => {loginUser(email, password)}}
         style={styles.loginBtn}
+        disabled={btnClicked}
       >
-        <Text
+        {btnClicked ? ( <ActivityIndicator
+            animating
+            color={"white"}
+            size="large"
+          />) : (<Text
           style={{
             color: "white",
             fontSize: 18,
@@ -188,7 +207,7 @@ const LoginScreen = ({ navigation }) => {
           }}
         >
           Sign in
-        </Text>
+        </Text>)}
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => resetPassword(email)}
