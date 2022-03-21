@@ -1,22 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TextInput, ScrollView } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import MoviesItem from "../components/MoviesItem";
-import IconAnt from 'react-native-vector-icons/AntDesign';
-import IconFeather from 'react-native-vector-icons/Feather'
-import IconAwesome from 'react-native-vector-icons/FontAwesome5';
-import ReactNativeBitmovinPlayer, {
-  ReactNativeBitmovinPlayerIntance,
-} from '@takeoffmedia/react-native-bitmovin-player';
-import AsyncStorage from "@react-native-community/async-storage";
-
+import IconFeather from "react-native-vector-icons/Feather";
 
 const SearchScreen = ({ navigation }) => {
   const movies = useSelector((state) => state.movies);
-  const [term, setTerm] = useState("");
-//console.log(movies.availableMovies[0]);
- 
 
+  const [term, setTerm] = useState("");
+  //console.log(movies.availableMovies[0]);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      setTerm("");
+    });
+    return () => unsubscribe();
+  }, [navigation]);
   let searchArray = [];
   try {
     for (let i = 0; i < movies.availableMovies.length; i++) {
@@ -49,7 +48,12 @@ const SearchScreen = ({ navigation }) => {
           (item.film_type == "series" && item.episode_number == 1)
         ) {
           return (
-            <MoviesItem navigation={navigation} movie={item} key={item._id} />
+            <MoviesItem
+              navigation={navigation}
+              movie={item}
+              key={item._id}
+              setTerm={setTerm}
+            />
           );
         }
       });
@@ -57,7 +61,7 @@ const SearchScreen = ({ navigation }) => {
       return (
         <Text
           style={{
-            fontFamily: 'Sora-Regular',
+            fontFamily: "Sora-Regular",
             fontSize: 20,
             color: "aqua",
             textAlign: "center",
@@ -112,7 +116,14 @@ const SearchScreen = ({ navigation }) => {
           numberOfLines={1}
         />
       </View>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <ScrollView
+        contentContainerStyle={{
+          flexGrow: 1,
+          flexDirection: "row",
+          flexWrap: "wrap",
+          justifyContent: "center",
+        }}
+      >
         {renderSearch()}
       </ScrollView>
     </View>

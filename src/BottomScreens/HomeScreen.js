@@ -69,6 +69,7 @@ const HomeScreen = ({ navigation }) => {
   const [rbTitle, setRbTitle] = useState({});
   const [rbItem, setRbItem] = useState({});
   const [seasonNumber, setSeasonNumber] = useState(null);
+  const [squareMovie, setSquareMovie] = useState({});
 
   const yOffset = useRef(new Animated.Value(0)).current;
   const headerOpacity = yOffset.interpolate({
@@ -337,15 +338,21 @@ const HomeScreen = ({ navigation }) => {
   }
 
   const squareVideo = () => {
+    // SquareURL to be optimized when other trailers added
     let squareURL;
+    let squareLogo;
     try {
       squareURL = resultsToShow.find(
-        (r) => r._id === "6093f7c6e91136001bf80896"
+        (r) => r.active_banner === "YES"
       ).square_mobile_trailer;
+      squareLogo = resultsToShow.find(
+        (r) => r.active_banner === "YES"
+      ).title_logo_url;
     } catch (err) {
       squareURL =
         "https://fliikamediaservice-usea.streaming.media.azure.net/1368c5bc-1fb8-450f-ba54-104e021b4033/Batman_mobile_square.ism/manifest(format=m3u8-aapl)";
     }
+
     return (
       <View
         style={{
@@ -393,7 +400,7 @@ const HomeScreen = ({ navigation }) => {
             >
               <FastImage
                 style={{ width: 130, height: 50 }}
-                source={require("../../assets/The_Batman.png")}
+                source={{ uri: squareLogo }}
               />
               <View
                 style={{
@@ -834,6 +841,7 @@ const HomeScreen = ({ navigation }) => {
     _id: "",
     film_type: "",
   });
+
   useEffect(() => {
     if (resultsToShow) {
       setBackground({
@@ -1168,11 +1176,12 @@ const HomeScreen = ({ navigation }) => {
 
     let rbHeight;
     if (rbItem.film_type === "series") {
-      if (seasons?.length > 1) {
-        rbHeight = SIZES.height * 0.5;
-      } else {
-        rbHeight = SIZES.height * 0.3;
-      }
+      // if (seasons?.length > 1) {
+      //   rbHeight = SIZES.height * 0.5;
+      // } else {
+      //   rbHeight = SIZES.height * 0.3;
+      // }
+      rbHeight = SIZES.height * 0.5;
     } else {
       rbHeight = SIZES.height * 0.38;
       //rbHeight = SIZES.height * 0.65;
@@ -1193,25 +1202,23 @@ const HomeScreen = ({ navigation }) => {
             backgroundColor: "#fff",
           },
           container: {
-            backgroundColor:
-              rbItem.film_type === "series"
-                ? "rgba(0,0,0, 0.8)"
-                : "rgba(0,0,0, 0.92)",
-            borderTopLeftRadius: 20,
-            borderTopRightRadius: 20,
+            backgroundColor: "rgba(0,0,0, 0.92)",
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
             borderWidth: 0.6,
             borderColor: "grey",
-            height: rbHeight,
+            height: SIZES.height * 0.5,
           },
         }}
       >
         <ScrollView
+          showsVerticalScrollIndicator={false}
           contentContainerStyle={{
             flexGrow: 1,
             paddingLeft: 20,
             paddingBottom: 20,
             flexDirection: "column",
-            justifyContent: "space-between",
+            justifyContent: seasons?.length === 1 ? "center" : "space-between",
           }}
         >
           {rbItem.film_type === "series" && seasons ? (

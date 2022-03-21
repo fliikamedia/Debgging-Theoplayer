@@ -383,13 +383,12 @@ const TvShowsScreen = ({ navigation }) => {
             backgroundColor: "#fff",
           },
           container: {
-            backgroundColor: "rgba(0,0,0, 0.8)",
+            backgroundColor: "rgba(0,0,0, 0.92)",
             borderTopLeftRadius: 20,
             borderTopRightRadius: 20,
             borderWidth: 0.6,
             borderColor: "grey",
-            height:
-              seasons.length > 1 ? SIZES.height * 0.5 : SIZES.height * 0.3,
+            height: SIZES.height * 0.5,
           },
         }}
       >
@@ -399,7 +398,7 @@ const TvShowsScreen = ({ navigation }) => {
             paddingLeft: 20,
             paddingBottom: 20,
             flexDirection: "column",
-            justifyContent: "space-between",
+            justifyContent: seasons?.length === 1 ? "center" : "space-between",
           }}
         >
           {seasons

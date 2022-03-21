@@ -999,12 +999,12 @@ const MovieDetailScreen = ({ navigation, route }) => {
               backgroundColor: "#fff",
             },
             container: {
-              backgroundColor: "rgba(0,0,0, 0.8)",
+              backgroundColor: "rgba(0,0,0, 0.92)",
               borderTopLeftRadius: 20,
               borderTopRightRadius: 20,
               borderWidth: 0.6,
               borderColor: "grey",
-              height: SIZES.width * 0.3 * seasonsLength,
+              height: SIZES.width * 0.3 * seasonsLength, // To optimize when more seasons added
             },
           }}
         >
