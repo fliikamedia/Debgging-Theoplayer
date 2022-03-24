@@ -73,7 +73,6 @@ const MovieDetailScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const scrollRef = useRef();
   const refRBSheet = useRef(null);
-
   const [play, setPlay] = useState(false);
   const appState = useRef(AppState.currentState);
   const { selectedMovie, isSeries, seriesTitle, rbSeasonNumber } = route.params;
@@ -986,11 +985,12 @@ const MovieDetailScreen = ({ navigation, route }) => {
           />
         </Tab.Navigator>
         <RBSheet
-          animationType="slide"
+          //animationType="slide"
           ref={refRBSheet}
           closeOnDragDown={true}
           closeOnPressMask={true}
           closeOnPressBack={true}
+          height={SIZES.width * 0.3 * seasonsLength}
           customStyles={{
             wrapper: {
               backgroundColor: "transparent",
@@ -1004,7 +1004,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
               borderTopRightRadius: 20,
               borderWidth: 0.6,
               borderColor: "grey",
-              height: SIZES.width * 0.3 * seasonsLength, // To optimize when more seasons added
+              // height: SIZES.width * 0.3 * seasonsLength, // To optimize when more seasons added
             },
           }}
         >

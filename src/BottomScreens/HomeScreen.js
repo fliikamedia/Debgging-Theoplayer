@@ -1188,12 +1188,13 @@ const HomeScreen = ({ navigation }) => {
     }
     return (
       <RBSheet
-        animationType="slide"
+        // animationType="slide"
         ref={refRBSheetMovies}
         closeOnDragDown={true}
         closeOnPressMask={true}
         closeOnPressBack={true}
         closeDuration={200}
+        height={SIZES.height / 2}
         customStyles={{
           wrapper: {
             backgroundColor: "transparent",
@@ -1207,7 +1208,7 @@ const HomeScreen = ({ navigation }) => {
             borderTopRightRadius: 10,
             borderWidth: 0.6,
             borderColor: "grey",
-            height: SIZES.height * 0.5,
+            // height: SIZES.height * 0.5,
           },
         }}
       >

@@ -370,11 +370,12 @@ const TvShowsScreen = ({ navigation }) => {
 
     return (
       <RBSheet
-        animationType="slide"
+        // animationType="slide"
         ref={refRBSheetMovies}
         closeOnDragDown={true}
         closeOnPressMask={true}
         closeOnPressBack={true}
+        height={SIZES.height * 0.5}
         customStyles={{
           wrapper: {
             backgroundColor: "transparent",
@@ -388,7 +389,7 @@ const TvShowsScreen = ({ navigation }) => {
             borderTopRightRadius: 20,
             borderWidth: 0.6,
             borderColor: "grey",
-            height: SIZES.height * 0.5,
+            // height: SIZES.height * 0.5,
           },
         }}
       >
