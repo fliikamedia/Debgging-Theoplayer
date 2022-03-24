@@ -1,21 +1,88 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import FastImage from "react-native-fast-image";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { SIZES, icons, COLORS } from "../../constants";
 import * as Animatable from "react-native-animatable";
 import { BITMOVINPLAYER, MOVIEDETAIL } from "../../constants/RouteNames";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import IconFeather from "react-native-vector-icons/Feather";
-import { addToProfileWatchList } from "../../store/actions/user";
+import {
+  addToProfileWatchList,
+  removeFromProfileWatchList,
+} from "../../store/actions/user";
 import IconAwesome from "react-native-vector-icons/FontAwesome5";
+import moment from "moment";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 const RbSheetMovieItem = ({ movieTitle, navigate, closeRBSheet }) => {
   const movies = useSelector((state) => state.movies);
+  const user = useSelector((state) => state.user);
+
+  const dispatch = useDispatch();
   const currentMovie = movies.availableMovies.find(
     (r) => r.title === movieTitle
   );
 
+  const isWatchList = (movieArray, movieName) => {
+    try {
+      var found = false;
+      for (var i = 0; i < movieArray.length; i++) {
+        if (movieArray[i].title == movieName) {
+          found = true;
+          break;
+        }
+      }
+      return found;
+    } catch (err) {}
+  };
+
+  const movieIcons = () => {
+    if (
+      isWatchList(
+        user.currentProfile.watchList,
+        currentMovie.title,
+        currentMovie.season_number
+      ) == true
+    ) {
+      return (
+        <TouchableOpacity
+          onPress={() => {
+            // showToast("Removed from watch list");
+            removeFromProfileWatchList(
+              user.user._id,
+              currentMovie,
+              user.currentProfile._id,
+              currentMovie.season_number
+            )(dispatch);
+          }}
+        >
+          <Icon
+            name="book-remove-multiple-outline"
+            size={40}
+            color={COLORS.white}
+          />
+        </TouchableOpacity>
+      );
+    } else {
+      return (
+        <TouchableOpacity
+          onPress={() => {
+            // showToast("Added to watch list");
+            addToProfileWatchList(
+              user.user._id,
+              currentMovie,
+              user.currentProfile._id,
+              currentMovie.season_number,
+              moment()
+            )(dispatch);
+          }}
+        >
+          <IconFeather name="plus" size={40} color={COLORS.white} />
+        </TouchableOpacity>
+      );
+    }
+  };
   const dvdPoster = () => {
     return (
       <View
@@ -93,18 +160,7 @@ const RbSheetMovieItem = ({ movieTitle, navigate, closeRBSheet }) => {
           </View>
           {/* Info and add to watchList Icons */}
           <View style={styles.iconsContainer}>
-            <TouchableOpacity
-              onPress={() => {
-                //showToast("Added to watch list");
-                addToProfileWatchList(
-                  user.user._id,
-                  currentMovie,
-                  user.currentProfile._id
-                )(dispatch);
-              }}
-            >
-              <IconFeather name="plus" size={40} color={COLORS.white} />
-            </TouchableOpacity>
+            {movieIcons()}
             <TouchableOpacity
               onPress={() => {
                 closeRBSheet();

@@ -882,7 +882,8 @@ const HomeScreen = ({ navigation }) => {
                     removeFromProfileWatchList(
                       user.user._id,
                       item,
-                      user.currentProfile._id
+                      user.currentProfile._id,
+                      item.season_number
                     )(dispatch);
                   }}
                 >
@@ -900,7 +901,9 @@ const HomeScreen = ({ navigation }) => {
                     addToProfileWatchList(
                       user.user._id,
                       item,
-                      user.currentProfile._id
+                      user.currentProfile._id,
+                      item.season_number,
+                      moment()
                     )(dispatch);
                   }}
                 >

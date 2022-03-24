@@ -94,7 +94,8 @@ const SearchScreen = ({ navigation }) => {
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
         //colors={["#003366", "#483D8B", "#4682B4"]}
-        colors={["#000020", "#000080", "#4682B4"]}
+        // colors={["#000020", "#000080", "#4682B4"]}
+        colors={["#000025", "#000020", "black"]}
         style={{ flex: 1 }}
       >
         <View

@@ -224,13 +224,23 @@ const MovieDetailScreen = ({ navigation, route }) => {
     ),
   };
   // End of Toast
-  const isWatchList = (movieArray, movieName) => {
+  const isWatchList = (movieArray, movieName, seriesSeason) => {
     try {
       var found = false;
       for (var i = 0; i < movieArray.length; i++) {
-        if (movieArray[i].title == movieName) {
-          found = true;
-          break;
+        if (seriesSeason) {
+          if (
+            movieArray[i].title == movieName &&
+            movieArray[i].season === seasonNumber
+          ) {
+            found = true;
+            break;
+          }
+        } else {
+          if (movieArray[i].title == movieName) {
+            found = true;
+            break;
+          }
         }
       }
       return found;
@@ -412,10 +422,16 @@ const MovieDetailScreen = ({ navigation, route }) => {
       );
     }
   };
+
+  console.log(seasonNumber);
   // Render Icons
   const movieIcons = () => {
     if (
-      isWatchList(user.currentProfile.watchList, currentMovie.title) == true
+      isWatchList(
+        user.currentProfile.watchList,
+        currentMovie.title,
+        currentMovie.season_number
+      ) == true
     ) {
       return (
         <TouchableOpacity
@@ -423,8 +439,9 @@ const MovieDetailScreen = ({ navigation, route }) => {
             showToast("Removed from watch list");
             removeFromProfileWatchList(
               user.user._id,
-              movie,
-              user.currentProfile._id
+              currentMovie,
+              user.currentProfile._id,
+              seasonNumber
             )(dispatch);
           }}
         >
@@ -443,7 +460,9 @@ const MovieDetailScreen = ({ navigation, route }) => {
             addToProfileWatchList(
               user.user._id,
               currentMovie,
-              user.currentProfile._id
+              user.currentProfile._id,
+              seasonNumber,
+              moment()
             )(dispatch);
           }}
         >

@@ -37,6 +37,7 @@ import RecycleView from "../components/RecycleView";
 import FastImage from "react-native-fast-image";
 import RBSheet from "react-native-raw-bottom-sheet";
 import RbSheetSeasonItem from "../components/RbSheetSeasonItem";
+import moment from "moment";
 
 const TvShowsScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -142,7 +143,8 @@ const TvShowsScreen = ({ navigation }) => {
                     removeFromProfileWatchList(
                       user.user._id,
                       item,
-                      user.currentProfile._id
+                      user.currentProfile._id,
+                      item.season_number
                     )(dispatch);
                   }}
                 >
@@ -159,7 +161,9 @@ const TvShowsScreen = ({ navigation }) => {
                     addToProfileWatchList(
                       user.user._id,
                       item,
-                      user.currentProfile._id
+                      user.currentProfile._id,
+                      item.season_number,
+                      moment()
                     )(dispatch);
                   }}
                 >
