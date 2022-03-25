@@ -95,6 +95,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
     { label: "Banana", value: "banana" },
   ]);
   const [activeTab, setActiveTab] = useState(SERIESEPISODESTAB);
+  const [seasonOpen, setSeasonOpen] = useState(false);
   //console.log('currentProfile',user.currentProfile);
   /*   const getMovie = useCallback(async () => {
     const response = await FliikaApi.get(`/posts/${selectedMovie}`);
@@ -423,7 +424,6 @@ const MovieDetailScreen = ({ navigation, route }) => {
     }
   };
 
-  console.log(seasonNumber);
   // Render Icons
   const movieIcons = () => {
     if (
@@ -811,6 +811,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
 
   const openRBSheet = () => {
     refRBSheet.current.open();
+    setSeasonOpen(true);
   };
   const closeRBSheet = () => {
     refRBSheet.current.close();
@@ -946,7 +947,11 @@ const MovieDetailScreen = ({ navigation, route }) => {
                   <Text
                     style={{ color: "#fff", fontSize: 20 }}
                   >{`Season ${seasonNumber}`}</Text>
-                  <IconAnt name="down" size={20} color="#fff" />
+                  {seasonOpen ? (
+                    <IconAnt name="up" size={20} color="#fff" />
+                  ) : (
+                    <IconAnt name="down" size={20} color="#fff" />
+                  )}
                 </TouchableOpacity>
               </View>
             ) : null}
@@ -1007,6 +1012,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
           //animationType="slide"
           ref={refRBSheet}
           closeOnDragDown={true}
+          onClose={() => setSeasonOpen(false)}
           closeOnPressMask={true}
           closeOnPressBack={true}
           height={SIZES.width * 0.3 * seasonsLength}

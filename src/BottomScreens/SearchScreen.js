@@ -120,7 +120,7 @@ const SearchScreen = ({ navigation }) => {
           <TextInput
             placeholderTextColor="white"
             style={styles.textInput}
-            placeholder="Search by movie title, actor"
+            placeholder="Search by movie title, actor ..."
             onChangeText={(newTerm) => setTerm(newTerm)}
             value={term}
             autoCapitalize="none"
