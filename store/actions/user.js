@@ -143,7 +143,7 @@ export const getUser = (email, authtoken) => async (dispatch) => {
 
       dispatch({
         type: GET_USER_SUCCESS,
-        payload: result.data,
+        payload: result?.data,
       });
       /* if (profileName) {
         dispatch({
@@ -153,11 +153,11 @@ export const getUser = (email, authtoken) => async (dispatch) => {
       } else { */
       dispatch({
         type: CURRENT_PROFILE,
-        payload: result.data.profiles[0],
+        payload: result?.data?.profiles[0],
       });
       dispatch({
         type: SET_PROFILE,
-        payload: result.data.profiles[0].name,
+        payload: result?.data?.profiles[0].name,
       });
       //}
     } else {

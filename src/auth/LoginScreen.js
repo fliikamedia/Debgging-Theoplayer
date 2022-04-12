@@ -9,20 +9,54 @@ import {
   TextInput,
 } from "react-native";
 import firebase from "firebase";
-import { EMAILSIGNUP, MOVIES, SIGNUP } from "../../constants/RouteNames";
+import {
+  EMAILSIGNUP,
+  MOVIES,
+  SIGNUP,
+  FILLPROFILESCREEN,
+} from "../../constants/RouteNames";
 // import { TextInput, HelperText } from "react-native-paper";
-import { setEmailFunc, getUser, loggedIn } from "../../store/actions/user";
-import { useDispatch } from "react-redux";
+import {
+  setEmailFunc,
+  getUser,
+  loggedIn,
+  fillingProfile,
+} from "../../store/actions/user";
+import { useDispatch, useSelector } from "react-redux";
 import AsyncStorage from "@react-native-community/async-storage";
 import NewTextInput from "../components/TextInput";
 import LinearGradient from "react-native-linear-gradient";
 
 const LoginScreen = ({ navigation }) => {
+  const userState = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [btnClicked, setBtnClicked] = useState(false);
+
+  // console.log("before", userState.user);
+
+  const navigateUser = () => {
+    if (!btnClicked) return;
+    if (userState?.user) {
+      loggedIn()(dispatch);
+      setEmailFunc(email)(dispatch);
+    } else {
+      setBtnClicked(false);
+      fillingProfile()(dispatch);
+      // navigation.navigate(FILLPROFILESCREEN);
+      navigation.reset({
+        index: 0,
+        routes: [{ name: FILLPROFILESCREEN }],
+      });
+      console.log("back to false");
+    }
+  };
+
+  useEffect(() => {
+    navigateUser();
+  }, [userState.user]);
   const loginUser = async (email, password) => {
     if (!email || !password) return;
     setBtnClicked(true);
@@ -34,25 +68,13 @@ const LoginScreen = ({ navigation }) => {
           // Signed in
           var user = userCredential.user;
           const idToken = await user.getIdToken();
-          getUser(user.email, idToken)(dispatch);
-
-          if (user) {
-            loggedIn()(dispatch);
-            setEmailFunc(email)(dispatch);
-            /*     
-            navigation.reset({
-               index: 0,
-               routes: [{ name: MOVIES }],
-             });
-             await AsyncStorage.setItem("whatPhase", "LoggedIn");
-             navigation.navigate(MOVIES); */
-          } else {
-            console.log("back to false");
-            setBtnClicked(false);
-          }
+          await getUser(user.email, idToken)(dispatch);
 
           //console.log(user);
           // ...
+        })
+        .then(async () => {
+          await navigateUser();
         })
         .catch((error) => {
           var errorCode = error.code;
@@ -202,7 +224,7 @@ const LoginScreen = ({ navigation }) => {
           loginUser(email, password);
         }}
         style={styles.loginBtn}
-        disabled={btnClicked}
+        disabled={(!email && !password) || btnClicked}
       >
         <LinearGradient
           start={{ x: 0, y: 0 }}
