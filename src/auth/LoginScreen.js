@@ -5,14 +5,17 @@ import {
   TouchableOpacity,
   View,
   Dimensions,
-  ActivityIndicator
+  ActivityIndicator,
+  TextInput,
 } from "react-native";
 import firebase from "firebase";
 import { EMAILSIGNUP, MOVIES, SIGNUP } from "../../constants/RouteNames";
-import { TextInput, HelperText } from "react-native-paper";
+// import { TextInput, HelperText } from "react-native-paper";
 import { setEmailFunc, getUser, loggedIn } from "../../store/actions/user";
 import { useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-community/async-storage";
+import NewTextInput from "../components/TextInput";
+import LinearGradient from "react-native-linear-gradient";
 
 const LoginScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -33,10 +36,10 @@ const LoginScreen = ({ navigation }) => {
           const idToken = await user.getIdToken();
           getUser(user.email, idToken)(dispatch);
 
-          if(user) {
+          if (user) {
             loggedIn()(dispatch);
             setEmailFunc(email)(dispatch);
-        /*     
+            /*     
             navigation.reset({
                index: 0,
                routes: [{ name: MOVIES }],
@@ -44,10 +47,9 @@ const LoginScreen = ({ navigation }) => {
              await AsyncStorage.setItem("whatPhase", "LoggedIn");
              navigation.navigate(MOVIES); */
           } else {
-            console.log('back to false');
+            console.log("back to false");
             setBtnClicked(false);
           }
-         
 
           //console.log(user);
           // ...
@@ -58,14 +60,12 @@ const LoginScreen = ({ navigation }) => {
           console.log(errorMessage);
           setError(errorMessage);
           setBtnClicked(false);
-
         });
     } catch (err) {
       console.log(err);
       setBtnClicked(false);
     }
   };
-
   const inputColor = "teal";
 
   const resetPassword = (email) => {
@@ -92,31 +92,38 @@ const LoginScreen = ({ navigation }) => {
       >
         Sign in to your account
       </Text>
-      <TextInput
+      <NewTextInput
+        iconName="mail"
+        iconSize={30}
+        iconColor="darkgrey"
+        type="email"
+        placeholder="Enter your Email"
         label="Email"
         onChangeText={(email) => setEmail(email)}
-        style={styles.textInput}
         autoCorrect={false}
         autoCapitalize="none"
         value={email}
-        mode="outlined"
+        // mode="outlined"
         keyboardType="email-address"
-        theme={{
-          colors: { primary: `${inputColor}`, underlineColor: "transparent" },
-        }}
+        // theme={{
+        //   colors: { primary: `${inputColor}`, underlineColor: "transparent" },
+        // }}
       />
-      <TextInput
-        label="Password"
+      <NewTextInput
+        iconName="lock"
+        iconSize={30}
+        iconColor="darkgrey"
+        placeholder="Enter your password"
+        type="password"
         value={password}
         onChangeText={(password) => setPassword(password)}
-        style={styles.textInput}
         autoCorrect={false}
         autoCapitalize="none"
-        secureTextEntry
-        mode="outlined"
-        theme={{
-          colors: { primary: `${inputColor}`, underlineColor: "transparent" },
-        }}
+
+        // mode="outlined"
+        // theme={{
+        //   colors: { primary: `${inputColor}`, underlineColor: "transparent" },
+        // }}
       />
       {error ==
       "There is no user record corresponding to this identifier. The user may have been deleted." ? (
@@ -189,25 +196,40 @@ const LoginScreen = ({ navigation }) => {
             </TouchableOpacity>*/}
         </View>
       ) : null}
+
       <TouchableOpacity
-        onPress={() => {loginUser(email, password)}}
+        onPress={() => {
+          loginUser(email, password);
+        }}
         style={styles.loginBtn}
         disabled={btnClicked}
       >
-        {btnClicked ? ( <ActivityIndicator
-            animating
-            color={"white"}
-            size="large"
-          />) : (<Text
+        <LinearGradient
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          // colors={["#483D8B", "#1E90FF", "#87CEEB"]}
+          colors={["#191960", "#0000FF", "#4169E1"]}
           style={{
-            color: "white",
-            fontSize: 18,
-            fontWeight: "bold",
-            textTransform: "uppercase",
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
-          Sign in
-        </Text>)}
+          {btnClicked ? (
+            <ActivityIndicator animating color={"white"} size="large" />
+          ) : (
+            <Text
+              style={{
+                color: "white",
+                fontSize: 18,
+                fontWeight: "bold",
+                textTransform: "uppercase",
+              }}
+            >
+              Sign in
+            </Text>
+          )}
+        </LinearGradient>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => resetPassword(email)}
@@ -252,14 +274,16 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").height < 900 ? "90%" : "70%",
     alignSelf: "center",
     marginVertical: 10,
+    borderWidth: 1,
+    borderColor: "#fff",
   },
   loginBtn: {
     marginTop: 20,
     height: 60,
     width: Dimensions.get("window").height < 900 ? "90%" : "70%",
-    backgroundColor: "mediumseagreen",
-    alignItems: "center",
-    justifyContent: "center",
+    // backgroundColor: "mediumseagreen",
+    // alignItems: "center",
+    // justifyContent: "center",
     borderRadius: 5,
     alignSelf: "center",
   },
