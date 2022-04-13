@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, TextInput, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  ScrollView,
+  Dimensions,
+} from "react-native";
 import { useSelector } from "react-redux";
 import MoviesItem from "../components/MoviesItem";
 import IconFeather from "react-native-vector-icons/Feather";
@@ -98,37 +105,67 @@ const SearchScreen = ({ navigation }) => {
         colors={["#000025", "#000020", "black"]}
         style={{ flex: 1 }}
       >
-        <View
+        <LinearGradient
+          colors={[
+            "#6782b4",
+            "#8989bb",
+            // "#5F9EA0",
+            // "#4682B4",
+            // "#4C64FF",
+            // "#6536FF",
+            "#045de9",
+          ]}
+          start={{ x: 0.0, y: 1.0 }}
+          end={{ x: 1.0, y: 1.0 }}
           style={{
-            flexDirection: "row",
-            borderWidth: 2,
-            borderColor: "teal",
-            borderRadius: 10,
-            width: "90%",
-            alignItems: "center",
             marginTop: 50,
+            width: "90%",
+            height: Dimensions.get("window").height < 900 ? 65 : 75,
+            // paddingHorizontal: 1.5,
+            // paddingVertical: 1.5,
+            paddingTop: 1.5,
+            paddingBottom: 1.5,
+            paddingLeft: 1.5,
+            paddingRight: 1.5,
             alignSelf: "center",
-            marginBottom: 10,
+            // borderWidth: 1,
+            // borderColor: "deepskyblue",
+            borderRadius: 10,
+            // alignItems: "center",
+            marginVertical: 8,
           }}
         >
-          <IconFeather
-            name="search"
-            size={25}
-            color="white"
-            style={{ marginLeft: 10 }}
-          />
-          <TextInput
-            placeholderTextColor="white"
-            style={styles.textInput}
-            placeholder="Search by movie title, actor ..."
-            onChangeText={(newTerm) => setTerm(newTerm)}
-            value={term}
-            autoCapitalize="none"
-            autoCorrect={false}
-            numberOfLines={1}
-          />
-        </View>
-
+          <View
+            style={{
+              flexDirection: "row",
+              borderRadius: 10,
+              width: "100%",
+              height: "100%",
+              alignItems: "center",
+              // marginTop: 50,
+              alignSelf: "center",
+              marginBottom: 10,
+              backgroundColor: "#000025",
+            }}
+          >
+            <TextInput
+              placeholderTextColor="white"
+              style={styles.textInput}
+              placeholder="Search by movie title, actor ..."
+              onChangeText={(newTerm) => setTerm(newTerm)}
+              value={term}
+              autoCapitalize="none"
+              autoCorrect={false}
+              numberOfLines={1}
+            />
+            <IconFeather
+              name="search"
+              size={25}
+              color="white"
+              style={{ marginRight: 10 }}
+            />
+          </View>
+        </LinearGradient>
         <ScrollView
           contentContainerStyle={{
             flexGrow: 1,
