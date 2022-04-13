@@ -839,7 +839,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
-            width: "90%",
+            width: "94%",
             alignSelf: "center",
           }}
         >
@@ -937,7 +937,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
                 <TouchableOpacity
                   onPress={() => openRBSheet()}
                   style={{
-                    width: 140,
+                    width: 110,
                     height: 50,
                     flexDirection: "row",
                     justifyContent: "space-around",
@@ -945,12 +945,12 @@ const MovieDetailScreen = ({ navigation, route }) => {
                   }}
                 >
                   <Text
-                    style={{ color: "#fff", fontSize: 20 }}
+                    style={{ color: "#fff", fontSize: 16 }}
                   >{`Season ${seasonNumber}`}</Text>
                   {seasonOpen ? (
-                    <IconAnt name="up" size={20} color="#fff" />
+                    <IconAnt name="up" size={15} color="#fff" />
                   ) : (
-                    <IconAnt name="down" size={20} color="#fff" />
+                    <IconAnt name="down" size={15} color="#fff" />
                   )}
                 </TouchableOpacity>
               </View>
@@ -959,8 +959,8 @@ const MovieDetailScreen = ({ navigation, route }) => {
           <View
             style={{
               flexDirection: "row",
-              width: "35%",
-              justifyContent: "space-around",
+              width: "30%",
+              justifyContent: "space-between",
               alignSelf: "center",
             }}
           >
