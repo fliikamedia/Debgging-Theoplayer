@@ -147,10 +147,13 @@ export default BottomNav = () => {
         inactiveTintColor: "gray",
         keyboardHidesTabBar: true,
         style: {
-          backgroundColor: "black",
+          backgroundColor: "rgba(0,0,0,0.85)",
           // height: "7%",
           borderTopWidth: 0,
           justifyContent: "center",
+          borderTopLeftRadius: 10,
+          borderTopRightRadius: 10,
+          position: "absolute",
         },
         labelStyle: { fontSize: 0 },
       }}
