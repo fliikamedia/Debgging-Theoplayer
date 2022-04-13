@@ -202,7 +202,7 @@ const SignupScreen = ({ navigation }) => {
         </Text>
         <NewTextInput
           iconName="user"
-          iconSize={30}
+          iconSize={25}
           iconColor="darkgrey"
           placeholder="First name"
           onChangeText={(firstName) => setFirstName(firstName)}
@@ -224,7 +224,7 @@ const SignupScreen = ({ navigation }) => {
         /> */}
         <NewTextInput
           iconName="user"
-          iconSize={30}
+          iconSize={25}
           iconColor="darkgrey"
           placeholder="Last name"
           onChangeText={(lastName) => setLastName(lastName)}
@@ -293,7 +293,7 @@ const SignupScreen = ({ navigation }) => {
         <NewTextInput
           onFocus={() => showDatepicker()}
           iconName="calendar"
-          iconSize={30}
+          iconSize={25}
           iconColor="darkgrey"
           placeholder="Date of birth"
           onChangeText={(yearOfBirth) => setYearOfBirth(yearOfBirth)}
@@ -319,7 +319,7 @@ const SignupScreen = ({ navigation }) => {
         <NewTextInput
           iconName="phone"
           onFocus={() => setPhoneNumber("+")}
-          iconSize={25}
+          iconSize={22}
           iconColor="darkgrey"
           placeholder="Phone number"
           onChangeText={(phoneNumber) => setPhoneNumber(phoneNumber)}

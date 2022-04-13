@@ -116,7 +116,7 @@ const LoginScreen = ({ navigation }) => {
       </Text>
       <NewTextInput
         iconName="mail"
-        iconSize={30}
+        iconSize={25}
         iconColor="darkgrey"
         type="email"
         placeholder="Enter your Email"
@@ -133,7 +133,7 @@ const LoginScreen = ({ navigation }) => {
       />
       <NewTextInput
         iconName="lock"
-        iconSize={30}
+        iconSize={25}
         iconColor="darkgrey"
         placeholder="Enter your password"
         type="password"

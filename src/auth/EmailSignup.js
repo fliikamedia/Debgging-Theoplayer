@@ -160,7 +160,7 @@ const EmailSignup = ({ navigation }) => {
         /> */}
       <NewTextInput
         iconName="mail"
-        iconSize={30}
+        iconSize={25}
         iconColor="darkgrey"
         type="email"
         placeholder="Enter your Email"
@@ -186,7 +186,7 @@ const EmailSignup = ({ navigation }) => {
       ) : null}
       <NewTextInput
         iconName="lock"
-        iconSize={30}
+        iconSize={25}
         iconColor="darkgrey"
         placeholder="Enter your password"
         type="password"
@@ -211,7 +211,7 @@ const EmailSignup = ({ navigation }) => {
       ) : null}
       <NewTextInput
         iconName="lock"
-        iconSize={30}
+        iconSize={25}
         iconColor="darkgrey"
         placeholder="Confirm your password"
         type="password"
