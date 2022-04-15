@@ -399,7 +399,7 @@ const HomeScreen = ({ navigation }) => {
               }}
             >
               <FastImage
-                style={{ width: 130, height: 50 }}
+                style={{ width: SIZES.width / 2.1, aspectRatio: 16 / 9 }}
                 source={{ uri: squareLogo }}
               />
               <View

@@ -147,7 +147,7 @@ export default BottomNav = () => {
         inactiveTintColor: "gray",
         keyboardHidesTabBar: true,
         style: {
-          backgroundColor: "rgba(0,0,0,0.85)",
+          backgroundColor: "rgba(0,0,0,0.9)",
           // height: "7%",
           borderTopWidth: 0,
           justifyContent: "center",
