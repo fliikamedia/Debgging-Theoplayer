@@ -23,15 +23,16 @@ import profileImgs from "../../constants/profileImgs";
 import DownloadsScreen from "../BottomScreens/DownloadsScreen";
 import { TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-
+import SVGImg from "../../assets/fliika-logo.svg";
 const Stack = createStackNavigator();
 
 const getHeaderTitle = (route) => {
   return (
-    <FastImage
-      style={{ height: 32, width: 100 }}
-      source={require("../../assets/fliika-logo.png")}
-    />
+    // <FastImage
+    //   style={{ height: 26, width: 80 }}
+    //   source={require("../../assets/fliika-logo.png")}
+    // />
+    <SVGImg width={100} height={36} />
   );
 };
 

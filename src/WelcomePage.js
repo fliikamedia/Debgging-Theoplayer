@@ -19,6 +19,8 @@ import {
 import firebase from "firebase";
 import Video from "react-native-video";
 import FastImage from "react-native-fast-image";
+import SVGImg from "../assets/fliika-logo.svg";
+
 const WelcomePage = ({ navigation }) => {
   const [isPreloading, setIsPreloading] = useState(true);
 
@@ -79,10 +81,11 @@ const WelcomePage = ({ navigation }) => {
       />
       {isPreloading ? null : (
         <View style={styles.Wrapper}>
-          <FastImage
+          {/* <FastImage
             source={require("../assets/fliika-logo.png")}
             style={styles.logo}
-          />
+          /> */}
+          <SVGImg width={130} height={40} style={styles.logo} />
           <View>
             <Text style={styles.textDescriptionLg}>
               Watch African movies you love
