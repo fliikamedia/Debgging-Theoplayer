@@ -842,7 +842,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
-            width: "94%",
+            width: "86%",
             alignSelf: "center",
           }}
         >
@@ -851,10 +851,11 @@ const MovieDetailScreen = ({ navigation, route }) => {
               <View
                 style={{
                   alignSelf: "center",
-                  borderRadius: 5,
-                  borderWidth: 0.7,
-                  borderColor: "white",
+                  // borderRadius: 5,
+                  // borderWidth: 0.7,
+                  // borderColor: "white",
                   zIndex: 50,
+                  // marginLeft: "6%",
                 }}
               >
                 {/* <Menu

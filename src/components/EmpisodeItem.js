@@ -6,7 +6,7 @@ import IonIcon from "react-native-vector-icons/Ionicons";
 import FastImage from "react-native-fast-image";
 import ProgressBar from "./ProgressBar";
 import { useSelector } from "react-redux";
-import Entypo from "react-native-vector-icons/Entypo";
+import Feather from "react-native-vector-icons/Feather";
 
 const EpisodeItem = ({ episode, navigation, index }) => {
   const user = useSelector((state) => state.user);
@@ -99,14 +99,13 @@ const EpisodeItem = ({ episode, navigation, index }) => {
               navigation.navigate(EPISODEDETAIL, { episode: episode })
             }
             style={{
-              margin: -5,
+              margin: -4,
               width: 30,
               height: 30,
               padding: 0,
               borderRadius: 20,
               justifyContent: "center",
               alignItems: "center",
-              elevation: 25,
               borderWidth: 1,
               borderColor: "white",
             }}
@@ -162,9 +161,9 @@ const EpisodeItem = ({ episode, navigation, index }) => {
               justifyContent: "space-around",
             }}
           >
-            <Entypo
+            <Feather
               style={{ marginTop: 10 }}
-              name="download"
+              name="download-cloud"
               size={25}
               color="#fff"
             />
