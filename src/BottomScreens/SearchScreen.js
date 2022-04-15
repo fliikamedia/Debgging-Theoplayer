@@ -118,9 +118,9 @@ const SearchScreen = ({ navigation }) => {
           start={{ x: 0.0, y: 1.0 }}
           end={{ x: 1.0, y: 1.0 }}
           style={{
-            marginTop: 50,
+            marginTop: 70,
             width: "90%",
-            height: Dimensions.get("window").height < 900 ? 65 : 75,
+            height: Dimensions.get("window").height < 900 ? 55 : 65,
             // paddingHorizontal: 1.5,
             // paddingVertical: 1.5,
             paddingTop: 1.5,
