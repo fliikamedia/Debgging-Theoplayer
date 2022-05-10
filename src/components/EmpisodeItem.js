@@ -162,7 +162,12 @@ const EpisodeItem = ({ episode, navigation, index }) => {
               justifyContent: "space-around",
             }}
           >
-            <Entypo name="download" size={25} color="#fff" />
+            <Entypo
+              style={{ marginTop: 10 }}
+              name="download"
+              size={25}
+              color="#fff"
+            />
           </View>
         </View>
       </View>
@@ -196,6 +201,7 @@ const styles = StyleSheet.create({
   duration: {
     color: "darkgrey",
     fontSize: 14,
+    marginTop: 10,
   },
   synopsis: {
     color: "#fff",

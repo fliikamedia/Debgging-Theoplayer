@@ -37,6 +37,7 @@ import RecycleView from "../components/RecycleView";
 import FastImage from "react-native-fast-image";
 import RBSheet from "react-native-raw-bottom-sheet";
 import RbSheetSeasonItem from "../components/RbSheetSeasonItem";
+import moment from "moment";
 
 const TvShowsScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -142,7 +143,8 @@ const TvShowsScreen = ({ navigation }) => {
                     removeFromProfileWatchList(
                       user.user._id,
                       item,
-                      user.currentProfile._id
+                      user.currentProfile._id,
+                      item.season_number
                     )(dispatch);
                   }}
                 >
@@ -159,7 +161,9 @@ const TvShowsScreen = ({ navigation }) => {
                     addToProfileWatchList(
                       user.user._id,
                       item,
-                      user.currentProfile._id
+                      user.currentProfile._id,
+                      item.season_number,
+                      moment()
                     )(dispatch);
                   }}
                 >
@@ -370,11 +374,12 @@ const TvShowsScreen = ({ navigation }) => {
 
     return (
       <RBSheet
-        animationType="slide"
+        // animationType="slide"
         ref={refRBSheetMovies}
         closeOnDragDown={true}
         closeOnPressMask={true}
         closeOnPressBack={true}
+        height={SIZES.height * 0.5}
         customStyles={{
           wrapper: {
             backgroundColor: "transparent",
@@ -383,13 +388,12 @@ const TvShowsScreen = ({ navigation }) => {
             backgroundColor: "#fff",
           },
           container: {
-            backgroundColor: "rgba(0,0,0, 0.8)",
+            backgroundColor: "rgba(0,0,0, 0.92)",
             borderTopLeftRadius: 20,
             borderTopRightRadius: 20,
             borderWidth: 0.6,
             borderColor: "grey",
-            height:
-              seasons.length > 1 ? SIZES.height * 0.5 : SIZES.height * 0.3,
+            // height: SIZES.height * 0.5,
           },
         }}
       >
@@ -399,7 +403,7 @@ const TvShowsScreen = ({ navigation }) => {
             paddingLeft: 20,
             paddingBottom: 20,
             flexDirection: "column",
-            justifyContent: "space-between",
+            justifyContent: seasons?.length === 1 ? "center" : "space-between",
           }}
         >
           {seasons

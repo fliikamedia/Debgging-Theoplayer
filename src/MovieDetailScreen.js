@@ -73,7 +73,6 @@ const MovieDetailScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const scrollRef = useRef();
   const refRBSheet = useRef(null);
-
   const [play, setPlay] = useState(false);
   const appState = useRef(AppState.currentState);
   const { selectedMovie, isSeries, seriesTitle, rbSeasonNumber } = route.params;
@@ -96,6 +95,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
     { label: "Banana", value: "banana" },
   ]);
   const [activeTab, setActiveTab] = useState(SERIESEPISODESTAB);
+  const [seasonOpen, setSeasonOpen] = useState(false);
   //console.log('currentProfile',user.currentProfile);
   /*   const getMovie = useCallback(async () => {
     const response = await FliikaApi.get(`/posts/${selectedMovie}`);
@@ -225,13 +225,23 @@ const MovieDetailScreen = ({ navigation, route }) => {
     ),
   };
   // End of Toast
-  const isWatchList = (movieArray, movieName) => {
+  const isWatchList = (movieArray, movieName, seriesSeason) => {
     try {
       var found = false;
       for (var i = 0; i < movieArray.length; i++) {
-        if (movieArray[i].title == movieName) {
-          found = true;
-          break;
+        if (seriesSeason) {
+          if (
+            movieArray[i].title == movieName &&
+            movieArray[i].season === seasonNumber
+          ) {
+            found = true;
+            break;
+          }
+        } else {
+          if (movieArray[i].title == movieName) {
+            found = true;
+            break;
+          }
         }
       }
       return found;
@@ -413,10 +423,15 @@ const MovieDetailScreen = ({ navigation, route }) => {
       );
     }
   };
+
   // Render Icons
   const movieIcons = () => {
     if (
-      isWatchList(user.currentProfile.watchList, currentMovie.title) == true
+      isWatchList(
+        user.currentProfile.watchList,
+        currentMovie.title,
+        currentMovie.season_number
+      ) == true
     ) {
       return (
         <TouchableOpacity
@@ -424,8 +439,9 @@ const MovieDetailScreen = ({ navigation, route }) => {
             showToast("Removed from watch list");
             removeFromProfileWatchList(
               user.user._id,
-              movie,
-              user.currentProfile._id
+              currentMovie,
+              user.currentProfile._id,
+              seasonNumber
             )(dispatch);
           }}
         >
@@ -444,7 +460,9 @@ const MovieDetailScreen = ({ navigation, route }) => {
             addToProfileWatchList(
               user.user._id,
               currentMovie,
-              user.currentProfile._id
+              user.currentProfile._id,
+              seasonNumber,
+              moment()
             )(dispatch);
           }}
         >
@@ -471,7 +489,10 @@ const MovieDetailScreen = ({ navigation, route }) => {
         {/* Back Button */}
         <MovieDetailIcon iconFuc={navigateBack} icon={icons.left_arrow} />
         {/* Share Button */}
-        <MovieDetailIcon iconFuc={() => logOut()} icon={icons.cast} />
+        <MovieDetailIcon
+          iconFuc={() => console.log("cast clicked")}
+          icon={icons.cast}
+        />
       </View>
     );
   };
@@ -793,6 +814,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
 
   const openRBSheet = () => {
     refRBSheet.current.open();
+    setSeasonOpen(true);
   };
   const closeRBSheet = () => {
     refRBSheet.current.close();
@@ -820,7 +842,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
-            width: "90%",
+            width: "94%",
             alignSelf: "center",
           }}
         >
@@ -918,7 +940,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
                 <TouchableOpacity
                   onPress={() => openRBSheet()}
                   style={{
-                    width: 140,
+                    width: 110,
                     height: 50,
                     flexDirection: "row",
                     justifyContent: "space-around",
@@ -926,9 +948,13 @@ const MovieDetailScreen = ({ navigation, route }) => {
                   }}
                 >
                   <Text
-                    style={{ color: "#fff", fontSize: 20 }}
+                    style={{ color: "#fff", fontSize: 16 }}
                   >{`Season ${seasonNumber}`}</Text>
-                  <IconAnt name="down" size={20} color="#fff" />
+                  {seasonOpen ? (
+                    <IconAnt name="up" size={15} color="#fff" />
+                  ) : (
+                    <IconAnt name="down" size={15} color="#fff" />
+                  )}
                 </TouchableOpacity>
               </View>
             ) : null}
@@ -936,8 +962,8 @@ const MovieDetailScreen = ({ navigation, route }) => {
           <View
             style={{
               flexDirection: "row",
-              width: "35%",
-              justifyContent: "space-around",
+              width: "30%",
+              justifyContent: "space-between",
               alignSelf: "center",
             }}
           >
@@ -986,11 +1012,13 @@ const MovieDetailScreen = ({ navigation, route }) => {
           />
         </Tab.Navigator>
         <RBSheet
-          animationType="slide"
+          //animationType="slide"
           ref={refRBSheet}
           closeOnDragDown={true}
+          onClose={() => setSeasonOpen(false)}
           closeOnPressMask={true}
           closeOnPressBack={true}
+          height={SIZES.width * 0.3 * seasonsLength}
           customStyles={{
             wrapper: {
               backgroundColor: "transparent",
@@ -999,12 +1027,12 @@ const MovieDetailScreen = ({ navigation, route }) => {
               backgroundColor: "#fff",
             },
             container: {
-              backgroundColor: "rgba(0,0,0, 0.8)",
+              backgroundColor: "rgba(0,0,0, 0.92)",
               borderTopLeftRadius: 20,
               borderTopRightRadius: 20,
               borderWidth: 0.6,
               borderColor: "grey",
-              height: SIZES.width * 0.3 * seasonsLength,
+              // height: SIZES.width * 0.3 * seasonsLength, // To optimize when more seasons added
             },
           }}
         >

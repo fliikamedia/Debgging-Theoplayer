@@ -1,22 +1,29 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, TextInput, ScrollView } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  ScrollView,
+  Dimensions,
+} from "react-native";
+import { useSelector } from "react-redux";
 import MoviesItem from "../components/MoviesItem";
-import IconAnt from 'react-native-vector-icons/AntDesign';
-import IconFeather from 'react-native-vector-icons/Feather'
-import IconAwesome from 'react-native-vector-icons/FontAwesome5';
-import ReactNativeBitmovinPlayer, {
-  ReactNativeBitmovinPlayerIntance,
-} from '@takeoffmedia/react-native-bitmovin-player';
-import AsyncStorage from "@react-native-community/async-storage";
-
+import IconFeather from "react-native-vector-icons/Feather";
+import LinearGradient from "react-native-linear-gradient";
 
 const SearchScreen = ({ navigation }) => {
   const movies = useSelector((state) => state.movies);
-  const [term, setTerm] = useState("");
-//console.log(movies.availableMovies[0]);
- 
 
+  const [term, setTerm] = useState("");
+  //console.log(movies.availableMovies[0]);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      setTerm("");
+    });
+    return () => unsubscribe();
+  }, [navigation]);
   let searchArray = [];
   try {
     for (let i = 0; i < movies.availableMovies.length; i++) {
@@ -27,6 +34,9 @@ const SearchScreen = ({ navigation }) => {
         movies.availableMovies[i].cast
           .toString()
           .replace(/,/g, " ")
+          .toLowerCase()
+          .includes(term.toLowerCase()) ||
+        movies.availableMovies[i].storyline
           .toLowerCase()
           .includes(term.toLowerCase())
       ) {
@@ -49,7 +59,12 @@ const SearchScreen = ({ navigation }) => {
           (item.film_type == "series" && item.episode_number == 1)
         ) {
           return (
-            <MoviesItem navigation={navigation} movie={item} key={item._id} />
+            <MoviesItem
+              navigation={navigation}
+              movie={item}
+              key={item._id}
+              setTerm={setTerm}
+            />
           );
         }
       });
@@ -57,7 +72,7 @@ const SearchScreen = ({ navigation }) => {
       return (
         <Text
           style={{
-            fontFamily: 'Sora-Regular',
+            fontFamily: "Sora-Regular",
             fontSize: 20,
             color: "aqua",
             textAlign: "center",
@@ -82,39 +97,86 @@ const SearchScreen = ({ navigation }) => {
   };
   return (
     <View style={styles.container}>
-      <View
-        style={{
-          flexDirection: "row",
-          borderWidth: 2,
-          borderColor: "teal",
-          borderRadius: 10,
-          width: "90%",
-          alignItems: "center",
-          marginTop: 50,
-          alignSelf: "center",
-          marginBottom: 10,
-        }}
+      <LinearGradient
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        //colors={["#003366", "#483D8B", "#4682B4"]}
+        // colors={["#000020", "#000080", "#4682B4"]}
+        colors={["#000025", "#000020", "black"]}
+        style={{ flex: 1 }}
       >
-        <IconFeather
-          name="search"
-          size={25}
-          color="white"
-          style={{ marginLeft: 10 }}
-        />
-        <TextInput
-          placeholderTextColor="white"
-          style={styles.textInput}
-          placeholder="Search by movie title, actor"
-          onChangeText={(newTerm) => setTerm(newTerm)}
-          value={term}
-          autoCapitalize="none"
-          autoCorrect={false}
-          numberOfLines={1}
-        />
-      </View>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        {renderSearch()}
-      </ScrollView>
+        <LinearGradient
+          colors={[
+            "#6782b4",
+            "#8989bb",
+            // "#5F9EA0",
+            // "#4682B4",
+            // "#4C64FF",
+            // "#6536FF",
+            "#045de9",
+          ]}
+          start={{ x: 0.0, y: 1.0 }}
+          end={{ x: 1.0, y: 1.0 }}
+          style={{
+            marginTop: 50,
+            width: "90%",
+            height: Dimensions.get("window").height < 900 ? 65 : 75,
+            // paddingHorizontal: 1.5,
+            // paddingVertical: 1.5,
+            paddingTop: 1.5,
+            paddingBottom: 1.5,
+            paddingLeft: 1.5,
+            paddingRight: 1.5,
+            alignSelf: "center",
+            // borderWidth: 1,
+            // borderColor: "deepskyblue",
+            borderRadius: 10,
+            // alignItems: "center",
+            marginVertical: 8,
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              borderRadius: 10,
+              width: "100%",
+              height: "100%",
+              alignItems: "center",
+              // marginTop: 50,
+              alignSelf: "center",
+              marginBottom: 10,
+              backgroundColor: "#000025",
+            }}
+          >
+            <TextInput
+              placeholderTextColor="white"
+              style={styles.textInput}
+              placeholder="Search by movie title, actor ..."
+              onChangeText={(newTerm) => setTerm(newTerm)}
+              value={term}
+              autoCapitalize="none"
+              autoCorrect={false}
+              numberOfLines={1}
+            />
+            <IconFeather
+              name="search"
+              size={25}
+              color="white"
+              style={{ marginRight: 10 }}
+            />
+          </View>
+        </LinearGradient>
+        <ScrollView
+          contentContainerStyle={{
+            flexGrow: 1,
+            flexDirection: "row",
+            flexWrap: "wrap",
+            justifyContent: "center",
+          }}
+        >
+          {renderSearch()}
+        </ScrollView>
+      </LinearGradient>
     </View>
   );
 };

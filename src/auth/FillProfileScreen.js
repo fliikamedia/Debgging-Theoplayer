@@ -8,7 +8,8 @@ import {
   AppState,
   Dimensions,
   FlatList,
-  Image
+  Image,
+  ActivityIndicator,
 } from "react-native";
 import firebase from "firebase";
 import { LOGIN, MOVIES } from "../../constants/RouteNames";
@@ -20,6 +21,8 @@ import { useDispatch } from "react-redux";
 import { firebaseConfig } from "../api/FirebaseConfig";
 import AsyncStorage from "@react-native-community/async-storage";
 import profileImgs from "../../constants/profileImgs";
+import NewTextInput from "../components/TextInput";
+import LinearGradient from "react-native-linear-gradient";
 
 const SignupScreen = ({ navigation }) => {
   const appState = useRef(AppState.currentState);
@@ -36,7 +39,8 @@ const SignupScreen = ({ navigation }) => {
   const [date, setDate] = useState(new Date(1598051730000));
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
-  const [imageName, setImageName] = useState('profile0');
+  const [imageName, setImageName] = useState("profile0");
+  const [btnClicked, setBtnClicked] = useState(false);
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -56,7 +60,7 @@ const SignupScreen = ({ navigation }) => {
     setMode(currentMode);
   };
 
-/*   const checkIFLoggedIn = () => {
+  /*   const checkIFLoggedIn = () => {
     firebase.app().delete().then(function() {
       console.log('initializing');
       firebase.initializeApp(firebaseConfig);
@@ -74,7 +78,7 @@ const SignupScreen = ({ navigation }) => {
     
   }; */
 
- /*  useEffect(() => {
+  /*  useEffect(() => {
     AppState.addEventListener("change",   checkIFLoggedIn,
     );
     
@@ -90,8 +94,8 @@ const SignupScreen = ({ navigation }) => {
   /// to be fixed
   LogBox.ignoreLogs(["Setting a timer"]);
   const inputColor = "teal";
-  
-  const signupUser = async (email, password) => {
+
+  const submitProfile = async () => {
     try {
       /* await firebase.auth().createUserWithEmailAndPassword(email, password);
       const currentUser = firebase.auth().currentUser;
@@ -109,25 +113,35 @@ const SignupScreen = ({ navigation }) => {
         phoneNumber: phoneNumber,
       }); */
       //console.log("response", currentUser);
-      const { uid, email,emailVerified } = firebase.auth().currentUser;
+      setBtnClicked(true);
+      const { uid, email, emailVerified } = firebase.auth().currentUser;
       const idToken = await firebase.auth().currentUser.getIdToken();
 
-       
-        addUser(email,firstName, lastName, yearOfBirth, phoneNumber,uid, emailVerified, imageName, idToken )(dispatch);
+      addUser(
+        email,
+        firstName,
+        lastName,
+        yearOfBirth,
+        phoneNumber,
+        uid,
+        emailVerified,
+        imageName,
+        idToken
+      )(dispatch);
       /*   navigation.reset({
           index: 0,
           routes: [{ name: MOVIES }],
         }); */
-        //await AsyncStorage.setItem("whatPhase", "LoggedIn");
-        //navigation.navigate(MOVIES);
-        loggedIn()(dispatch);
-    
+      //await AsyncStorage.setItem("whatPhase", "LoggedIn");
+      //navigation.navigate(MOVIES);
+      loggedIn()(dispatch);
     } catch (err) {
       console.log(err);
       setError(err.message);
+      setBtnClicked(false);
     }
   };
-  
+
   /*
   const checkIFLoggedIn = () => {
     firebase.auth().onAuthStateChanged((user) => {
@@ -186,7 +200,17 @@ const SignupScreen = ({ navigation }) => {
         >
           Create your account
         </Text>
-        <TextInput
+        <NewTextInput
+          iconName="user"
+          iconSize={25}
+          iconColor="darkgrey"
+          placeholder="First name"
+          onChangeText={(firstName) => setFirstName(firstName)}
+          autoCorrect={false}
+          autoCapitalize="none"
+          value={firstName}
+        />
+        {/* <TextInput
           label="First Name"
           onChangeText={(firstName) => setFirstName(firstName)}
           style={styles.textInput}
@@ -197,8 +221,18 @@ const SignupScreen = ({ navigation }) => {
           theme={{
             colors: { primary: `${inputColor}`, underlineColor: "transparent" },
           }}
+        /> */}
+        <NewTextInput
+          iconName="user"
+          iconSize={25}
+          iconColor="darkgrey"
+          placeholder="Last name"
+          onChangeText={(lastName) => setLastName(lastName)}
+          autoCorrect={false}
+          autoCapitalize="none"
+          value={lastName}
         />
-                <TextInput
+        {/* <TextInput
           label="Last Name"
           onChangeText={(lastName) => setLastName(lastName)}
           style={styles.textInput}
@@ -209,7 +243,7 @@ const SignupScreen = ({ navigation }) => {
           theme={{
             colors: { primary: `${inputColor}`, underlineColor: "transparent" },
           }}
-        />
+        /> */}
         {/* <TextInput
           label="Email"
           onChangeText={(email) => setEmail(email)}
@@ -233,7 +267,7 @@ const SignupScreen = ({ navigation }) => {
             Email address is invalid!
           </HelperText>
         ) : null} */}
-     {/*    <TextInput
+        {/*    <TextInput
           label="Password"
           value={password}
           onChangeText={(password) => setPassword(password)}
@@ -256,7 +290,19 @@ const SignupScreen = ({ navigation }) => {
             Password must be at least 6 characters long
           </HelperText>
         ) : null} */}
-        <TextInput
+        <NewTextInput
+          onFocus={() => showDatepicker()}
+          iconName="calendar"
+          iconSize={25}
+          iconColor="darkgrey"
+          placeholder="Date of birth"
+          onChangeText={(yearOfBirth) => setYearOfBirth(yearOfBirth)}
+          autoCorrect={false}
+          autoCapitalize="none"
+          value={yearOfBirth}
+          showSoftInputOnFocus={false}
+        />
+        {/* <TextInput
           showSoftInputOnFocus={false}
           onFocus={() => showDatepicker()}
           label="Date of birth"
@@ -269,8 +315,20 @@ const SignupScreen = ({ navigation }) => {
           theme={{
             colors: { primary: `${inputColor}`, underlineColor: "transparent" },
           }}
+        /> */}
+        <NewTextInput
+          iconName="phone"
+          onFocus={() => setPhoneNumber("+")}
+          iconSize={22}
+          iconColor="darkgrey"
+          placeholder="Phone number"
+          onChangeText={(phoneNumber) => setPhoneNumber(phoneNumber)}
+          autoCorrect={false}
+          autoCapitalize="none"
+          value={phoneNumber}
+          keyboardType="numeric"
         />
-        <TextInput
+        {/* <TextInput
           label="Phone number"
           onFocus={() => setPhoneNumber("+")}
           value={phoneNumber}
@@ -283,7 +341,7 @@ const SignupScreen = ({ navigation }) => {
           theme={{
             colors: { primary: `${inputColor}`, underlineColor: "transparent" },
           }}
-        />
+        /> */}
         {error == "The email address is already in use by another account." ? (
           <View>
             <Text style={{ color: "red", textAlign: "center" }}>{error}</Text>
@@ -305,31 +363,40 @@ const SignupScreen = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         ) : null}
-        <View style={{marginVertical: 20}}>
-          <Text style={{color: '#fff', fontSize: 18, marginLeft: 20, marginBottom: 20}}>Choose a profile image</Text>
-        <FlatList
-      showsHorizontalScrollIndicator={false}
-        horizontal
-        data={profileImgs}
-        keyExtractor={(item) => item.name}
-        renderItem={({ item, index }) => (
-          <TouchableOpacity onPress={() => setImageName(item.name)}>
-            <Image
-              source={item.path}
-              style={{
-                width: 100,
-                height: 100,
-                borderRadius: 120,
-                marginLeft: 20,
-                borderWidth: imageName === item.name ? 6 : 0,
-                borderColor: imageName === item.name ? 'teal' : null
-              }}
-            />
-          </TouchableOpacity>
-        )}
-      />
+        <View style={{ marginVertical: 20 }}>
+          <Text
+            style={{
+              color: "#fff",
+              fontSize: 18,
+              marginLeft: 20,
+              marginBottom: 20,
+            }}
+          >
+            Choose a profile image
+          </Text>
+          <FlatList
+            showsHorizontalScrollIndicator={false}
+            horizontal
+            data={profileImgs}
+            keyExtractor={(item) => item.name}
+            renderItem={({ item, index }) => (
+              <TouchableOpacity onPress={() => setImageName(item.name)}>
+                <Image
+                  source={item.path}
+                  style={{
+                    width: 100,
+                    height: 100,
+                    borderRadius: 120,
+                    marginLeft: 20,
+                    borderWidth: imageName === item.name ? 6 : 0,
+                    borderColor: imageName === item.name ? "teal" : null,
+                  }}
+                />
+              </TouchableOpacity>
+            )}
+          />
         </View>
-        
+
         <TouchableOpacity
           disabled={
             !firstName &&
@@ -337,21 +404,37 @@ const SignupScreen = ({ navigation }) => {
             !email &&
             !password &&
             !yearOfBirth &&
-            phoneNumber.length > 1
+            phoneNumber.length < 1
           }
-          onPress={() => signupUser(email, password)}
-          style={styles.signupBtn}
+          onPress={() => submitProfile()}
+          style={styles.submitBtn}
         >
-          <Text
+          <LinearGradient
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            // colors={["#483D8B", "#1E90FF", "#87CEEB"]}
+            colors={["#191960", "#0000FF", "#4169E1"]}
             style={{
-              color: "white",
-              fontSize: 18,
-              fontWeight: "bold",
-              textTransform: "uppercase",
+              flex: 1,
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
-            Submit Profile
-          </Text>
+            {btnClicked ? (
+              <ActivityIndicator animating color={"white"} size="large" />
+            ) : (
+              <Text
+                style={{
+                  color: "white",
+                  fontSize: 18,
+                  fontWeight: "bold",
+                  textTransform: "uppercase",
+                }}
+              >
+                Submit Profile
+              </Text>
+            )}
+          </LinearGradient>
         </TouchableOpacity>
         <Text
           style={{
@@ -394,13 +477,13 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginVertical: Dimensions.get("window").height < 900 ? 10 : 20,
   },
-  signupBtn: {
+  submitBtn: {
     marginTop: 20,
     height: 60,
     width: Dimensions.get("window").height < 900 ? "90%" : "70%",
-    backgroundColor: "mediumseagreen",
-    alignItems: "center",
-    justifyContent: "center",
+    // backgroundColor: "mediumseagreen",
+    // alignItems: "center",
+    // justifyContent: "center",
     borderRadius: 5,
     alignSelf: "center",
   },

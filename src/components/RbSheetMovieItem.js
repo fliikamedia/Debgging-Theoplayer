@@ -1,24 +1,96 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import FastImage from "react-native-fast-image";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { SIZES, icons, COLORS } from "../../constants";
 import * as Animatable from "react-native-animatable";
 import { BITMOVINPLAYER, MOVIEDETAIL } from "../../constants/RouteNames";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import IconFeather from "react-native-vector-icons/Feather";
-import { addToProfileWatchList } from "../../store/actions/user";
+import {
+  addToProfileWatchList,
+  removeFromProfileWatchList,
+} from "../../store/actions/user";
 import IconAwesome from "react-native-vector-icons/FontAwesome5";
+import moment from "moment";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 const RbSheetMovieItem = ({ movieTitle, navigate, closeRBSheet }) => {
   const movies = useSelector((state) => state.movies);
+  const user = useSelector((state) => state.user);
+
+  const dispatch = useDispatch();
   const currentMovie = movies.availableMovies.find(
     (r) => r.title === movieTitle
   );
 
+  const isWatchList = (movieArray, movieName) => {
+    try {
+      var found = false;
+      for (var i = 0; i < movieArray.length; i++) {
+        if (movieArray[i].title == movieName) {
+          found = true;
+          break;
+        }
+      }
+      return found;
+    } catch (err) {}
+  };
+
+  const movieIcons = () => {
+    if (
+      isWatchList(
+        user.currentProfile.watchList,
+        currentMovie.title,
+        currentMovie.season_number
+      ) == true
+    ) {
+      return (
+        <TouchableOpacity
+          onPress={() => {
+            // showToast("Removed from watch list");
+            removeFromProfileWatchList(
+              user.user._id,
+              currentMovie,
+              user.currentProfile._id,
+              currentMovie.season_number
+            )(dispatch);
+          }}
+        >
+          <Icon
+            name="book-remove-multiple-outline"
+            size={40}
+            color={COLORS.white}
+          />
+        </TouchableOpacity>
+      );
+    } else {
+      return (
+        <TouchableOpacity
+          onPress={() => {
+            // showToast("Added to watch list");
+            addToProfileWatchList(
+              user.user._id,
+              currentMovie,
+              user.currentProfile._id,
+              currentMovie.season_number,
+              moment()
+            )(dispatch);
+          }}
+        >
+          <IconFeather name="plus" size={40} color={COLORS.white} />
+        </TouchableOpacity>
+      );
+    }
+  };
   const dvdPoster = () => {
     return (
-      <View style={{ flex: 1 }}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "space-around",
+        }}
+      >
         <View style={styles.container}>
           <View style={styles.posterContainer}>
             <FastImage
@@ -88,18 +160,7 @@ const RbSheetMovieItem = ({ movieTitle, navigate, closeRBSheet }) => {
           </View>
           {/* Info and add to watchList Icons */}
           <View style={styles.iconsContainer}>
-            <TouchableOpacity
-              onPress={() => {
-                //showToast("Added to watch list");
-                addToProfileWatchList(
-                  user.user._id,
-                  currentMovie,
-                  user.currentProfile._id
-                )(dispatch);
-              }}
-            >
-              <IconFeather name="plus" size={40} color={COLORS.white} />
-            </TouchableOpacity>
+            {movieIcons()}
             <TouchableOpacity
               onPress={() => {
                 closeRBSheet();
@@ -130,103 +191,6 @@ const RbSheetMovieItem = ({ movieTitle, navigate, closeRBSheet }) => {
     );
   };
 
-  //   const widePoster = () => {
-  //     return (
-  //       <View>
-  //         <FastImage
-  //           style={styles.posterWide}
-  //           source={{ uri: currentMovie.wide_thumbnail_link }}
-  //         />
-  //         <View style={{ marginBottom: 20 }}>
-  //           <Text style={styles.title}>{movieTitle}</Text>
-  //           <Text style={styles.titleText}>Cast</Text>
-  //           <Text style={styles.detailText}>
-  //             {currentMovie.cast.toString().replace(/,/g, ", ")}
-  //           </Text>
-  //           <Text style={styles.titleText}>Directors</Text>
-  //           <Text style={styles.detailText}>
-  //             {currentMovie.directors.toString().replace(/,/g, ", ")}
-  //           </Text>
-  //         </View>
-  //         {/* play and other icons */}
-  //         <View style={styles.bottomIcons}>
-  //           <TouchableOpacity
-  //             onPress={() => {
-  //               closeRBSheet();
-  //               navigate(BITMOVINPLAYER, {
-  //                 movieId: currentMovie._id,
-  //                 time: null,
-  //               });
-  //             }}
-  //           >
-  //             <View
-  //               style={{
-  //                 justifyContent: "center",
-  //                 alignItems: "center",
-  //                 width: 100,
-  //                 height: 100,
-  //                 borderRadius: 60,
-  //                 backgroundColor: "rgba(255,255,255,0.2)",
-  //                 alignSelf: "flex-start",
-  //                 borderWidth: 0.2,
-  //                 borderColor: "#fff",
-  //               }}
-  //             >
-  //               <FastImage
-  //                 source={icons.play}
-  //                 tintColor="#fff"
-  //                 resizeMode="contain"
-  //                 style={{
-  //                   width: 30,
-  //                   height: 30,
-  //                 }}
-  //               />
-  //             </View>
-  //           </TouchableOpacity>
-  //           {/* Info and add to watchList Icons */}
-  //           <View style={styles.iconsContainer}>
-  //             <TouchableOpacity
-  //               onPress={() => {
-  //                 //showToast("Added to watch list");
-  //                 addToProfileWatchList(
-  //                   user.user._id,
-  //                   currentMovie,
-  //                   user.currentProfile._id
-  //                 )(dispatch);
-  //               }}
-  //             >
-  //               <IconFeather name="plus" size={40} color={COLORS.white} />
-  //             </TouchableOpacity>
-  //             <TouchableOpacity
-  //               onPress={() => {
-  //                 closeRBSheet();
-  //                 navigate(MOVIEDETAIL, {
-  //                   selectedMovie: currentMovie._id,
-  //                   isSeries: currentMovie.film_type,
-  //                   seriesTitle: currentMovie.name,
-  //                 });
-  //               }}
-  //               style={{
-  //                 margin: -5,
-  //                 padding: 4,
-  //                 height: 40,
-  //                 width: 40,
-  //                 borderRadius: 100,
-  //                 justifyContent: "center",
-  //                 alignItems: "center",
-  //                 elevation: 25,
-  //                 borderWidth: 1,
-  //                 borderColor: "white",
-  //               }}
-  //             >
-  //               <IonIcon name="information" size={18} color="white" />
-  //             </TouchableOpacity>
-  //           </View>
-  //         </View>
-  //       </View>
-  //     );
-  //   };
-
   return (
     <View
       style={{
@@ -241,7 +205,7 @@ const RbSheetMovieItem = ({ movieTitle, navigate, closeRBSheet }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    //flex: 1,
     flexDirection: "row",
   },
   textContainer: {
@@ -249,6 +213,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     flex: 1,
     marginLeft: 10,
+    marginTop: 10,
   },
   posterContainer: {
     width: SIZES.width * 0.3,

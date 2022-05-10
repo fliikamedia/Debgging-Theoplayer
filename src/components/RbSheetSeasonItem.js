@@ -4,6 +4,7 @@ import FastImage from "react-native-fast-image";
 import { useSelector } from "react-redux";
 import { SIZES } from "../../constants";
 import { MOVIEDETAIL } from "../../constants/RouteNames";
+import DropShadow from "react-native-drop-shadow";
 
 const RbSheetSeasonItem = ({
   seasonNumber,
@@ -29,33 +30,45 @@ const RbSheetSeasonItem = ({
   const renderSeasonItem = () => {
     if (from === "movieDetails") {
       return (
-        <TouchableOpacity
-          onPress={() => {
-            setSeason(seasonNumber), closeRBSheet();
-          }}
+        <DropShadow
           style={{
-            backgroundColor: "rgba(60,60,60, 0.9)",
-            width: "95%",
-            height: SIZES.width * 0.2,
-            borderRadius: 5,
-            alignItems: "center",
-            justifyContent: "center",
+            shadowColor: "teal",
+            shadowOffset: {
+              width: 0,
+              height: 3,
+            },
+            shadowOpacity: 0.97,
+            shadowRadius: 10,
           }}
         >
-          <View
+          <TouchableOpacity
+            onPress={() => {
+              setSeason(seasonNumber), closeRBSheet();
+            }}
             style={{
-              flexDirection: "row",
+              backgroundColor: "rgba(40,40,40, 0.9)",
+              width: "95%",
+              height: SIZES.width * 0.15,
+              borderRadius: 5,
               alignItems: "center",
+              justifyContent: "center",
             }}
           >
-            <Text
-              style={styles.seasonNumber}
-            >{`Season ${seasonNumber}   `}</Text>
-            <Text style={styles.numOfEpisodes}>
-              ({numberOfEpisodes} episodes)
-            </Text>
-          </View>
-        </TouchableOpacity>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={styles.seasonNumber}
+              >{`Season ${seasonNumber}   `}</Text>
+              <Text style={styles.numOfEpisodes}>
+                ({numberOfEpisodes} episodes)
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </DropShadow>
       );
     } else {
       return (
