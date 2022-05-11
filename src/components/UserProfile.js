@@ -11,11 +11,9 @@ import { setProfile } from "../../store/actions/user";
 import { useDispatch, useSelector } from "react-redux";
 import { removeProfile, changeProfile } from "../../store/actions/user";
 import { EDITPROFILE } from "../../constants/RouteNames";
-import IconAnt from 'react-native-vector-icons/AntDesign';
-import IconAwesome from 'react-native-vector-icons/FontAwesome5';
-import AsyncStorage from '@react-native-community/async-storage';
-
-
+import IconAnt from "react-native-vector-icons/AntDesign";
+import IconAwesome from "react-native-vector-icons/FontAwesome5";
+import AsyncStorage from "@react-native-community/async-storage";
 
 const UserProfile = ({
   name,
@@ -24,7 +22,7 @@ const UserProfile = ({
   image,
   navigation,
   setEditing,
-  profileId
+  profileId,
 }) => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -48,35 +46,35 @@ const UserProfile = ({
     borderColor: borderColor,
   };
 
-  let profileImg;
+  // let profileImg;
 
-  if (image == "profile1") {
-    profileImg = require(`../../assets/profileImg/profile1.jpg`);
-  } else if (image == "profile2") {
-    profileImg = require(`../../assets/profileImg/profile2.jpg`);
-  } else if (image == "profile3") {
-    profileImg = require(`../../assets/profileImg/profile3.jpg`);
-  } else if (image == "profile4") {
-    profileImg = require(`../../assets/profileImg/profile4.jpg`);
-  } else if (image == "profile5") {
-    profileImg = require(`../../assets/profileImg/profile5.jpg`);
-  } else if (image == "profile6") {
-    profileImg = require(`../../assets/profileImg/profile6.jpg`);
-  } else if (image == "profile7") {
-    profileImg = require(`../../assets/profileImg/profile7.jpg`);
-  }
+  // if (image == "profile1") {
+  //   profileImg = require(`../../assets/profileImg/profile1.jpg`);
+  // } else if (image == "profile2") {
+  //   profileImg = require(`../../assets/profileImg/profile2.jpg`);
+  // } else if (image == "profile3") {
+  //   profileImg = require(`../../assets/profileImg/profile3.jpg`);
+  // } else if (image == "profile4") {
+  //   profileImg = require(`../../assets/profileImg/profile4.jpg`);
+  // } else if (image == "profile5") {
+  //   profileImg = require(`../../assets/profileImg/profile5.jpg`);
+  // } else if (image == "profile6") {
+  //   profileImg = require(`../../assets/profileImg/profile6.jpg`);
+  // } else if (image == "profile7") {
+  //   profileImg = require(`../../assets/profileImg/profile7.jpg`);
+  // }
 
   return (
     <View style={{ alignItems: "center", marginVertical: 10 }}>
       <TouchableOpacity
-        onPress={ async() => {
-        changeProfile(user,profileId)(dispatch);
-            setProfile(name)(dispatch);
-            await AsyncStorage.setItem('profileName', name);
+        onPress={async () => {
+          changeProfile(user, profileId)(dispatch);
+          setProfile(name)(dispatch);
+          await AsyncStorage.setItem("profileName", name);
         }}
         style={container}
       >
-        {image && image != 'profile0' ? (
+        {image ? (
           <>
             <Image
               style={{
@@ -85,7 +83,7 @@ const UserProfile = ({
                 aspectRatio: 1,
                 borderRadius: 120,
               }}
-              source={profileImg}
+              source={{ uri: image }}
             />
             {editing ? (
               <TouchableOpacity
@@ -95,7 +93,7 @@ const UserProfile = ({
                       main: main,
                       profileName: name,
                       imageTitle: image,
-                      profileId: profileId
+                      profileId: profileId,
                     });
                 }}
                 style={{
@@ -130,12 +128,12 @@ const UserProfile = ({
                 }}
                 onPress={() => {
                   setEditing(false),
-                  navigation.navigate(EDITPROFILE, {
-                    main: main,
-                    profileName: name,
-                    imageTitle: image,
-                    profileId: profileId
-                  });
+                    navigation.navigate(EDITPROFILE, {
+                      main: main,
+                      profileName: name,
+                      imageTitle: image,
+                      profileId: profileId,
+                    });
                 }}
               >
                 <IconAwesome name="edit" size={40} color="white" />

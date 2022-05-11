@@ -1,34 +1,35 @@
 export default ProfileImages = [
-  {
-    path: require("../assets/profileImg/profile0.png"),
-    name: "profile0",
-  },
-  {
-    path: require("../assets/profileImg/profile1.jpg"),
-    name: "profile1",
-  },
-  {
-    path: require("../assets/profileImg/profile2.jpg"),
-    name: "profile2",
-  },
-  {
-    path: require("../assets/profileImg/profile3.jpg"),
-    name: "profile3",
-  },
-  {
-    path: require("../assets/profileImg/profile4.jpg"),
-    name: "profile4",
-  },
-  {
-    path: require("../assets/profileImg/profile5.jpg"),
-    name: "profile5",
-  },
-  {
-    path: require("../assets/profileImg/profile6.jpg"),
-    name: "profile6",
-  },
-  {
-    path: require("../assets/profileImg/profile7.jpg"),
-    name: "profile7",
-  },
+  "https://fliikaimages.azureedge.net/profile-images/man-1.jpg",
+  "https://fliikaimages.azureedge.net/profile-images/man-2.jpg",
+  "https://fliikaimages.azureedge.net/profile-images/man-3.png",
+  "https://fliikaimages.azureedge.net/profile-images/woman-1.jpg",
+  "https://fliikaimages.azureedge.net/profile-images/woman-2.jpg",
+  "https://fliikaimages.azureedge.net/profile-images/woman-3.jpg",
 ];
+
+// export const newProfileImages = [
+//   {
+//     path: "https://fliikaimages.azureedge.net/profile-images/man-1.jpg",
+//     name: "profile0",
+//   },
+//   {
+//     path: "https://fliikaimages.azureedge.net/profile-images/man-2.jpg",
+//     name: "profile1",
+//   },
+//   {
+//     path: "https://fliikaimages.azureedge.net/profile-images/man-3.png",
+//     name: "profile2",
+//   },
+//   {
+//     path: "https://fliikaimages.azureedge.net/profile-images/woman-1.jpg",
+//     name: "profile3",
+//   },
+//   {
+//     path: "https://fliikaimages.azureedge.net/profile-images/woman-2.jpg",
+//     name: "profile4",
+//   },
+//   {
+//     path: "https://fliikaimages.azureedge.net/profile-images/woman-3.jpg",
+//     name: "profile5",
+//   },
+// ];

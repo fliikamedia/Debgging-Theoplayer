@@ -95,20 +95,20 @@ const Tabs = createBottomTabNavigator();
 export default BottomNav = () => {
   const user = useSelector((state) => state.user);
 
-  let imageSource;
-  try {
-    imageSource = profileImgs.find(
-      (r) => r.name === user.currentProfile.image
-    ).path;
-  } catch (err) {
-    imageSource = profileImgs.find((r) => r.name === "profile0").path;
-  }
+  let imageSource = user?.currentProfile?.image
+    ? user?.currentProfile?.image
+    : profileImgs[0];
+  // try {
+  //   imageSource = profileImgs.find((r) => r === user.currentProfile.image).path;
+  // } catch (err) {
+  //   imageSource = profileImgs[0];
+  // }
 
   const userIconFunc = () => {
     return (
       <FastImage
         style={{ width: 30, height: 30, borderRadius: 120 }}
-        source={imageSource}
+        source={{ uri: imageSource }}
       />
     );
   };

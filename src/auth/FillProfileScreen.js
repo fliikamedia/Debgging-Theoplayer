@@ -39,7 +39,7 @@ const SignupScreen = ({ navigation }) => {
   const [date, setDate] = useState(new Date(1598051730000));
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
-  const [imageName, setImageName] = useState("profile0");
+  const [imageName, setImageName] = useState(profileImgs[0]);
   const [btnClicked, setBtnClicked] = useState(false);
 
   const onChange = (event, selectedDate) => {
@@ -133,7 +133,7 @@ const SignupScreen = ({ navigation }) => {
           routes: [{ name: MOVIES }],
         }); */
       //await AsyncStorage.setItem("whatPhase", "LoggedIn");
-      //navigation.navigate(MOVIES);
+      // navigation.navigate(MOVIES);
       loggedIn()(dispatch);
     } catch (err) {
       console.log(err);
@@ -378,18 +378,18 @@ const SignupScreen = ({ navigation }) => {
             showsHorizontalScrollIndicator={false}
             horizontal
             data={profileImgs}
-            keyExtractor={(item) => item.name}
+            keyExtractor={(item) => item}
             renderItem={({ item, index }) => (
-              <TouchableOpacity onPress={() => setImageName(item.name)}>
+              <TouchableOpacity onPress={() => setImageName(item)}>
                 <Image
-                  source={item.path}
+                  source={{ uri: item }}
                   style={{
                     width: 100,
                     height: 100,
                     borderRadius: 120,
                     marginLeft: 20,
-                    borderWidth: imageName === item.name ? 6 : 0,
-                    borderColor: imageName === item.name ? "teal" : null,
+                    borderWidth: imageName === item ? 6 : 0,
+                    borderColor: imageName === item ? "teal" : null,
                   }}
                 />
               </TouchableOpacity>

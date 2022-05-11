@@ -22,10 +22,10 @@ const EditProfile = ({ navigation, route }) => {
   const { main, profileName, imageTitle, profileId } = route.params;
   const [name, setName] = useState(profileName);
   const [imageName, setImageName] = useState(imageTitle);
-//console.log(main);
+  //console.log(main);
   const creatingProfile = () => {
-  //  let profileId = user?.user?.profiles[0]?._id;
-  /*   if (main) {
+    //  let profileId = user?.user?.profiles[0]?._id;
+    /*   if (main) {
       updateUserImage(user.user._id, imageName, profileId)(dispatch);
       navigation.goBack();
       return;
@@ -79,14 +79,14 @@ const EditProfile = ({ navigation, route }) => {
         />
       </View>
       <FlatList
-      showsHorizontalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
         horizontal
         data={profileImgs}
-        keyExtractor={(item) => item.name}
+        keyExtractor={(item) => item}
         renderItem={({ item, index }) => (
-          <TouchableOpacity onPress={() => setImageName(item.name)}>
+          <TouchableOpacity onPress={() => setImageName(item)}>
             <Image
-              source={item.path}
+              source={{ uri: item }}
               style={{
                 width: 100,
                 height: 100,

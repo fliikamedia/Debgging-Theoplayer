@@ -97,12 +97,12 @@ const ProfileScreen = ({ navigation }) => {
           <FlatList
             showsHorizontalScrollIndicator={false}
             horizontal
-            data={profileImgs}
-            keyExtractor={(item) => item.name}
+            data={{ uri: profileImgs }}
+            keyExtractor={(item) => item}
             renderItem={({ item, index }) => (
-              <TouchableOpacity onPress={() => setImageName(item.name)}>
+              <TouchableOpacity onPress={() => setImageName(item)}>
                 <Image
-                  source={item.path}
+                  source={item}
                   style={{
                     width: 100,
                     height: 100,
