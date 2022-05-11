@@ -315,9 +315,9 @@ const HomeScreen = ({ navigation }) => {
   };
   // End of Toast
   const resultsToShow = movies.availableMovies.filter(
-    (c) =>
-      c.film_type == "movie" ||
-      (c.film_type == "series" && c.season_number == 1 && c.episode_number == 1)
+    (c) => c.dvd_thumbnail_link != ""
+    // c.film_type == "movie" ||
+    // (c.film_type == "series" && c.season_number == 1 && c.episode_number == 1
   );
   const genreArray = resultsToShow.map((r) => r.genre);
   let allGenre = [];
@@ -399,7 +399,7 @@ const HomeScreen = ({ navigation }) => {
               }}
             >
               <FastImage
-                style={{ width: 130, height: 50 }}
+                style={{ width: SIZES.width / 2.1, aspectRatio: 16 / 9 }}
                 source={{ uri: squareLogo }}
               />
               <View
@@ -973,7 +973,7 @@ const HomeScreen = ({ navigation }) => {
                 separatorWidth={0}
                 ref={carouselRef}
                 inActiveOpacity={0.4}
-                loop
+                loop={true}
                 inactiveSlideOpacity={0.7}
                 inactiveSlideScale={0.9}
                 // activeAnimationType={'spring'}
@@ -1418,9 +1418,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     elevation: 25,
-    borderWidth: 1,
+    // borderWidth: 1,
     //borderColor: "white",
-    backgroundColor: "rgba(0,0,0,0.4)",
+    backgroundColor: "rgba(0,0,0,0.2)",
   },
 });
 

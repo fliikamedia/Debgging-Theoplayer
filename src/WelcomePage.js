@@ -19,6 +19,8 @@ import {
 import firebase from "firebase";
 import Video from "react-native-video";
 import FastImage from "react-native-fast-image";
+import SVGImg from "../assets/fliika-logo.svg";
+
 const WelcomePage = ({ navigation }) => {
   const [isPreloading, setIsPreloading] = useState(true);
 
@@ -79,10 +81,11 @@ const WelcomePage = ({ navigation }) => {
       />
       {isPreloading ? null : (
         <View style={styles.Wrapper}>
-          <FastImage
+          {/* <FastImage
             source={require("../assets/fliika-logo.png")}
             style={styles.logo}
-          />
+          /> */}
+          <SVGImg width={130} height={40} style={styles.logo} />
           <View>
             <Text style={styles.textDescriptionLg}>
               Watch African movies you love
@@ -135,47 +138,47 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   logo: {
-    height: 32,
-    width: 100,
     marginTop: 30,
   },
   textDescriptionLg: {
     color: "#f3f8ff",
-    fontSize: Dimensions.get("window").width < 350 ? 20 : 24,
+    fontSize: Dimensions.get("window").width < 350 ? 18 : 22,
     textAlign: "center",
-    fontWeight: "bold",
+    fontFamily: "Sora-Bold",
     textTransform: "uppercase",
     letterSpacing: 3,
     marginBottom: 10,
   },
   textDescriptionSm: {
     letterSpacing: 3,
+    fontFamily: "Sora-Regular",
     color: "#f4f4f4",
     textAlign: "center",
     textTransform: "uppercase",
     marginBottom: 10,
-    fontSize: Dimensions.get("window").width < 350 ? 8 : 14,
+    fontSize: Dimensions.get("window").width < 350 ? 6 : 12,
   },
   textDescriptionSb: {
     letterSpacing: 3,
+    fontFamily: "Sora-Regular",
     color: "#f4f4f4",
     textAlign: "center",
     textTransform: "uppercase",
     marginBottom: 20,
-    fontSize: Dimensions.get("window").width < 350 ? 12 : 16,
+    fontSize: Dimensions.get("window").width < 350 ? 10 : 14,
   },
   createText: {
     textTransform: "uppercase",
+    fontFamily: "Sora-Bold",
     textAlign: "center",
-    fontWeight: "bold",
     letterSpacing: 3,
     color: "#666",
-    fontSize: Dimensions.get("window").width < 350 ? 12 : 16,
+    fontSize: Dimensions.get("window").width < 350 ? 10 : 14,
   },
   loginText: {
     textTransform: "uppercase",
     textAlign: "center",
-    fontWeight: "bold",
+    fontFamily: "Sora-Bold",
     letterSpacing: 3,
     color: "#f3f8ff",
     fontSize: Dimensions.get("window").width < 350 ? 12 : 16,

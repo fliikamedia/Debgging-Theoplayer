@@ -192,7 +192,7 @@ const TvShowsScreen = ({ navigation }) => {
     };
     return (
       <View style={styles.carouselContentContainer}>
-        <ImageBackground
+        {/* <ImageBackground
           source={{ uri: background.uri }}
           style={styles.ImageBg}
           blurRadius={10}
@@ -218,82 +218,80 @@ const TvShowsScreen = ({ navigation }) => {
               }}
             >
               Fliika Originals
-            </Text>
-            <View style={styles.carouselContainerView}>
-              <Carousel
-                style={styles.carousel}
-                data={series}
-                renderItem={renderItem}
-                itemWidth={SIZES.width * 0.586}
-                sliderWidth={SIZES.width * 1.274}
-                containerWidth={width - 20}
-                separatorWidth={0}
-                ref={carouselRef}
-                inActiveOpacity={0.4}
-                loop
-                inactiveSlideOpacity={0.7}
-                inactiveSlideScale={0.9}
-                // activeAnimationType={'spring'}
-                // activeAnimationOptions={{
-                //     friction: 4,
-                //     tension: 5
-                // }}
-                enableMomentum={true}
-                onSnapToItem={(index) => {
-                  setBackground({
-                    uri: series[index]?.dvd_thumbnail_link,
-                    name: series[index]?.title,
-                    stat: `${series[index]?.film_rating} - ${series[
-                      index
-                    ]?.genre
-                      .toString()
-                      .replace(/,/g, " ")} - ${series[index]?.runtime}`,
-                    desc: series[index]?.storyline,
-                    _id: series[index]?._id,
-                    film_type: series[index]?.film_type,
-                  });
-                }}
-              />
-            </View>
-            <View style={styles.movieInfoContainer}>
-              <View style={{ justifyContent: "center" }}>
-                <Text style={styles.movieName}>{background.name}</Text>
-              </View>
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate(MOVIEDETAIL, {
-                    selectedMovie: background._id,
-                    isSeries: background.film_type,
-                    seriesTitle: background.name,
-                  })
-                }
-                style={styles.playIconContainer}
-              >
-                <IconAwesome
-                  name="play"
-                  size={22}
-                  color="#02ad94"
-                  style={{ marginLeft: 4 }}
-                />
-              </TouchableOpacity>
-            </View>
-            <Text style={styles.movieStat}>{background.stat}</Text>
-            <View style={{ paddingHorizontal: 14, marginTop: 14 }}>
-              <Text
-                numberOfLines={5}
-                style={{
-                  fontFamily: "Sora-Regular",
-                  color: "white",
-                  opacity: 0.8,
-                  lineHeight: 20,
-                  marginBottom: 20,
-                }}
-              >
-                {background.desc}
-              </Text>
-            </View>
-          </LinearGradient>
-        </ImageBackground>
+            </Text> */}
+        <View style={styles.carouselContainerView}>
+          <Carousel
+            style={styles.carousel}
+            data={series}
+            renderItem={renderItem}
+            itemWidth={SIZES.width}
+            sliderWidth={SIZES.width}
+            containerWidth={width - 20}
+            separatorWidth={0}
+            ref={carouselRef}
+            inActiveOpacity={0.4}
+            loop
+            inactiveSlideOpacity={0.7}
+            inactiveSlideScale={0.9}
+            // activeAnimationType={'spring'}
+            // activeAnimationOptions={{
+            //     friction: 4,
+            //     tension: 5
+            // }}
+            enableMomentum={true}
+            onSnapToItem={(index) => {
+              setBackground({
+                uri: series[index]?.dvd_thumbnail_link,
+                name: series[index]?.title,
+                stat: `${series[index]?.film_rating} - ${series[index]?.genre
+                  .toString()
+                  .replace(/,/g, " ")} - ${series[index]?.runtime}`,
+                desc: series[index]?.storyline,
+                _id: series[index]?._id,
+                film_type: series[index]?.film_type,
+              });
+            }}
+          />
+        </View>
+        <View style={styles.movieInfoContainer}>
+          <View style={{ justifyContent: "center" }}>
+            <Text style={styles.movieName}>{background.name}</Text>
+          </View>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate(MOVIEDETAIL, {
+                selectedMovie: background._id,
+                isSeries: background.film_type,
+                seriesTitle: background.name,
+              })
+            }
+            style={styles.playIconContainer}
+          >
+            <IconAwesome
+              name="play"
+              size={22}
+              color="#02ad94"
+              style={{ marginLeft: 4 }}
+            />
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.movieStat}>{background.stat}</Text>
+        <View style={{ paddingHorizontal: 14, marginTop: 14 }}>
+          <Text
+            numberOfLines={5}
+            style={{
+              fontFamily: "Sora-Regular",
+              color: "white",
+              opacity: 0.8,
+              lineHeight: 20,
+              marginBottom: 20,
+            }}
+          >
+            {background.desc}
+          </Text>
+        </View>
+        {/* </LinearGradient>
+        </ImageBackground> */}
       </View>
     );
   };
@@ -490,11 +488,12 @@ const styles = StyleSheet.create({
   containers: {
     flex: 1,
     justifyContent: "center",
-    height: SIZES.height * 0.6,
+    height: SIZES.height * 0.8,
   },
   carouselImage: {
-    width: SIZES.width * 0.59,
-    height: SIZES.height * 0.45,
+    width: SIZES.width,
+    // aspectRatio: 16 / 9,
+    height: "100%",
     borderRadius: 10,
     alignSelf: "center",
     backgroundColor: "rgba(0,0,0,0.9)",
@@ -509,8 +508,16 @@ const styles = StyleSheet.create({
   },
   carouselIcon: {
     position: "absolute",
-    top: 15,
+    top: 45,
     right: 15,
+    padding: 4,
+    borderRadius: 100,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 25,
+    // borderWidth: 1,
+    //borderColor: "white",
+    backgroundColor: "rgba(0,0,0,0.2)",
   },
   carouselContentContainer: {
     flex: 1,
@@ -523,7 +530,7 @@ const styles = StyleSheet.create({
   },
   carouselContainerView: {
     width: "100%",
-    height: SIZES.height * 0.45,
+    height: SIZES.height * 0.6,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -566,6 +573,14 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 15,
     left: 15,
+    padding: 4,
+    borderRadius: 100,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 25,
+    // borderWidth: 1,
+    //borderColor: "white",
+    backgroundColor: "rgba(0,0,0,0.2)",
   },
 });
 export default TvShowsScreen;

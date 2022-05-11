@@ -54,9 +54,12 @@ export default AppRoute = () => {
       </View>
     );
   }
-  //console.log('user', ready, verified, user.isLoggedIn);
+  // console.log("user", ready, verified, user.isLoggedIn);
   const navigatorFunc = () => {
-    if (ready && verified && user.isLoggedIn === "loggedIn") {
+    if (
+      (ready && user.isLoggedIn === "loggedIn") ||
+      (ready && verified && user.isLoggedIn === "loggedIn")
+    ) {
       return <MoviesNavigator routeName={MOVIES} />;
     } else if (
       (ready && user.isLoggedIn === "signedUp") ||

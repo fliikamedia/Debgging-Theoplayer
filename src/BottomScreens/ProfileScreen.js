@@ -17,9 +17,9 @@ import { WELCOMESCREEN } from "../../constants/RouteNames";
 import firebase from "firebase";
 import profileImgs from "../../constants/profileImgs";
 import { COLORS, SIZES, icons } from "../../constants";
-import IconAnt from 'react-native-vector-icons/AntDesign';
-import IconFeather from 'react-native-vector-icons/Feather'
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import IconAnt from "react-native-vector-icons/AntDesign";
+import IconFeather from "react-native-vector-icons/Feather";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import AsyncStorage from "@react-native-community/async-storage";
 
 const ProfileScreen = ({ navigation }) => {
@@ -34,7 +34,7 @@ const ProfileScreen = ({ navigation }) => {
     profilesLength = user.user.profiles.length;
   } catch (err) {}
   const logOut = async () => {
-   // await AsyncStorage.setItem("whatPhase", "Null");
+    // await AsyncStorage.setItem("whatPhase", "Null");
     try {
       await firebase.auth().signOut();
       loggedOut()(dispatch);
@@ -95,14 +95,14 @@ const ProfileScreen = ({ navigation }) => {
             />
           </View>
           <FlatList
-          showsHorizontalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
             horizontal
-            data={profileImgs}
-            keyExtractor={(item) => item.name}
+            data={{ uri: profileImgs }}
+            keyExtractor={(item) => item}
             renderItem={({ item, index }) => (
-              <TouchableOpacity onPress={() => setImageName(item.name)}>
+              <TouchableOpacity onPress={() => setImageName(item)}>
                 <Image
-                  source={item.path}
+                  source={item}
                   style={{
                     width: 100,
                     height: 100,
@@ -135,7 +135,7 @@ const ProfileScreen = ({ navigation }) => {
     } else if (editing) {
       return (
         <View>
-      {/*     <UserProfile
+          {/*     <UserProfile
             navigation={navigation}
             main={true}
             name={user.user.firstName}
@@ -154,7 +154,7 @@ const ProfileScreen = ({ navigation }) => {
                 name={item.name}
                 image={item.image}
                 profileId={item._id}
-                />
+              />
             );
           })}
           <View>
@@ -192,7 +192,7 @@ const ProfileScreen = ({ navigation }) => {
             >
               Who's Watching ?
             </Text>
-         {/*    <UserProfile
+            {/*    <UserProfile
               editing={editing}
               setEditing={setEditing}
               main={true}
@@ -208,7 +208,6 @@ const ProfileScreen = ({ navigation }) => {
                   key={item.name}
                   name={item.name}
                   image={item.image}
-                  main={item.name === user.user.firstName}
                   profileId={item._id}
                 />
               );
@@ -256,7 +255,7 @@ const ProfileScreen = ({ navigation }) => {
             justifyContent: "space-between",
             alignSelf: "center",
             marginTop: 40,
-            alignItems: 'center'
+            alignItems: "center",
           }}
         >
           <TouchableOpacity onPress={() => navigation.goBack()}>

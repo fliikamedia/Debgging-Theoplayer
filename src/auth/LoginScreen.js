@@ -37,29 +37,56 @@ const LoginScreen = ({ navigation }) => {
 
   // console.log("before", userState.user);
 
-  const navigateUser = () => {
-    if (!btnClicked) return;
-    if (userState?.user) {
-      loggedIn()(dispatch);
-      setEmailFunc(email)(dispatch);
-    } else {
-      setBtnClicked(false);
-      fillingProfile()(dispatch);
-      // navigation.navigate(FILLPROFILESCREEN);
-      navigation.reset({
-        index: 0,
-        routes: [{ name: FILLPROFILESCREEN }],
-      });
-      console.log("back to false");
-    }
-  };
+  // const navigateUser = () => {
+  //   if (!btnClicked) return;
+  //   if (userState?.user) {
+  //     loggedIn()(dispatch);
+  //     setEmailFunc(email)(dispatch);
+  //   } else {
+  //     setBtnClicked(false);
+  //     fillingProfile()(dispatch);
+  //     // navigation.navigate(FILLPROFILESCREEN);
+  //     navigation.reset({
+  //       index: 0,
+  //       routes: [{ name: FILLPROFILESCREEN }],
+  //     });
+  //     console.log("back to false");
+  //   }
+  // };
 
-  useEffect(() => {
-    navigateUser();
-  }, [userState.user]);
+  // useEffect(() => {
+  //   navigateUser();
+  // }, [userState.user]);
   const loginUser = async (email, password) => {
     if (!email || !password) return;
     setBtnClicked(true);
+    // try {
+    //   firebase
+    //     .auth()
+    //     .signInWithEmailAndPassword(email, password)
+    //     .then(async (userCredential) => {
+    //       // Signed in
+    //       var user = userCredential.user;
+    //       const idToken = await user.getIdToken();
+    //       await getUser(user.email, idToken)(dispatch);
+
+    //       //console.log(user);
+    //       // ...
+    //     })
+    //     .then(async () => {
+    //       await navigateUser();
+    //     })
+    //     .catch((error) => {
+    //       var errorCode = error.code;
+    //       var errorMessage = error.message;
+    //       console.log(errorMessage);
+    //       setError(errorMessage);
+    //       setBtnClicked(false);
+    //     });
+    // } catch (err) {
+    //   console.log(err);
+    //   setBtnClicked(false);
+    // }
     try {
       firebase
         .auth()
@@ -68,24 +95,30 @@ const LoginScreen = ({ navigation }) => {
           // Signed in
           var user = userCredential.user;
           const idToken = await user.getIdToken();
-          await getUser(user.email, idToken)(dispatch);
+          getUser(user.email, idToken)(dispatch);
+
+          if (user) {
+            loggedIn()(dispatch);
+            /*     setEmailFunc(email)(dispatch);
+            navigation.reset({
+               index: 0,
+               routes: [{ name: MOVIES }],
+             });
+             await AsyncStorage.setItem("whatPhase", "LoggedIn");
+             navigation.navigate(MOVIES); */
+          }
 
           //console.log(user);
           // ...
-        })
-        .then(async () => {
-          await navigateUser();
         })
         .catch((error) => {
           var errorCode = error.code;
           var errorMessage = error.message;
           console.log(errorMessage);
           setError(errorMessage);
-          setBtnClicked(false);
         });
     } catch (err) {
       console.log(err);
-      setBtnClicked(false);
     }
   };
   const inputColor = "teal";

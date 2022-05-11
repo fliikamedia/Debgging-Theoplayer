@@ -23,15 +23,16 @@ import profileImgs from "../../constants/profileImgs";
 import DownloadsScreen from "../BottomScreens/DownloadsScreen";
 import { TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-
+import SVGImg from "../../assets/fliika-logo.svg";
 const Stack = createStackNavigator();
 
 const getHeaderTitle = (route) => {
   return (
-    <FastImage
-      style={{ height: 32, width: 100 }}
-      source={require("../../assets/fliika-logo.png")}
-    />
+    // <FastImage
+    //   style={{ height: 26, width: 80 }}
+    //   source={require("../../assets/fliika-logo.png")}
+    // />
+    <SVGImg width={100} height={36} />
   );
 };
 
@@ -94,20 +95,20 @@ const Tabs = createBottomTabNavigator();
 export default BottomNav = () => {
   const user = useSelector((state) => state.user);
 
-  let imageSource;
-  try {
-    imageSource = profileImgs.find(
-      (r) => r.name === user.currentProfile.image
-    ).path;
-  } catch (err) {
-    imageSource = profileImgs.find((r) => r.name === "profile0").path;
-  }
+  let imageSource = user?.currentProfile?.image
+    ? user?.currentProfile?.image
+    : profileImgs[0];
+  // try {
+  //   imageSource = profileImgs.find((r) => r === user.currentProfile.image).path;
+  // } catch (err) {
+  //   imageSource = profileImgs[0];
+  // }
 
   const userIconFunc = () => {
     return (
       <FastImage
         style={{ width: 30, height: 30, borderRadius: 120 }}
-        source={imageSource}
+        source={{ uri: imageSource }}
       />
     );
   };
@@ -147,7 +148,7 @@ export default BottomNav = () => {
         inactiveTintColor: "gray",
         keyboardHidesTabBar: true,
         style: {
-          backgroundColor: "rgba(0,0,0,0.85)",
+          backgroundColor: "rgba(0,0,0,0.9)",
           // height: "7%",
           borderTopWidth: 0,
           justifyContent: "center",

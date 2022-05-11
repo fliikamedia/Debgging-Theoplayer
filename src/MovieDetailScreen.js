@@ -63,7 +63,7 @@ import RBSheet from "react-native-raw-bottom-sheet";
 import RbSheetSeasonItem from "./components/RbSheetSeasonItem";
 import ExtrasScreen from "./topTabScreens/ExtrasScreen";
 import DefaultScreen from "./topTabScreens/DefaultScreen";
-
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 const MovieDetailScreen = ({ navigation, route }) => {
   const Tab = createMaterialTopTabNavigator();
 
@@ -466,7 +466,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
             )(dispatch);
           }}
         >
-          <IconFeather name="plus" size={40} color={COLORS.white} />
+          <IconFeather name="plus" size={30} color={COLORS.white} />
         </TouchableOpacity>
       );
     }
@@ -589,7 +589,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
                 <View
                   style={{
                     flexDirection: "row",
-                    width: isSeries == "movie" ? "60%" : "40%",
+                    width: isSeries == "movie" ? "50%" : "40%",
                     justifyContent: "space-around",
                     alignSelf: "center",
                   }}
@@ -598,16 +598,16 @@ const MovieDetailScreen = ({ navigation, route }) => {
 
                   {isSeries == "movie" ? (
                     <IconFeather
-                      name="download"
-                      size={40}
+                      name="download-cloud"
+                      size={30}
                       color={COLORS.white}
                     />
                   ) : null}
                   {isSeries === "movie" ? (
                     <TouchableOpacity onPress={() => onShare()}>
-                      <IconIon
-                        name="share-social-outline"
-                        size={40}
+                      <MaterialCommunityIcons
+                        name="share"
+                        size={30}
                         color={COLORS.white}
                       />
                     </TouchableOpacity>
@@ -842,7 +842,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
-            width: "94%",
+            width: "86%",
             alignSelf: "center",
           }}
         >
@@ -851,10 +851,11 @@ const MovieDetailScreen = ({ navigation, route }) => {
               <View
                 style={{
                   alignSelf: "center",
-                  borderRadius: 5,
-                  borderWidth: 0.7,
-                  borderColor: "white",
+                  // borderRadius: 5,
+                  // borderWidth: 0.7,
+                  // borderColor: "white",
                   zIndex: 50,
+                  // marginLeft: "6%",
                 }}
               >
                 {/* <Menu
@@ -970,10 +971,11 @@ const MovieDetailScreen = ({ navigation, route }) => {
             {isSeries === "series" ? movieIcons() : null}
             {isSeries === "series" ? (
               <TouchableOpacity onPress={() => onShare()}>
-                <IconIon
-                  name="share-social-outline"
-                  size={40}
+                <MaterialCommunityIcons
+                  name="share"
+                  size={30}
                   color={COLORS.white}
+                  style={{ marginRight: 10 }}
                 />
               </TouchableOpacity>
             ) : null}
