@@ -13,7 +13,7 @@ export const fetchMovies = () => {
     const response = await fliikaApi.get("/posts");
     // console.log(response.data);
     if (response.data) {
-     // console.log('movies',response.data.length);
+      // console.log('movies',response.data.length);
       dispatch({ type: FETCH_MOVIES_SUCCESS, payload: response.data });
     } else {
       dispatch({ type: FETCH_MOVIES_FAILED });

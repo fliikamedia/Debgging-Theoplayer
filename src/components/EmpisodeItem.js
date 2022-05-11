@@ -99,9 +99,9 @@ const EpisodeItem = ({ episode, navigation, index }) => {
               navigation.navigate(EPISODEDETAIL, { episode: episode })
             }
             style={{
-              margin: -4,
-              width: 30,
-              height: 30,
+              margin: -2,
+              width: 25,
+              height: 25,
               padding: 0,
               borderRadius: 20,
               justifyContent: "center",
