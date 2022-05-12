@@ -138,7 +138,8 @@ const TvShowsScreen = ({ navigation }) => {
               {/*<Text style={styles.carouselText}>{item.title}</Text>*/}
               {isWatchList(user.currentProfile.watchList, item.title) ==
               true ? (
-                <TouchableWithoutFeedback
+                <TouchableOpacity
+                  style={styles.carouselIcon}
                   onPress={() => {
                     removeFromProfileWatchList(
                       user.user._id,
@@ -152,11 +153,12 @@ const TvShowsScreen = ({ navigation }) => {
                     name="book-remove-multiple-outline"
                     size={30}
                     color={COLORS.white}
-                    style={styles.carouselIcon}
+                    // style={styles.carouselIcon}
                   />
-                </TouchableWithoutFeedback>
+                </TouchableOpacity>
               ) : (
-                <TouchableWithoutFeedback
+                <TouchableOpacity
+                  style={styles.carouselIcon}
                   onPress={() => {
                     addToProfileWatchList(
                       user.user._id,
@@ -167,13 +169,8 @@ const TvShowsScreen = ({ navigation }) => {
                     )(dispatch);
                   }}
                 >
-                  <IconMaterial
-                    name="library-add"
-                    size={30}
-                    color="white"
-                    style={styles.carouselIcon}
-                  />
-                </TouchableWithoutFeedback>
+                  <IconMaterial name="library-add" size={30} color="white" />
+                </TouchableOpacity>
               )}
               {item.film_type === "series" ? (
                 <TouchableOpacity
@@ -514,7 +511,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     justifyContent: "center",
     alignItems: "center",
-    elevation: 25,
+    // elevation: 25,
     // borderWidth: 1,
     //borderColor: "white",
     backgroundColor: "rgba(0,0,0,0.2)",
@@ -577,7 +574,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     justifyContent: "center",
     alignItems: "center",
-    elevation: 25,
+    // elevation: 25,
     // borderWidth: 1,
     //borderColor: "white",
     backgroundColor: "rgba(0,0,0,0.2)",
