@@ -69,7 +69,7 @@ const EditProfile = ({ navigation, route }) => {
         }}
       >
         <Text style={{ color: "white" }}>Choose an image</Text>
-        <Image
+        <FastImage
           source={icons.right_arrow}
           style={{
             height: 20,
@@ -85,7 +85,7 @@ const EditProfile = ({ navigation, route }) => {
         keyExtractor={(item) => item}
         renderItem={({ item, index }) => (
           <TouchableOpacity onPress={() => setImageName(item)}>
-            <Image
+            <FastImage
               source={{ uri: item }}
               style={{
                 width: 100,

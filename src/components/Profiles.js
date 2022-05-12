@@ -17,7 +17,7 @@ const Profiles = ({ profiles }) => {
             key={`profile-${index}`}
             style={index == 0 ? null : { marginLeft: -15 }}
           >
-            <Image
+            <FastImage
               source={item.profile}
               resizeMode="cover"
               style={styles.profileImage}
@@ -36,7 +36,7 @@ const Profiles = ({ profiles }) => {
                 key={`profile-${index}`}
                 style={index == 0 ? null : { marginLeft: -15 }}
               >
-                <Image
+                <FastImage
                   source={item.profile}
                   resizeMode="cover"
                   style={styles.profileImage}

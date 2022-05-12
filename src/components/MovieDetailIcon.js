@@ -15,7 +15,7 @@ const MovieDetailIcon = ({ iconFuc, icon }) => {
       }}
       onPress={iconFuc}
     >
-      <Image
+      <FastImage
         source={icon}
         style={{ width: 20, height: 20, tintColor: COLORS.white }}
       />

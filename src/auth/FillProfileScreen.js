@@ -381,7 +381,7 @@ const SignupScreen = ({ navigation }) => {
             keyExtractor={(item) => item}
             renderItem={({ item, index }) => (
               <TouchableOpacity onPress={() => setImageName(item)}>
-                <Image
+                <FastImage
                   source={{ uri: item }}
                   style={{
                     width: 100,
