@@ -8,6 +8,8 @@ import {
   icons,
   images,
 } from "../../constants";
+import FastImage from "react-native-fast-image";
+
 const Profiles = ({ profiles }) => {
   if (profiles.length <= 3) {
     return (

@@ -15,6 +15,7 @@ import { icons } from "../../constants";
 import profileImgs from "../../constants/profileImgs";
 import { updateUserImage, updateProfile } from "../../store/actions/user";
 import { useDispatch, useSelector } from "react-redux";
+import FastImage from "react-native-fast-image";
 
 const EditProfile = ({ navigation, route }) => {
   const user = useSelector((state) => state.user);
@@ -69,7 +70,7 @@ const EditProfile = ({ navigation, route }) => {
         }}
       >
         <Text style={{ color: "white" }}>Choose an image</Text>
-        <FastImage
+        <Image
           source={icons.right_arrow}
           style={{
             height: 20,

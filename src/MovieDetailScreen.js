@@ -573,7 +573,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
                           marginLeft: 20,
                         }}
                       >
-                        <FastImage
+                        <Image
                           source={icons.play}
                           resizeMode="contain"
                           style={{

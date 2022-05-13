@@ -1,6 +1,7 @@
 import React from "react";
 import { Image, TouchableOpacity } from "react-native";
 import { COLORS } from "../../constants";
+import FastImage from "react-native-fast-image";
 
 const MovieDetailIcon = ({ iconFuc, icon }) => {
   return (
@@ -15,7 +16,7 @@ const MovieDetailIcon = ({ iconFuc, icon }) => {
       }}
       onPress={iconFuc}
     >
-      <FastImage
+      <Image
         source={icon}
         style={{ width: 20, height: 20, tintColor: COLORS.white }}
       />

@@ -8,6 +8,7 @@ import {
   TextInput,
   Alert,
   FlatList,
+  Image,
 } from "react-native";
 import UserProfile from "../components/UserProfile";
 import { useSelector, useDispatch } from "react-redux";
@@ -85,7 +86,7 @@ const ProfileScreen = ({ navigation }) => {
             }}
           >
             <Text style={{ color: "white" }}>Choose an image</Text>
-            <FastImage
+            <Image
               source={icons.right_arrow}
               style={{
                 height: 20,

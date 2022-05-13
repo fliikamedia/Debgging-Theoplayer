@@ -23,6 +23,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 import profileImgs from "../../constants/profileImgs";
 import NewTextInput from "../components/TextInput";
 import LinearGradient from "react-native-linear-gradient";
+import FastImage from "react-native-fast-image";
 
 const SignupScreen = ({ navigation }) => {
   const appState = useRef(AppState.currentState);
