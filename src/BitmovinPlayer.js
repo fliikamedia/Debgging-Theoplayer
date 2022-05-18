@@ -231,7 +231,11 @@ const BitmovinPlayer = ({ navigation, route }) => {
               );
           }}
           onEvent={({ nativeEvent }) => {
-            saveTiming(String(nativeEvent.duration), String(nativeEvent.time));
+            if (nativeEvent.message === "closePlayer") {
+              // do something
+              // back to the previous screen with navigation.goBack() or other-router component
+              navigation.goBack();
+            }
           }}
           onPause={() => setIsPlaying(false)}
         />
