@@ -15,6 +15,7 @@ import { icons } from "../../constants";
 import profileImgs from "../../constants/profileImgs";
 import { updateUserImage, updateProfile } from "../../store/actions/user";
 import { useDispatch, useSelector } from "react-redux";
+import FastImage from "react-native-fast-image";
 
 const EditProfile = ({ navigation, route }) => {
   const user = useSelector((state) => state.user);
@@ -85,7 +86,7 @@ const EditProfile = ({ navigation, route }) => {
         keyExtractor={(item) => item}
         renderItem={({ item, index }) => (
           <TouchableOpacity onPress={() => setImageName(item)}>
-            <Image
+            <FastImage
               source={{ uri: item }}
               style={{
                 width: 100,

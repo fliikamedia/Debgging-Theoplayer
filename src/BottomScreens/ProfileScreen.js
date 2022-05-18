@@ -21,6 +21,7 @@ import IconAnt from "react-native-vector-icons/AntDesign";
 import IconFeather from "react-native-vector-icons/Feather";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import AsyncStorage from "@react-native-community/async-storage";
+import FastImage from "react-native-fast-image";
 
 const ProfileScreen = ({ navigation }) => {
   const user = useSelector((state) => state.user);
@@ -97,12 +98,12 @@ const ProfileScreen = ({ navigation }) => {
           <FlatList
             showsHorizontalScrollIndicator={false}
             horizontal
-            data={{ uri: profileImgs }}
+            data={profileImgs}
             keyExtractor={(item) => item}
             renderItem={({ item, index }) => (
               <TouchableOpacity onPress={() => setImageName(item)}>
-                <Image
-                  source={item}
+                <FastImage
+                  source={{ uri: item }}
                   style={{
                     width: 100,
                     height: 100,
@@ -246,7 +247,12 @@ const ProfileScreen = ({ navigation }) => {
   };
 
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+    <ScrollView
+      contentContainerStyle={{
+        flexGrow: 1,
+        backgroundColor: "black",
+      }}
+    >
       <View style={styles.container}>
         <View
           style={{
@@ -265,11 +271,9 @@ const ProfileScreen = ({ navigation }) => {
             <Icon name="logout" size={40} color="white" />
           </TouchableOpacity>
         </View>
-        {
-          <View style={{ flex: 1, justifyContent: "center" }}>
-            {createProfile()}
-          </View>
-        }
+        <View style={{ flex: 1, justifyContent: "center", marginBottom: 100 }}>
+          {createProfile()}
+        </View>
       </View>
     </ScrollView>
   );

@@ -32,58 +32,6 @@ import BottomNav from "./BottomNav";
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 const MoviesNavogator = (props) => {
-  const getHeaderTitle = (route) => {
-    let routeName = getFocusedRouteNameFromRoute(route);
-
-    if (!routeName) {
-      routeName = HOME;
-    }
-
-    switch (routeName) {
-      case HOME:
-        return (
-          <FastImage
-            style={{ height: 32, width: 100 }}
-            source={require("../../assets/fliika-logo.png")}
-          />
-        );
-      case SEARCH:
-        return null;
-      case SHOWS:
-        return null;
-      case PROFILESCREEN:
-        return null;
-    }
-  };
-
-  const getHeaderLeft = (route) => {
-    const { toggleDrawer } = useNavigation();
-    let routeName = getFocusedRouteNameFromRoute(route);
-
-    if (!routeName) {
-      routeName = HOME;
-    }
-
-    switch (routeName) {
-      case HOME:
-        return (
-          <TouchableOpacity onPress={() => toggleDrawer()}>
-            <Feather
-              name="menu"
-              size={25}
-              color="#fff"
-              style={{ marginLeft: 20 }}
-            />
-          </TouchableOpacity>
-        );
-      case SEARCH:
-        return null;
-      case SHOWS:
-        return null;
-      case PROFILESCREEN:
-        return null;
-    }
-  };
   return (
     <Stack.Navigator
       mode="modal"
@@ -170,8 +118,6 @@ export default MoviesStack = (route) => {
   // if (!routeName) {
   //   routeName = HOME;
   // }
-
-  console.log(routeName);
 
   return (
     <Drawer.Navigator

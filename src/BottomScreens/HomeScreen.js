@@ -12,6 +12,7 @@ import {
   RefreshControl,
   AppState,
   Animated,
+  Image,
 } from "react-native";
 import { COLORS, SIZES, icons } from "../../constants";
 import { BITMOVINPLAYER, MOVIEDETAIL } from "../../constants/RouteNames";
@@ -679,7 +680,7 @@ const HomeScreen = ({ navigation }) => {
             >
               Continue watching
             </Text>
-            <FastImage
+            <Image
               source={icons.right_arrow}
               style={{ height: 20, width: 20, tintColor: "teal" }}
             />

@@ -8,6 +8,8 @@ import {
   icons,
   images,
 } from "../../constants";
+import FastImage from "react-native-fast-image";
+
 const Profiles = ({ profiles }) => {
   if (profiles.length <= 3) {
     return (
@@ -17,7 +19,7 @@ const Profiles = ({ profiles }) => {
             key={`profile-${index}`}
             style={index == 0 ? null : { marginLeft: -15 }}
           >
-            <Image
+            <FastImage
               source={item.profile}
               resizeMode="cover"
               style={styles.profileImage}
@@ -36,7 +38,7 @@ const Profiles = ({ profiles }) => {
                 key={`profile-${index}`}
                 style={index == 0 ? null : { marginLeft: -15 }}
               >
-                <Image
+                <FastImage
                   source={item.profile}
                   resizeMode="cover"
                   style={styles.profileImage}

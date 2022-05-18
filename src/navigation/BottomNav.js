@@ -1,4 +1,5 @@
 import React from "react";
+import { Platform } from "react-native";
 import FastImage from "react-native-fast-image";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -155,8 +156,9 @@ export default BottomNav = () => {
           borderTopLeftRadius: 10,
           borderTopRightRadius: 10,
           position: "absolute",
+          paddingTop: Platform.OS === "ios" ? 10 : 0,
         },
-        labelStyle: { fontSize: 0 },
+        labelStyle: { fontSize: 1, padding: 0, margin: 0 },
       }}
     >
       <Tabs.Screen

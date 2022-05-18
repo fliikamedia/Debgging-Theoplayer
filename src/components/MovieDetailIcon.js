@@ -1,6 +1,7 @@
 import React from "react";
 import { Image, TouchableOpacity } from "react-native";
 import { COLORS } from "../../constants";
+import FastImage from "react-native-fast-image";
 
 const MovieDetailIcon = ({ iconFuc, icon }) => {
   return (
