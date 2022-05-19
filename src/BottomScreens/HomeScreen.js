@@ -342,6 +342,7 @@ const HomeScreen = ({ navigation }) => {
     // SquareURL to be optimized when other trailers added
     let squareURL;
     let squareLogo;
+    let squarePlayId;
     try {
       squareURL = resultsToShow.find(
         (r) => r.active_banner === "YES"
@@ -349,6 +350,7 @@ const HomeScreen = ({ navigation }) => {
       squareLogo = resultsToShow.find(
         (r) => r.active_banner === "YES"
       ).title_logo_url;
+      squarePlayId = resultsToShow.find((r) => r.active_banner === "YES")._id;
     } catch (err) {
       squareURL =
         "https://fliikamediaservice-usea.streaming.media.azure.net/1368c5bc-1fb8-450f-ba54-104e021b4033/Batman_mobile_square.ism/manifest(format=m3u8-aapl)";
@@ -467,7 +469,7 @@ const HomeScreen = ({ navigation }) => {
                 <TouchableOpacity
                   onPress={() => {
                     navigation.navigate(BITMOVINPLAYER, {
-                      movieId: resultsToShow[0]._id,
+                      movieId: squarePlayId,
                     });
                   }}
                   style={{
