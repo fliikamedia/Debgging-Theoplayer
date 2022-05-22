@@ -27,6 +27,7 @@ const BitmovinPlayer = ({ navigation, route }) => {
   const [watched, setWatched] = useState(0);
   const [duration, setDuration] = useState(0);
   const appState = useRef(AppState.currentState);
+  const playerRef = useRef(null);
   const movie = movies.availableMovies.find((r) => r._id === movieId);
   const videoUrl = Platform.select({
     ios: "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8",
@@ -66,23 +67,24 @@ const BitmovinPlayer = ({ navigation, route }) => {
     setWatchedMovie();
   }, []);
   const stopPlaying = async () => {
-    const didPlay = await AsyncStorage.getItem("didPlay");
-    //Orientation.lockToPortrait();
-    if (didPlay == "true") {
-      saveMovie();
-    }
-    if (Platform.OS === "ios") {
-      //ReactNativeBitmovinPlayerIntance.pause();
-      console.log("ios");
-    } else if (Platform.OS == "android" && didPlay == "true") {
-      //ReactNativeBitmovinPlayerIntance.destroy();
-      AsyncStorage.setItem("didPlay", "false");
-      console.log("android");
-    }
-    AsyncStorage.setItem("movieName", "");
-    AsyncStorage.setItem("isWatchedBefore", "null");
+    // const didPlay = await AsyncStorage.getItem("didPlay");
+    // //Orientation.lockToPortrait();
+    // if (didPlay == "true") {
+    //   saveMovie();
+    // }
+    // if (Platform.OS === "ios") {
+    //   //ReactNativeBitmovinPlayerIntance.pause();
+    //   console.log("ios");
+    // } else if (Platform.OS == "android" && didPlay == "true") {
+    //   //ReactNativeBitmovinPlayerIntance.destroy();
+    //   AsyncStorage.setItem("didPlay", "false");
+    //   console.log("android");
+    // }
+    // AsyncStorage.setItem("movieName", "");
+    // AsyncStorage.setItem("isWatchedBefore", "null");
 
-    // Orientation.lockToPortrait()
+    if (!playerRef) return;
+    playerRef?.current?.pause();
   };
 
   const stoppedPlaying = () => {
@@ -123,10 +125,10 @@ const BitmovinPlayer = ({ navigation, route }) => {
     } catch (err) {}
   };
   useEffect(() => {
-    AppState.addEventListener("change", stopPlaying);
+    const subscription = AppState.addEventListener("change", stopPlaying);
 
     return () => {
-      AppState.removeEventListener("change", stopPlaying);
+      subscription.remove();
     };
   }, [appState]);
 
@@ -188,9 +190,10 @@ const BitmovinPlayer = ({ navigation, route }) => {
   return (
     <View style={{ flex: 1, backgroundColor: "black" }}>
       <StatusBar hidden />
-      <KeepAwake />
+      {isPlaying && <KeepAwake />}
       <View style={{ width: "100%", height: "100%" }}>
         <ReactNativeBitmovinPlayer
+          ref={playerRef}
           style={styles.container}
           autoPlay={true}
           hasZoom={false}
@@ -213,6 +216,7 @@ const BitmovinPlayer = ({ navigation, route }) => {
           onLoad={(e) => console.log("Load", e)}
           onError={(e) => console.log("Error", e)}
           onPlay={async ({ nativeEvent }) => {
+            setIsPlaying(true);
             await AsyncStorage.setItem("didPlay", "true"),
               await AsyncStorage.setItem("movieName", movie.title),
               await AsyncStorage.setItem(
@@ -231,6 +235,7 @@ const BitmovinPlayer = ({ navigation, route }) => {
               );
           }}
           onEvent={({ nativeEvent }) => {
+            saveTiming(String(nativeEvent.duration), String(nativeEvent.time));
             if (nativeEvent.message === "closePlayer") {
               // do something
               // back to the previous screen with navigation.goBack() or other-router component

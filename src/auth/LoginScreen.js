@@ -116,6 +116,7 @@ const LoginScreen = ({ navigation }) => {
           var errorMessage = error.message;
           console.log(errorMessage);
           setError(errorMessage);
+          setBtnClicked(false);
         });
     } catch (err) {
       console.log(err);
@@ -185,6 +186,29 @@ const LoginScreen = ({ navigation }) => {
         <View>
           <Text style={{ color: "red", textAlign: "center" }}>
             No user corresponding to this Email
+          </Text>
+          {/*<TouchableOpacity onPress={() => navigation.navigate(SIGNUP)}>
+            <Text
+              style={{
+                color: "aquamarine",
+                textTransform: "uppercase",
+                fontStyle: "italic",
+                fontWeight: "bold",
+                fontSize: 16,
+                textDecorationLine: "underline",
+                textAlign: "center",
+                marginTop: 10,
+              }}
+            >
+              create an account?
+            </Text>
+            </TouchableOpacity>*/}
+        </View>
+      ) : null}
+      {error == "The email address is badly formatted." ? (
+        <View>
+          <Text style={{ color: "red", textAlign: "center" }}>
+            Please enter a valid email
           </Text>
           {/*<TouchableOpacity onPress={() => navigation.navigate(SIGNUP)}>
             <Text
