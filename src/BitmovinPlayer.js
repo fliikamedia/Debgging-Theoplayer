@@ -188,7 +188,7 @@ const BitmovinPlayer = ({ navigation, route }) => {
   return (
     <View style={{ flex: 1, backgroundColor: "black" }}>
       <StatusBar hidden />
-      <KeepAwake />
+      {isPlaying && <KeepAwake />}
       <View style={{ width: "100%", height: "100%" }}>
         <ReactNativeBitmovinPlayer
           style={styles.container}
@@ -213,6 +213,7 @@ const BitmovinPlayer = ({ navigation, route }) => {
           onLoad={(e) => console.log("Load", e)}
           onError={(e) => console.log("Error", e)}
           onPlay={async ({ nativeEvent }) => {
+            setIsPlaying(true);
             await AsyncStorage.setItem("didPlay", "true"),
               await AsyncStorage.setItem("movieName", movie.title),
               await AsyncStorage.setItem(
