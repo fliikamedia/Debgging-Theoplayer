@@ -1,5 +1,6 @@
 import axios from "axios";
 import expressApi from "../../src/api/expressApi";
+import geoLocationApi from "../../src/api/geoLocationApi";
 import moment from "moment";
 
 export const ADD_USER = "ADD_USER";
@@ -522,5 +523,42 @@ export const getAllUsers = () => async (dispatch) => {
     }
   } catch (err) {
     //console.log(err);
+  }
+};
+
+export const postGeolocation = (email, geolocation) => async (dispatch) => {
+  const body = { email, geolocation };
+  console.log("starting");
+  try {
+    const result = await expressApi.post(`/users/post-geolocation`, {
+      email,
+      geolocation,
+    });
+    if (result.status == 200) {
+      // console.log("geo location", result.data);
+      dispatch({
+        type: GET_USER_SUCCESS,
+        payload: result?.data,
+      });
+      /* if (profileName) {
+        dispatch({
+          type: ADD_PROFILE_WATCHED_DETAILS,
+          payload: result.data.profiles.find((r) => r.name == profileName),
+        });
+      } else { */
+      dispatch({
+        type: CURRENT_PROFILE,
+        payload: result?.data?.profiles[0],
+      });
+      dispatch({
+        type: SET_PROFILE,
+        payload: result?.data?.profiles[0].name,
+      });
+    } else {
+      // dispatch({ type: GET_ALL_USERS_FAILED });
+      console.log(result);
+    }
+  } catch (err) {
+    console.log(err);
   }
 };

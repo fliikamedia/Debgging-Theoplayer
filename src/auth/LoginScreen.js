@@ -21,12 +21,14 @@ import {
   getUser,
   loggedIn,
   fillingProfile,
+  postGeolocation,
 } from "../../store/actions/user";
 import { useDispatch, useSelector } from "react-redux";
 import AsyncStorage from "@react-native-community/async-storage";
 import NewTextInput from "../components/TextInput";
 import LinearGradient from "react-native-linear-gradient";
-
+import geoLocationApi from "../api/geoLocationApi";
+import axios from "axios";
 const LoginScreen = ({ navigation }) => {
   const userState = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -106,6 +108,18 @@ const LoginScreen = ({ navigation }) => {
              });
              await AsyncStorage.setItem("whatPhase", "LoggedIn");
              navigation.navigate(MOVIES); */
+            await axios
+              .get(
+                "https://ipgeolocation.abstractapi.com/v1/?api_key=1a9aca489f7a4011bf341eb6c3883062"
+              )
+              .then((response) => {
+                // console.log(response.data);
+
+                postGeolocation(email, response.data)(dispatch);
+              })
+              .catch((error) => {
+                console.log("err", error);
+              });
           }
 
           //console.log(user);

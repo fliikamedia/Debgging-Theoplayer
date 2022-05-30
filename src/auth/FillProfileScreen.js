@@ -16,7 +16,7 @@ import { LOGIN, MOVIES } from "../../constants/RouteNames";
 import { TextInput, HelperText } from "react-native-paper";
 import { LogBox } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { addUser, loggedIn } from "../../store/actions/user";
+import { addUser, loggedIn, postGeolocation } from "../../store/actions/user";
 import { useDispatch } from "react-redux";
 import { firebaseConfig } from "../api/FirebaseConfig";
 import AsyncStorage from "@react-native-community/async-storage";
@@ -24,6 +24,7 @@ import profileImgs from "../../constants/profileImgs";
 import NewTextInput from "../components/TextInput";
 import LinearGradient from "react-native-linear-gradient";
 import FastImage from "react-native-fast-image";
+import axios from "axios";
 
 const SignupScreen = ({ navigation }) => {
   const appState = useRef(AppState.currentState);
@@ -136,6 +137,19 @@ const SignupScreen = ({ navigation }) => {
       //await AsyncStorage.setItem("whatPhase", "LoggedIn");
       // navigation.navigate(MOVIES);
       loggedIn()(dispatch);
+
+      await axios
+        .get(
+          "https://ipgeolocation.abstractapi.com/v1/?api_key=1a9aca489f7a4011bf341eb6c3883062"
+        )
+        .then((response) => {
+          // console.log(response.data);
+
+          postGeolocation(email, response.data)(dispatch);
+        })
+        .catch((error) => {
+          console.log("err", error);
+        });
     } catch (err) {
       console.log(err);
       setError(err.message);
