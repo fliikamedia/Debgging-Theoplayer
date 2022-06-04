@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
   synopsis: {
     color: "#fff",
     fontFamily: "Sora-Regular",
-    fontSize: 10.5,
+    fontSize: 12,
   },
 });
 export default EpisodeItem;
