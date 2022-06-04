@@ -43,7 +43,9 @@ const EpisodeItem = ({ episode, navigation, index }) => {
             alignSelf: "center",
           }}
           onPress={() =>
-            navigation.navigate(EPISODEDETAIL, { episode: episode })
+            navigation.navigate(BITMOVINPLAYER, {
+              movieId: episode._id,
+            })
           }
         >
           <FastImage
