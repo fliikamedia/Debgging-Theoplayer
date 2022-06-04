@@ -167,9 +167,12 @@ const EpisodeDetailScreen = ({ navigation, route }) => {
     return (
       <View
         style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
           flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
+          // justifyContent: "space-between",
+          // alignItems: "center",
           marginTop: Platform.OS == "ios" ? 40 : 40,
           paddingHorizontal: SIZES.padding,
         }}
@@ -177,10 +180,10 @@ const EpisodeDetailScreen = ({ navigation, route }) => {
         {/* Back Button */}
         <MovieDetailIcon iconFuc={navigateBack} icon={icons.left_arrow} />
         {/* Share Button */}
-        <MovieDetailIcon
+        {/* <MovieDetailIcon
           iconFuc={() => console.log("cast clicked")}
           icon={icons.cast}
-        />
+        /> */}
       </View>
     );
   };
@@ -222,6 +225,7 @@ const EpisodeDetailScreen = ({ navigation, route }) => {
               left: 0,
             }}
           />
+          {renderHeaderBar()}
           <TouchableOpacity
             style={{
               padding: 18,
