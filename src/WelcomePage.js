@@ -71,7 +71,7 @@ const WelcomePage = ({ navigation }) => {
         ref={video}
         style={styles.video}
         source={{
-          uri: "https://fliikaimages.azureedge.net/hero-container/boxing_hero.mp4",
+          uri: "https://fliikaimages.azureedge.net/hero-container/Zeenamore-hero-full.mp4",
         }}
         repeat={true}
         muted={true}
