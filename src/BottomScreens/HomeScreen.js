@@ -276,6 +276,7 @@ const HomeScreen = ({ navigation }) => {
           width: 250,
           borderRadius: 10,
           height: 50,
+          marginBottom: 30,
         }}
         text2Style={{
           fontSize: 15,
@@ -1071,6 +1072,10 @@ const HomeScreen = ({ navigation }) => {
             backgroundColor: "rgba(0,0,0, 0.8)",
             borderTopLeftRadius: 20,
             borderTopRightRadius: 20,
+            alignItems: "center",
+            justifyContent: "center",
+            borderWidth: 0.6,
+            borderColor: "grey",
           },
         }}
       >
@@ -1080,14 +1085,20 @@ const HomeScreen = ({ navigation }) => {
             paddingLeft: 20,
             paddingBottom: 20,
             flexDirection: "column",
-            justifyContent: "space-between",
+            justifyContent: "center",
           }}
         >
           {/*    <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
     <IconAnt name="closecircleo" size={30} color="#fff"/>
       </View> */}
           <Text
-            style={{ color: "#fff", fontSize: 30, fontFamily: "Sora-Bold" }}
+            style={{
+              color: "#fff",
+              fontSize: 25,
+              fontFamily: "Sora-Bold",
+              textAlign: "center",
+              marginBottom: 40,
+            }}
           >
             {rbTitle.title}
           </Text>
@@ -1096,6 +1107,7 @@ const HomeScreen = ({ navigation }) => {
               height: "40%",
               flexDirection: "column",
               justifyContent: "space-between",
+              alignItems: "center",
             }}
           >
             <TouchableOpacity
