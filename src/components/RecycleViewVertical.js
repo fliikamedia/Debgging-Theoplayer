@@ -63,6 +63,15 @@ export default class RecycleViewVertical extends Component {
       if (dvd_thumbnail_link) {
         return (
           <TouchableWithoutFeedback
+            onLongPress={() => {
+              this.props.refRBSheet.current.open(),
+                this.props.setRbTitle({
+                  type: film_type,
+                  title: title,
+                  id: _id,
+                });
+              this.props.setRbItem(item);
+            }}
             onPress={() =>
               this.props.navigation.navigate(MOVIEDETAIL, {
                 selectedMovie: _id,

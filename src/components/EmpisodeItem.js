@@ -43,7 +43,9 @@ const EpisodeItem = ({ episode, navigation, index }) => {
             alignSelf: "center",
           }}
           onPress={() =>
-            navigation.navigate(EPISODEDETAIL, { episode: episode })
+            navigation.navigate(BITMOVINPLAYER, {
+              movieId: episode._id,
+            })
           }
         >
           <FastImage
@@ -205,7 +207,7 @@ const styles = StyleSheet.create({
   synopsis: {
     color: "#fff",
     fontFamily: "Sora-Regular",
-    fontSize: 10.5,
+    fontSize: 12,
   },
 });
 export default EpisodeItem;
