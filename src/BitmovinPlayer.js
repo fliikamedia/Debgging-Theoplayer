@@ -24,17 +24,26 @@ const BitmovinPlayer = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const [isPlaying, setIsPlaying] = useState(false);
   const { movieId, time } = route.params;
-  const [watched, setWatched] = useState(0);
-  const [duration, setDuration] = useState(0);
+  // const [watched, setWatched] = useState(0);
+  // const [duration, setDuration] = useState(0);
   const appState = useRef(AppState.currentState);
   const playerRef = useRef(null);
   const movie = movies.availableMovies.find((r) => r._id === movieId);
-  const videoUrl = Platform.select({
-    ios: "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8",
-    android: "https://bitdash-a.akamaihd.net/content/sintel/sintel.mpd",
-    default: "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8",
-  });
-
+  let watchedTime;
+  try {
+    watchedTime = user?.currentProfile?.watched.find(
+      (data) => data.movieId === movieId
+    ).watchedAt;
+  } catch (err) {
+    console.log(err);
+    watchedTime = 0;
+  }
+  // const videoUrl = Platform.select({
+  //   ios: "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8",
+  //   android: "https://bitdash-a.akamaihd.net/content/sintel/sintel.mpd",
+  //   default: "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8",
+  // });
+  // console.log("watched", watchedTime);
   const setWatchedMovie = async () => {
     if (movie.film_type == "movie") {
       AsyncStorage.setItem("isSeries", "movie");
@@ -200,7 +209,7 @@ const BitmovinPlayer = ({ navigation, route }) => {
           configuration={{
             url: playURL,
             poster: movie.wide_thumbnail_link,
-            startOffset: time ? time : 0,
+            startOffset: watchedTime ? watchedTime : 0,
             hasNextEpisode: false,
             subtitles: "",
             // thumbnails: '',
