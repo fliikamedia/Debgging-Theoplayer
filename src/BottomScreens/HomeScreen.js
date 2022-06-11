@@ -56,7 +56,8 @@ const HomeScreen = ({ navigation }) => {
   //LogBox.ignoreLogs(["Calling `getNode()`"]);
   const user = useSelector((state) => state.user);
   const movies = useSelector((state) => state.movies);
-  //console.log('fetching',movies.isFetching);
+  // console.log("fetching", user.currentProfile.watched);
+
   const dispatch = useDispatch();
   const [result, setResult] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -344,6 +345,7 @@ const HomeScreen = ({ navigation }) => {
     let squareURL;
     let squareLogo;
     let squarePlayId;
+    let squareMovie;
     try {
       squareURL = resultsToShow.find(
         (r) => r.active_banner === "YES"
@@ -352,6 +354,7 @@ const HomeScreen = ({ navigation }) => {
         (r) => r.active_banner === "YES"
       ).title_logo_url;
       squarePlayId = resultsToShow.find((r) => r.active_banner === "YES")._id;
+      squareMovie = resultsToShow.find((r) => r.active_banner === "YES");
     } catch (err) {
       squareURL =
         "https://fliikamediaservice-usea.streaming.media.azure.net/1368c5bc-1fb8-450f-ba54-104e021b4033/Batman_mobile_square.ism/manifest(format=m3u8-aapl)";
@@ -417,9 +420,9 @@ const HomeScreen = ({ navigation }) => {
                 <TouchableOpacity
                   onPress={() => {
                     navigation.navigate(MOVIEDETAIL, {
-                      selectedMovie: resultsToShow[0]._id,
-                      isSeries: resultsToShow[0].film_type,
-                      seriesTitle: resultsToShow[0].name,
+                      selectedMovie: squareMovie._id,
+                      isSeries: squareMovie.film_type,
+                      seriesTitle: squareMovie.name,
                     });
                   }}
                   style={{
