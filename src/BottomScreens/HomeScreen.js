@@ -1261,6 +1261,7 @@ const HomeScreen = ({ navigation }) => {
               navigate={navigation.navigate}
               movieTitle={rbItem.title}
               closeRBSheet={closeRBSheet}
+              from="home"
             />
           )}
         </ScrollView>

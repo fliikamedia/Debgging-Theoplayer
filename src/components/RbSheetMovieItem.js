@@ -15,7 +15,7 @@ import IconAwesome from "react-native-vector-icons/FontAwesome5";
 import moment from "moment";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-const RbSheetMovieItem = ({ movieTitle, navigate, closeRBSheet }) => {
+const RbSheetMovieItem = ({ movieTitle, navigate, closeRBSheet, from }) => {
   const movies = useSelector((state) => state.movies);
   const user = useSelector((state) => state.user);
 
@@ -23,7 +23,12 @@ const RbSheetMovieItem = ({ movieTitle, navigate, closeRBSheet }) => {
   const currentMovie = movies.availableMovies.find(
     (r) => r.title === movieTitle
   );
-
+  const iconsContainer = {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: from === "watchlist" ? "flex-end" : "space-between",
+    width: "25%",
+  };
   const isWatchList = (movieArray, movieName) => {
     try {
       var found = false;
@@ -38,49 +43,119 @@ const RbSheetMovieItem = ({ movieTitle, navigate, closeRBSheet }) => {
   };
 
   const movieIcons = () => {
-    if (
-      isWatchList(
-        user.currentProfile.watchList,
-        currentMovie.title,
-        currentMovie.season_number
-      ) == true
-    ) {
+    if (from === "watchlist") {
       return (
         <TouchableOpacity
           onPress={() => {
-            // showToast("Removed from watch list");
             removeFromProfileWatchList(
               user.user._id,
               currentMovie,
               user.currentProfile._id,
               currentMovie.season_number
             )(dispatch);
+            closeRBSheet();
           }}
         >
-          <Icon
-            name="book-remove-multiple-outline"
-            size={40}
-            color={COLORS.white}
-          />
+          <Icon name="delete" size={45} color="red" />
         </TouchableOpacity>
       );
     } else {
-      return (
-        <TouchableOpacity
-          onPress={() => {
-            // showToast("Added to watch list");
-            addToProfileWatchList(
-              user.user._id,
-              currentMovie,
-              user.currentProfile._id,
-              currentMovie.season_number,
-              moment()
-            )(dispatch);
-          }}
-        >
-          <IconFeather name="plus" size={40} color={COLORS.white} />
-        </TouchableOpacity>
-      );
+      if (
+        isWatchList(
+          user.currentProfile.watchList,
+          currentMovie.title,
+          currentMovie.season_number
+        ) == true
+      ) {
+        return (
+          <>
+            <TouchableOpacity
+              onPress={() => {
+                closeRBSheet();
+                navigate(MOVIEDETAIL, {
+                  selectedMovie: currentMovie._id,
+                  isSeries: currentMovie.film_type,
+                  seriesTitle: currentMovie.name,
+                });
+              }}
+              style={{
+                margin: -5,
+                padding: 4,
+                height: 35,
+                width: 35,
+                borderRadius: 100,
+                justifyContent: "center",
+                alignItems: "center",
+                elevation: 25,
+                borderWidth: 1,
+                borderColor: "white",
+              }}
+            >
+              <IonIcon name="information" size={18} color="white" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                // showToast("Removed from watch list");
+                removeFromProfileWatchList(
+                  user.user._id,
+                  currentMovie,
+                  user.currentProfile._id,
+                  currentMovie.season_number
+                )(dispatch);
+              }}
+            >
+              <Icon
+                name="book-remove-multiple-outline"
+                size={40}
+                color={COLORS.white}
+              />
+            </TouchableOpacity>
+          </>
+        );
+      } else {
+        return (
+          <>
+            <TouchableOpacity
+              onPress={() => {
+                closeRBSheet();
+                navigate(MOVIEDETAIL, {
+                  selectedMovie: currentMovie._id,
+                  isSeries: currentMovie.film_type,
+                  seriesTitle: currentMovie.name,
+                });
+              }}
+              style={{
+                margin: -5,
+                padding: 4,
+                height: 35,
+                width: 35,
+                borderRadius: 100,
+                justifyContent: "center",
+                alignItems: "center",
+                elevation: 25,
+                borderWidth: 1,
+                borderColor: "white",
+              }}
+            >
+              <IonIcon name="information" size={18} color="white" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                // showToast("Added to watch list");
+                addToProfileWatchList(
+                  user.user._id,
+                  currentMovie,
+                  user.currentProfile._id,
+                  currentMovie.season_number,
+                  moment()
+                )(dispatch);
+              }}
+            >
+              <IconFeather name="plus" size={40} color={COLORS.white} />
+            </TouchableOpacity>
+          </>
+        );
+      }
     }
   };
   const dvdPoster = () => {
@@ -159,32 +234,11 @@ const RbSheetMovieItem = ({ movieTitle, navigate, closeRBSheet }) => {
             <Text style={styles.detailText}>{currentMovie.storyline}</Text>
           </View>
           {/* Info and add to watchList Icons */}
-          <View style={styles.iconsContainer}>
+          <View style={iconsContainer}>
             {movieIcons()}
-            <TouchableOpacity
-              onPress={() => {
-                closeRBSheet();
-                navigate(MOVIEDETAIL, {
-                  selectedMovie: currentMovie._id,
-                  isSeries: currentMovie.film_type,
-                  seriesTitle: currentMovie.name,
-                });
-              }}
-              style={{
-                margin: -5,
-                padding: 4,
-                height: 35,
-                width: 35,
-                borderRadius: 100,
-                justifyContent: "center",
-                alignItems: "center",
-                elevation: 25,
-                borderWidth: 1,
-                borderColor: "white",
-              }}
-            >
-              <IonIcon name="information" size={18} color="white" />
-            </TouchableOpacity>
+            {/* {from === "home" && (
+              
+            )} */}
           </View>
         </View>
       </View>
@@ -240,12 +294,6 @@ const styles = StyleSheet.create({
     fontFamily: "Sora-Light",
     fontSize: 10.5,
     color: "#A9A9A9",
-  },
-  iconsContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: "25%",
   },
   bottomIcons: {
     flexDirection: "row",
