@@ -144,20 +144,22 @@ const ProfileScreen = ({ navigation }) => {
             editing={editing}
             setEditing={setEditing}
           /> */}
-          {user?.user?.profiles?.map((item) => {
-            return (
-              <UserProfile
-                navigation={navigation}
-                editing={editing}
-                setEditing={setEditing}
-                main={item.name === user.user.firstName}
-                key={item.name}
-                name={item.name}
-                image={item.image}
-                profileId={item._id}
-              />
-            );
-          })}
+          <View style={styles.profilesContainer}>
+            {user?.user?.profiles?.map((item) => {
+              return (
+                <UserProfile
+                  navigation={navigation}
+                  editing={editing}
+                  setEditing={setEditing}
+                  main={item.name === user.user.firstName}
+                  key={item.name}
+                  name={item.name}
+                  image={item.image}
+                  profileId={item._id}
+                />
+              );
+            })}
+          </View>
           <View>
             <TouchableOpacity
               onPress={() => setEditing(false)}
@@ -200,19 +202,21 @@ const ProfileScreen = ({ navigation }) => {
               name={user.user.firstName}
               image={user.user.profileImage}
             /> */}
-            {user?.user?.profiles?.map((item) => {
-              return (
-                <UserProfile
-                  editing={editing}
-                  setEditing={setEditing}
-                  main={item.name === user.user.firstName}
-                  key={item.name}
-                  name={item.name}
-                  image={item.image}
-                  profileId={item._id}
-                />
-              );
-            })}
+            <View style={styles.profilesContainer}>
+              {user?.user?.profiles?.map((item) => {
+                return (
+                  <UserProfile
+                    editing={editing}
+                    setEditing={setEditing}
+                    main={item.name === user.user.firstName}
+                    key={item.name}
+                    name={item.name}
+                    image={item.image}
+                    profileId={item._id}
+                  />
+                );
+              })}
+            </View>
             {profilesLength < 3 ? (
               <TouchableOpacity
                 onPress={() => setCreating(true)}
@@ -318,6 +322,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: 20,
+  },
+  profilesContainer: {
+    flexDirection: "row",
+    width: "70%",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    alignSelf: "center",
+    // backgroundColor: "red",
   },
 });
 export default ProfileScreen;
