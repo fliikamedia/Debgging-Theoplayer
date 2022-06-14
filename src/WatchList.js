@@ -258,6 +258,7 @@ const WatchList = ({ navigation }) => {
         <View style={styles.listContainer}>
           {movieWatchList.map((movie) => (
             <TouchableOpacity
+              key={movie._id}
               onLongPress={() => {
                 refRBSheet.current.open(),
                   setRbTitle({
@@ -270,10 +271,10 @@ const WatchList = ({ navigation }) => {
             >
               <FastImage
                 style={{
-                  width: SIZES.width * 0.3,
-                  height: SIZES.width * 0.45,
+                  width: SIZES.width * 0.45,
+                  height: SIZES.width * 0.7,
                   borderRadius: 2,
-                  margin: SIZES.width * 0.008,
+                  margin: SIZES.width * 0.012,
                 }}
                 source={{ uri: movie.dvd_thumbnail_link }}
               />
