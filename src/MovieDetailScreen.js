@@ -1109,6 +1109,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
     return (
       <View>
         <FlatList
+          style={{ marginBottom: 25 }}
           ref={scrollRef}
           ListHeaderComponent={renderHeaderSection()}
           showsVerticalScrollIndicator={false}
