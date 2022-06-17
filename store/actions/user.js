@@ -53,6 +53,7 @@ export const GET_ALL_USERS = "GET_ALL_USERS";
 export const GET_ALL_USERS_SUCCESS = "GET_ALL_USERS_SUCCESS";
 export const GET_ALL_USERS_FAILED = "GET_ALL_USERS_FAILED";
 export const GET_ALL_WATCHED_MOVIES = "GET_ALL_WATCHED_MOVIES";
+export const SELECTING_PROFILE = "SELECTING_PROFILE";
 
 export const addUser =
   (
@@ -152,14 +153,14 @@ export const getUser = (email, authtoken) => async (dispatch) => {
           payload: result.data.profiles.find((r) => r.name == profileName),
         });
       } else { */
-      dispatch({
-        type: CURRENT_PROFILE,
-        payload: result?.data?.profiles[0],
-      });
-      dispatch({
-        type: SET_PROFILE,
-        payload: result?.data?.profiles[0].name,
-      });
+      // dispatch({
+      //   type: CURRENT_PROFILE,
+      //   payload: result?.data?.profiles[0],
+      // });
+      // dispatch({
+      //   type: SET_PROFILE,
+      //   payload: result?.data?.profiles[0].name,
+      // });
       //}
     } else {
       dispatch({ type: GET_USER_FAILED });
@@ -561,4 +562,10 @@ export const postGeolocation = (email, geolocation) => async (dispatch) => {
   } catch (err) {
     console.log(err);
   }
+};
+
+export const selectedProfile = () => async (dispatch) => {
+  try {
+    dispatch({ type: SELECTING_PROFILE });
+  } catch (err) {}
 };

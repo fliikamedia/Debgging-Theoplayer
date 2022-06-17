@@ -14,6 +14,7 @@ import {
   MOVIES,
   SIGNUP,
   FILLPROFILESCREEN,
+  SELECTPROFILE,
 } from "../../constants/RouteNames";
 // import { TextInput, HelperText } from "react-native-paper";
 import {
@@ -22,6 +23,7 @@ import {
   loggedIn,
   fillingProfile,
   postGeolocation,
+  selectedProfile,
 } from "../../store/actions/user";
 import { useDispatch, useSelector } from "react-redux";
 import AsyncStorage from "@react-native-community/async-storage";
@@ -29,6 +31,8 @@ import NewTextInput from "../components/TextInput";
 import LinearGradient from "react-native-linear-gradient";
 import geoLocationApi from "../api/geoLocationApi";
 import axios from "axios";
+import { StackActions } from "@react-navigation/native";
+
 const LoginScreen = ({ navigation }) => {
   const userState = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -100,14 +104,17 @@ const LoginScreen = ({ navigation }) => {
           getUser(user.email, idToken)(dispatch);
 
           if (user) {
-            loggedIn()(dispatch);
-            /*     setEmailFunc(email)(dispatch);
-            navigation.reset({
-               index: 0,
-               routes: [{ name: MOVIES }],
-             });
-             await AsyncStorage.setItem("whatPhase", "LoggedIn");
-             navigation.navigate(MOVIES); */
+            selectedProfile()(dispatch);
+            // setEmailFunc(email)(dispatch);
+            // navigation.reset({
+            //   index: 0,
+            //   routes: [{ name: SELECTPROFILE }],
+            // });
+            //  await AsyncStorage.setItem("whatPhase", "LoggedIn");
+            // navigation.navigate(SELECTPROFILE);
+            navigation.dispatch(StackActions.popToTop());
+            navigation.dispatch(StackActions.replace(SELECTPROFILE));
+
             await axios
               .get(
                 "https://ipgeolocation.abstractapi.com/v1/?api_key=1a9aca489f7a4011bf341eb6c3883062"

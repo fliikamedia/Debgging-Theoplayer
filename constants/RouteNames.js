@@ -19,3 +19,4 @@ export const DOWNLOADSCREEN = "Download Screen";
 export const WATCHLIST = "Watch List";
 export const WELCOMESTACK = "Welcome Stack";
 export const SERIESEXTRASTAB = "EXTRAS";
+export const SELECTPROFILE = "Select Profile";

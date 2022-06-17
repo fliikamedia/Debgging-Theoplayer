@@ -8,7 +8,11 @@ import {
 } from "react-native";
 import { setProfile } from "../../store/actions/user";
 import { useDispatch, useSelector } from "react-redux";
-import { removeProfile, changeProfile } from "../../store/actions/user";
+import {
+  removeProfile,
+  changeProfile,
+  loggedIn,
+} from "../../store/actions/user";
 import { EDITPROFILE } from "../../constants/RouteNames";
 import IconAnt from "react-native-vector-icons/AntDesign";
 import IconAwesome from "react-native-vector-icons/FontAwesome5";
@@ -24,6 +28,7 @@ const UserProfile = ({
   navigation,
   setEditing,
   profileId,
+  from,
 }) => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -54,6 +59,9 @@ const UserProfile = ({
           changeProfile(user, profileId)(dispatch);
           setProfile(name)(dispatch);
           await AsyncStorage.setItem("profileName", name);
+          if (from && from === "select") {
+            loggedIn()(dispatch);
+          }
         }}
         style={container}
       >

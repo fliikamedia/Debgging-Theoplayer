@@ -4,11 +4,13 @@ import WelcomePage from "../WelcomePage";
 import LoginScreen from "../auth/LoginScreen";
 import FillProfileScreen from "../auth/FillProfileScreen";
 import EmailSignup from "../auth/EmailSignup";
+import SelectProfile from "../SelectProfile";
 import {
   WELCOMESCREEN,
   LOGIN,
   FILLPROFILESCREEN,
   EMAILSIGNUP,
+  SELECTPROFILE,
 } from "../../constants/RouteNames";
 
 const Stack = createStackNavigator();
@@ -71,6 +73,17 @@ export default WelcomeNavigator = (props) => {
         component={FillProfileScreen}
         options={{
           title: " ",
+          headerStyle: {
+            backgroundColor: "black",
+          },
+        }}
+      />
+      <Stack.Screen
+        name={SELECTPROFILE}
+        component={SelectProfile}
+        options={{
+          title: " ",
+          headerShown: false,
           headerStyle: {
             backgroundColor: "black",
           },
