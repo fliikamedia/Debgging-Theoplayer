@@ -10,20 +10,19 @@ import {
   FlatList,
   Image,
 } from "react-native";
-import UserProfile from "../components/UserProfile";
+import UserProfile from "./components/UserProfile";
 import { useSelector, useDispatch } from "react-redux";
-import { addProfile, loggedOut } from "../../store/actions/user";
-import { WELCOMESCREEN } from "../../constants/RouteNames";
+import { addProfile, loggedOut } from "../store/actions/user";
+import { WELCOMESCREEN } from "../constants/RouteNames";
 import firebase from "firebase";
-import profileImgs from "../../constants/profileImgs";
-import { COLORS, SIZES, icons } from "../../constants";
+import profileImgs from "../constants/profileImgs";
+import { COLORS, SIZES, icons } from "../constants";
 import IconAnt from "react-native-vector-icons/AntDesign";
 import IconFeather from "react-native-vector-icons/Feather";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import AsyncStorage from "@react-native-community/async-storage";
 import FastImage from "react-native-fast-image";
 
-const ProfileScreen = ({ navigation }) => {
+const SelectProfile = ({ navigation }) => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [creating, setCreating] = useState(false);
@@ -213,6 +212,7 @@ const ProfileScreen = ({ navigation }) => {
                     name={item.name}
                     image={item.image}
                     profileId={item._id}
+                    from="select"
                   />
                 );
               })}
@@ -258,7 +258,7 @@ const ProfileScreen = ({ navigation }) => {
       }}
     >
       <View style={styles.container}>
-        <View
+        {/* <View
           style={{
             flexDirection: "row",
             width: "95%",
@@ -274,7 +274,7 @@ const ProfileScreen = ({ navigation }) => {
           <TouchableOpacity onPress={() => logOut()}>
             <Icon name="logout" size={40} color="white" />
           </TouchableOpacity>
-        </View>
+        </View> */}
         <View style={{ flex: 1, justifyContent: "center", marginBottom: 100 }}>
           {createProfile()}
         </View>
@@ -332,4 +332,4 @@ const styles = StyleSheet.create({
     // backgroundColor: "red",
   },
 });
-export default ProfileScreen;
+export default SelectProfile;

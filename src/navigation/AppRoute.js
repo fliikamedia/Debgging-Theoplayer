@@ -4,6 +4,7 @@ import {
   MOVIES,
   WELCOMESCREEN,
   FILLPROFILESCREEN,
+  SELECTPROFILE,
 } from "../../constants/RouteNames";
 import firebase from "firebase";
 import { firebaseConfig } from "../../src/api/FirebaseConfig";
@@ -54,13 +55,15 @@ export default AppRoute = () => {
       </View>
     );
   }
-  // console.log("user", ready, verified, user.isLoggedIn);
+  console.log("user", ready, verified, user.isLoggedIn);
   const navigatorFunc = () => {
     if (
       (ready && user.isLoggedIn === "loggedIn") ||
       (ready && verified && user.isLoggedIn === "loggedIn")
     ) {
       return <MoviesNavigator routeName={MOVIES} />;
+    } else if (ready && user.isLoggedIn === "selectingProfile") {
+      return <WelcomeNavigator routeName={SELECTPROFILE} />;
     } else if (
       (ready && user.isLoggedIn === "signedUp") ||
       (ready && verified && user.isLoggedIn === "")

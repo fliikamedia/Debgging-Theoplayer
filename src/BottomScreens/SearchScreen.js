@@ -166,6 +166,7 @@ const SearchScreen = ({ navigation }) => {
             />
           </View>
         </LinearGradient>
+        {!term && <Text style={styles.explore}>Explore</Text>}
         <ScrollView
           contentContainerStyle={{
             flexGrow: 1,
@@ -196,6 +197,13 @@ const styles = StyleSheet.create({
     fontSize: 35,
     alignSelf: "center",
     marginHorizontal: 15,
+  },
+  explore: {
+    color: "#fff",
+    fontFamily: "Sora-Regular",
+    fontSize: 24,
+    textAlign: "center",
+    marginVertical: 10,
   },
 });
 export default SearchScreen;

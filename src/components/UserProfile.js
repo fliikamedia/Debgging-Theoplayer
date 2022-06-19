@@ -8,12 +8,17 @@ import {
 } from "react-native";
 import { setProfile } from "../../store/actions/user";
 import { useDispatch, useSelector } from "react-redux";
-import { removeProfile, changeProfile } from "../../store/actions/user";
+import {
+  removeProfile,
+  changeProfile,
+  loggedIn,
+} from "../../store/actions/user";
 import { EDITPROFILE } from "../../constants/RouteNames";
 import IconAnt from "react-native-vector-icons/AntDesign";
 import IconAwesome from "react-native-vector-icons/FontAwesome5";
 import AsyncStorage from "@react-native-community/async-storage";
 import FastImage from "react-native-fast-image";
+import IconMaterial from "react-native-vector-icons/MaterialIcons";
 
 const UserProfile = ({
   name,
@@ -23,6 +28,7 @@ const UserProfile = ({
   navigation,
   setEditing,
   profileId,
+  from,
 }) => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -39,7 +45,7 @@ const UserProfile = ({
     alignItems: "center",
     backgroundColor: "grey",
     height: Dimensions.get("window").width * 0.3,
-    borderRadius: 120,
+    borderRadius: 20,
     width: Dimensions.get("window").width * 0.3,
     marginBottom: 5,
     borderWidth: 4,
@@ -53,6 +59,9 @@ const UserProfile = ({
           changeProfile(user, profileId)(dispatch);
           setProfile(name)(dispatch);
           await AsyncStorage.setItem("profileName", name);
+          if (from && from === "select") {
+            loggedIn()(dispatch);
+          }
         }}
         style={container}
       >
@@ -63,7 +72,7 @@ const UserProfile = ({
                 width: "100%",
                 height: undefined,
                 aspectRatio: 1,
-                borderRadius: 120,
+                borderRadius: 20,
               }}
               source={{ uri: image }}
             />
@@ -83,7 +92,7 @@ const UserProfile = ({
                   backgroundColor: "darkgrey",
                   height: "100%",
                   width: "100%",
-                  borderRadius: 120,
+                  borderRadius: 20,
                   opacity: 0.7,
                   justifyContent: "center",
                   alignItems: "center",
@@ -103,7 +112,7 @@ const UserProfile = ({
                   backgroundColor: "darkgrey",
                   height: "100%",
                   width: "100%",
-                  borderRadius: 120,
+                  borderRadius: 20,
                   opacity: 0.7,
                   justifyContent: "center",
                   alignItems: "center",
@@ -128,17 +137,18 @@ const UserProfile = ({
       {editing && !main ? (
         <View
           style={{
-            flexDirection: "row",
-            width: "60%",
+            // flexDirection: "row",
+            // width: "100%",
             justifyContent: "space-between",
             marginVertical: 20,
           }}
         >
-          <Text style={{ color: "white", fontSize: 18 }}>Remove</Text>
+          {/* <Text style={{ color: "white", fontSize: 12 }}>Remove</Text> */}
           <TouchableOpacity
             onPress={() => removeProfile(user.user._id, profileId)(dispatch)}
           >
-            <IconAnt name="delete" size={30} color="white" />
+            {/* <IconAnt name="delete" size={30} color="white" /> */}
+            <IconMaterial name="delete" size={45} color="red" />
           </TouchableOpacity>
         </View>
       ) : null}
