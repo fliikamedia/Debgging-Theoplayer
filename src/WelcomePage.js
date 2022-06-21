@@ -22,7 +22,7 @@ import FastImage from "react-native-fast-image";
 import SVGImg from "../assets/fliika-logo.svg";
 
 const WelcomePage = ({ navigation }) => {
-  const [isPreloading, setIsPreloading] = useState(false);
+  const [isPreloading, setIsPreloading] = useState(true);
 
   // Button Width Responsive
   var buttonWidth;
