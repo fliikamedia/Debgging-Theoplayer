@@ -23,7 +23,6 @@ import SVGImg from "../assets/fliika-logo.svg";
 
 const WelcomePage = ({ navigation }) => {
   const [isPreloading, setIsPreloading] = useState(true);
-  const [showPoster, setShowPoster] = useState(false);
 
   // Button Width Responsive
   var buttonWidth;
@@ -35,12 +34,6 @@ const WelcomePage = ({ navigation }) => {
     buttonWidth = 350;
   }
 
-  useEffect(() => {
-    setTimeout(() => {
-      setIsPreloading(false);
-      setShowPoster(true);
-    }, 15000);
-  }, []);
   const createBtn = {
     backgroundColor: "#f3f8ff",
     padding: 15,
@@ -73,30 +66,25 @@ const WelcomePage = ({ navigation }) => {
           />
         </View>
       )}
-      {showPoster ? (
-        <FastImage
-          source={{
-            uri: "https://fliikaimages.azureedge.net/movies/Zeenamore/Zeenamore-Poster.webp",
-          }}
-          style={styles.poster}
-        />
-      ) : (
-        <Video
-          onReadyForDisplay={() => setIsPreloading(false)}
-          ref={video}
-          style={styles.video}
-          source={{
-            uri: "https://fliikaimages.azureedge.net/hero-container/Zeenamore-hero-full.mp4",
-          }}
-          repeat={true}
-          muted={true}
-          shouldPlay
-          resizeMode="cover"
-          rate={1.0}
-        />
-      )}
+      <Video
+        onReadyForDisplay={() => setIsPreloading(false)}
+        ref={video}
+        style={styles.video}
+        source={{
+          uri: "https://fliikaimages.azureedge.net/hero-container/Zeenamore-hero-full.mp4",
+        }}
+        repeat={true}
+        muted={true}
+        shouldPlay
+        resizeMode="cover"
+        rate={1.0}
+      />
       {isPreloading ? null : (
         <View style={styles.Wrapper}>
+          {/* <FastImage
+            source={require("../assets/fliika-logo.png")}
+            style={styles.logo}
+          /> */}
           <SVGImg width={130} height={40} style={styles.logo} />
           <View>
             <Text style={styles.textDescriptionLg}>
@@ -140,7 +128,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    opacity: 0.9,
+    opacity: 0.5,
   },
   Wrapper: {
     height: "95%",
@@ -194,13 +182,6 @@ const styles = StyleSheet.create({
     letterSpacing: 3,
     color: "#f3f8ff",
     fontSize: Dimensions.get("window").width < 350 ? 12 : 16,
-  },
-  poster: {
-    position: "absolute",
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
   },
 });
 
