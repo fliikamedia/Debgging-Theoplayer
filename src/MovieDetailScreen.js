@@ -281,7 +281,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
     if (time > 0) {
       if (isSeries === "movie") {
         if (isWatchedMovie === "false") {
-          console.log("here 1");
+          // console.log("here 1");
           addtoWatchedProfile(
             moment(),
             moment(),
@@ -293,7 +293,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
             user.currentProfile._id
           )(dispatch);
         } else {
-          console.log("here 2");
+          // console.log("here 2");
           updateWatchedProfile(
             moment(),
             user.user._id,
@@ -306,7 +306,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
         }
       } else {
         if (isWatchedMovie === "false") {
-          console.log("here 1 series");
+          // console.log("here 1 series");
           addtoWatchedProfile(
             moment(),
             moment(),
@@ -320,7 +320,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
             episodeNumber
           )(dispatch);
         } else {
-          console.log("here 2 series");
+          // console.log("here 2 series");
           updateWatchedProfile(
             moment(),
             user.user._id,

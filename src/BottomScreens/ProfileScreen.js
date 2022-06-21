@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
   ScrollView,
   View,
@@ -9,10 +9,11 @@ import {
   Alert,
   FlatList,
   Image,
+  RefreshControl,
 } from "react-native";
 import UserProfile from "../components/UserProfile";
 import { useSelector, useDispatch } from "react-redux";
-import { addProfile, loggedOut } from "../../store/actions/user";
+import { addProfile, loggedOut, getUser } from "../../store/actions/user";
 import { WELCOMESCREEN } from "../../constants/RouteNames";
 import firebase from "firebase";
 import profileImgs from "../../constants/profileImgs";
@@ -30,6 +31,8 @@ const ProfileScreen = ({ navigation }) => {
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState("");
   const [imageName, setImageName] = useState("");
+  const [refreshing, setRefreshing] = useState(false);
+  // console.log("profile", user.currentProfile.name);
   let profilesLength;
   try {
     profilesLength = user.user.profiles.length;
@@ -47,6 +50,12 @@ const ProfileScreen = ({ navigation }) => {
       );
     }
   };
+  const onRefresh = useCallback(() => {
+    // console.log("using", user.currentProfile.name);
+    // setRefreshing(true);
+    // getSeries();
+    getUser(user.email, user.authToken)(dispatch);
+  }, []);
   const creatingProfile = () => {
     if (name) {
       setName("");
@@ -256,6 +265,9 @@ const ProfileScreen = ({ navigation }) => {
         flexGrow: 1,
         backgroundColor: "black",
       }}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
     >
       <View style={styles.container}>
         <View
