@@ -55,7 +55,7 @@ export default AppRoute = () => {
       </View>
     );
   }
-  console.log("user", ready, verified, user.isLoggedIn);
+  // console.log("user", ready, verified, user.isLoggedIn);
   const navigatorFunc = () => {
     if (
       (ready && user.isLoggedIn === "loggedIn") ||

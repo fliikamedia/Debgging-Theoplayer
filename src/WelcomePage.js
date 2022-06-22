@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    opacity: 0.9,
+    opacity: 0.5,
   },
   Wrapper: {
     height: "95%",

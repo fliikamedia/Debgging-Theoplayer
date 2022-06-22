@@ -1,10 +1,11 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import {
   ScrollView,
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
+  RefreshControl,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import RecycleViewVertical from "./components/RecycleViewVertical";
@@ -15,6 +16,7 @@ import {
   removeFromProfileWatchList,
   addtoWatchedProfile,
   updateWatchedProfile,
+  getUser,
 } from "../store/actions/user";
 import FastImage from "react-native-fast-image";
 import { SIZES } from "../constants";
@@ -37,6 +39,7 @@ const WatchList = ({ navigation }) => {
   const [rbItem, setRbItem] = useState({});
   const [movieWatchList, setMovieWatchlist] = useState([]);
   const [seasonNumber, setSeasonNumber] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", async () => {
@@ -88,6 +91,12 @@ const WatchList = ({ navigation }) => {
     return () => unsubscribe();
   }, [navigation]);
 
+  const onRefresh = useCallback(() => {
+    // console.log("using", user.currentProfile.name);
+    // setRefreshing(true);
+    // getSeries();
+    getUser(user.email, user.authToken)(dispatch);
+  }, []);
   const saveMovie = (
     userId,
     profileId,
@@ -527,6 +536,9 @@ const WatchList = ({ navigation }) => {
     <ScrollView
       contentContainerStyle={{ flexGrow: 1 }}
       showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
     >
       <View style={styles.container}>{renderWatchList()}</View>
       {renderBottomSheetMovies()}

@@ -27,6 +27,7 @@ import {
   addToProfileWatchList,
   removeFromProfileWatchList,
   deleteFromWatched,
+  getUser,
 } from "../../store/actions/user";
 import ProgressBar from "../components/ProgressBar";
 import { LogBox } from "react-native";
@@ -56,7 +57,7 @@ const HomeScreen = ({ navigation }) => {
   //LogBox.ignoreLogs(["Calling `getNode()`"]);
   const user = useSelector((state) => state.user);
   const movies = useSelector((state) => state.movies);
-  // console.log("fetching", user.currentProfile.watched);
+  // console.log("fetching", user.profileName);
 
   const dispatch = useDispatch();
   const [result, setResult] = useState([]);
@@ -176,6 +177,7 @@ const HomeScreen = ({ navigation }) => {
   }, []);
   useEffect(() => {
     fetchMovies()(dispatch);
+    getUser(user.email, user.authToken)(dispatch);
   }, []);
 
   // Get all watched movies
@@ -1273,6 +1275,7 @@ const HomeScreen = ({ navigation }) => {
   const onRefresh = useCallback(() => {
     //setRefreshing(true);
     fetchMovies()(dispatch);
+    getUser(user.email, user.authToken)(dispatch);
   }, []);
   //////////////////
   return (

@@ -47,6 +47,7 @@ import {
   GET_ALL_USERS_FAILED,
   GET_ALL_WATCHED_MOVIES,
   SELECTING_PROFILE,
+  SET_AUTH_TOKEN,
 } from "../actions/user";
 const initialState = {
   profileName: null,
@@ -63,6 +64,7 @@ const initialState = {
   isLoggedIn: "",
   allUsers: [],
   allWatchedMovies: [],
+  authToken: "",
 };
 
 const userReducer = (state = initialState, { type, payload }) => {
@@ -163,6 +165,8 @@ const userReducer = (state = initialState, { type, payload }) => {
       return { ...state, allUsers: payload };
     case GET_ALL_WATCHED_MOVIES:
       return { ...state, allWatchedMovies: payload };
+    case SET_AUTH_TOKEN:
+      return { ...state, authToken: payload };
     default:
       return state;
   }

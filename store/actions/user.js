@@ -2,7 +2,7 @@ import axios from "axios";
 import expressApi from "../../src/api/expressApi";
 import geoLocationApi from "../../src/api/geoLocationApi";
 import moment from "moment";
-
+import AsyncStorage from "@react-native-community/async-storage";
 export const ADD_USER = "ADD_USER";
 export const ADD_USER_SUCCESS = "ADD_USER_SUCCESS";
 export const ADD_USER_FAILED = "ADD_USER_FAILED";
@@ -54,7 +54,7 @@ export const GET_ALL_USERS_SUCCESS = "GET_ALL_USERS_SUCCESS";
 export const GET_ALL_USERS_FAILED = "GET_ALL_USERS_FAILED";
 export const GET_ALL_WATCHED_MOVIES = "GET_ALL_WATCHED_MOVIES";
 export const SELECTING_PROFILE = "SELECTING_PROFILE";
-
+export const SET_AUTH_TOKEN = "SET_AUTH_TOKEN";
 export const addUser =
   (
     email,
@@ -129,6 +129,8 @@ export const fillingProfile = () => async (dispatch) => {
   } catch (err) {}
 };
 export const getUser = (email, authtoken) => async (dispatch) => {
+  const profileName = await AsyncStorage.getItem("profileName");
+  // console.log("profile name", profileName);
   let data = {
     email: email,
   };
@@ -141,11 +143,15 @@ export const getUser = (email, authtoken) => async (dispatch) => {
       headers: headers,
     });
     if (result.status == 200) {
-      //console.log('result',result.data.profiles[0]);
+      // console.log("result", result.data);
 
       dispatch({
         type: GET_USER_SUCCESS,
         payload: result?.data,
+      });
+      dispatch({
+        type: SET_AUTH_TOKEN,
+        payload: authtoken,
       });
       /* if (profileName) {
         dispatch({
@@ -153,10 +159,12 @@ export const getUser = (email, authtoken) => async (dispatch) => {
           payload: result.data.profiles.find((r) => r.name == profileName),
         });
       } else { */
-      // dispatch({
-      //   type: CURRENT_PROFILE,
-      //   payload: result?.data?.profiles[0],
-      // });
+      if (profileName) {
+        dispatch({
+          type: CURRENT_PROFILE,
+          payload: result.data.profiles.find((r) => r.name == profileName),
+        });
+      }
       // dispatch({
       //   type: SET_PROFILE,
       //   payload: result?.data?.profiles[0].name,

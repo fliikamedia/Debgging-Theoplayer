@@ -105,7 +105,7 @@ const LoginScreen = ({ navigation }) => {
 
           if (user) {
             selectedProfile()(dispatch);
-            // setEmailFunc(email)(dispatch);
+            setEmailFunc(email)(dispatch);
             // navigation.reset({
             //   index: 0,
             //   routes: [{ name: SELECTPROFILE }],
