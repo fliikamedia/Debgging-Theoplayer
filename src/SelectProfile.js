@@ -186,7 +186,8 @@ const SelectProfile = ({ navigation }) => {
             <Text
               style={{
                 fontSize: 24,
-                color: "teal",
+                fontFamily: "Sora-Regular",
+                color: "#fff",
                 textAlign: "center",
                 marginBottom: 30,
                 marginTop: 20,
@@ -232,16 +233,16 @@ const SelectProfile = ({ navigation }) => {
               height: 50,
               width: 160,
               borderWidth: 2,
-              borderColor: "white",
+              borderColor: "#6495ED",
               alignItems: "center",
               justifyContent: "center",
               borderRadius: 5,
               alignSelf: "center",
               marginTop: 30,
-              backgroundColor: "teal",
+              backgroundColor: "transparent",
             }}
           >
-            <Text style={{ color: "white", fontWeight: "bold" }}>
+            <Text style={{ color: "white", fontFamily: "Sora-Bold" }}>
               Manage Profiles
             </Text>
           </TouchableOpacity>
