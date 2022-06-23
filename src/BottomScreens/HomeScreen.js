@@ -48,6 +48,7 @@ import RBSheet from "react-native-raw-bottom-sheet";
 import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
 import RbSheetSeasonItem from "../components/RbSheetSeasonItem";
 import RbSheetMovieItem from "../components/RbSheetMovieItem";
+import Spinner from "react-native-spinkit";
 
 const HomeScreen = ({ navigation }) => {
   const appState = useRef(AppState.currentState);
@@ -1288,12 +1289,27 @@ const HomeScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       {!background.uri || movies.isFetching ? (
-        <View style={{ flex: 1, backgroundColor: "black" }}>
-          <ActivityIndicator
-            animating
-            color={"teal"}
-            size="large"
-            style={{ flex: 1, position: "absolute", top: "50%", left: "45%" }}
+        // <View style={{ flex: 1, backgroundColor: "black" }}>
+        //   <ActivityIndicator
+        //     animating
+        //     color={"teal"}
+        //     size="large"
+        //     style={{ flex: 1, position: "absolute", top: "50%", left: "45%" }}
+        //   />
+        // </View>
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: "black",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Spinner
+            isVisible={!background.uri || movies.isFetching}
+            size={70}
+            type={"WanderingCubes"}
+            color={"#fff"}
           />
         </View>
       ) : (

@@ -20,6 +20,7 @@ import firebase from "firebase";
 import Video from "react-native-video";
 import FastImage from "react-native-fast-image";
 import SVGImg from "../assets/fliika-logo.svg";
+import Spinner from "react-native-spinkit";
 
 const WelcomePage = ({ navigation }) => {
   const [isPreloading, setIsPreloading] = useState(true);
@@ -57,12 +58,19 @@ const WelcomePage = ({ navigation }) => {
   return (
     <View style={styles.container}>
       {isPreloading && (
-        <View style={{ flex: 1, backgroundColor: "black" }}>
-          <ActivityIndicator
-            animating
-            color={"teal"}
-            size="large"
-            style={{ flex: 1, position: "absolute", top: "50%", left: "45%" }}
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: "black",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Spinner
+            isVisible={isPreloading}
+            size={70}
+            type={"ChasingDots"}
+            color={"#fff"}
           />
         </View>
       )}
