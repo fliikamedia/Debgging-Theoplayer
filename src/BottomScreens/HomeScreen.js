@@ -28,6 +28,7 @@ import {
   removeFromProfileWatchList,
   deleteFromWatched,
   getUser,
+  changeProfileNew,
 } from "../../store/actions/user";
 import ProgressBar from "../components/ProgressBar";
 import { LogBox } from "react-native";
@@ -108,6 +109,13 @@ const HomeScreen = ({ navigation }) => {
   }, [navigation]);
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", async () => {
+      // getUser(user.email, user.authToken)(dispatch);
+      changeProfileNew(
+        user.email,
+        user.currentProfile._id,
+        navigation,
+        false
+      )(dispatch);
       setVideoPaused(false);
       Orientation.lockToPortrait();
 
@@ -177,7 +185,6 @@ const HomeScreen = ({ navigation }) => {
   }, []);
   useEffect(() => {
     fetchMovies()(dispatch);
-    getUser(user.email, user.authToken)(dispatch);
   }, []);
 
   // Get all watched movies

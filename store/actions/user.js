@@ -3,6 +3,7 @@ import expressApi from "../../src/api/expressApi";
 import geoLocationApi from "../../src/api/geoLocationApi";
 import moment from "moment";
 import AsyncStorage from "@react-native-community/async-storage";
+import { HOME } from "../../constants/RouteNames";
 export const ADD_USER = "ADD_USER";
 export const ADD_USER_SUCCESS = "ADD_USER_SUCCESS";
 export const ADD_USER_FAILED = "ADD_USER_FAILED";
@@ -130,7 +131,7 @@ export const fillingProfile = () => async (dispatch) => {
 };
 export const getUser = (email, authtoken) => async (dispatch) => {
   const profileName = await AsyncStorage.getItem("profileName");
-  // console.log("profile name", profileName);
+  // console.log("profile name", authtoken);
   let data = {
     email: email,
   };
@@ -577,3 +578,30 @@ export const selectedProfile = () => async (dispatch) => {
     dispatch({ type: SELECTING_PROFILE });
   } catch (err) {}
 };
+
+export const changeProfileNew =
+  (email, profileId, navigation, navigate) => async (dispatch) => {
+    try {
+      const result = await expressApi.post(`/users/change-profile`, {
+        email,
+        profileId,
+      });
+      if (result.status === 200 && result.data._id === profileId) {
+        dispatch({
+          type: CURRENT_PROFILE,
+          payload: result.data,
+        });
+        dispatch({ type: SET_PROFILE, payload: result.data.name });
+        if (navigate) {
+          navigation.jumpTo(HOME);
+        }
+      } else {
+        console.log("no profile found");
+        dispatch({
+          type: CURRENT_PROFILE,
+          payload: result.data,
+        });
+        dispatch({ type: SET_PROFILE, payload: result.data.name });
+      }
+    } catch (err) {}
+  };

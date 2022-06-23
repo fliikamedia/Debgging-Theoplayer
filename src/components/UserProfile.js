@@ -12,6 +12,7 @@ import {
   removeProfile,
   changeProfile,
   loggedIn,
+  changeProfileNew,
 } from "../../store/actions/user";
 import { EDITPROFILE } from "../../constants/RouteNames";
 import IconAnt from "react-native-vector-icons/AntDesign";
@@ -56,8 +57,9 @@ const UserProfile = ({
     <View style={{ alignItems: "center", marginVertical: 10 }}>
       <TouchableOpacity
         onPress={async () => {
-          changeProfile(user, profileId)(dispatch);
+          // changeProfile(user, profileId)(dispatch);
           setProfile(name)(dispatch);
+          changeProfileNew(user.email, profileId, navigation, true)(dispatch);
           await AsyncStorage.setItem("profileName", name);
           if (from && from === "select") {
             loggedIn()(dispatch);

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   ScrollView,
   View,
@@ -33,6 +33,13 @@ const ProfileScreen = ({ navigation }) => {
   const [imageName, setImageName] = useState("");
   const [refreshing, setRefreshing] = useState(false);
   // console.log("profile", user.currentProfile.name);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", async () => {
+      getUser(user.email, user.authToken)(dispatch);
+    });
+    return () => unsubscribe();
+  }, [navigation]);
   let profilesLength;
   try {
     profilesLength = user.user.profiles.length;
@@ -73,6 +80,7 @@ const ProfileScreen = ({ navigation }) => {
       return (
         <View>
           <UserProfile
+            navigation={navigation}
             image={imageName}
             editing={editing}
             setEditing={setEditing}
@@ -223,6 +231,7 @@ const ProfileScreen = ({ navigation }) => {
                     name={item.name}
                     image={item.image}
                     profileId={item._id}
+                    navigation={navigation}
                   />
                 );
               })}

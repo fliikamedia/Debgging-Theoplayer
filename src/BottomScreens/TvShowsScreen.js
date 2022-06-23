@@ -29,6 +29,7 @@ import {
   removeFromProfileWatchList,
   setEmailFunc,
   getUser,
+  changeProfileNew,
 } from "../../store/actions/user";
 import { useSelector, useDispatch } from "react-redux";
 import IconAwesome from "react-native-vector-icons/FontAwesome5";
@@ -57,9 +58,17 @@ const TvShowsScreen = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
-    getSeries();
-  }, []);
-
+    const unsubscribe = navigation.addListener("focus", async () => {
+      getSeries();
+      // changeProfileNew(
+      //   user.email,
+      //   user.currentProfile._id,
+      //   navigation,
+      //   false
+      // )(dispatch);
+    });
+    return () => unsubscribe();
+  }, [navigation]);
   let series;
   series = movies.availableMovies.filter(
     (e) =>
