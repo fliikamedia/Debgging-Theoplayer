@@ -59,7 +59,7 @@ const HomeScreen = ({ navigation }) => {
   //LogBox.ignoreLogs(["Calling `getNode()`"]);
   const user = useSelector((state) => state.user);
   const movies = useSelector((state) => state.movies);
-  // console.log("fetching", user.profileName);
+  // console.log("fetching", user.currentProfile);
 
   const dispatch = useDispatch();
   const [result, setResult] = useState([]);
@@ -75,6 +75,8 @@ const HomeScreen = ({ navigation }) => {
   const [rbItem, setRbItem] = useState({});
   const [seasonNumber, setSeasonNumber] = useState(null);
   const [squareMovie, setSquareMovie] = useState({});
+  // const [authToken, setAuthToken] = useState("");
+  // console.log("profile", user.isFetching);
 
   const yOffset = useRef(new Animated.Value(0)).current;
   const headerOpacity = yOffset.interpolate({
@@ -82,6 +84,17 @@ const HomeScreen = ({ navigation }) => {
     outputRange: [0, 0.8],
     extrapolate: "clamp",
   });
+
+  useEffect(() => {
+    fetchMovies()(dispatch);
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (user) {
+        user.getIdToken().then(function (idToken) {
+          getUser(user.email, idToken)(dispatch);
+        });
+      }
+    });
+  }, []);
 
   useEffect(() => {
     navigation.setOptions({
@@ -110,13 +123,6 @@ const HomeScreen = ({ navigation }) => {
   }, [navigation]);
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", async () => {
-      // getUser(user.email, user.authToken)(dispatch);
-      changeProfileNew(
-        user.email,
-        user.currentProfile._id,
-        navigation,
-        false
-      )(dispatch);
       setVideoPaused(false);
       Orientation.lockToPortrait();
 
@@ -130,7 +136,6 @@ const HomeScreen = ({ navigation }) => {
       const isWatchedMovie = await AsyncStorage.getItem("isWatchedBefore");
       const userId = await AsyncStorage.getItem("userId");
       const profileId = await AsyncStorage.getItem("profileId");
-      // console.log('timing', whatTime, whatDuration, movieTitle);
       if (didPlay == "true") {
         saveMovie(
           userId,
@@ -174,19 +179,19 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
-  useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener((state) => {
-      //console.log("Connection type", state.type);
-      //console.log("Is connected?", state.isConnected);
-      setConnected(state.isConnected);
-    });
+  // useEffect(() => {
+  //   const unsubscribe = NetInfo.addEventListener((state) => {
+  //     //console.log("Connection type", state.type);
+  //     //console.log("Is connected?", state.isConnected);
+  //     setConnected(state.isConnected);
+  //   });
 
-    // Unsubscribe
-    return () => unsubscribe();
-  }, []);
-  useEffect(() => {
-    fetchMovies()(dispatch);
-  }, []);
+  //   // Unsubscribe
+  //   return () => unsubscribe();
+  // }, []);
+  // useEffect(() => {
+
+  // }, []);
 
   // Get all watched movies
   // let allWatchedMovies = [];
@@ -1281,22 +1286,19 @@ const HomeScreen = ({ navigation }) => {
   /// End of bottom sheet movies
   //// On Refresh Control
   const onRefresh = useCallback(() => {
-    //setRefreshing(true);
     fetchMovies()(dispatch);
-    getUser(user.email, user.authToken)(dispatch);
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (user) {
+        user.getIdToken().then(function (idToken) {
+          getUser(user.email, idToken)(dispatch);
+        });
+      }
+    });
   }, []);
   //////////////////
   return (
     <View style={styles.container}>
       {!background.uri || movies.isFetching ? (
-        // <View style={{ flex: 1, backgroundColor: "black" }}>
-        //   <ActivityIndicator
-        //     animating
-        //     color={"teal"}
-        //     size="large"
-        //     style={{ flex: 1, position: "absolute", top: "50%", left: "45%" }}
-        //   />
-        // </View>
         <View
           style={{
             flex: 1,

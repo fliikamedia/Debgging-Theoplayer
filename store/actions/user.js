@@ -56,6 +56,11 @@ export const GET_ALL_USERS_FAILED = "GET_ALL_USERS_FAILED";
 export const GET_ALL_WATCHED_MOVIES = "GET_ALL_WATCHED_MOVIES";
 export const SELECTING_PROFILE = "SELECTING_PROFILE";
 export const SET_AUTH_TOKEN = "SET_AUTH_TOKEN";
+export const NO_PROFILE_FOUND = "NO_PROFILE_FOUND";
+export const PROFILE_FOUND = "PROFILE_FOUND";
+export const FETCH_PROFILE = "FETCH_PROFILE";
+export const FETCH_PROFILE_SUCCESS = "FETCH_PROFILE_SUCCESS";
+export const FETCH_PROFILE_FALED = "FETCH_PROFILE_FAILED";
 export const addUser =
   (
     email,
@@ -131,7 +136,7 @@ export const fillingProfile = () => async (dispatch) => {
 };
 export const getUser = (email, authtoken) => async (dispatch) => {
   const profileName = await AsyncStorage.getItem("profileName");
-  // console.log("profile name", authtoken);
+  // console.log("profile namesss", authtoken, email);
   let data = {
     email: email,
   };
@@ -143,27 +148,34 @@ export const getUser = (email, authtoken) => async (dispatch) => {
     const result = await expressApi.post(`/users/getUser`, data, {
       headers: headers,
     });
+    // console.log("result", result.data);
     if (result.status == 200) {
-      // console.log("result", result.data);
-
       dispatch({
         type: GET_USER_SUCCESS,
         payload: result?.data,
       });
-      dispatch({
-        type: SET_AUTH_TOKEN,
-        payload: authtoken,
-      });
+      // dispatch({
+      //   type: SET_AUTH_TOKEN,
+      //   payload: authtoken,
+      // });
       /* if (profileName) {
         dispatch({
           type: ADD_PROFILE_WATCHED_DETAILS,
           payload: result.data.profiles.find((r) => r.name == profileName),
         });
       } else { */
-      if (profileName) {
+      const fetchedProfile = result.data.profiles.find(
+        (r) => r.name == profileName
+      );
+      if (fetchedProfile) {
         dispatch({
           type: CURRENT_PROFILE,
-          payload: result.data.profiles.find((r) => r.name == profileName),
+          payload: fetchedProfile,
+        });
+      } else {
+        dispatch({
+          type: CURRENT_PROFILE,
+          payload: result.data.profiles[0],
         });
       }
       // dispatch({
@@ -172,10 +184,11 @@ export const getUser = (email, authtoken) => async (dispatch) => {
       // });
       //}
     } else {
+      console.log("err");
       dispatch({ type: GET_USER_FAILED });
     }
   } catch (err) {
-    console.log(err);
+    console.log("err", err);
   }
 };
 
@@ -582,6 +595,7 @@ export const selectedProfile = () => async (dispatch) => {
 export const changeProfileNew =
   (email, profileId, navigation, navigate) => async (dispatch) => {
     try {
+      dispatch({ type: FETCH_PROFILE });
       const result = await expressApi.post(`/users/change-profile`, {
         email,
         profileId,
@@ -595,13 +609,20 @@ export const changeProfileNew =
         if (navigate) {
           navigation.jumpTo(HOME);
         }
+        dispatch({ type: FETCH_PROFILE_SUCCESS });
       } else {
         console.log("no profile found");
         dispatch({
           type: CURRENT_PROFILE,
           payload: result.data,
         });
+        dispatch({ type: FETCH_PROFILE_FALED });
         dispatch({ type: SET_PROFILE, payload: result.data.name });
+        dispatch({ type: NO_PROFILE_FOUND });
       }
     } catch (err) {}
   };
+
+export const removeProfileError = () => (dispatch) => {
+  dispatch({ type: PROFILE_FOUND });
+};

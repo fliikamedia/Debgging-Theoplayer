@@ -10,10 +10,17 @@ import {
   FlatList,
   Image,
   RefreshControl,
+  Modal,
+  Pressable,
 } from "react-native";
 import UserProfile from "../components/UserProfile";
 import { useSelector, useDispatch } from "react-redux";
-import { addProfile, loggedOut, getUser } from "../../store/actions/user";
+import {
+  addProfile,
+  loggedOut,
+  getUser,
+  changeProfileNew,
+} from "../../store/actions/user";
 import { WELCOMESCREEN } from "../../constants/RouteNames";
 import firebase from "firebase";
 import profileImgs from "../../constants/profileImgs";
@@ -23,8 +30,10 @@ import IconFeather from "react-native-vector-icons/Feather";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import AsyncStorage from "@react-native-community/async-storage";
 import FastImage from "react-native-fast-image";
+import { removeProfileError } from "../../store/actions/user";
+import ModalComponent from "../components/ModalComponent";
 
-const ProfileScreen = ({ navigation }) => {
+const ProfileScreen = ({ navigation, route }) => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [creating, setCreating] = useState(false);
@@ -32,11 +41,17 @@ const ProfileScreen = ({ navigation }) => {
   const [name, setName] = useState("");
   const [imageName, setImageName] = useState("");
   const [refreshing, setRefreshing] = useState(false);
-  // console.log("profile", user.currentProfile.name);
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", async () => {
-      getUser(user.email, user.authToken)(dispatch);
+      firebase.auth().onAuthStateChanged(function (user) {
+        if (user) {
+          user.getIdToken().then(function (idToken) {
+            getUser(user.email, idToken)(dispatch);
+          });
+        }
+      });
     });
     return () => unsubscribe();
   }, [navigation]);
@@ -61,7 +76,16 @@ const ProfileScreen = ({ navigation }) => {
     // console.log("using", user.currentProfile.name);
     // setRefreshing(true);
     // getSeries();
-    getUser(user.email, user.authToken)(dispatch);
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (user) {
+        user.getIdToken().then(function (idToken) {
+          // <------ Check this line
+          // alert(idToken); // It shows the Firebase token now
+          // setAuthToken(idToken);
+          getUser(user.email, idToken)(dispatch);
+        });
+      }
+    });
   }, []);
   const creatingProfile = () => {
     if (name) {
@@ -301,6 +325,16 @@ const ProfileScreen = ({ navigation }) => {
           {createProfile()}
         </View>
       </View>
+      <ModalComponent
+        isVisible={user.profileNotFoundError}
+        text="Oops, Profile not found!"
+      />
+      {route.name === "Profile Screen" && (
+        <ModalComponent
+          isVisible={user.isFetching || user.isProfileFetching}
+          type="loader"
+        />
+      )}
     </ScrollView>
   );
 };
