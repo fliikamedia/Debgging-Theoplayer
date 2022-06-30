@@ -188,6 +188,7 @@ export const getUser = (email, authtoken) => async (dispatch) => {
       dispatch({ type: GET_USER_FAILED });
     }
   } catch (err) {
+    dispatch({ type: GET_USER_FAILED });
     console.log("err", err);
   }
 };
@@ -620,7 +621,9 @@ export const changeProfileNew =
         dispatch({ type: SET_PROFILE, payload: result.data.name });
         dispatch({ type: NO_PROFILE_FOUND });
       }
-    } catch (err) {}
+    } catch (err) {
+      dispatch({ type: FETCH_PROFILE_FALED });
+    }
   };
 
 export const removeProfileError = () => (dispatch) => {
