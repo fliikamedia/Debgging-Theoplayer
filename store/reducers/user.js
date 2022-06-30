@@ -48,10 +48,16 @@ import {
   GET_ALL_WATCHED_MOVIES,
   SELECTING_PROFILE,
   SET_AUTH_TOKEN,
+  NO_PROFILE_FOUND,
+  PROFILE_FOUND,
+  FETCH_PROFILE,
+  FETCH_PROFILE_SUCCESS,
+  FETCH_PROFILE_FALED,
 } from "../actions/user";
 const initialState = {
   profileName: null,
   userFetched: false,
+  isFetching: false,
   user: [],
   profile: {
     watched: [],
@@ -65,6 +71,8 @@ const initialState = {
   allUsers: [],
   allWatchedMovies: [],
   authToken: "",
+  profileNotFoundError: false,
+  isProfileFetching: false,
 };
 
 const userReducer = (state = initialState, { type, payload }) => {
@@ -76,11 +84,11 @@ const userReducer = (state = initialState, { type, payload }) => {
     case ADD_USER_FAILED:
       return { ...state };
     case GET_USER:
-      return { ...state };
+      return { ...state, isFetching: true };
     case GET_USER_SUCCESS:
-      return { ...state, user: payload, userFetched: true };
+      return { ...state, user: payload, userFetched: true, isFetching: false };
     case GET_USER_FAILED:
-      return { ...state, userFetched: false };
+      return { ...state, userFetched: false, isFetching: false };
     case ADD_TO_WATCHLIST:
       return { ...state };
     case ADD_TO_WATCHLIST_SUCCESS:
@@ -167,6 +175,16 @@ const userReducer = (state = initialState, { type, payload }) => {
       return { ...state, allWatchedMovies: payload };
     case SET_AUTH_TOKEN:
       return { ...state, authToken: payload };
+    case NO_PROFILE_FOUND:
+      return { ...state, profileNotFoundError: true };
+    case PROFILE_FOUND:
+      return { ...state, profileNotFoundError: false };
+    case FETCH_PROFILE:
+      return { ...state, isProfileFetching: true };
+    case FETCH_PROFILE_SUCCESS:
+      return { ...state, isProfileFetching: false };
+    case FETCH_PROFILE_FALED:
+      return { ...state, isProfileFetching: false };
     default:
       return state;
   }

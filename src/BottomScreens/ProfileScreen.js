@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   ScrollView,
   View,
@@ -10,10 +10,17 @@ import {
   FlatList,
   Image,
   RefreshControl,
+  Modal,
+  Pressable,
 } from "react-native";
 import UserProfile from "../components/UserProfile";
 import { useSelector, useDispatch } from "react-redux";
-import { addProfile, loggedOut, getUser } from "../../store/actions/user";
+import {
+  addProfile,
+  loggedOut,
+  getUser,
+  changeProfileNew,
+} from "../../store/actions/user";
 import { WELCOMESCREEN } from "../../constants/RouteNames";
 import firebase from "firebase";
 import profileImgs from "../../constants/profileImgs";
@@ -23,8 +30,10 @@ import IconFeather from "react-native-vector-icons/Feather";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import AsyncStorage from "@react-native-community/async-storage";
 import FastImage from "react-native-fast-image";
+import { removeProfileError } from "../../store/actions/user";
+import ModalComponent from "../components/ModalComponent";
 
-const ProfileScreen = ({ navigation }) => {
+const ProfileScreen = ({ navigation, route }) => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [creating, setCreating] = useState(false);
@@ -32,7 +41,20 @@ const ProfileScreen = ({ navigation }) => {
   const [name, setName] = useState("");
   const [imageName, setImageName] = useState("");
   const [refreshing, setRefreshing] = useState(false);
-  // console.log("profile", user.currentProfile.name);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", async () => {
+      firebase.auth().onAuthStateChanged(function (user) {
+        if (user) {
+          user.getIdToken().then(function (idToken) {
+            getUser(user.email, idToken)(dispatch);
+          });
+        }
+      });
+    });
+    return () => unsubscribe();
+  }, [navigation]);
   let profilesLength;
   try {
     profilesLength = user.user.profiles.length;
@@ -54,7 +76,16 @@ const ProfileScreen = ({ navigation }) => {
     // console.log("using", user.currentProfile.name);
     // setRefreshing(true);
     // getSeries();
-    getUser(user.email, user.authToken)(dispatch);
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (user) {
+        user.getIdToken().then(function (idToken) {
+          // <------ Check this line
+          // alert(idToken); // It shows the Firebase token now
+          // setAuthToken(idToken);
+          getUser(user.email, idToken)(dispatch);
+        });
+      }
+    });
   }, []);
   const creatingProfile = () => {
     if (name) {
@@ -73,6 +104,7 @@ const ProfileScreen = ({ navigation }) => {
       return (
         <View>
           <UserProfile
+            navigation={navigation}
             image={imageName}
             editing={editing}
             setEditing={setEditing}
@@ -196,7 +228,8 @@ const ProfileScreen = ({ navigation }) => {
             <Text
               style={{
                 fontSize: 24,
-                color: "teal",
+                fontFamily: "Sora-Regular",
+                color: "#fff",
                 textAlign: "center",
                 marginBottom: 30,
                 marginTop: 20,
@@ -222,6 +255,7 @@ const ProfileScreen = ({ navigation }) => {
                     name={item.name}
                     image={item.image}
                     profileId={item._id}
+                    navigation={navigation}
                   />
                 );
               })}
@@ -241,16 +275,16 @@ const ProfileScreen = ({ navigation }) => {
               height: 50,
               width: 160,
               borderWidth: 2,
-              borderColor: "white",
+              borderColor: "#6495ED",
               alignItems: "center",
               justifyContent: "center",
               borderRadius: 5,
               alignSelf: "center",
               marginTop: 30,
-              backgroundColor: "teal",
+              backgroundColor: "transparent",
             }}
           >
-            <Text style={{ color: "white", fontWeight: "bold" }}>
+            <Text style={{ color: "white", fontFamily: "Sora-Bold" }}>
               Manage Profiles
             </Text>
           </TouchableOpacity>
@@ -274,15 +308,15 @@ const ProfileScreen = ({ navigation }) => {
           style={{
             flexDirection: "row",
             width: "95%",
-            justifyContent: "space-between",
+            justifyContent: "flex-end",
             alignSelf: "center",
             marginTop: 40,
             alignItems: "center",
           }}
         >
-          <TouchableOpacity onPress={() => navigation.goBack()}>
+          {/* <TouchableOpacity onPress={() => navigation.goBack()}>
             <IconFeather name="arrow-left" size={30} color="#fff" />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <TouchableOpacity onPress={() => logOut()}>
             <Icon name="logout" size={40} color="white" />
           </TouchableOpacity>
@@ -291,6 +325,16 @@ const ProfileScreen = ({ navigation }) => {
           {createProfile()}
         </View>
       </View>
+      <ModalComponent
+        isVisible={user.profileNotFoundError}
+        text="Oops, Profile not found!"
+      />
+      {route.name === "Profile Screen" && (
+        <ModalComponent
+          isVisible={user.isFetching || user.isProfileFetching}
+          type="loader"
+        />
+      )}
     </ScrollView>
   );
 };

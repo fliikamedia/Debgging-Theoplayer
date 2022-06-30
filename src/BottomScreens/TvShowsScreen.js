@@ -29,6 +29,7 @@ import {
   removeFromProfileWatchList,
   setEmailFunc,
   getUser,
+  changeProfileNew,
 } from "../../store/actions/user";
 import { useSelector, useDispatch } from "react-redux";
 import IconAwesome from "react-native-vector-icons/FontAwesome5";
@@ -39,6 +40,8 @@ import FastImage from "react-native-fast-image";
 import RBSheet from "react-native-raw-bottom-sheet";
 import RbSheetSeasonItem from "../components/RbSheetSeasonItem";
 import moment from "moment";
+import firebase from "firebase";
+import Spinner from "react-native-spinkit";
 
 const TvShowsScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -57,9 +60,17 @@ const TvShowsScreen = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
-    getSeries();
-  }, []);
-
+    const unsubscribe = navigation.addListener("focus", async () => {
+      getSeries();
+      // changeProfileNew(
+      //   user.email,
+      //   user.currentProfile._id,
+      //   navigation,
+      //   false
+      // )(dispatch);
+    });
+    return () => unsubscribe();
+  }, [navigation]);
   let series;
   series = movies.availableMovies.filter(
     (e) =>
@@ -298,7 +309,13 @@ const TvShowsScreen = ({ navigation }) => {
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     getSeries();
-    getUser(user.email, user.authToken)(dispatch);
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (user) {
+        user.getIdToken().then(function (idToken) {
+          getUser(user.email, idToken)(dispatch);
+        });
+      }
+    });
   }, []);
   //////////////////
   const genreArray = series.map((r) => r.genre);
@@ -425,12 +442,27 @@ const TvShowsScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       {!background.uri || resultLength == 0 ? (
-        <View style={{ flex: 1, backgroundColor: "black" }}>
-          <ActivityIndicator
-            animating
-            color={"teal"}
-            size="large"
-            style={{ flex: 1, position: "absolute", top: "50%", left: "45%" }}
+        // <View style={{ flex: 1, backgroundColor: "black" }}>
+        //   <ActivityIndicator
+        //     animating
+        //     color={"teal"}
+        //     size="large"
+        //     style={{ flex: 1, position: "absolute", top: "50%", left: "45%" }}
+        //   />
+        // </View>
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: "black",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Spinner
+            isVisible={!background.uri || movies.isFetching}
+            size={70}
+            type={"WanderingCubes"}
+            color={"#fff"}
           />
         </View>
       ) : (

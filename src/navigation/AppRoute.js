@@ -15,6 +15,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { createStackNavigator } from "@react-navigation/stack";
 import { loggedOut } from "../../store/actions/user";
+import Spinner from "react-native-spinkit";
 
 /* StatusBar.setBarStyle("light-content");
 if (Platform.OS === "android") {
@@ -45,12 +46,27 @@ export default AppRoute = () => {
 
   if (!ready) {
     return (
-      <View style={{ flex: 1, backgroundColor: "black" }}>
-        <ActivityIndicator
-          animating
-          color={"teal"}
-          size="large"
-          style={{ flex: 1, position: "absolute", top: "50%", left: "45%" }}
+      // <View style={{ flex: 1, backgroundColor: "black" }}>
+      //   <ActivityIndicator
+      //     animating
+      //     color={"teal"}
+      //     size="large"
+      //     style={{ flex: 1, position: "absolute", top: "50%", left: "45%" }}
+      //   />
+      // </View>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "black",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Spinner
+          isVisible={!ready}
+          size={70}
+          type={"ChasingDots"}
+          color={"#fff"}
         />
       </View>
     );

@@ -12,6 +12,7 @@ import {
   removeProfile,
   changeProfile,
   loggedIn,
+  changeProfileNew,
 } from "../../store/actions/user";
 import { EDITPROFILE } from "../../constants/RouteNames";
 import IconAnt from "react-native-vector-icons/AntDesign";
@@ -35,7 +36,7 @@ const UserProfile = ({
   let borderColor;
   try {
     if (name == user.currentProfile.name) {
-      borderColor = "aqua";
+      borderColor = "#6495ED";
     } else {
       borderColor = "grey";
     }
@@ -45,10 +46,10 @@ const UserProfile = ({
     alignItems: "center",
     backgroundColor: "grey",
     height: Dimensions.get("window").width * 0.3,
-    borderRadius: 20,
+    borderRadius: 34,
     width: Dimensions.get("window").width * 0.3,
     marginBottom: 5,
-    borderWidth: 4,
+    borderWidth: 2,
     borderColor: borderColor,
   };
 
@@ -56,8 +57,9 @@ const UserProfile = ({
     <View style={{ alignItems: "center", marginVertical: 10 }}>
       <TouchableOpacity
         onPress={async () => {
-          changeProfile(user, profileId)(dispatch);
+          // changeProfile(user, profileId)(dispatch);
           setProfile(name)(dispatch);
+          changeProfileNew(user.email, profileId, navigation, true)(dispatch);
           await AsyncStorage.setItem("profileName", name);
           if (from && from === "select") {
             loggedIn()(dispatch);
@@ -72,7 +74,7 @@ const UserProfile = ({
                 width: "100%",
                 height: undefined,
                 aspectRatio: 1,
-                borderRadius: 20,
+                borderRadius: 34,
               }}
               source={{ uri: image }}
             />
@@ -92,7 +94,7 @@ const UserProfile = ({
                   backgroundColor: "darkgrey",
                   height: "100%",
                   width: "100%",
-                  borderRadius: 20,
+                  borderRadius: 34,
                   opacity: 0.7,
                   justifyContent: "center",
                   alignItems: "center",
@@ -112,7 +114,7 @@ const UserProfile = ({
                   backgroundColor: "darkgrey",
                   height: "100%",
                   width: "100%",
-                  borderRadius: 20,
+                  borderRadius: 34,
                   opacity: 0.7,
                   justifyContent: "center",
                   alignItems: "center",

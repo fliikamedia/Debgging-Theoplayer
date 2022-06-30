@@ -27,6 +27,7 @@ import RbSheetSeasonItem from "./components/RbSheetSeasonItem";
 import AsyncStorage from "@react-native-community/async-storage";
 import Orientation from "react-native-orientation";
 import moment from "moment";
+import firebase from "firebase";
 
 const WatchList = ({ navigation }) => {
   const user = useSelector((state) => state.user);
@@ -92,10 +93,13 @@ const WatchList = ({ navigation }) => {
   }, [navigation]);
 
   const onRefresh = useCallback(() => {
-    // console.log("using", user.currentProfile.name);
-    // setRefreshing(true);
-    // getSeries();
-    getUser(user.email, user.authToken)(dispatch);
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (user) {
+        user.getIdToken().then(function (idToken) {
+          getUser(user.email, idToken)(dispatch);
+        });
+      }
+    });
   }, []);
   const saveMovie = (
     userId,
