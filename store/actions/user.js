@@ -189,6 +189,7 @@ export const getUser = (email, authtoken) => async (dispatch) => {
     }
   } catch (err) {
     dispatch({ type: GET_USER_FAILED });
+    alert(err);
     console.log("err", err);
   }
 };
@@ -623,6 +624,7 @@ export const changeProfileNew =
       }
     } catch (err) {
       dispatch({ type: FETCH_PROFILE_FALED });
+      alert(err);
     }
   };
 

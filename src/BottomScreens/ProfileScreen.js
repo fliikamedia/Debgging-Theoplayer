@@ -329,12 +329,12 @@ const ProfileScreen = ({ navigation, route }) => {
         isVisible={user.profileNotFoundError}
         text="Oops, Profile not found!"
       />
-      {route.name === "Profile Screen" && (
+      {/* {route.name === "Profile Screen" && (
         <ModalComponent
           isVisible={user.isFetching || user.isProfileFetching}
           type="loader"
         />
-      )}
+      )} */}
     </ScrollView>
   );
 };
