@@ -99,9 +99,7 @@ const MoviesNavogator = (props) => {
       <Stack.Screen
         name={ACCOUNTSETTINGS}
         component={AccountSettings}
-        options={{
-          headerShown: false,
-        }}
+        options={{ headerShown: true, headerTitle: " " }}
       />
       <Stack.Screen
         name={WATCHLIST}

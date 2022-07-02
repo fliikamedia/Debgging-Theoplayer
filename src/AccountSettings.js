@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   },
   profilesContainer: {
     flexDirection: "row",
-    marginTop: 70,
+    marginTop: 20,
     width: "90%",
     alignItems: "center",
     justifyContent: "space-around",
