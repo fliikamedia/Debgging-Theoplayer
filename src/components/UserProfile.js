@@ -30,6 +30,7 @@ const UserProfile = ({
   setEditing,
   profileId,
   from,
+  navigate,
 }) => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -59,7 +60,12 @@ const UserProfile = ({
         onPress={async () => {
           // changeProfile(user, profileId)(dispatch);
           setProfile(name)(dispatch);
-          changeProfileNew(user.email, profileId, navigation, true)(dispatch);
+          changeProfileNew(
+            user.email,
+            profileId,
+            navigation,
+            navigate
+          )(dispatch);
           await AsyncStorage.setItem("profileName", name);
           if (from && from === "select") {
             loggedIn()(dispatch);

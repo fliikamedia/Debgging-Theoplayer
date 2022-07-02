@@ -8,6 +8,7 @@ import {
   Dimensions,
   ActivityIndicator,
   StatusBar,
+  Platform,
 } from "react-native";
 import {
   LOGIN,
@@ -136,7 +137,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    opacity: 0.5,
+    opacity: Platform.OS === "android" ? 0.5 : 1,
   },
   Wrapper: {
     height: "95%",

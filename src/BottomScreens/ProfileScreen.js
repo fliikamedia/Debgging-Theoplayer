@@ -32,6 +32,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 import FastImage from "react-native-fast-image";
 import { removeProfileError } from "../../store/actions/user";
 import ModalComponent from "../components/ModalComponent";
+import Spinner from "react-native-spinkit";
 
 const ProfileScreen = ({ navigation, route }) => {
   const user = useSelector((state) => state.user);
@@ -110,6 +111,7 @@ const ProfileScreen = ({ navigation, route }) => {
             setEditing={setEditing}
             main={false}
             name=""
+            navigate={true}
           />
           <TextInput
             placeholder="Name"
@@ -197,6 +199,7 @@ const ProfileScreen = ({ navigation, route }) => {
                   name={item.name}
                   image={item.image}
                   profileId={item._id}
+                  navigate={true}
                 />
               );
             })}
@@ -256,6 +259,7 @@ const ProfileScreen = ({ navigation, route }) => {
                     image={item.image}
                     profileId={item._id}
                     navigation={navigation}
+                    navigate={true}
                   />
                 );
               })}
@@ -303,6 +307,9 @@ const ProfileScreen = ({ navigation, route }) => {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
+      {/* {user.isFetching || user.isProfileFetching ? (
+      
+      ) : ( */}
       <View style={styles.container}>
         <View
           style={{
@@ -325,6 +332,7 @@ const ProfileScreen = ({ navigation, route }) => {
           {createProfile()}
         </View>
       </View>
+      {/* )} */}
       <ModalComponent
         isVisible={user.profileNotFoundError}
         text="Oops, Profile not found!"
@@ -335,6 +343,29 @@ const ProfileScreen = ({ navigation, route }) => {
           type="loader"
         />
       )} */}
+      {user.isFetching ||
+        (user.isProfileFetching && (
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: "rgba(0,0,0,0.4)",
+              alignItems: "center",
+              justifyContent: "center",
+              position: "absolute",
+              left: 0,
+              right: 0,
+              top: 0,
+              bottom: 0,
+            }}
+          >
+            <Spinner
+              isVisible={user.isFetching || user.isProfileFetching}
+              size={70}
+              type={"WanderingCubes"}
+              color={"#fff"}
+            />
+          </View>
+        ))}
     </ScrollView>
   );
 };

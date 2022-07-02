@@ -255,6 +255,8 @@ PODS:
     - React
   - react-native-safe-area-context (3.2.0):
     - React-Core
+  - react-native-spinkit (1.4.1):
+    - React
   - react-native-video (5.1.1):
     - React-Core
     - react-native-video/Video (= 5.1.1)
@@ -337,7 +339,7 @@ PODS:
   - RNFBApp (12.4.0):
     - Firebase/CoreOnly (= 8.4.0)
     - React-Core
-  - RNGestureHandler (2.4.2):
+  - RNGestureHandler (1.10.3):
     - React-Core
   - RNReanimated (2.2.0):
     - DoubleConversion
@@ -415,6 +417,7 @@ DEPENDENCIES:
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-orientation (from `../node_modules/react-native-orientation`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
+  - react-native-spinkit (from `../node_modules/react-native-spinkit`)
   - react-native-video (from `../node_modules/react-native-video`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -504,6 +507,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-orientation"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
+  react-native-spinkit:
+    :path: "../node_modules/react-native-spinkit"
   react-native-video:
     :path: "../node_modules/react-native-video"
   React-perflogger:
@@ -596,6 +601,7 @@ SPEC CHECKSUMS:
   react-native-netinfo: 3d3769f0d65de15c83a9bf1346f8be71de5a24bf
   react-native-orientation: f1caf84d65f1a4fd4511a18f2b924e634ad7a628
   react-native-safe-area-context: f0906bf8bc9835ac9a9d3f97e8bde2a997d8da79
+  react-native-spinkit: da294fd828216ad211fe36a5c14c1e09f09e62db
   react-native-video: 0bb76b6d6b77da3009611586c7dbf817b947f30e
   React-perflogger: 25373e382fed75ce768a443822f07098a15ab737
   React-RCTActionSheet: af7796ba49ffe4ca92e7277a5d992d37203f7da5
@@ -614,7 +620,7 @@ SPEC CHECKSUMS:
   RNDateTimePicker: 7658208086d86d09e1627b5c34ba0cf237c60140
   RNFastImage: 1f2cab428712a4baaf78d6169eaec7f622556dd7
   RNFBApp: 97b2da195d4606716b284a7c8a988dd8ed5cec41
-  RNGestureHandler: 61628a2c859172551aa2100d3e73d1e57878392f
+  RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
   RNReanimated: 9c13c86454bfd54dab7505c1a054470bfecd2563
   RNScreens: 40a2cb40a02a609938137a1e0acfbf8fc9eebf19
   RNSVG: 302bfc9905bd8122f08966dc2ce2d07b7b52b9f8
@@ -626,4 +632,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 5173a83cf1cb2272068324039e3133fda44ad98d
 
-COCOAPODS: 1.11.2
+COCOAPODS: 1.11.3

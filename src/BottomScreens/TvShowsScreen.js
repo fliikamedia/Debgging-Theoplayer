@@ -441,7 +441,7 @@ const TvShowsScreen = ({ navigation }) => {
   /// End of bottom sheet movies
   return (
     <View style={styles.container}>
-      {!background.uri || resultLength == 0 ? (
+      {!background.uri || resultLength == 0 || user.isFetching ? (
         // <View style={{ flex: 1, backgroundColor: "black" }}>
         //   <ActivityIndicator
         //     animating
@@ -456,10 +456,15 @@ const TvShowsScreen = ({ navigation }) => {
             backgroundColor: "black",
             alignItems: "center",
             justifyContent: "center",
+            position: "absolute",
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
           }}
         >
           <Spinner
-            isVisible={!background.uri || movies.isFetching}
+            isVisible={!background.uri || movies.isFetching || user.isFetching}
             size={70}
             type={"WanderingCubes"}
             color={"#fff"}
