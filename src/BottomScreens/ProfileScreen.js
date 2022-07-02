@@ -21,13 +21,13 @@ import {
   getUser,
   changeProfileNew,
 } from "../../store/actions/user";
-import { WELCOMESCREEN } from "../../constants/RouteNames";
+import { ACCOUNTSETTINGS, WELCOMESCREEN } from "../../constants/RouteNames";
 import firebase from "firebase";
 import profileImgs from "../../constants/profileImgs";
 import { COLORS, SIZES, icons } from "../../constants";
 import IconAnt from "react-native-vector-icons/AntDesign";
 import IconFeather from "react-native-vector-icons/Feather";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import Icon from "react-native-vector-icons/Feather";
 import AsyncStorage from "@react-native-community/async-storage";
 import FastImage from "react-native-fast-image";
 import { removeProfileError } from "../../store/actions/user";
@@ -317,15 +317,17 @@ const ProfileScreen = ({ navigation, route }) => {
             width: "95%",
             justifyContent: "flex-end",
             alignSelf: "center",
-            marginTop: 40,
+            marginTop: 50,
             alignItems: "center",
           }}
         >
           {/* <TouchableOpacity onPress={() => navigation.goBack()}>
             <IconFeather name="arrow-left" size={30} color="#fff" />
           </TouchableOpacity> */}
-          <TouchableOpacity onPress={() => logOut()}>
-            <Icon name="logout" size={40} color="white" />
+          <TouchableOpacity
+            onPress={() => navigation.navigate(ACCOUNTSETTINGS)}
+          >
+            <Icon name="settings" size={35} color="white" />
           </TouchableOpacity>
         </View>
         <View style={{ flex: 1, justifyContent: "center", marginBottom: 100 }}>

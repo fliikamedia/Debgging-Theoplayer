@@ -46,9 +46,15 @@ const UserProfile = ({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "grey",
-    height: Dimensions.get("window").width * 0.3,
-    borderRadius: 34,
-    width: Dimensions.get("window").width * 0.3,
+    height:
+      from === "settings"
+        ? Dimensions.get("window").width * 0.2
+        : Dimensions.get("window").width * 0.3,
+    borderRadius: from === "settings" ? 24 : 34,
+    width:
+      from === "settings"
+        ? Dimensions.get("window").width * 0.2
+        : Dimensions.get("window").width * 0.3,
     marginBottom: 5,
     borderWidth: 2,
     borderColor: borderColor,
@@ -80,7 +86,7 @@ const UserProfile = ({
                 width: "100%",
                 height: undefined,
                 aspectRatio: 1,
-                borderRadius: 34,
+                borderRadius: from === "settings" ? 24 : 34,
               }}
               source={{ uri: image }}
             />
@@ -100,7 +106,7 @@ const UserProfile = ({
                   backgroundColor: "darkgrey",
                   height: "100%",
                   width: "100%",
-                  borderRadius: 34,
+                  borderRadius: from === "settings" ? 24 : 34,
                   opacity: 0.7,
                   justifyContent: "center",
                   alignItems: "center",
@@ -120,7 +126,7 @@ const UserProfile = ({
                   backgroundColor: "darkgrey",
                   height: "100%",
                   width: "100%",
-                  borderRadius: 34,
+                  borderRadius: from === "settings" ? 24 : 34,
                   opacity: 0.7,
                   justifyContent: "center",
                   alignItems: "center",
