@@ -37,7 +37,7 @@ const ModalComponent = ({ text, type, isVisible }) => {
             <Spinner
               isVisible={isVisible}
               size={70}
-              type={"WanderingCubes"}
+              type={"ThreeBounce"}
               color={"#fff"}
             />
           </View>

@@ -466,7 +466,7 @@ const TvShowsScreen = ({ navigation }) => {
           <Spinner
             isVisible={!background.uri || movies.isFetching || user.isFetching}
             size={70}
-            type={"WanderingCubes"}
+            type={"ThreeBounce"}
             color={"#fff"}
           />
         </View>

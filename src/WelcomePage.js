@@ -70,7 +70,7 @@ const WelcomePage = ({ navigation }) => {
           <Spinner
             isVisible={isPreloading}
             size={70}
-            type={"ChasingDots"}
+            type={"ThreeBounce"}
             color={"#fff"}
           />
         </View>

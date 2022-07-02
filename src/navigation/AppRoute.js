@@ -65,7 +65,7 @@ export default AppRoute = () => {
         <Spinner
           isVisible={!ready}
           size={70}
-          type={"ChasingDots"}
+          type={"ThreeBounce"}
           color={"#fff"}
         />
       </View>

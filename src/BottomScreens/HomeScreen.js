@@ -1310,7 +1310,7 @@ const HomeScreen = ({ navigation }) => {
           <Spinner
             isVisible={!background.uri || movies.isFetching}
             size={70}
-            type={"WanderingCubes"}
+            type={"ThreeBounce"}
             color={"#fff"}
           />
         </View>

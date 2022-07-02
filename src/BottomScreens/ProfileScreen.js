@@ -361,7 +361,7 @@ const ProfileScreen = ({ navigation, route }) => {
             <Spinner
               isVisible={user.isFetching || user.isProfileFetching}
               size={70}
-              type={"WanderingCubes"}
+              type={"ThreeBounce"}
               color={"#fff"}
             />
           </View>
