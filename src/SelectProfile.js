@@ -295,13 +295,17 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
   },
   input: {
-    backgroundColor: "grey",
+    backgroundColor: "transparent",
+    borderBottomWidth: 1,
+    borderBottomColor: "grey",
     width: "90%",
     height: 60,
     alignSelf: "center",
     borderRadius: 5,
     padding: 10,
+    fontSize: 20,
     color: "white",
+    marginBottom: 20,
   },
   btnContainer: {
     width: "80%",
