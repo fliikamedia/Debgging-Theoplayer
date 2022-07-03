@@ -73,6 +73,7 @@ const NewTextInput = ({
           underlineColorAndroid="transparent"
           onChangeText={onChangeText}
           secureTextEntry={type === "password" ? securePassword : false}
+          placeholderTextColor="#A9A9A9"
         />
         {type === "password" && renderEyeIcon()}
       </View>

@@ -304,7 +304,12 @@ const ProfileScreen = ({ navigation, route }) => {
         backgroundColor: "black",
       }}
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        <RefreshControl
+          tintColor={"#fff"}
+          backgroundColor={"#000"}
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+        />
       }
     >
       {/* {user.isFetching || user.isProfileFetching ? (
