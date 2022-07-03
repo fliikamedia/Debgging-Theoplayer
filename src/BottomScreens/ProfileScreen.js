@@ -21,17 +21,18 @@ import {
   getUser,
   changeProfileNew,
 } from "../../store/actions/user";
-import { WELCOMESCREEN } from "../../constants/RouteNames";
+import { ACCOUNTSETTINGS, WELCOMESCREEN } from "../../constants/RouteNames";
 import firebase from "firebase";
 import profileImgs from "../../constants/profileImgs";
 import { COLORS, SIZES, icons } from "../../constants";
 import IconAnt from "react-native-vector-icons/AntDesign";
 import IconFeather from "react-native-vector-icons/Feather";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import Icon from "react-native-vector-icons/Feather";
 import AsyncStorage from "@react-native-community/async-storage";
 import FastImage from "react-native-fast-image";
 import { removeProfileError } from "../../store/actions/user";
 import ModalComponent from "../components/ModalComponent";
+import Spinner from "react-native-spinkit";
 
 const ProfileScreen = ({ navigation, route }) => {
   const user = useSelector((state) => state.user);
@@ -110,6 +111,7 @@ const ProfileScreen = ({ navigation, route }) => {
             setEditing={setEditing}
             main={false}
             name=""
+            navigate={true}
           />
           <TextInput
             placeholder="Name"
@@ -197,6 +199,7 @@ const ProfileScreen = ({ navigation, route }) => {
                   name={item.name}
                   image={item.image}
                   profileId={item._id}
+                  navigate={true}
                 />
               );
             })}
@@ -256,6 +259,7 @@ const ProfileScreen = ({ navigation, route }) => {
                     image={item.image}
                     profileId={item._id}
                     navigation={navigation}
+                    navigate={true}
                   />
                 );
               })}
@@ -300,9 +304,17 @@ const ProfileScreen = ({ navigation, route }) => {
         backgroundColor: "black",
       }}
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        <RefreshControl
+          tintColor={"#fff"}
+          backgroundColor={"#000"}
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+        />
       }
     >
+      {/* {user.isFetching || user.isProfileFetching ? (
+      
+      ) : ( */}
       <View style={styles.container}>
         <View
           style={{
@@ -310,21 +322,24 @@ const ProfileScreen = ({ navigation, route }) => {
             width: "95%",
             justifyContent: "flex-end",
             alignSelf: "center",
-            marginTop: 40,
+            marginTop: 50,
             alignItems: "center",
           }}
         >
           {/* <TouchableOpacity onPress={() => navigation.goBack()}>
             <IconFeather name="arrow-left" size={30} color="#fff" />
           </TouchableOpacity> */}
-          <TouchableOpacity onPress={() => logOut()}>
-            <Icon name="logout" size={40} color="white" />
+          <TouchableOpacity
+            onPress={() => navigation.navigate(ACCOUNTSETTINGS)}
+          >
+            <Icon name="settings" size={35} color="white" />
           </TouchableOpacity>
         </View>
         <View style={{ flex: 1, justifyContent: "center", marginBottom: 100 }}>
           {createProfile()}
         </View>
       </View>
+      {/* )} */}
       <ModalComponent
         isVisible={user.profileNotFoundError}
         text="Oops, Profile not found!"
@@ -335,6 +350,29 @@ const ProfileScreen = ({ navigation, route }) => {
           type="loader"
         />
       )} */}
+      {user.isFetching ||
+        (user.isProfileFetching && (
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: "rgba(0,0,0,0.4)",
+              alignItems: "center",
+              justifyContent: "center",
+              position: "absolute",
+              left: 0,
+              right: 0,
+              top: 0,
+              bottom: 0,
+            }}
+          >
+            <Spinner
+              isVisible={user.isFetching || user.isProfileFetching}
+              size={70}
+              type={"ThreeBounce"}
+              color={"#fff"}
+            />
+          </View>
+        ))}
     </ScrollView>
   );
 };
@@ -345,13 +383,17 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
   },
   input: {
-    backgroundColor: "grey",
+    backgroundColor: "transparent",
+    borderBottomWidth: 1,
+    borderBottomColor: "grey",
     width: "90%",
     height: 60,
     alignSelf: "center",
     borderRadius: 5,
     padding: 10,
+    fontSize: 20,
     color: "white",
+    marginBottom: 20,
   },
   btnContainer: {
     width: "80%",

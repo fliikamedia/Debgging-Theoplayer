@@ -372,14 +372,15 @@ const HomeScreen = ({ navigation }) => {
       squareMovie = resultsToShow.find((r) => r.active_banner === "YES");
     } catch (err) {
       squareURL =
-        "https://fliikamediaservice-usea.streaming.media.azure.net/1368c5bc-1fb8-450f-ba54-104e021b4033/Batman_mobile_square.ism/manifest(format=m3u8-aapl)";
+        "https://fliikamediaservice-usea.streaming.media.azure.net/6fcac041-a013-4846-8be7-376cf137b4bd/MCJW-9x16.ism/manifest(format=m3u8-cmaf)";
     }
 
     return (
       <View
         style={{
           width: SIZES.width,
-          height: SIZES.width,
+          // height: SIZES.width,
+          height: SIZES.height < 700 ? SIZES.height * 0.6 : SIZES.height * 0.7,
           justifyContent: "flex-end",
           alignItems: "center",
         }}
@@ -496,15 +497,16 @@ const HomeScreen = ({ navigation }) => {
                     borderRadius: 40,
                     justifyContent: "center",
                     alignItems: "center",
-                    elevation: 25,
-                    borderWidth: 2,
-                    borderColor: "teal",
+                    // elevation: 25,
+                    borderWidth: 1,
+                    borderColor: "#fff",
                   }}
                 >
                   <IconAwesome
                     name="play"
                     size={20}
-                    color="#B0E0E6"
+                    // color="#B0E0E6"
+                    color="#fff"
                     style={{ marginLeft: 4 }}
                   />
                   {/*             <IconAwesome
@@ -1310,7 +1312,7 @@ const HomeScreen = ({ navigation }) => {
           <Spinner
             isVisible={!background.uri || movies.isFetching}
             size={70}
-            type={"WanderingCubes"}
+            type={"ThreeBounce"}
             color={"#fff"}
           />
         </View>

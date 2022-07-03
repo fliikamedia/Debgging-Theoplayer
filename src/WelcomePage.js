@@ -8,6 +8,7 @@ import {
   Dimensions,
   ActivityIndicator,
   StatusBar,
+  Platform,
 } from "react-native";
 import {
   LOGIN,
@@ -69,7 +70,7 @@ const WelcomePage = ({ navigation }) => {
           <Spinner
             isVisible={isPreloading}
             size={70}
-            type={"ChasingDots"}
+            type={"ThreeBounce"}
             color={"#fff"}
           />
         </View>
@@ -136,7 +137,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    opacity: 0.5,
+    opacity: Platform.OS === "android" ? 0.5 : 1,
   },
   Wrapper: {
     height: "95%",

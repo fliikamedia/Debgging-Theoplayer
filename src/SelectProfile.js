@@ -68,6 +68,8 @@ const SelectProfile = ({ navigation }) => {
             setEditing={setEditing}
             main={false}
             name=""
+            navigation={navigation}
+            navigate={false}
           />
           <TextInput
             placeholder="Name"
@@ -155,6 +157,7 @@ const SelectProfile = ({ navigation }) => {
                   name={item.name}
                   image={item.image}
                   profileId={item._id}
+                  navigate={false}
                 />
               );
             })}
@@ -214,6 +217,8 @@ const SelectProfile = ({ navigation }) => {
                     image={item.image}
                     profileId={item._id}
                     from="select"
+                    navigation={navigation}
+                    navigate={false}
                   />
                 );
               })}
@@ -290,13 +295,17 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
   },
   input: {
-    backgroundColor: "grey",
+    backgroundColor: "transparent",
+    borderBottomWidth: 1,
+    borderBottomColor: "grey",
     width: "90%",
     height: 60,
     alignSelf: "center",
     borderRadius: 5,
     padding: 10,
+    fontSize: 20,
     color: "white",
+    marginBottom: 20,
   },
   btnContainer: {
     width: "80%",

@@ -11,6 +11,7 @@ import EpisodeDetailScreen from "../EpisodeDetailScreen";
 import BitmovinPlayer from "../BitmovinPlayer";
 import GenreScreen from "../GenreScreen";
 import WatchList from "../WatchList";
+import AccountSettings from "../AccountSettings";
 import {
   MOVIES,
   HOME,
@@ -24,6 +25,7 @@ import {
   GENRE,
   MOVIESTACK,
   WATCHLIST,
+  ACCOUNTSETTINGS,
 } from "../../constants/RouteNames";
 import { useNavigation } from "@react-navigation/native";
 import DrawerItems from "./DrawerItems";
@@ -93,6 +95,11 @@ const MoviesNavogator = (props) => {
         options={{
           headerShown: false,
         }}
+      />
+      <Stack.Screen
+        name={ACCOUNTSETTINGS}
+        component={AccountSettings}
+        options={{ headerShown: true, headerTitle: " " }}
       />
       <Stack.Screen
         name={WATCHLIST}
