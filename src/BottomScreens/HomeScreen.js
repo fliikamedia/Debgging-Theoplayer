@@ -13,6 +13,7 @@ import {
   AppState,
   Animated,
   Image,
+  Platform,
 } from "react-native";
 import { COLORS, SIZES, icons } from "../../constants";
 import { BITMOVINPLAYER, MOVIEDETAIL } from "../../constants/RouteNames";
@@ -375,6 +376,9 @@ const HomeScreen = ({ navigation }) => {
         "https://fliikamediaservice-usea.streaming.media.azure.net/6fcac041-a013-4846-8be7-376cf137b4bd/MCJW-9x16.ism/manifest(format=m3u8-cmaf)";
     }
 
+    if (Platform.OS === "android") {
+      squareURL = squareURL.replace("cmaf", "aapl");
+    }
     return (
       <View
         style={{
