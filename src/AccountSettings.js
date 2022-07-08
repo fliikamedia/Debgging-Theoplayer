@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import UserProfile from "./components/UserProfile";
 import { useSelector, useDispatch } from "react-redux";
-import { WATCHLIST } from "../constants/RouteNames";
+import { PROFILESCREEN, WATCHLIST } from "../constants/RouteNames";
 import { loggedOut } from "../store/actions/user";
 import firebase from "firebase";
 import Icon from "react-native-vector-icons/AntDesign";
@@ -21,6 +21,10 @@ const AccountSettings = ({ navigation }) => {
     { title: "Watchlist", func: () => navigation.navigate(WATCHLIST) },
     { title: "App Settings", func: () => console.log("click") },
     { title: "Account", func: () => console.log("click") },
+    {
+      title: "Switch Profiles",
+      func: () => navigation.navigate(PROFILESCREEN),
+    },
     { title: "Legal", func: () => console.log("click") },
     { title: "Help", func: () => console.log("click") },
     { title: "Log Out", func: () => logOut() },
@@ -42,22 +46,22 @@ const AccountSettings = ({ navigation }) => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.profilesContainer}>
-        {user?.user?.profiles?.map((item) => {
-          return (
-            <UserProfile
-              editing={editing}
-              setEditing={setEditing}
-              main={item.name === user.user.firstName}
-              key={item.name}
-              name={item.name}
-              image={item.image}
-              profileId={item._id}
-              from="settings"
-              navigation={navigation}
-              navigate={false}
-            />
-          );
-        })}
+        {/* {user?.currentProfile?.map((item) => { */}
+        {/* return ( */}
+        <UserProfile
+          editing={editing}
+          setEditing={setEditing}
+          main={user?.currentProfile?.name === user.user.firstName}
+          key={user?.currentProfile?.name}
+          name={user?.currentProfile?.name}
+          image={user?.currentProfile?.image}
+          profileId={user?.currentProfile?._id}
+          from="settings"
+          navigation={navigation}
+          navigate={false}
+        />
+        {/* ); */}
+        {/* })} */}
       </View>
       <View style={styles.itemsContainer}>
         {accountItems.map((item, index) => (
@@ -79,13 +83,14 @@ const AccountSettings = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
+    backgroundColor: "#000",
   },
   profilesContainer: {
     flexDirection: "row",
-    marginTop: 20,
-    width: "90%",
+    marginTop: 60,
+    // width: "90%",
     alignItems: "center",
-    justifyContent: "space-around",
+    justifyContent: "center",
   },
   itemsContainer: {
     width: "95%",

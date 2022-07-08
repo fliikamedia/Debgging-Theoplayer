@@ -30,6 +30,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import DrawerItems from "./DrawerItems";
 import BottomNav from "./BottomNav";
+import ProfileScreen from "../BottomScreens/ProfileScreen";
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -44,6 +45,8 @@ const MoviesNavogator = (props) => {
         backgroundColor: "black",
         headerStyle: {
           backgroundColor: "black",
+          shadowColor: "transparent", // this covers iOS
+          elevation: 0, // this covers Android
         },
         cardStyle: { backgroundColor: "black" },
         cardStyleInterpolator: ({ current: { progress } }) => ({
@@ -97,9 +100,14 @@ const MoviesNavogator = (props) => {
         }}
       />
       <Stack.Screen
-        name={ACCOUNTSETTINGS}
-        component={AccountSettings}
-        options={{ headerShown: true, headerTitle: " " }}
+        name={PROFILESCREEN}
+        component={ProfileScreen}
+        options={{
+          headerShown: true,
+          headerTitle: "Profiles",
+          headerTitleAlign: "center",
+          headerTintColor: "#fff",
+        }}
       />
       <Stack.Screen
         name={WATCHLIST}
@@ -107,9 +115,6 @@ const MoviesNavogator = (props) => {
         options={{
           headerShown: true,
           headerTitle: "My Watchlist",
-          headerStyle: {
-            backgroundColor: "black",
-          },
           headerTitleAlign: "center",
           headerTintColor: "#fff",
         }}

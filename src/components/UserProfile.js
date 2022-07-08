@@ -64,6 +64,7 @@ const UserProfile = ({
     <View style={{ alignItems: "center", marginVertical: 10 }}>
       <TouchableOpacity
         onPress={async () => {
+          if (from === "settings") return;
           // changeProfile(user, profileId)(dispatch);
           setProfile(name)(dispatch);
           changeProfileNew(
