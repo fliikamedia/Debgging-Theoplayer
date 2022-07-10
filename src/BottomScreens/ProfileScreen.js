@@ -322,18 +322,18 @@ const ProfileScreen = ({ navigation, route }) => {
             width: "95%",
             justifyContent: "flex-end",
             alignSelf: "center",
-            marginTop: 50,
+            // marginTop: 50,
             alignItems: "center",
           }}
         >
           {/* <TouchableOpacity onPress={() => navigation.goBack()}>
             <IconFeather name="arrow-left" size={30} color="#fff" />
           </TouchableOpacity> */}
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => navigation.navigate(ACCOUNTSETTINGS)}
           >
             <Icon name="settings" size={35} color="white" />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
         <View style={{ flex: 1, justifyContent: "center", marginBottom: 100 }}>
           {createProfile()}
@@ -381,6 +381,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "black",
+    justifyContent: "center",
   },
   input: {
     backgroundColor: "transparent",

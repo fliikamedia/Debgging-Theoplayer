@@ -11,6 +11,7 @@ import HomeScreen from "../BottomScreens/HomeScreen";
 import SearchScreen from "../BottomScreens/SearchScreen";
 import TvShowsScreen from "../BottomScreens/TvShowsScreen";
 import ProfileScreen from "../BottomScreens/ProfileScreen";
+import AccountSettings from "../AccountSettings";
 import {
   MOVIES,
   HOME,
@@ -18,6 +19,7 @@ import {
   SHOWS,
   PROFILESCREEN,
   DOWNLOADSCREEN,
+  ACCOUNTSETTINGS,
 } from "../../constants/RouteNames";
 import { useSelector } from "react-redux";
 import profileImgs from "../../constants/profileImgs";
@@ -133,7 +135,7 @@ export default BottomNav = () => {
 
           if (route.name == SHOWS) {
             return <Feather name={iconName} size={size} color={color} />;
-          } else if (route.name == PROFILESCREEN) {
+          } else if (route.name == ACCOUNTSETTINGS) {
             return userIconFunc();
           } else if (route.name == HOME) {
             return <Ionicons name={iconName} size={size} color={color} />;
@@ -182,8 +184,8 @@ export default BottomNav = () => {
         options={{ title: " " }}
       />
       <Tabs.Screen
-        name={PROFILESCREEN}
-        component={ProfileScreen}
+        name={ACCOUNTSETTINGS}
+        component={AccountSettings}
         options={{ title: " " }}
       />
     </Tabs.Navigator>

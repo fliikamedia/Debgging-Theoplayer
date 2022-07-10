@@ -609,7 +609,7 @@ export const changeProfileNew =
         });
         dispatch({ type: SET_PROFILE, payload: result.data.name });
         if (navigate) {
-          navigation.jumpTo(HOME);
+          navigation.navigate(HOME);
         }
         dispatch({ type: FETCH_PROFILE_SUCCESS });
       } else {

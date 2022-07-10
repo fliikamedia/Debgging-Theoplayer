@@ -48,68 +48,74 @@ const EditProfile = ({ navigation, route }) => {
     <ScrollView
       contentContainerStyle={{
         flexGrow: 1,
-        marginVertical: 150,
+        // marginVertical: 150,
+        justifyContent: "center",
       }}
     >
-      <UserProfile image={imageName} editing={false} main={false} name="" />
-      {!main ? (
-        <TextInput
-          placeholder="Name"
-          placeholderTextColor="white"
-          style={styles.input}
-          onChangeText={(newValue) => setName(newValue)}
-          value={name}
-        />
-      ) : null}
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          marginVertical: 40,
-          marginHorizontal: 20,
-        }}
-      >
-        <Text style={{ color: "white" }}>Choose an image</Text>
-        <Image
-          source={icons.right_arrow}
+      <View>
+        <UserProfile image={imageName} editing={false} main={false} name="" />
+        {!main ? (
+          <TextInput
+            placeholder="Name"
+            placeholderTextColor="white"
+            style={styles.input}
+            onChangeText={(newValue) => setName(newValue)}
+            value={name}
+          />
+        ) : null}
+        <View
           style={{
-            height: 20,
-            width: 20,
-            tintColor: "teal",
-          }}
-        />
-      </View>
-      <FlatList
-        showsHorizontalScrollIndicator={false}
-        horizontal
-        data={profileImgs}
-        keyExtractor={(item) => item}
-        renderItem={({ item, index }) => (
-          <TouchableOpacity onPress={() => setImageName(item)}>
-            <FastImage
-              source={{ uri: item }}
-              style={{
-                width: 100,
-                height: 100,
-                borderRadius: 120,
-                marginLeft: 20,
-              }}
-            />
-          </TouchableOpacity>
-        )}
-      />
-      <View style={styles.btnContainer}>
-        <TouchableOpacity style={styles.save} onPress={() => creatingProfile()}>
-          <Text style={{ color: "white", fontSize: 18 }}>Save</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.cancel}
-          onPress={() => {
-            navigation.goBack();
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginVertical: 40,
+            marginHorizontal: 20,
           }}
         >
-          <Text style={{ color: "white", fontSize: 18 }}>Cancel</Text>
-        </TouchableOpacity>
+          <Text style={{ color: "white" }}>Choose an image</Text>
+          <Image
+            source={icons.right_arrow}
+            style={{
+              height: 20,
+              width: 20,
+              tintColor: "teal",
+            }}
+          />
+        </View>
+        <FlatList
+          showsHorizontalScrollIndicator={false}
+          horizontal
+          data={profileImgs}
+          keyExtractor={(item) => item}
+          renderItem={({ item, index }) => (
+            <TouchableOpacity onPress={() => setImageName(item)}>
+              <FastImage
+                source={{ uri: item }}
+                style={{
+                  width: 100,
+                  height: 100,
+                  borderRadius: 120,
+                  marginLeft: 20,
+                }}
+              />
+            </TouchableOpacity>
+          )}
+        />
+        <View style={styles.btnContainer}>
+          <TouchableOpacity
+            style={styles.save}
+            onPress={() => creatingProfile()}
+          >
+            <Text style={{ color: "white", fontSize: 18 }}>Save</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.cancel}
+            onPress={() => {
+              navigation.goBack();
+            }}
+          >
+            <Text style={{ color: "white", fontSize: 18 }}>Cancel</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </ScrollView>
   );

@@ -192,7 +192,11 @@ const BitmovinPlayer = ({ navigation, route }) => {
   let str = movie.play_url;
   let playURL;
   if (Platform.OS === "android") {
-    playURL = str.replace("m3u8-aapl", "mpd-time-cmaf");
+    if (str.includes("m3u8-cmaf")) {
+      playURL = str.replace("m3u8-cmaf", "mpd-time-cmaf");
+    } else if (str.includes("m3u8-aapl")) {
+      playURL = str.replace("m3u8-aapl", "mpd-time-cmaf");
+    }
   } else {
     playURL = str;
   }
@@ -208,7 +212,7 @@ const BitmovinPlayer = ({ navigation, route }) => {
           hasZoom={false}
           configuration={{
             url: playURL,
-            poster: movie.wide_thumbnail_link,
+            // poster: movie.wide_thumbnail_link,
             startOffset: watchedTime ? watchedTime : 0,
             hasNextEpisode: false,
             subtitles: "",
