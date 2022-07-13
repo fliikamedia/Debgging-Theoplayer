@@ -41,6 +41,7 @@ const MoviesNavogator = (props) => {
       initialRouteName={MOVIES}
       screenOptions={{
         animationEnabled: false,
+        headerBackTitleVisible: false,
         headerTintColor: "white",
         backgroundColor: "black",
         headerStyle: {

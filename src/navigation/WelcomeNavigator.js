@@ -20,8 +20,14 @@ export default WelcomeNavigator = (props) => {
       mode="modal"
       initialRouteName={props.routeName}
       screenOptions={{
+        headerBackTitleVisible: false,
         animationEnabled: false,
         headerTintColor: "#fff",
+        headerStyle: {
+          backgroundColor: "black",
+          shadowColor: "transparent", // this covers iOS
+          elevation: 0, // this covers Android
+        },
         cardStyle: { opacity: 1, backgroundColor: "black" },
         backgroundColor: "black",
         cardStyle: { backgroundColor: "transparent" },
@@ -53,9 +59,6 @@ export default WelcomeNavigator = (props) => {
         component={EmailSignup}
         options={{
           title: " ",
-          headerStyle: {
-            backgroundColor: "black",
-          },
         }}
       />
       <Stack.Screen
@@ -63,9 +66,6 @@ export default WelcomeNavigator = (props) => {
         component={LoginScreen}
         options={{
           title: " ",
-          headerStyle: {
-            backgroundColor: "black",
-          },
         }}
       />
       <Stack.Screen
@@ -73,9 +73,6 @@ export default WelcomeNavigator = (props) => {
         component={FillProfileScreen}
         options={{
           title: " ",
-          headerStyle: {
-            backgroundColor: "black",
-          },
         }}
       />
       <Stack.Screen
@@ -84,9 +81,6 @@ export default WelcomeNavigator = (props) => {
         options={{
           title: " ",
           headerShown: false,
-          headerStyle: {
-            backgroundColor: "black",
-          },
         }}
       />
     </Stack.Navigator>

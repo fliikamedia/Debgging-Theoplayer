@@ -50,18 +50,20 @@ import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
 import RbSheetSeasonItem from "../components/RbSheetSeasonItem";
 import RbSheetMovieItem from "../components/RbSheetMovieItem";
 import Spinner from "react-native-spinkit";
-
+import { useIsFocused } from "@react-navigation/native";
 const HomeScreen = ({ navigation }) => {
   const appState = useRef(AppState.currentState);
   const refRBSheet = useRef(null);
   const refRBSheetMovies = useRef(null);
-
+  const isFocused = useIsFocused();
   //LogBox.ignoreAllLogs();
   //LogBox.ignoreLogs(["Calling `getNode()`"]);
   const user = useSelector((state) => state.user);
   const movies = useSelector((state) => state.movies);
   // console.log("fetching", user.currentProfile);
 
+  const squareVideoHeight =
+    SIZES.height < 700 ? SIZES.height * 0.6 : SIZES.height * 0.7;
   const dispatch = useDispatch();
   const [result, setResult] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -116,7 +118,8 @@ const HomeScreen = ({ navigation }) => {
   }, [headerOpacity, navigation]);
   useEffect(() => {
     const unsubscribe = navigation.addListener("blur", () => {
-      //console.log('Leaving Home Screen');
+      console.log("Leaving Home Screen", videoRef.current.props.paused);
+
       setVideoPaused(true);
     });
 
@@ -124,7 +127,17 @@ const HomeScreen = ({ navigation }) => {
   }, [navigation]);
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", async () => {
-      setVideoPaused(false);
+      let scrollPosition;
+      try {
+        scrollPosition = Object.values(yOffset)[2];
+      } catch (err) {
+        console.log(err);
+        scrollPosition = 0;
+      }
+      // console.log(scrollPosition, squareVideoHeight);
+      if (scrollPosition < squareVideoHeight) {
+        setVideoPaused(false);
+      }
       Orientation.lockToPortrait();
 
       const whatTime = await AsyncStorage.getItem("watched");
@@ -173,7 +186,8 @@ const HomeScreen = ({ navigation }) => {
   }, [navigation]);
 
   const handleScroll = (event) => {
-    if (event.nativeEvent.contentOffset.y > SIZES.width) {
+    if (!isFocused) return;
+    if (event.nativeEvent.contentOffset.y > squareVideoHeight) {
       setVideoPaused(true);
     } else {
       setVideoPaused(false);
@@ -384,12 +398,13 @@ const HomeScreen = ({ navigation }) => {
         style={{
           width: SIZES.width,
           // height: SIZES.width,
-          height: SIZES.height < 700 ? SIZES.height * 0.6 : SIZES.height * 0.7,
+          height: squareVideoHeight,
           justifyContent: "flex-end",
           alignItems: "center",
         }}
       >
         <Video
+          ignoreSilentSwitch="ignore"
           onReadyForDisplay={() => setIsPreloading(false)}
           paused={videoPaused}
           ref={videoRef}
@@ -1049,7 +1064,7 @@ const HomeScreen = ({ navigation }) => {
                   <IconAwesome
                     name="play"
                     size={22}
-                    color="#02ad94"
+                    color="#00BFFF"
                     style={{ marginLeft: 4 }}
                   />
                 </TouchableOpacity>
@@ -1452,14 +1467,14 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
   playIconContainer: {
-    backgroundColor: "#212121",
+    backgroundColor: "#000020",
     padding: 18,
     borderRadius: 40,
     justifyContent: "center",
     alignItems: "center",
     elevation: 25,
-    borderWidth: 4,
-    borderColor: "rgba(2, 173, 148, 0.2)",
+    borderWidth: 2,
+    borderColor: "#4682B4",
     marginBottom: 14,
   },
   carouselIconInfo: {

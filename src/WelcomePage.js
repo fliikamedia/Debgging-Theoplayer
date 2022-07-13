@@ -25,6 +25,7 @@ import Spinner from "react-native-spinkit";
 
 const WelcomePage = ({ navigation }) => {
   const [isPreloading, setIsPreloading] = useState(true);
+  const [isPaused, setIsPaused] = useState(false);
 
   // Button Width Responsive
   var buttonWidth;
@@ -54,6 +55,12 @@ const WelcomePage = ({ navigation }) => {
     borderColor: "#f3f8ff",
   };
   //////////////////////////
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", async () => {
+      setIsPaused(false);
+    });
+    return () => unsubscribe();
+  }, [navigation]);
 
   const video = React.useRef(null);
   return (
@@ -76,6 +83,7 @@ const WelcomePage = ({ navigation }) => {
         </View>
       )}
       <Video
+        paused={isPaused}
         onReadyForDisplay={() => setIsPreloading(false)}
         ref={video}
         style={styles.video}
@@ -108,12 +116,16 @@ const WelcomePage = ({ navigation }) => {
             <Text style={styles.textDescriptionSb}>join us now</Text>
             <TouchableOpacity
               style={createBtn}
-              onPress={() => navigation.navigate(EMAILSIGNUP)}
+              onPress={() => {
+                setIsPaused(true), navigation.navigate(EMAILSIGNUP);
+              }}
             >
               <Text style={styles.createText}>create account</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => navigation.navigate(LOGIN)}
+              onPress={() => {
+                setIsPaused(true), navigation.navigate(LOGIN);
+              }}
               style={loginBtn}
             >
               <Text style={styles.loginText}>login</Text>
