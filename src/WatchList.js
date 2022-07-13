@@ -112,9 +112,6 @@ const WatchList = ({ navigation }) => {
     seasonNumber,
     episodeNumber
   ) => {
-    //console.log('saving movie',duration,time, title, isWatchedMovie, seasonNumber, episodeNumber);
-    // console.log('iswatched',   isWatched(user.currentProfile.watched, title));
-    //console.log('profileId',profileId);
     if (time > 0) {
       if (isWatchedMovie === "false") {
         //console.log('here 1');
@@ -182,11 +179,6 @@ const WatchList = ({ navigation }) => {
 
     let rbHeight;
     if (rbItem.film_type === "series") {
-      // if (seasons?.length > 1) {
-      //   rbHeight = SIZES.height * 0.5;
-      // } else {
-      //   rbHeight = SIZES.height * 0.3;
-      // }
       rbHeight = SIZES.height * 0.5;
     } else {
       rbHeight = SIZES.height * 0.38;
@@ -358,117 +350,6 @@ const WatchList = ({ navigation }) => {
     setMovieWatchlist(myList);
   }, [watchList]);
 
-  // return myList;
-  // };
-  // const renderBotomSheet = () => {
-  //   return (
-  //     <RBSheet
-  //       ref={refRBSheet}
-  //       closeOnDragDown={true}
-  //       closeOnPressMask={true}
-  //       closeOnPressBack={true}
-  //       customStyles={{
-  //         wrapper: {
-  //           backgroundColor: "transparent",
-  //         },
-  //         draggableIcon: {
-  //           backgroundColor: "#fff",
-  //         },
-  //         container: {
-  //           backgroundColor: "rgba(0,0,0, 0.8)",
-  //           borderTopLeftRadius: 20,
-  //           borderTopRightRadius: 20,
-  //           alignItems: "center",
-  //           justifyContent: "center",
-  //           borderWidth: 0.6,
-  //           borderColor: "grey",
-  //         },
-  //       }}
-  //     >
-  //       <View
-  //         style={{
-  //           flex: 1,
-  //           paddingLeft: 20,
-  //           paddingBottom: 20,
-  //           flexDirection: "column",
-  //           justifyContent: "center",
-  //         }}
-  //       >
-  //         {/*    <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
-  //   <IconAnt name="closecircleo" size={30} color="#fff"/>
-  //     </View> */}
-  //         <Text
-  //           style={{
-  //             color: "#fff",
-  //             fontSize: 22,
-  //             fontFamily: "Sora-Bold",
-  //             textAlign: "center",
-  //             marginBottom: 40,
-  //           }}
-  //         >
-  //           {rbTitle.title}
-  //         </Text>
-  //         <View
-  //           style={{
-  //             height: "40%",
-  //             flexDirection: "column",
-  //             justifyContent: "space-between",
-  //             alignItems: "center",
-  //           }}
-  //         >
-  //           <TouchableOpacity
-  //             style={{ flexDirection: "row", alignItems: "center" }}
-  //             onPress={() => {
-  //               refRBSheet.current.close(),
-  //                 navigation.navigate(MOVIEDETAIL, {
-  //                   selectedMovie: rbTitle.id,
-  //                   isSeries: rbTitle.type,
-  //                   seriesTitle: rbTitle.title,
-  //                 });
-  //             }}
-  //           >
-  //             <IconAnt name="infocirlceo" size={30} color="#fff" />
-  //             <Text
-  //               style={{
-  //                 fontFamily: "Sora-Regular",
-  //                 color: "#fff",
-  //                 fontSize: 20,
-  //                 marginLeft: 10,
-  //               }}
-  //             >
-  //               Go to details
-  //             </Text>
-  //           </TouchableOpacity>
-  //           <TouchableOpacity
-  //             style={{ flexDirection: "row", alignItems: "center" }}
-  //             onPress={() => {
-  //               refRBSheet.current.close(),
-  //                 removeFromProfileWatchList(
-  //                   user.user._id,
-  //                   rbTitle,
-  //                   user.currentProfile._id,
-  //                   rbItem.season_number
-  //                 )(dispatch);
-  //               showToast("Removed from watch list");
-  //             }}
-  //           >
-  //             <IconAnt name="delete" size={30} color="#fff" />
-  //             <Text
-  //               style={{
-  //                 fontFamily: "Sora-Regular",
-  //                 color: "#fff",
-  //                 fontSize: 20,
-  //                 marginLeft: 10,
-  //               }}
-  //             >
-  //               Remove from list
-  //             </Text>
-  //           </TouchableOpacity>
-  //         </View>
-  //       </View>
-  //     </RBSheet>
-  //   );
-  // };
   //// End of Bootom Sheet Continue Watching
   const renderWatchList = () => {
     if (watchListLength) {
@@ -484,19 +365,10 @@ const WatchList = ({ navigation }) => {
                   seriesTitle: movie.title,
                 });
               }}
-              // onLongPress={() => {
-              //   refRBSheet.current.open(),
-              //     setRbTitle({
-              //       type: movie.film_type,
-              //       title: movie.title,
-              //       id: movie._id,
-              //     });
-              //   setRbItem(movie);
-              // }}
             >
               <FastImage
                 style={{
-                  width: SIZES.width * 0.45,
+                  width: SIZES.width * 0.45 - SIZES.width * 0.012,
                   height: SIZES.width * 0.7,
                   borderRadius: 5,
                   margin: SIZES.width * 0.012,
@@ -561,6 +433,7 @@ const styles = StyleSheet.create({
   listContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
+    justifyContent: "space-between",
   },
   carouselIconInfo: {
     position: "absolute",
