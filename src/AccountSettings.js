@@ -84,6 +84,7 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     backgroundColor: "#000",
+    paddingBottom: 100,
   },
   profilesContainer: {
     flexDirection: "row",

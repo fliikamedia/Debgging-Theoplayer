@@ -50,12 +50,12 @@ import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
 import RbSheetSeasonItem from "../components/RbSheetSeasonItem";
 import RbSheetMovieItem from "../components/RbSheetMovieItem";
 import Spinner from "react-native-spinkit";
-
+import { useIsFocused } from "@react-navigation/native";
 const HomeScreen = ({ navigation }) => {
   const appState = useRef(AppState.currentState);
   const refRBSheet = useRef(null);
   const refRBSheetMovies = useRef(null);
-
+  const isFocused = useIsFocused();
   //LogBox.ignoreAllLogs();
   //LogBox.ignoreLogs(["Calling `getNode()`"]);
   const user = useSelector((state) => state.user);
@@ -118,7 +118,8 @@ const HomeScreen = ({ navigation }) => {
   }, [headerOpacity, navigation]);
   useEffect(() => {
     const unsubscribe = navigation.addListener("blur", () => {
-      //console.log('Leaving Home Screen');
+      console.log("Leaving Home Screen", videoRef.current.props.paused);
+
       setVideoPaused(true);
     });
 
@@ -185,6 +186,7 @@ const HomeScreen = ({ navigation }) => {
   }, [navigation]);
 
   const handleScroll = (event) => {
+    if (!isFocused) return;
     if (event.nativeEvent.contentOffset.y > squareVideoHeight) {
       setVideoPaused(true);
     } else {
@@ -402,6 +404,7 @@ const HomeScreen = ({ navigation }) => {
         }}
       >
         <Video
+          ignoreSilentSwitch="ignore"
           onReadyForDisplay={() => setIsPreloading(false)}
           paused={videoPaused}
           ref={videoRef}
