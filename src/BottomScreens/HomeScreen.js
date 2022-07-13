@@ -1049,7 +1049,7 @@ const HomeScreen = ({ navigation }) => {
                   <IconAwesome
                     name="play"
                     size={22}
-                    color="#02ad94"
+                    color="#00BFFF"
                     style={{ marginLeft: 4 }}
                   />
                 </TouchableOpacity>
@@ -1452,14 +1452,14 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
   playIconContainer: {
-    backgroundColor: "#212121",
+    backgroundColor: "#000020",
     padding: 18,
     borderRadius: 40,
     justifyContent: "center",
     alignItems: "center",
     elevation: 25,
-    borderWidth: 4,
-    borderColor: "rgba(2, 173, 148, 0.2)",
+    borderWidth: 2,
+    borderColor: "#4682B4",
     marginBottom: 14,
   },
   carouselIconInfo: {
