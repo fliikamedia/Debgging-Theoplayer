@@ -62,6 +62,8 @@ const HomeScreen = ({ navigation }) => {
   const movies = useSelector((state) => state.movies);
   // console.log("fetching", user.currentProfile);
 
+  const squareVideoHeight =
+    SIZES.height < 700 ? SIZES.height * 0.6 : SIZES.height * 0.7;
   const dispatch = useDispatch();
   const [result, setResult] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -124,7 +126,17 @@ const HomeScreen = ({ navigation }) => {
   }, [navigation]);
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", async () => {
-      setVideoPaused(false);
+      let scrollPosition;
+      try {
+        scrollPosition = Object.values(yOffset)[2];
+      } catch (err) {
+        console.log(err);
+        scrollPosition = 0;
+      }
+      // console.log(scrollPosition, squareVideoHeight);
+      if (scrollPosition < squareVideoHeight) {
+        setVideoPaused(false);
+      }
       Orientation.lockToPortrait();
 
       const whatTime = await AsyncStorage.getItem("watched");
@@ -173,7 +185,7 @@ const HomeScreen = ({ navigation }) => {
   }, [navigation]);
 
   const handleScroll = (event) => {
-    if (event.nativeEvent.contentOffset.y > SIZES.width) {
+    if (event.nativeEvent.contentOffset.y > squareVideoHeight) {
       setVideoPaused(true);
     } else {
       setVideoPaused(false);
@@ -384,7 +396,7 @@ const HomeScreen = ({ navigation }) => {
         style={{
           width: SIZES.width,
           // height: SIZES.width,
-          height: SIZES.height < 700 ? SIZES.height * 0.6 : SIZES.height * 0.7,
+          height: squareVideoHeight,
           justifyContent: "flex-end",
           alignItems: "center",
         }}
