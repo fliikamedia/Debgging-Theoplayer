@@ -125,10 +125,7 @@ const SignupScreen = ({ navigation }) => {
         lastName,
         yearOfBirth,
         phoneNumber,
-        uid,
-        emailVerified,
-        imageName,
-        idToken
+        imageName
       )(dispatch);
       /*   navigation.reset({
           index: 0,
@@ -138,18 +135,18 @@ const SignupScreen = ({ navigation }) => {
       // navigation.navigate(MOVIES);
       loggedIn()(dispatch);
 
-      await axios
-        .get(
-          "https://ipgeolocation.abstractapi.com/v1/?api_key=1a9aca489f7a4011bf341eb6c3883062"
-        )
-        .then((response) => {
-          // console.log(response.data);
+      // await axios
+      //   .get(
+      //     "https://ipgeolocation.abstractapi.com/v1/?api_key=1a9aca489f7a4011bf341eb6c3883062"
+      //   )
+      //   .then((response) => {
+      //     // console.log(response.data);
 
-          postGeolocation(email, response.data)(dispatch);
-        })
-        .catch((error) => {
-          console.log("err", error);
-        });
+      //     postGeolocation(email, response.data)(dispatch);
+      //   })
+      //   .catch((error) => {
+      //     console.log("err", error);
+      //   });
     } catch (err) {
       console.log(err);
       setError(err.message);

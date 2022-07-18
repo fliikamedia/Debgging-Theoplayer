@@ -60,7 +60,7 @@ const HomeScreen = ({ navigation }) => {
   //LogBox.ignoreLogs(["Calling `getNode()`"]);
   const user = useSelector((state) => state.user);
   const movies = useSelector((state) => state.movies);
-  // console.log("fetching", user.currentProfile);
+  console.log("fetching", user);
 
   const squareVideoHeight =
     SIZES.height < 700 ? SIZES.height * 0.6 : SIZES.height * 0.7;
@@ -118,8 +118,6 @@ const HomeScreen = ({ navigation }) => {
   }, [headerOpacity, navigation]);
   useEffect(() => {
     const unsubscribe = navigation.addListener("blur", () => {
-      console.log("Leaving Home Screen", videoRef.current.props.paused);
-
       setVideoPaused(true);
     });
 

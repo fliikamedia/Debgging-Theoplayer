@@ -61,44 +61,55 @@ export const PROFILE_FOUND = "PROFILE_FOUND";
 export const FETCH_PROFILE = "FETCH_PROFILE";
 export const FETCH_PROFILE_SUCCESS = "FETCH_PROFILE_SUCCESS";
 export const FETCH_PROFILE_FALED = "FETCH_PROFILE_FAILED";
+export const CHOOSING_SUBSCRIPTION = "CHOOSING_SUBSCRIPTION";
+export const CREATE_USER = "CREATE_USER";
+export const CREATE_USER_SUCCESS = "CREATE_USER_SUCCESS";
+export const CREATE_USER_FAILED = "CREATE_USER_FAILED";
+
+export const createUser =
+  (email, uid, authToken, emailVerified) => async (dispatch) => {
+    let headers = {
+      authtoken: authToken,
+    };
+    try {
+      dispatch({ type: CREATE_USER });
+      const result = await expressApi.post(
+        "/users/create-user",
+        { email: email, uid: uid, email_verified: emailVerified },
+        {
+          headers: headers,
+        }
+      );
+      // console.log(result);
+      if (result.status === 200) {
+        dispatch({ type: CREATE_USER_SUCCESS, payload: result.data });
+      } else {
+        dispatch({ type: CREATE_USER_FAILED });
+      }
+    } catch (err) {
+      dispatch({ type: CREATE_USER_FAILED });
+    }
+  };
 export const addUser =
-  (
-    email,
-    firstName,
-    lastName,
-    yearOfBirth,
-    phoneNumber,
-    uid,
-    emailVerified,
-    profileImage,
-    authtoken
-  ) =>
+  (email, firstName, lastName, yearOfBirth, phoneNumber, profileImage) =>
   async (dispatch) => {
     let data = {
       email: email,
       firstName: firstName,
       lastName: lastName,
-      profileImage: profileImage,
       dateofBirth: yearOfBirth,
       phone: phoneNumber,
-      uid: uid,
-      email_verified: emailVerified,
       profiles: {
         name: firstName,
         image: profileImage,
         isMainProfile: true,
       },
     };
-    let headers = {
-      authtoken: authtoken,
-    };
     try {
       dispatch({ type: ADD_USER });
-      const result = await expressApi.post(`/users`, data, {
-        headers: headers,
-      });
-      if (result.status == 201) {
-        console.log(result.data);
+      const result = await expressApi.post(`users/update-user`, data);
+      console.log(result);
+      if (result.status == 200) {
         dispatch({
           type: ADD_USER_SUCCESS,
           payload: result.data,
@@ -107,10 +118,12 @@ export const addUser =
           type: SET_PROFILE,
           payload: firstName,
         });
-        dispatch({
-          type: CURRENT_PROFILE,
-          payload: result.data.profiles[0],
-        });
+        if (result?.data?.profiles?.length > 0) {
+          dispatch({
+            type: CURRENT_PROFILE,
+            payload: result.data.profiles[0],
+          });
+        }
       } else {
         dispatch({ type: ADD_USER_FAILED });
       }
@@ -132,6 +145,11 @@ export const loggedOut = () => async (dispatch) => {
 export const fillingProfile = () => async (dispatch) => {
   try {
     dispatch({ type: FILLING_PROFILE });
+  } catch (err) {}
+};
+export const subscribing = () => async (dispatch) => {
+  try {
+    dispatch({ type: CHOOSING_SUBSCRIPTION });
   } catch (err) {}
 };
 export const getUser = (email, authtoken) => async (dispatch) => {
@@ -561,24 +579,24 @@ export const postGeolocation = (email, geolocation) => async (dispatch) => {
     });
     if (result.status == 200) {
       // console.log("geo location", result.data);
-      dispatch({
-        type: GET_USER_SUCCESS,
-        payload: result?.data,
-      });
+      // dispatch({
+      //   type: GET_USER_SUCCESS,
+      //   payload: result?.data,
+      // });
       /* if (profileName) {
         dispatch({
           type: ADD_PROFILE_WATCHED_DETAILS,
           payload: result.data.profiles.find((r) => r.name == profileName),
         });
       } else { */
-      dispatch({
-        type: CURRENT_PROFILE,
-        payload: result?.data?.profiles[0],
-      });
-      dispatch({
-        type: SET_PROFILE,
-        payload: result?.data?.profiles[0].name,
-      });
+      // dispatch({
+      //   type: CURRENT_PROFILE,
+      //   payload: result?.data?.profiles[0],
+      // });
+      // dispatch({
+      //   type: SET_PROFILE,
+      //   payload: result?.data?.profiles[0].name,
+      // });
     } else {
       // dispatch({ type: GET_ALL_USERS_FAILED });
       console.log(result);
@@ -596,6 +614,7 @@ export const selectedProfile = () => async (dispatch) => {
 
 export const changeProfileNew =
   (email, profileId, navigation, navigate) => async (dispatch) => {
+    console.log(email, profileId);
     try {
       dispatch({ type: FETCH_PROFILE });
       const result = await expressApi.post(`/users/change-profile`, {

@@ -1,21 +1,11 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import WelcomePage from "../WelcomePage";
-import LoginScreen from "../auth/LoginScreen";
-import FillProfileScreen from "../auth/FillProfileScreen";
-import EmailSignup from "../auth/EmailSignup";
-import SelectProfile from "../SelectProfile";
-import {
-  WELCOMESCREEN,
-  LOGIN,
-  FILLPROFILESCREEN,
-  EMAILSIGNUP,
-  SELECTPROFILE,
-  SUBSCRIPTIONS,
-} from "../../constants/RouteNames";
+
+import { SUBSCRIPTIONS, SELECTSUBSCRIPTION } from "../../constants/RouteNames";
 import ChooseSubscriptionType from "../ChooseSubscriptionType";
+import Subscriptions from "../StripeSubscriptions";
 const Stack = createStackNavigator();
-export default WelcomeNavigator = (props) => {
+export default SubscriptionNavigator = (props) => {
   return (
     <Stack.Navigator
       mode="modal"
@@ -51,37 +41,23 @@ export default WelcomeNavigator = (props) => {
       detachInactiveScreens={false}
     >
       <Stack.Screen
-        name={WELCOMESCREEN}
-        component={WelcomePage}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name={EMAILSIGNUP}
-        component={EmailSignup}
+        name={SELECTSUBSCRIPTION}
+        component={ChooseSubscriptionType}
         options={{
-          title: " ",
+          headerShown: true,
+          headerTitle: "Subscriptions",
+          headerTitleAlign: "center",
+          headerTintColor: "#fff",
         }}
       />
       <Stack.Screen
-        name={LOGIN}
-        component={LoginScreen}
+        name={SUBSCRIPTIONS}
+        component={Subscriptions}
         options={{
-          title: " ",
-        }}
-      />
-      <Stack.Screen
-        name={FILLPROFILESCREEN}
-        component={FillProfileScreen}
-        options={{
-          title: " ",
-        }}
-      />
-      <Stack.Screen
-        name={SELECTPROFILE}
-        component={SelectProfile}
-        options={{
-          title: " ",
-          headerShown: false,
+          headerShown: true,
+          headerTitle: "Stripe",
+          headerTitleAlign: "center",
+          headerTintColor: "#fff",
         }}
       />
     </Stack.Navigator>
