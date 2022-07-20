@@ -7,6 +7,30 @@ buildscript {
         compileSdkVersion = 31
         targetSdkVersion = 31
         ndkVersion = "20.1.5948944"
+            // Override compileSdkVersion
+    THEOplayer_compileSdkVersion = 31
+
+    // Override minSdkVersion
+    THEOplayer_minSdkVersion = 21
+
+    // Override targetSdkVersion
+    THEOplayer_targetSdkVersion = 31
+
+    // Specify a specfic SDK version (default: the lastest available version).
+    THEOplayer_sdk = "3.5.0"
+
+    // Optionally limit timeUpdate rate, which could improve performance. Possible values:
+    // - "com.theoplayer.TimeUpdateRate.UNLIMITED"
+    // - "com.theoplayer.TimeUpdateRate.LIMITED_ONE_HZ"
+    // - "com.theoplayer.TimeUpdateRate.LIMITED_TWO_HZ"
+    // - "com.theoplayer.TimeUpdateRate.LIMITED_THREE_HZ"
+    THEOplayer_timeUpdateRate = "com.theoplayer.TimeUpdateRate.LIMITED_ONE_HZ"
+
+    // Toggle player event logging
+    THEOplayer_logPlayerEvents = "false"
+
+    // Toggle playerView event logging
+    THEOplayer_logViewEvents = "false"
     }
     repositories {
         google()

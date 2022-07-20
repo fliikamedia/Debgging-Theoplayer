@@ -17,7 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import AsyncStorage from "@react-native-community/async-storage";
 import KeepAwake from "@sayem314/react-native-keep-awake";
 import moment from "moment";
-
+import { PlayerConfiguration, THEOplayerView } from "react-native-theoplayer";
 const BitmovinPlayer = ({ navigation, route }) => {
   const user = useSelector((state) => state.user);
   const movies = useSelector((state) => state.movies);
@@ -26,6 +26,7 @@ const BitmovinPlayer = ({ navigation, route }) => {
   const { movieId, time } = route.params;
   // const [watched, setWatched] = useState(0);
   // const [duration, setDuration] = useState(0);
+  console.log("player");
   const appState = useRef(AppState.currentState);
   const playerRef = useRef(null);
   const movie = movies.availableMovies.find((r) => r._id === movieId);
@@ -44,6 +45,7 @@ const BitmovinPlayer = ({ navigation, route }) => {
   //   default: "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8",
   // });
   // console.log("watched", watchedTime);
+
   const setWatchedMovie = async () => {
     if (movie.film_type == "movie") {
       AsyncStorage.setItem("isSeries", "movie");
@@ -200,6 +202,86 @@ const BitmovinPlayer = ({ navigation, route }) => {
   } else {
     playURL = str;
   }
+
+  // Theo Player
+
+  const license = Platform.select({
+    android:
+      "sZP7IYe6T6P10ohZClxgTOzoTu0oFSaL3o0-CKaL06zzCL410ofk0SU10Le6FOPlUY3zWokgbgjNIOf9flbi0Lec3oa_FDBc3L0-3QBc3Oz_0QfcFS5Z0Q4lCL4eCo0L3OfVfK4_bQgZCYxNWoryIQXzImf90SCkTS0zTu5i0u5i0Oi6Io4pIYP1UQgqWgjeCYxgflEc3lho3L5kTSei3l5kFOPeWok1dDrLYtA1Ioh6TgV6v6fVfKcqCoXVdQjLUOfVfGxEIDjiWQXrIYfpCoj-fgzVfKxqWDXNWG3ybojkbK3gflNWf6E6FOPVWo31WQ1qbta6FOPzdQ4qbQc1sD4ZFK3qWmPUFOPLIQ-LflNWfK1zWDikf6i6CDrebKjNIOfVfKXpIwPqdDxzU6fVfKINbK4zU6fVfKgqbZfVfGxNsK4pf6i6UwIqbZfVfGUgCKjLfgzVfG3gWKxydDkibK4LbogqW6f9UwPkIYz", // insert Android THEOplayer license here
+    ios: "sZP7IYe6T6P10ohZClxgTOzoTu0oFSaL3o0-CKaL06zzCL410ofk0SU10Le6FOPlUY3zWokgbgjNIOf9flbi0Lec3oa_FDBc3L0-3QBc3Oz_0QfcFS5Z0Q4lCL4eCo0L3OfVfK4_bQgZCYxNWoryIQXzImf90SCkTS0zTu5i0u5i0Oi6Io4pIYP1UQgqWgjeCYxgflEc3lho3L5kTSei3l5kFOPeWok1dDrLYtA1Ioh6TgV6v6fVfKcqCoXVdQjLUOfVfGxEIDjiWQXrIYfpCoj-fgzVfKxqWDXNWG3ybojkbK3gflNWf6E6FOPVWo31WQ1qbta6FOPzdQ4qbQc1sD4ZFK3qWmPUFOPLIQ-LflNWfK1zWDikf6i6CDrebKjNIOfVfKXpIwPqdDxzU6fVfKINbK4zU6fVfKgqbZfVfGxNsK4pf6i6UwIqbZfVfGUgCKjLfgzVfG3gWKxydDkibK4LbogqW6f9UwPkIYz", // insert iOS THEOplayer license here
+    web: "sZP7IYe6T6P10ohZClxgTOzoTu0oFSaL3o0-CKaL06zzCL410ofk0SU10Le6FOPlUY3zWokgbgjNIOf9flbi0Lec3oa_FDBc3L0-3QBc3Oz_0QfcFS5Z0Q4lCL4eCo0L3OfVfK4_bQgZCYxNWoryIQXzImf90SCkTS0zTu5i0u5i0Oi6Io4pIYP1UQgqWgjeCYxgflEc3lho3L5kTSei3l5kFOPeWok1dDrLYtA1Ioh6TgV6v6fVfKcqCoXVdQjLUOfVfGxEIDjiWQXrIYfpCoj-fgzVfKxqWDXNWG3ybojkbK3gflNWf6E6FOPVWo31WQ1qbta6FOPzdQ4qbQc1sD4ZFK3qWmPUFOPLIQ-LflNWfK1zWDikf6i6CDrebKjNIOfVfKXpIwPqdDxzU6fVfKINbK4zU6fVfKgqbZfVfGxNsK4pf6i6UwIqbZfVfGUgCKjLfgzVfG3gWKxydDkibK4LbogqW6f9UwPkIYz", // insert Web THEOplayer license here
+  });
+
+  const playerConfig = {
+    license,
+    chromeless: false,
+  };
+
+  // const source = {
+  //   sources: [
+  //     {
+  //       src: playURL,
+  //       type:
+  //         Platform.OS === "android"
+  //           ? "application/dash+xml"
+  //           : "application/x-mpegurl",
+  //     },
+  //   ],
+  // };
+  const source = {
+    sources: [
+      {
+        src: "https://contentserver.prudentgiraffe.com/videos/dash/webvtt-embedded-in-isobmff/Manifest.mpd",
+        type: "application/dash+xml",
+      },
+    ],
+  };
+  console.log("also player");
+  // End of theo player
+  return (
+    <View
+      style={{ position: "absolute", top: 0, left: 0, bottom: 0, right: 0 }}
+    >
+      <THEOplayerView
+        config={playerConfig}
+        source={source}
+        paused={false}
+        // playbackRate
+        // volume
+        muted={false}
+        fullscreen={true}
+        // selectedTextTrack
+        // selectedVideoTrack
+        // selectedAudioTrack
+        // style
+        // onFullscreenPlayerWillPresent
+        // onFullscreenPlayerDidPresent
+        // onFullscreenPlayerWillDismiss
+        // onFullscreenPlayerDidDismiss
+        // onBufferingStateChange
+        // onSourceChange
+        // onLoadStart
+        // onLoadedMetadata
+        // onLoadedData
+        // onReadyStateChange
+        // onError
+        // onProgress
+        // onPlay
+        // onPlaying
+        // onPause
+        // onSeeking
+        // onSeeked
+        // onEnded
+        onTimeUpdate={(e) => {
+          console.log(e);
+        }}
+        // onDurationChange
+        // onSegmentNotFound
+        // onTextTrackListEvent
+        // onTextTrackEvent
+      />
+    </View>
+  );
   return (
     <View style={{ flex: 1, backgroundColor: "black" }}>
       <StatusBar hidden />

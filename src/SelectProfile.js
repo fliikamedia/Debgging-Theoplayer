@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ScrollView,
   View,
@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import UserProfile from "./components/UserProfile";
 import { useSelector, useDispatch } from "react-redux";
-import { addProfile, loggedOut } from "../store/actions/user";
+import { addProfile, loggedOut, getUser } from "../store/actions/user";
 import { WELCOMESCREEN } from "../constants/RouteNames";
 import firebase from "firebase";
 import profileImgs from "../constants/profileImgs";
@@ -29,6 +29,17 @@ const SelectProfile = ({ navigation }) => {
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState("");
   const [imageName, setImageName] = useState("");
+  // console.log("here");
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (user) {
+        user.getIdToken().then(function (idToken) {
+          // console.log("here", idToken);
+          getUser(user.email, idToken)(dispatch);
+        });
+      }
+    });
+  }, []);
   let profilesLength;
   try {
     profilesLength = user.user.profiles.length;

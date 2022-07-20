@@ -183,6 +183,13 @@ android {
 
         }
     }
+    packagingOptions {
+        exclude 'META-INF/kotlin-stdlib.kotlin_module'
+        exclude 'META-INF/fragment_release.kotlin_module'
+        exclude 'META-INF/activity_release.kotlin_module'
+        exclude 'META-INF/lifecycle-viewmodel_release.kotlin_module'
+        exclude 'META-INF/annotation-experimental_release.kotlin_module'
+    }
 }
 
 dependencies {

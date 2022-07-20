@@ -614,7 +614,7 @@ export const selectedProfile = () => async (dispatch) => {
 
 export const changeProfileNew =
   (email, profileId, navigation, navigate) => async (dispatch) => {
-    console.log(email, profileId);
+    // console.log(email, profileId);
     try {
       dispatch({ type: FETCH_PROFILE });
       const result = await expressApi.post(`/users/change-profile`, {

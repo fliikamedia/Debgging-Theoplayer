@@ -60,7 +60,7 @@ const HomeScreen = ({ navigation }) => {
   //LogBox.ignoreLogs(["Calling `getNode()`"]);
   const user = useSelector((state) => state.user);
   const movies = useSelector((state) => state.movies);
-  console.log("fetching", user);
+  // console.log("fetching", user);
 
   const squareVideoHeight =
     SIZES.height < 700 ? SIZES.height * 0.6 : SIZES.height * 0.7;
@@ -1051,11 +1051,14 @@ const HomeScreen = ({ navigation }) => {
               <View>
                 <TouchableOpacity
                   onPress={() => {
-                    navigation.navigate(MOVIEDETAIL, {
-                      selectedMovie: background._id,
-                      isSeries: background.film_type,
-                      seriesTitle: background.name,
+                    navigation.navigate(BITMOVINPLAYER, {
+                      movieId: background._id,
                     });
+                    // navigation.navigate(MOVIEDETAIL, {
+                    //   selectedMovie: background._id,
+                    //   isSeries: background.film_type,
+                    //   seriesTitle: background.name,
+                    // });
                   }}
                   style={styles.playIconContainer}
                 >
