@@ -26,7 +26,7 @@ const BitmovinPlayer = ({ navigation, route }) => {
   const { movieId, time } = route.params;
   // const [watched, setWatched] = useState(0);
   // const [duration, setDuration] = useState(0);
-  console.log("player");
+
   const appState = useRef(AppState.currentState);
   const playerRef = useRef(null);
   const movie = movies.availableMovies.find((r) => r._id === movieId);
@@ -236,7 +236,6 @@ const BitmovinPlayer = ({ navigation, route }) => {
       },
     ],
   };
-  console.log("also player");
   // End of theo player
   return (
     <View

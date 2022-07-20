@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
+import {
+  ScrollView,
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
 import {
   getSubscriptions,
   getStripePrices,
@@ -10,12 +17,15 @@ import { useStripe } from "@stripe/stripe-react-native";
 import expressApi from "./api/expressApi";
 import { fillingProfile } from "../store/actions/user";
 import firebase from "firebase";
+import LinearGradient from "react-native-linear-gradient";
+import SubscriptionCard from "./components/SubscriptionCard";
+import Spinner from "react-native-spinkit";
 const Subscriptions = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
   const subscriptions_state = useSelector((state) => state.subscriptions);
   const stripe = useStripe();
-  console.log("subsc state", user.user._id);
+  // console.log("subsc state", subscriptions_state?.subscriptions);
   // console.log("subsc state");
 
   useEffect(() => {
@@ -47,10 +57,10 @@ const Subscriptions = () => {
         }
       );
       const { data } = response;
-      console.log(response.status);
+      // console.log(response.status);
       if (response.status !== 200) return Alert.alert(data.message);
       const clientSecret = data.clientSecret;
-      console.log("clientSecret", clientSecret);
+      // console.log("clientSecret", clientSecret);
       const initSheet = await stripe.initPaymentSheet({
         paymentIntentClientSecret: clientSecret,
         merchantDisplayName: "Fliika",
@@ -90,7 +100,7 @@ const Subscriptions = () => {
     }
   };
 
-  const showSubscriptions = () => {
+  const showSubscription = () => {
     return (
       <View>
         {subscriptions_state.subscriptions.map((subscription, index) => (
@@ -114,35 +124,75 @@ const Subscriptions = () => {
       </View>
     );
   };
+
+  const showSubscriptions = () => {
+    return (
+      <View>
+        {subscriptions_state.subscriptions.map((subscription, index) => (
+          <SubscriptionCard
+            key={index}
+            plan={subscription?.nickname}
+            trialText="14 days free trial"
+            price={subscription?.unit_amount}
+            description="Create up to 5 profiles for family members and loved ones"
+            btnText="Start Free Trial"
+            id={subscription.id}
+          />
+        ))}
+      </View>
+    );
+  };
   return (
-    <View>
-      <TouchableOpacity
-        onPress={() =>
-          firebase.auth().onAuthStateChanged(function (user) {
-            if (user) {
-              user.getIdToken().then(function (idToken) {
-                cancelSubscription(
-                  subscriptions_state.mySubscriptions.subscriptions.data[0].id,
-                  idToken
-                )();
-              });
-            }
-          })
-        }
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <LinearGradient
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        // start={{ x: 0.7, y: 0 }}
+        //colors={["#003366", "#483D8B", "#4682B4"]}
+        // colors={["#000020", "#000080", "#4682B4"]}
+        // colors={["#000025", "#000020", "black"]}
+        colors={["#141a5c", "#218ae3", "#0d0526"]}
+        style={{ flex: 1, justifyContent: "center" }}
       >
-        <Text style={styles.text}>Cancel</Text>
-      </TouchableOpacity>
-      {!subscriptions_state?.isFetching &&
-      subscriptions_state.subscriptions?.length == 2
-        ? showSubscriptions()
-        : null}
-    </View>
+        <TouchableOpacity
+          onPress={() =>
+            firebase.auth().onAuthStateChanged(function (user) {
+              if (user) {
+                user.getIdToken().then(function (idToken) {
+                  cancelSubscription(
+                    subscriptions_state.mySubscriptions.subscriptions.data[0]
+                      .id,
+                    idToken
+                  )();
+                });
+              }
+            })
+          }
+        ></TouchableOpacity>
+        {!subscriptions_state?.isFetching ? (
+          showSubscriptions()
+        ) : (
+          <View style={styles.spinnerContainer}>
+            <Spinner
+              isVisible={subscriptions_state?.isFetching}
+              size={70}
+              type={"ThreeBounce"}
+              color={"#fff"}
+            />
+          </View>
+        )}
+      </LinearGradient>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   text: {
     color: "#fff",
+  },
+  spinnerContainer: {
+    width: "100%",
+    alignItems: "center",
   },
 });
 export default Subscriptions;

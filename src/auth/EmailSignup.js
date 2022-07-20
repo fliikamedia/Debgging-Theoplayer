@@ -87,7 +87,7 @@ const EmailSignup = ({ navigation }) => {
             },
           }
         );
-        console.log(result.data);
+        // console.log(result.data);
         if (result.status === 200) {
           dispatch({ type: CREATE_USER_SUCCESS, payload: result.data });
         } else {
