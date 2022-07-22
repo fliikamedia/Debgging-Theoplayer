@@ -26,12 +26,13 @@ import {
   MOVIESTACK,
   WATCHLIST,
   ACCOUNTSETTINGS,
+  ACCOUNT,
 } from "../../constants/RouteNames";
 import { useNavigation } from "@react-navigation/native";
 import DrawerItems from "./DrawerItems";
 import BottomNav from "./BottomNav";
 import ProfileScreen from "../BottomScreens/ProfileScreen";
-
+import Account from "../Account";
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 const MoviesNavogator = (props) => {
@@ -116,6 +117,16 @@ const MoviesNavogator = (props) => {
         options={{
           headerShown: true,
           headerTitle: "My Watchlist",
+          headerTitleAlign: "center",
+          headerTintColor: "#fff",
+        }}
+      />
+      <Stack.Screen
+        name={ACCOUNT}
+        component={Account}
+        options={{
+          headerShown: true,
+          headerTitle: ACCOUNT,
           headerTitleAlign: "center",
           headerTintColor: "#fff",
         }}

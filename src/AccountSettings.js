@@ -13,6 +13,7 @@ import {
   PROFILESCREEN,
   SUBSCRIPTIONS,
   WATCHLIST,
+  ACCOUNT,
 } from "../constants/RouteNames";
 import { loggedOut } from "../store/actions/user";
 import firebase from "firebase";
@@ -22,9 +23,10 @@ const AccountSettings = ({ navigation }) => {
   const user = useSelector((state) => state.user);
   const [editing, setEditing] = useState(false);
   const accountItems = [
+    { title: "Account", func: () => navigation.navigate(ACCOUNT) },
     { title: "Watchlist", func: () => navigation.navigate(WATCHLIST) },
-    { title: "App Settings", func: () => console.log("click") },
-    { title: "Account", func: () => navigation.navigate(SUBSCRIPTIONS) },
+    // { title: "App Settings", func: () => console.log("click") },
+    { title: "Subscriptions", func: () => navigation.navigate(SUBSCRIPTIONS) },
     {
       title: "Switch Profiles",
       func: () => navigation.navigate(PROFILESCREEN),

@@ -23,3 +23,4 @@ export const SELECTPROFILE = "Select Profile";
 export const ACCOUNTSETTINGS = "Account Settings";
 export const SUBSCRIPTIONS = "Subscriptions";
 export const SELECTSUBSCRIPTION = "SELECTSUBSCRIPTION";
+export const ACCOUNT = "Account";

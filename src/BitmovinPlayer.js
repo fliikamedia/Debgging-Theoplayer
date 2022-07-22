@@ -135,13 +135,13 @@ const BitmovinPlayer = ({ navigation, route }) => {
       return seriesWatched;
     } catch (err) {}
   };
-  useEffect(() => {
-    const subscription = AppState.addEventListener("change", stopPlaying);
+  // useEffect(() => {
+  //   const subscription = AppState.addEventListener("change", stopPlaying);
 
-    return () => {
-      subscription.remove();
-    };
-  }, [appState]);
+  //   return () => {
+  //     subscription.remove();
+  //   };
+  // }, [appState]);
 
   //console.log('state out',user.watchedAt, user.duration);
 
@@ -237,50 +237,56 @@ const BitmovinPlayer = ({ navigation, route }) => {
     ],
   };
   // End of theo player
-  return (
-    <View
-      style={{ position: "absolute", top: 0, left: 0, bottom: 0, right: 0 }}
-    >
-      <THEOplayerView
-        config={playerConfig}
-        source={source}
-        paused={false}
-        // playbackRate
-        // volume
-        muted={false}
-        fullscreen={true}
-        // selectedTextTrack
-        // selectedVideoTrack
-        // selectedAudioTrack
-        // style
-        // onFullscreenPlayerWillPresent
-        // onFullscreenPlayerDidPresent
-        // onFullscreenPlayerWillDismiss
-        // onFullscreenPlayerDidDismiss
-        // onBufferingStateChange
-        // onSourceChange
-        // onLoadStart
-        // onLoadedMetadata
-        // onLoadedData
-        // onReadyStateChange
-        // onError
-        // onProgress
-        // onPlay
-        // onPlaying
-        // onPause
-        // onSeeking
-        // onSeeked
-        // onEnded
-        onTimeUpdate={(e) => {
-          console.log(e);
-        }}
-        // onDurationChange
-        // onSegmentNotFound
-        // onTextTrackListEvent
-        // onTextTrackEvent
-      />
-    </View>
-  );
+  // return (
+  //   <View
+  //     style={{ position: "absolute", top: 0, left: 0, bottom: 0, right: 0 }}
+  //   >
+  //     <THEOplayerView
+  //       config={playerConfig}
+  //       source={source}
+  //       paused={false}
+  //       // playbackRate
+  //       // volume
+  //       muted={false}
+  //       fullscreen={true}
+  //       // selectedTextTrack
+  //       // selectedVideoTrack
+  //       // selectedAudioTrack
+  //       // style
+  //       // onFullscreenPlayerWillPresent
+  //       // onFullscreenPlayerDidPresent
+  //       // onFullscreenPlayerWillDismiss
+  //       // onFullscreenPlayerDidDismiss
+  //       // onBufferingStateChange
+  //       // onSourceChange
+  //       // onLoadStart
+  //       // onLoadedMetadata
+  //       // onLoadedData
+  //       // onReadyStateChange
+  //       // onError
+  //       // onProgress
+  //       // onPlay
+  //       // onPlaying
+  //       // onPause
+  //       // onSeeking
+  //       // onSeeked
+  //       // onEnded
+  //       onTimeUpdate={(e) => {
+  //         console.log(e);
+  //       }}
+  //       // onDurationChange
+  //       // onSegmentNotFound
+  //       // onTextTrackListEvent
+  //       // onTextTrackEvent
+  //     />
+  //   </View>
+  // );
+  const subtitles = movie?.subtitles_tracks?.map((subtitle) => ({
+    label: subtitle.label,
+    language: subtitle.lang,
+    href: subtitle.url,
+  }));
+
   return (
     <View style={{ flex: 1, backgroundColor: "black" }}>
       <StatusBar hidden />
@@ -296,7 +302,8 @@ const BitmovinPlayer = ({ navigation, route }) => {
             // poster: movie.wide_thumbnail_link,
             startOffset: watchedTime ? watchedTime : 0,
             hasNextEpisode: false,
-            subtitles: "",
+            // subtitles: "",
+            subtitles: subtitles,
             // thumbnails: '',
             //title: movie.title,
             subtitle: movie.title,
