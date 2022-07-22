@@ -174,7 +174,12 @@ const userReducer = (state = initialState, { type, payload }) => {
     case LOGGED_IN_SUCCESS:
       return { ...state, isLoggedIn: "loggedIn" };
     case LOGGED_OUT_SUCCESS:
-      return { ...state, isLoggedIn: "loggedOut" };
+      return {
+        ...state,
+        isLoggedIn: "loggedOut",
+        user: [],
+        currentProfile: [],
+      };
     case FILLING_PROFILE:
       return { ...state, isLoggedIn: "signedUp" };
     case SELECTING_PROFILE:

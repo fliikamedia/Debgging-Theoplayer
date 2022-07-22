@@ -21,7 +21,7 @@ import IconAnt from "react-native-vector-icons/AntDesign";
 import IconFeather from "react-native-vector-icons/Feather";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import FastImage from "react-native-fast-image";
-
+import Spinner from "react-native-spinkit";
 const SelectProfile = ({ navigation }) => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -29,7 +29,7 @@ const SelectProfile = ({ navigation }) => {
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState("");
   const [imageName, setImageName] = useState("");
-  // console.log("here");
+  console.log("here", user.isFetching);
   useEffect(() => {
     firebase.auth().onAuthStateChanged(function (user) {
       if (user) {
@@ -293,7 +293,25 @@ const SelectProfile = ({ navigation }) => {
           </TouchableOpacity>
         </View> */}
         <View style={{ flex: 1, justifyContent: "center", marginBottom: 100 }}>
-          {createProfile()}
+          {user?.isFetching ? (
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: "black",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Spinner
+                isVisible={user?.isFetching}
+                size={70}
+                type={"ThreeBounce"}
+                color={"#fff"}
+              />
+            </View>
+          ) : (
+            createProfile()
+          )}
         </View>
       </View>
     </ScrollView>
