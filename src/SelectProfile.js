@@ -29,7 +29,6 @@ const SelectProfile = ({ navigation }) => {
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState("");
   const [imageName, setImageName] = useState("");
-  console.log("here", user.isFetching);
   useEffect(() => {
     firebase.auth().onAuthStateChanged(function (user) {
       if (user) {

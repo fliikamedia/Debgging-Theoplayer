@@ -509,21 +509,12 @@ const HomeScreen = ({ navigation }) => {
                       movieId: squarePlayId,
                     });
                   }}
-                  style={{
-                    padding: 16,
-                    borderRadius: 40,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    // elevation: 25,
-                    borderWidth: 1,
-                    borderColor: "#fff",
-                  }}
+                  style={styles.playIconContainerSquare}
                 >
                   <IconAwesome
                     name="play"
-                    size={20}
-                    // color="#B0E0E6"
-                    color="#fff"
+                    size={22}
+                    color="#00BFFF"
                     style={{ marginLeft: 4 }}
                   />
                   {/*             <IconAwesome
@@ -1477,6 +1468,17 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#4682B4",
     marginBottom: 14,
+  },
+  playIconContainerSquare: {
+    backgroundColor: "#000020",
+    padding: 16,
+    borderRadius: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 25,
+    borderWidth: 1,
+    borderColor: "#4682B4",
+    // marginBottom: 14,
   },
   carouselIconInfo: {
     position: "absolute",
