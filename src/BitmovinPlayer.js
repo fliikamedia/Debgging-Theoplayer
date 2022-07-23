@@ -214,9 +214,15 @@ const BitmovinPlayer = ({ navigation, route }) => {
 
   const playerConfig = {
     license,
-    chromeless: false,
+    chromeless: Platform.OS === "ios" ? false : true,
   };
-
+  const theoSubtitles = movie?.subtitles_tracks?.map((subtitle, index) => ({
+    default: true,
+    kind: "subtitles",
+    label: subtitle.label,
+    src: subtitle.url,
+    srclang: "En",
+  }));
   // const source = {
   //   sources: [
   //     {
@@ -227,60 +233,86 @@ const BitmovinPlayer = ({ navigation, route }) => {
   //           : "application/x-mpegurl",
   //     },
   //   ],
-  // };
+  //   textTracks: theoSubtitles,
+
   const source = {
     sources: [
       {
-        src: "https://contentserver.prudentgiraffe.com/videos/dash/webvtt-embedded-in-isobmff/Manifest.mpd",
-        type: "application/dash+xml",
+        src: playURL,
+        type:
+          Platform.OS === "android"
+            ? "application/dash+xml"
+            : "application/x-mpegurl",
       },
     ],
+    textTracks: theoSubtitles,
   };
+  // };
+  // const source = {
+  //   sources: [
+  //     {
+  //       src: "https://contentserver.prudentgiraffe.com/videos/dash/webvtt-embedded-in-isobmff/Manifest.mpd",
+  //       type: "application/dash+xml",
+  //     },
+  //   ],
+  //   textTracks: theoSubtitles,
+  // };
+
+  // const onLoadedMetadata = (data) => {
+  //   console.log("loadedmetadata", JSON.stringify(data));
+  // };
   // End of theo player
-  // return (
-  //   <View
-  //     style={{ position: "absolute", top: 0, left: 0, bottom: 0, right: 0 }}
-  //   >
-  //     <THEOplayerView
-  //       config={playerConfig}
-  //       source={source}
-  //       paused={false}
-  //       // playbackRate
-  //       // volume
-  //       muted={false}
-  //       fullscreen={true}
-  //       // selectedTextTrack
-  //       // selectedVideoTrack
-  //       // selectedAudioTrack
-  //       // style
-  //       // onFullscreenPlayerWillPresent
-  //       // onFullscreenPlayerDidPresent
-  //       // onFullscreenPlayerWillDismiss
-  //       // onFullscreenPlayerDidDismiss
-  //       // onBufferingStateChange
-  //       // onSourceChange
-  //       // onLoadStart
-  //       // onLoadedMetadata
-  //       // onLoadedData
-  //       // onReadyStateChange
-  //       // onError
-  //       // onProgress
-  //       // onPlay
-  //       // onPlaying
-  //       // onPause
-  //       // onSeeking
-  //       // onSeeked
-  //       // onEnded
-  //       onTimeUpdate={(e) => {
-  //         console.log(e);
-  //       }}
-  //       // onDurationChange
-  //       // onSegmentNotFound
-  //       // onTextTrackListEvent
-  //       // onTextTrackEvent
-  //     />
-  //   </View>
-  // );
+
+  return (
+    <View
+      style={{ position: "absolute", top: 0, left: 0, bottom: 0, right: 0 }}
+    >
+      <THEOplayerView
+        config={playerConfig}
+        source={source}
+        paused={false}
+        // playbackRate
+        // volume
+        muted={false}
+        fullscreen={true}
+        // selectedTextTrack={{
+        //   label: "English [CC]",
+        //   language: "en-US",
+        //   href: "https://bitdash-a.akamaihd.net/content/sintel/subtitles/subtitles_en.vtt",
+        // }}
+        // selectedVideoTrack
+        // selectedAudioTrack
+        // style
+        // onFullscreenPlayerWillPresent
+        // onFullscreenPlayerDidPresent
+        // onFullscreenPlayerWillDismiss
+        // onFullscreenPlayerDidDismiss
+        // onBufferingStateChange
+        // onSourceChange
+        // onLoadStart
+        // onLoadedMetadata={onLoadedMetadata}
+        // onLoadedData
+        // onReadyStateChange
+        // onError
+        // onProgress
+        // onPlay
+        // onPlaying
+        // onPause
+        // onSeeking
+        // onSeeked
+        // onEnded
+        // onTimeUpdate={(e) => {
+        //   console.log(e);
+        // }}
+        // onDurationChange
+        // onSegmentNotFound
+        // onTextTrackListEvent={(e) => {
+        //   console.log("text tracks", e);
+        // }}
+        // onTextTrackEvent
+      />
+    </View>
+  );
   const subtitles = movie?.subtitles_tracks?.map((subtitle) => ({
     label: subtitle.label,
     language: subtitle.lang,
