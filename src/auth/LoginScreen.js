@@ -32,7 +32,7 @@ import LinearGradient from "react-native-linear-gradient";
 import geoLocationApi from "../api/geoLocationApi";
 import axios from "axios";
 import { StackActions } from "@react-navigation/native";
-
+import ModalComponent from "../components/ModalComponent";
 const LoginScreen = ({ navigation }) => {
   const userState = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -315,20 +315,16 @@ const LoginScreen = ({ navigation }) => {
             justifyContent: "center",
           }}
         >
-          {btnClicked ? (
-            <ActivityIndicator animating color={"white"} size="large" />
-          ) : (
-            <Text
-              style={{
-                color: "white",
-                fontSize: 18,
-                fontWeight: "bold",
-                textTransform: "uppercase",
-              }}
-            >
-              Sign in
-            </Text>
-          )}
+          <Text
+            style={{
+              color: "white",
+              fontSize: 18,
+              fontWeight: "bold",
+              textTransform: "uppercase",
+            }}
+          >
+            Sign in
+          </Text>
         </LinearGradient>
       </TouchableOpacity>
       <TouchableOpacity
@@ -360,6 +356,7 @@ const LoginScreen = ({ navigation }) => {
           Create Account
         </Text>
       </TouchableOpacity>
+      <ModalComponent isVisible={btnClicked} type="loader" />
     </View>
   );
 };

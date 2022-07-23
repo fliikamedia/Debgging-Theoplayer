@@ -257,6 +257,9 @@ PODS:
     - React-Core
   - react-native-spinkit (1.4.1):
     - React
+  - react-native-theoplayer (1.2.0):
+    - React-Core
+    - THEOplayerSDK-basic
   - react-native-video (5.2.0):
     - React-Core
     - react-native-video/Video (= 5.2.0)
@@ -383,11 +386,33 @@ PODS:
   - SDWebImageWebPCoder (0.8.4):
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.10)
+  - Stripe (22.5.1):
+    - Stripe/Stripe3DS2 (= 22.5.1)
+    - StripeApplePay (= 22.5.1)
+    - StripeCore (= 22.5.1)
+    - StripeUICore (= 22.5.1)
+  - stripe-react-native (0.15.0):
+    - React-Core
+    - Stripe (~> 22.5.1)
+    - StripeFinancialConnections (~> 22.5.1)
+  - Stripe/Stripe3DS2 (22.5.1):
+    - StripeApplePay (= 22.5.1)
+    - StripeCore (= 22.5.1)
+    - StripeUICore (= 22.5.1)
+  - StripeApplePay (22.5.1):
+    - StripeCore (= 22.5.1)
+  - StripeCore (22.5.1)
+  - StripeFinancialConnections (22.5.1):
+    - StripeCore (= 22.5.1)
+    - StripeUICore (= 22.5.1)
+  - StripeUICore (22.5.1):
+    - StripeCore (= 22.5.1)
   - takeoffmedia-react-native-bitmovin-player (0.2.3):
     - BitmovinAnalyticsCollector/BitmovinPlayer (= 1.20.0-beta2)
     - BitmovinAnalyticsCollector/Core (= 1.20.0-beta2)
     - BitmovinPlayer (= 2.66.0)
     - React-Core
+  - THEOplayerSDK-basic (3.6.1)
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -418,6 +443,7 @@ DEPENDENCIES:
   - react-native-orientation (from `../node_modules/react-native-orientation`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-spinkit (from `../node_modules/react-native-spinkit`)
+  - react-native-theoplayer (from `../node_modules/react-native-theoplayer`)
   - react-native-video (from `../node_modules/react-native-video`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -441,6 +467,7 @@ DEPENDENCIES:
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
+  - "stripe-react-native (from `../node_modules/@stripe/stripe-react-native`)"
   - "takeoffmedia-react-native-bitmovin-player (from `../node_modules/@takeoffmedia/react-native-bitmovin-player`)"
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -457,6 +484,12 @@ SPEC REPOS:
     - PromisesObjC
     - SDWebImage
     - SDWebImageWebPCoder
+    - Stripe
+    - StripeApplePay
+    - StripeCore
+    - StripeFinancialConnections
+    - StripeUICore
+    - THEOplayerSDK-basic
 
 EXTERNAL SOURCES:
   BitmovinAnalyticsCollector:
@@ -509,6 +542,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-spinkit:
     :path: "../node_modules/react-native-spinkit"
+  react-native-theoplayer:
+    :path: "../node_modules/react-native-theoplayer"
   react-native-video:
     :path: "../node_modules/react-native-video"
   React-perflogger:
@@ -555,6 +590,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-svg"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
+  stripe-react-native:
+    :path: "../node_modules/@stripe/stripe-react-native"
   takeoffmedia-react-native-bitmovin-player:
     :path: "../node_modules/@takeoffmedia/react-native-bitmovin-player"
   Yoga:
@@ -602,6 +639,7 @@ SPEC CHECKSUMS:
   react-native-orientation: f1caf84d65f1a4fd4511a18f2b924e634ad7a628
   react-native-safe-area-context: f0906bf8bc9835ac9a9d3f97e8bde2a997d8da79
   react-native-spinkit: da294fd828216ad211fe36a5c14c1e09f09e62db
+  react-native-theoplayer: a01f633ff1e3a82fbed774ebd42cb57ed84a6084
   react-native-video: a4c2635d0802f983594b7057e1bce8f442f0ad28
   React-perflogger: 25373e382fed75ce768a443822f07098a15ab737
   React-RCTActionSheet: af7796ba49ffe4ca92e7277a5d992d37203f7da5
@@ -627,9 +665,16 @@ SPEC CHECKSUMS:
   RNVectorIcons: 31cebfcf94e8cf8686eb5303ae0357da64d7a5a4
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: f93010f3f6c031e2f8fb3081ca4ee6966c539815
+  Stripe: 2b2decd03146e08a350960966d41f3028c2eac29
+  stripe-react-native: 5817de3b998cf6ca2ccd4b91ce007b377398ecdd
+  StripeApplePay: b14f06ac6fc24b56704c1e598149ed0cc45e166f
+  StripeCore: 4833738f2ca4336712f279f3c2867a0a7eb67c93
+  StripeFinancialConnections: 982115b82af429968d8aa78d329a42ed7ba3feab
+  StripeUICore: 08c1efbd7e3c54ee7fa74334a37a1d4c08ba944d
   takeoffmedia-react-native-bitmovin-player: c7453ed9d140d0fd7dd91e6f37c670c338a0693a
+  THEOplayerSDK-basic: a64ddb55de397c078896beebbaf70dd39e4fa974
   Yoga: 575c581c63e0d35c9a83f4b46d01d63abc1100ac
 
-PODFILE CHECKSUM: 5173a83cf1cb2272068324039e3133fda44ad98d
+PODFILE CHECKSUM: 02af9ef60b722344773c1e766231e92653ae62b3
 
 COCOAPODS: 1.11.3

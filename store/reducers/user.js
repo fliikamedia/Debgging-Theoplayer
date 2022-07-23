@@ -53,6 +53,10 @@ import {
   FETCH_PROFILE,
   FETCH_PROFILE_SUCCESS,
   FETCH_PROFILE_FALED,
+  CHOOSING_SUBSCRIPTION,
+  CREATE_USER,
+  CREATE_USER_SUCCESS,
+  CREATE_USER_FAILED,
 } from "../actions/user";
 const initialState = {
   profileName: null,
@@ -82,6 +86,12 @@ const userReducer = (state = initialState, { type, payload }) => {
     case ADD_USER_SUCCESS:
       return { ...state, user: payload };
     case ADD_USER_FAILED:
+      return { ...state };
+    case CREATE_USER:
+      return { ...state };
+    case CREATE_USER_SUCCESS:
+      return { ...state, user: payload };
+    case CREATE_USER_FAILED:
       return { ...state };
     case GET_USER:
       return { ...state, isFetching: true };
@@ -164,11 +174,18 @@ const userReducer = (state = initialState, { type, payload }) => {
     case LOGGED_IN_SUCCESS:
       return { ...state, isLoggedIn: "loggedIn" };
     case LOGGED_OUT_SUCCESS:
-      return { ...state, isLoggedIn: "loggedOut" };
+      return {
+        ...state,
+        isLoggedIn: "loggedOut",
+        user: [],
+        currentProfile: [],
+      };
     case FILLING_PROFILE:
       return { ...state, isLoggedIn: "signedUp" };
     case SELECTING_PROFILE:
       return { ...state, isLoggedIn: "selectingProfile" };
+    case CHOOSING_SUBSCRIPTION:
+      return { ...state, isLoggedIn: "selectingSubscription" };
     case GET_ALL_USERS_SUCCESS:
       return { ...state, allUsers: payload };
     case GET_ALL_WATCHED_MOVIES:

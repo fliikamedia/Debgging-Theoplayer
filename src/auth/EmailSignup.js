@@ -15,13 +15,28 @@ import { LOGIN, MOVIES, FILLPROFILESCREEN } from "../../constants/RouteNames";
 import { HelperText } from "react-native-paper";
 import { LogBox } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { addUser, fillingProfile } from "../../store/actions/user";
+import {
+  addUser,
+  createUser,
+  fillingProfile,
+  subscribing,
+  postGeolocation,
+  setEmailFunc,
+} from "../../store/actions/user";
 import { useDispatch } from "react-redux";
 import { firebaseConfig } from "../api/FirebaseConfig";
 import AsyncStorage from "@react-native-community/async-storage";
 import NewTextInput from "../components/TextInput";
 import LinearGradient from "react-native-linear-gradient";
-
+import axios from "axios";
+import expressApi from "../api/expressApi";
+import {
+  CREATE_USER,
+  CREATE_USER_SUCCESS,
+  CREATE_USER_FAILED,
+} from "../../store/actions/user";
+import ModalComponent from "../components/ModalComponent";
+// import { firestore } from "@react-native-firebase/firestore";
 const EmailSignup = ({ navigation }) => {
   const appState = useRef(AppState.currentState);
   const dispatch = useDispatch();
@@ -41,55 +56,6 @@ const EmailSignup = ({ navigation }) => {
   const [signedup, setSignedup] = useState(false);
   const [btnClicked, setBtnClicked] = useState(false);
 
-  useEffect(() => {
-    if (signedup && !error) {
-      const interval = setInterval(() => setTime(Date.now()), 1000);
-      return () => {
-        clearInterval(interval);
-      };
-    }
-  }, [signedup]);
-  const checkIFLoggedIn = () => {
-    //console.log('checks');
-    firebase
-      .app()
-      .delete()
-      .then(function () {
-        //console.log('initializing');
-        firebase.initializeApp(firebaseConfig);
-      })
-      .then(function () {
-        firebase.auth().onAuthStateChanged(async (user) => {
-          if (user && user.emailVerified) {
-            //console.log('success');
-            // await AsyncStorage.setItem("whatPhase", "Signed up")
-            fillingProfile()(dispatch);
-            setSignedup(false);
-            setBtnClicked(false);
-            navigation.navigate(FILLPROFILESCREEN);
-          } else {
-            //console.log('failed',user);
-          }
-        });
-      });
-  };
-  useEffect(() => {
-    if (signedup && !error) {
-      checkIFLoggedIn();
-      //console.log('checking');
-    }
-  }, [time]);
-  useEffect(() => {
-    const subscription = AppState.addEventListener("change", checkIFLoggedIn);
-
-    return () => {
-      subscription.remove();
-    };
-  }, [appState]);
-  const showDatepicker = () => {
-    setShow(true);
-    showMode("date");
-  };
   const resetPassword = (email) => {
     firebase
       .auth()
@@ -103,28 +69,110 @@ const EmailSignup = ({ navigation }) => {
       });
   };
   const signupUser = async (email, password) => {
+    setEmailFunc(email)(dispatch);
     setBtnClicked(true);
-    try {
-      await firebase.auth().createUserWithEmailAndPassword(email, password);
-      const currentUser = firebase.auth().currentUser;
-
-      currentUser.sendEmailVerification().then(function () {
-        Alert.alert("", "An Email verification was sent to you", [
+    // try {
+    await firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then(async (currentUser) => {
+        const { uid, emailVerified } = currentUser;
+        const idToken = await firebase.auth().currentUser.getIdToken();
+        const result = await expressApi.post(
+          "/users/create-user",
+          { email: email, uid: uid, email_verified: emailVerified },
           {
-            text: "Ok",
-            onPress: () => {
-              setSignedup(true);
+            headers: {
+              authtoken: idToken,
             },
-          },
-        ]);
+          }
+        );
+        // console.log(result.data);
+        if (result.status === 200) {
+          dispatch({ type: CREATE_USER_SUCCESS, payload: result.data });
+        } else {
+          dispatch({ type: CREATE_USER_FAILED });
+          return;
+        }
+      })
+      .then(async () => {
+        console.log("geo");
+        const response = await axios.get(
+          "https://ipgeolocation.abstractapi.com/v1/?api_key=1a9aca489f7a4011bf341eb6c3883062"
+        );
+        // const { email } = currentUser;
+        if (response.data) {
+          await postGeolocation(email, response.data)(dispatch);
+        }
+      })
+      .then(() => {
+        console.log("done");
+        setBtnClicked(false);
+        subscribing()(dispatch);
+      })
+      // .then(async => {
+      //   const db = firebase.firestore();
+      //   await db
+      //     .collection("collected_emails")
+      //     .doc(currentUser.uid)
+      //     .set({
+      //       email: email,
+      //     })
+      // })
+      .catch((error) => {
+        console.log("errrrr", error);
+        setBtnClicked(false);
       });
+    // const currentUser = firebase.auth().currentUser;
+    // if (currentUser) {
+    //   const db = firebase.firestore();
+    //   await db
+    //     .collection("collected_emails")
+    //     .doc(currentUser.uid)
+    //     .set({
+    //       email: email,
+    //     })
+    //     .then(async () => {
+    //       console.log("current user");
+    //       const { uid, emailVerified } = currentUser;
+    //       const idToken = await firebase.auth().currentUser.getIdToken();
+    //       createUser(email, uid, idToken, emailVerified)(dispatch);
+    //     })
+    //     .then(async () => {
+    //       await axios.get(
+    //         "https://ipgeolocation.abstractapi.com/v1/?api_key=1a9aca489f7a4011bf341eb6c3883062"
+    //       );
+    //     })
+    //     .then((response) => {
+    //       // console.log(response.data);
+    //       // const { email } = currentUser;
 
-      //console.log('current user',currentUser);
-    } catch (err) {
-      console.log(err);
-      setError(err.message);
-      setBtnClicked(false);
-    }
+    //       postGeolocation(email, response.data)(dispatch);
+    //     })
+    //     .then(() => {
+    //       subscribing()(dispatch);
+    //     })
+    //     .catch((error) => {
+    //       console.log("err", error);
+    //     });
+    // }
+    // currentUser.sendEmailVerification().then(function () {
+    //   Alert.alert("", "An Email verification was sent to you", [
+    //     {
+    //       text: "Ok",
+    //       onPress: () => {
+    //         setSignedup(true);
+    //       },
+    //     },
+    //   ]);
+    // });
+
+    //console.log('current user',currentUser);
+    // } catch (err) {
+    //   console.log(err);
+    //   setError(err.message);
+    //   setBtnClicked(false);
+    // }
   };
   /// to be fixed
   LogBox.ignoreLogs(["Setting a timer"]);
@@ -277,20 +325,16 @@ const EmailSignup = ({ navigation }) => {
             justifyContent: "center",
           }}
         >
-          {btnClicked ? (
-            <ActivityIndicator animating color={"white"} size="large" />
-          ) : (
-            <Text
-              style={{
-                color: "white",
-                fontSize: 18,
-                fontWeight: "bold",
-                textTransform: "uppercase",
-              }}
-            >
-              GET STARTED
-            </Text>
-          )}
+          <Text
+            style={{
+              color: "white",
+              fontSize: 18,
+              fontWeight: "bold",
+              textTransform: "uppercase",
+            }}
+          >
+            GET STARTED
+          </Text>
         </LinearGradient>
       </TouchableOpacity>
       <Text
@@ -317,6 +361,7 @@ const EmailSignup = ({ navigation }) => {
           Sign in
         </Text>
       </TouchableOpacity>
+      <ModalComponent isVisible={btnClicked} type="loader" />
     </View>
   );
 };

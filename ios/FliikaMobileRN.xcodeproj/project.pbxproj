@@ -25,7 +25,7 @@
 		5714339BC17242E2816B7941 /* Roboto-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 85484FB658A245AD8A419422 /* Roboto-BoldItalic.ttf */; };
 		5A8E5B3FB8CE4D77996EA49C /* RobotoCondensed-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BB8B32B3264849048E2743CB /* RobotoCondensed-LightItalic.ttf */; };
 		5E82EE74AAC94B359644518D /* Roboto-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C555AA4B96BB4D35A4231104 /* Roboto-Italic.ttf */; };
-		61976AC326B6DAA700BF71CB /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61976AC226B6DAA700BF71CB /* File.swift */; };
+		61774A63288748F10056CEBA /* fix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61774A62288748F10056CEBA /* fix.swift */; };
 		65CAE063A4664C66816026EC /* CourierPrime-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8F3A59487B554E38A3443487 /* CourierPrime-Bold.ttf */; };
 		6D8871A30C7641F5BFD174CE /* Roboto-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 171A95EF9C904EE3A8EC2431 /* Roboto-Light.ttf */; };
 		76A310CCB703490A9049B193 /* Sora-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2D082FB808B04DD4A78F40FE /* Sora-ExtraLight.ttf */; };
@@ -96,8 +96,8 @@
 		614BC28526BC320300FA28BA /* AntDesign.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = AntDesign.ttf; path = "../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf"; sourceTree = "<group>"; };
 		614BC28626BC320300FA28BA /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome5_Brands.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf"; sourceTree = "<group>"; };
 		614BC28726BC320300FA28BA /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
+		61774A62288748F10056CEBA /* fix.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = fix.swift; sourceTree = "<group>"; };
 		61976AC126B6DAA700BF71CB /* FliikaMobileRN-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FliikaMobileRN-Bridging-Header.h"; sourceTree = "<group>"; };
-		61976AC226B6DAA700BF71CB /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		62146C76EF70D8324452BE4A /* Pods-FliikaMobileRN.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FliikaMobileRN.debug.xcconfig"; path = "Target Support Files/Pods-FliikaMobileRN/Pods-FliikaMobileRN.debug.xcconfig"; sourceTree = "<group>"; };
 		79DB096D66BF4C0AA52591AC /* CourierPrime-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "CourierPrime-Regular.ttf"; path = "../assets/fonts/CourierPrime-Regular.ttf"; sourceTree = "<group>"; };
 		80B584D9874A42DFBA751E32 /* Roboto-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Medium.ttf"; path = "../assets/fonts/Roboto-Medium.ttf"; sourceTree = "<group>"; };
@@ -230,7 +230,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				61976AC226B6DAA700BF71CB /* File.swift */,
+				61774A62288748F10056CEBA /* fix.swift */,
 				13B07FAE1A68108700A75B9A /* FliikaMobileRN */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* FliikaMobileRNTests */,
@@ -597,8 +597,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				61774A63288748F10056CEBA /* fix.swift in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
-				61976AC326B6DAA700BF71CB /* File.swift in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -677,11 +677,14 @@
 				DEVELOPMENT_TEAM = 3L7M7V65DJ;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = FliikaMobileRN/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -706,11 +709,14 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3L7M7V65DJ;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = FliikaMobileRN/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -780,8 +786,6 @@
 					"$(inherited)",
 				);
 				LIBRARY_SEARCH_PATHS = (
-					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
-					"\"$(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)\"",
 					"\"$(inherited)\"",
 				);
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -837,11 +841,7 @@
 					/usr/lib/swift,
 					"$(inherited)",
 				);
-				LIBRARY_SEARCH_PATHS = (
-					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
-					"\"$(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)\"",
-					"\"$(inherited)\"",
-				);
+	
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;

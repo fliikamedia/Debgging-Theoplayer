@@ -9,7 +9,12 @@ import {
 } from "react-native";
 import UserProfile from "./components/UserProfile";
 import { useSelector, useDispatch } from "react-redux";
-import { PROFILESCREEN, WATCHLIST } from "../constants/RouteNames";
+import {
+  PROFILESCREEN,
+  SUBSCRIPTIONS,
+  WATCHLIST,
+  ACCOUNT,
+} from "../constants/RouteNames";
 import { loggedOut } from "../store/actions/user";
 import firebase from "firebase";
 import Icon from "react-native-vector-icons/AntDesign";
@@ -18,9 +23,10 @@ const AccountSettings = ({ navigation }) => {
   const user = useSelector((state) => state.user);
   const [editing, setEditing] = useState(false);
   const accountItems = [
+    { title: "Account", func: () => navigation.navigate(ACCOUNT) },
     { title: "Watchlist", func: () => navigation.navigate(WATCHLIST) },
-    { title: "App Settings", func: () => console.log("click") },
-    { title: "Account", func: () => console.log("click") },
+    // { title: "App Settings", func: () => console.log("click") },
+    { title: "Subscriptions", func: () => navigation.navigate(SUBSCRIPTIONS) },
     {
       title: "Switch Profiles",
       func: () => navigation.navigate(PROFILESCREEN),

@@ -60,7 +60,7 @@ const HomeScreen = ({ navigation }) => {
   //LogBox.ignoreLogs(["Calling `getNode()`"]);
   const user = useSelector((state) => state.user);
   const movies = useSelector((state) => state.movies);
-  // console.log("fetching", user.currentProfile);
+  // console.log("fetching", user);
 
   const squareVideoHeight =
     SIZES.height < 700 ? SIZES.height * 0.6 : SIZES.height * 0.7;
@@ -118,8 +118,6 @@ const HomeScreen = ({ navigation }) => {
   }, [headerOpacity, navigation]);
   useEffect(() => {
     const unsubscribe = navigation.addListener("blur", () => {
-      console.log("Leaving Home Screen", videoRef.current.props.paused);
-
       setVideoPaused(true);
     });
 
@@ -511,21 +509,12 @@ const HomeScreen = ({ navigation }) => {
                       movieId: squarePlayId,
                     });
                   }}
-                  style={{
-                    padding: 16,
-                    borderRadius: 40,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    // elevation: 25,
-                    borderWidth: 1,
-                    borderColor: "#fff",
-                  }}
+                  style={styles.playIconContainerSquare}
                 >
                   <IconAwesome
                     name="play"
-                    size={20}
-                    // color="#B0E0E6"
-                    color="#fff"
+                    size={22}
+                    color="#00BFFF"
                     style={{ marginLeft: 4 }}
                   />
                   {/*             <IconAwesome
@@ -1053,11 +1042,14 @@ const HomeScreen = ({ navigation }) => {
               <View>
                 <TouchableOpacity
                   onPress={() => {
-                    navigation.navigate(MOVIEDETAIL, {
-                      selectedMovie: background._id,
-                      isSeries: background.film_type,
-                      seriesTitle: background.name,
+                    navigation.navigate(BITMOVINPLAYER, {
+                      movieId: background._id,
                     });
+                    // navigation.navigate(MOVIEDETAIL, {
+                    //   selectedMovie: background._id,
+                    //   isSeries: background.film_type,
+                    //   seriesTitle: background.name,
+                    // });
                   }}
                   style={styles.playIconContainer}
                 >
@@ -1476,6 +1468,17 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#4682B4",
     marginBottom: 14,
+  },
+  playIconContainerSquare: {
+    backgroundColor: "#000020",
+    padding: 16,
+    borderRadius: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 25,
+    borderWidth: 1,
+    borderColor: "#4682B4",
+    // marginBottom: 14,
   },
   carouselIconInfo: {
     position: "absolute",

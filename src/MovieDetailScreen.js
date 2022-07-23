@@ -435,6 +435,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
     ) {
       return (
         <TouchableOpacity
+          style={{ minHeight: 40, minWidth: 40, justifyContent: "center" }}
           onPress={() => {
             showToast("Removed from watch list");
             removeFromProfileWatchList(
@@ -447,7 +448,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
         >
           <Icon
             name="book-remove-multiple-outline"
-            size={40}
+            size={33}
             color={COLORS.white}
           />
         </TouchableOpacity>
@@ -455,6 +456,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
     } else {
       return (
         <TouchableOpacity
+          style={{ minHeight: 40, minWidth: 40, justifyContent: "center" }}
           onPress={() => {
             showToast("Added to watch list");
             addToProfileWatchList(
@@ -597,14 +599,29 @@ const MovieDetailScreen = ({ navigation, route }) => {
                   {isSeries === "movie" ? movieIcons() : null}
 
                   {isSeries == "movie" ? (
-                    <IconFeather
-                      name="download-cloud"
-                      size={30}
-                      color={COLORS.white}
-                    />
+                    <TouchableOpacity
+                      style={{
+                        minHeight: 40,
+                        minWidth: 40,
+                        justifyContent: "center",
+                      }}
+                    >
+                      <IconFeather
+                        name="download-cloud"
+                        size={30}
+                        color={COLORS.white}
+                      />
+                    </TouchableOpacity>
                   ) : null}
                   {isSeries === "movie" ? (
-                    <TouchableOpacity onPress={() => onShare()}>
+                    <TouchableOpacity
+                      style={{
+                        minHeight: 40,
+                        minWidth: 40,
+                        justifyContent: "center",
+                      }}
+                      onPress={() => onShare()}
+                    >
                       <MaterialCommunityIcons
                         name="share"
                         size={30}
@@ -620,6 +637,9 @@ const MovieDetailScreen = ({ navigation, route }) => {
                   textTransform: "uppercase",
                   fontSize: 20,
                   fontWeight: "bold",
+                  marginTop: 5,
+                  width: "90%",
+                  textAlign: "center",
                 }}
               >
                 {currentMovie.title}
