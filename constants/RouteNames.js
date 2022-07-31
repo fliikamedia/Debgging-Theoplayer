@@ -24,3 +24,4 @@ export const ACCOUNTSETTINGS = "Account Settings";
 export const SUBSCRIPTIONS = "Subscriptions";
 export const SELECTSUBSCRIPTION = "SELECTSUBSCRIPTION";
 export const ACCOUNT = "Account";
+export const THEOPLAYER = "Theo Player";
