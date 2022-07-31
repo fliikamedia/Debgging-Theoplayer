@@ -302,7 +302,7 @@ const SignupScreen = ({ navigation }) => {
             Password must be at least 6 characters long
           </HelperText>
         ) : null} */}
-        <NewTextInput
+        {/* <NewTextInput
           onFocus={() => showDatepicker()}
           iconName="calendar"
           iconSize={25}
@@ -313,7 +313,7 @@ const SignupScreen = ({ navigation }) => {
           autoCapitalize="none"
           value={yearOfBirth}
           showSoftInputOnFocus={false}
-        />
+        /> */}
         {/* <TextInput
           showSoftInputOnFocus={false}
           onFocus={() => showDatepicker()}
@@ -328,7 +328,7 @@ const SignupScreen = ({ navigation }) => {
             colors: { primary: `${inputColor}`, underlineColor: "transparent" },
           }}
         /> */}
-        <NewTextInput
+        {/* <NewTextInput
           iconName="phone"
           onFocus={() => setPhoneNumber("+")}
           iconSize={22}
@@ -339,7 +339,7 @@ const SignupScreen = ({ navigation }) => {
           autoCapitalize="none"
           value={phoneNumber}
           keyboardType="numeric"
-        />
+        /> */}
         {/* <TextInput
           label="Phone number"
           onFocus={() => setPhoneNumber("+")}
