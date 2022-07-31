@@ -1,5 +1,12 @@
 import React, { useRef, useEffect, useState } from "react";
-import { View, StatusBar, AppState, Platform, StyleSheet } from "react-native";
+import {
+  View,
+  StatusBar,
+  AppState,
+  Platform,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import Orientation from "react-native-orientation";
 import {
   addToWatchList,
@@ -15,6 +22,8 @@ import AsyncStorage from "@react-native-community/async-storage";
 import KeepAwake from "@sayem314/react-native-keep-awake";
 import moment from "moment";
 import { PlayerConfiguration, THEOplayerView } from "react-native-theoplayer";
+import Icon from "react-native-vector-icons/AntDesign";
+import { SIZES } from "../constants";
 const TheoPlayerPage = ({ navigation, route }) => {
   const user = useSelector((state) => state.user);
   const movies = useSelector((state) => state.movies);
@@ -264,6 +273,12 @@ const TheoPlayerPage = ({ navigation, route }) => {
     <View
       style={{ position: "absolute", top: 0, left: 0, bottom: 0, right: 0 }}
     >
+      <TouchableOpacity
+        style={styles.backArrow}
+        onPress={() => navigation.goBack()}
+      >
+        <Icon name="arrowleft" color="#fff" size={30} />
+      </TouchableOpacity>
       <THEOplayerView
         config={playerConfig}
         source={source}
@@ -316,6 +331,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "black",
+  },
+  backArrow: {
+    zIndex: 40,
+    top: 30,
+    left: 30,
   },
 });
 export default TheoPlayerPage;
