@@ -28,6 +28,7 @@ import {
   WELCOMESCREEN,
   MOVIEDETAIL,
   SERIESEXTRASTAB,
+  THEOPLAYER,
 } from "../constants/RouteNames";
 import { Menu } from "react-native-paper";
 import axios from "axios";
@@ -65,6 +66,7 @@ import ExtrasScreen from "./topTabScreens/ExtrasScreen";
 import DefaultScreen from "./topTabScreens/DefaultScreen";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 const MovieDetailScreen = ({ navigation, route }) => {
+  const CURRENT_PLAYER = THEOPLAYER;
   const Tab = createMaterialTopTabNavigator();
 
   const user = useSelector((state) => state.user);
@@ -557,7 +559,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
                   {isSeries == "movie" ? (
                     <TouchableOpacity
                       onPress={() => {
-                        navigation.navigate(BITMOVINPLAYER, {
+                        navigation.navigate(CURRENT_PLAYER, {
                           movieId: currentMovie._id,
                           time: null,
                         });

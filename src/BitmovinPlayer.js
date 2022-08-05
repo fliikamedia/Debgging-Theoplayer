@@ -36,7 +36,7 @@ const BitmovinPlayer = ({ navigation, route }) => {
       (data) => data.movieId === movieId
     ).watchedAt;
   } catch (err) {
-    console.log(err);
+    console.log("errrrrrrrs", err);
     watchedTime = 0;
   }
   // const videoUrl = Platform.select({

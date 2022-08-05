@@ -24,6 +24,8 @@ import moment from "moment";
 import { PlayerConfiguration, THEOplayerView } from "react-native-theoplayer";
 import Icon from "react-native-vector-icons/AntDesign";
 import { SIZES } from "../constants";
+import ReactNativeTheoUI from "./theoplayer/ReactNativeTheoUI";
+
 const TheoPlayerPage = ({ navigation, route }) => {
   const user = useSelector((state) => state.user);
   const movies = useSelector((state) => state.movies);
@@ -42,7 +44,7 @@ const TheoPlayerPage = ({ navigation, route }) => {
       (data) => data.movieId === movieId
     ).watchedAt;
   } catch (err) {
-    console.log(err);
+    console.log("errrrrrrrs", err);
     watchedTime = 0;
   }
   // const videoUrl = Platform.select({
@@ -252,6 +254,14 @@ const TheoPlayerPage = ({ navigation, route }) => {
       },
     ],
     textTracks: theoSubtitles,
+    // textTracks: [
+    //   {
+    //     kind: "subtitles",
+    //     label: "english",
+    //     src: "https://fliikamediaservice-usea.streaming.media.azure.net/4ecba15f-ee02-48df-8c55-9ba7bd2f138e/mcjw-subs.vtt",
+    //     srclang: "En",
+    //   },
+    // ],
   };
   // };
   // const source = {
@@ -268,6 +278,8 @@ const TheoPlayerPage = ({ navigation, route }) => {
   //   console.log("loadedmetadata", JSON.stringify(data));
   // };
   // End of theo player
+
+  return <ReactNativeTheoUI source={source} config={playerConfig} />;
 
   return (
     <View

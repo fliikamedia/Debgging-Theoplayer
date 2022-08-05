@@ -26,6 +26,7 @@ import {
   EPISODEDETAIL,
   MOVIEDETAIL,
   BITMOVINPLAYER,
+  THEOPLAYER,
 } from "../constants/RouteNames";
 import FastImage from "react-native-fast-image";
 import moment from "moment";
@@ -33,6 +34,7 @@ import { COLORS, SIZES, icons } from ".././constants";
 import MovieDetailIcon from "./components/MovieDetailIcon";
 
 const EpisodeDetailScreen = ({ navigation, route }) => {
+  const CURRENT_PLAYER = THEOPLAYER;
   const user = useSelector((state) => state.user);
   const movies = useSelector((state) => state.movies);
   const dispatch = useDispatch();
@@ -209,7 +211,7 @@ const EpisodeDetailScreen = ({ navigation, route }) => {
             justifyContent: "center",
           }}
           onPress={() =>
-            navigation.navigate(BITMOVINPLAYER, {
+            navigation.navigate(CURRENT_PLAYER, {
               movieId: episode._id,
               time: null,
             })
@@ -237,7 +239,7 @@ const EpisodeDetailScreen = ({ navigation, route }) => {
               borderColor: "#fff",
             }}
             onPress={() =>
-              navigation.navigate(BITMOVINPLAYER, {
+              navigation.navigate(CURRENT_PLAYER, {
                 movieId: episode._id,
                 time: null,
               })
