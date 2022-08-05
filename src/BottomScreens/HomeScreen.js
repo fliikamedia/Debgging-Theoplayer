@@ -16,7 +16,11 @@ import {
   Platform,
 } from "react-native";
 import { COLORS, SIZES, icons } from "../../constants";
-import { BITMOVINPLAYER, MOVIEDETAIL } from "../../constants/RouteNames";
+import {
+  BITMOVINPLAYER,
+  MOVIEDETAIL,
+  THEOPLAYER,
+} from "../../constants/RouteNames";
 import firebase from "firebase";
 import Carousel from "react-native-snap-carousel";
 import LinearGradient from "react-native-linear-gradient";
@@ -52,6 +56,7 @@ import RbSheetMovieItem from "../components/RbSheetMovieItem";
 import Spinner from "react-native-spinkit";
 import { useIsFocused } from "@react-navigation/native";
 const HomeScreen = ({ navigation }) => {
+  const CURRENT_PLAYER = THEOPLAYER;
   const appState = useRef(AppState.currentState);
   const refRBSheet = useRef(null);
   const refRBSheetMovies = useRef(null);
@@ -505,7 +510,7 @@ const HomeScreen = ({ navigation }) => {
                 )}
                 <TouchableOpacity
                   onPress={() => {
-                    navigation.navigate(BITMOVINPLAYER, {
+                    navigation.navigate(CURRENT_PLAYER, {
                       movieId: squarePlayId,
                     });
                   }}
@@ -737,7 +742,7 @@ const HomeScreen = ({ navigation }) => {
                       });
                   }}
                   onPress={() => {
-                    navigation.navigate(BITMOVINPLAYER, {
+                    navigation.navigate(CURRENT_PLAYER, {
                       movieId: item._id,
                       time: item.time,
                     });
@@ -793,7 +798,7 @@ const HomeScreen = ({ navigation }) => {
                             });
                         }}
                         onPress={() => {
-                          navigation.navigate(BITMOVINPLAYER, {
+                          navigation.navigate(CURRENT_PLAYER, {
                             movieId: item._id,
                             time: item.time,
                           });
@@ -1042,7 +1047,7 @@ const HomeScreen = ({ navigation }) => {
               <View>
                 <TouchableOpacity
                   onPress={() => {
-                    navigation.navigate(BITMOVINPLAYER, {
+                    navigation.navigate(CURRENT_PLAYER, {
                       movieId: background._id,
                     });
                     // navigation.navigate(MOVIEDETAIL, {

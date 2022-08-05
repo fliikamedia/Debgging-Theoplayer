@@ -27,12 +27,14 @@ import {
   WATCHLIST,
   ACCOUNTSETTINGS,
   ACCOUNT,
+  THEOPLAYER,
 } from "../../constants/RouteNames";
 import { useNavigation } from "@react-navigation/native";
 import DrawerItems from "./DrawerItems";
 import BottomNav from "./BottomNav";
 import ProfileScreen from "../BottomScreens/ProfileScreen";
 import Account from "../Account";
+import TheoPlayer from "../TheoPlayerPage";
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 const MoviesNavogator = (props) => {
@@ -130,6 +132,11 @@ const MoviesNavogator = (props) => {
           headerTitleAlign: "center",
           headerTintColor: "#fff",
         }}
+      />
+      <Stack.Screen
+        name={THEOPLAYER}
+        component={TheoPlayer}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );

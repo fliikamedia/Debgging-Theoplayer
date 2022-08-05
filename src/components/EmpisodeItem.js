@@ -1,6 +1,10 @@
 import React from "react";
 import { Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
-import { EPISODEDETAIL, BITMOVINPLAYER } from "../../constants/RouteNames";
+import {
+  EPISODEDETAIL,
+  BITMOVINPLAYER,
+  THEOPLAYER,
+} from "../../constants/RouteNames";
 import IconAwesome from "react-native-vector-icons/FontAwesome5";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import FastImage from "react-native-fast-image";
@@ -9,6 +13,7 @@ import { useSelector } from "react-redux";
 import Feather from "react-native-vector-icons/Feather";
 
 const EpisodeItem = ({ episode, navigation, index }) => {
+  const CURRENT_PLAYER = THEOPLAYER;
   const user = useSelector((state) => state.user);
   const calculateProgress = (id) => {
     try {
@@ -43,7 +48,7 @@ const EpisodeItem = ({ episode, navigation, index }) => {
             alignSelf: "center",
           }}
           onPress={() =>
-            navigation.navigate(BITMOVINPLAYER, {
+            navigation.navigate(CURRENT_PLAYER, {
               movieId: episode._id,
             })
           }
@@ -63,7 +68,7 @@ const EpisodeItem = ({ episode, navigation, index }) => {
               borderColor: "#fff",
             }}
             onPress={() =>
-              navigation.navigate(BITMOVINPLAYER, {
+              navigation.navigate(CURRENT_PLAYER, {
                 movieId: episode._id,
               })
             }
