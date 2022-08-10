@@ -55,7 +55,7 @@ import ReactNativeBitmovinPlayer, {
   ReactNativeBitmovinPlayerIntance,
 } from "@takeoffmedia/react-native-bitmovin-player";
 import AsyncStorage from "@react-native-community/async-storage";
-import Orientation from "react-native-orientation";
+import Orientation from "react-native-orientation-locker";
 import moment from "moment";
 import FastImage from "react-native-fast-image";
 import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";

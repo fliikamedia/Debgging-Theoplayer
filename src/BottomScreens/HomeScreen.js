@@ -45,7 +45,7 @@ import NetInfo from "@react-native-community/netinfo";
 import FastImage from "react-native-fast-image";
 import IconAnt from "react-native-vector-icons/AntDesign";
 import AsyncStorage from "@react-native-community/async-storage";
-import Orientation from "react-native-orientation";
+import Orientation from "react-native-orientation-locker";
 import Video, { currentPlaybackTime } from "react-native-video";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import moment from "moment";

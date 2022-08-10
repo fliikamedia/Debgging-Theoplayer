@@ -7,7 +7,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import Orientation from "react-native-orientation";
+// import Orientation from "react-native-orientation-locker";
 import {
   addToWatchList,
   removeFromWatchList,
@@ -25,7 +25,11 @@ import { PlayerConfiguration, THEOplayerView } from "react-native-theoplayer";
 import Icon from "react-native-vector-icons/AntDesign";
 import { SIZES } from "../constants";
 import ReactNativeTheoUI from "./theoplayer/ReactNativeTheoUI";
-
+import {
+  OrientationLocker,
+  PORTRAIT,
+  LANDSCAPE,
+} from "react-native-orientation-locker";
 const TheoPlayerPage = ({ navigation, route }) => {
   const user = useSelector((state) => state.user);
   const movies = useSelector((state) => state.movies);
@@ -79,12 +83,12 @@ const TheoPlayerPage = ({ navigation, route }) => {
       }
     }
   };
-  useEffect(() => {
-    Platform.OS == "android"
-      ? Orientation.lockToLandscapeLeft()
-      : Orientation.lockToLandscapeRight();
-    setWatchedMovie();
-  }, []);
+  // useEffect(() => {
+  //   Platform.OS == "android"
+  //     ? Orientation.lockToLandscapeLeft()
+  //     : Orientation.lockToLandscapeRight();
+  //   setWatchedMovie();
+  // }, []);
   const stopPlaying = async () => {
     // const didPlay = await AsyncStorage.getItem("didPlay");
     // //Orientation.lockToPortrait();
@@ -279,7 +283,12 @@ const TheoPlayerPage = ({ navigation, route }) => {
   // };
   // End of theo player
 
-  return <ReactNativeTheoUI source={source} config={playerConfig} />;
+  return (
+    <View style={{ flex: 1 }}>
+      <OrientationLocker orientation={LANDSCAPE} />
+      <ReactNativeTheoUI source={source} config={playerConfig} />
+    </View>
+  );
 
   return (
     <View

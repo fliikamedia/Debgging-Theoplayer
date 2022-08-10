@@ -3,7 +3,7 @@ import { View, StatusBar, AppState, Platform, StyleSheet } from "react-native";
 import ReactNativeBitmovinPlayer, {
   ReactNativeBitmovinPlayerMethodsType,
 } from "@takeoffmedia/react-native-bitmovin-player";
-import Orientation from "react-native-orientation";
+import Orientation from "react-native-orientation-locker";
 import {
   addToWatchList,
   removeFromWatchList,

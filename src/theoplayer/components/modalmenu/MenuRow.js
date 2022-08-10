@@ -1,5 +1,5 @@
-import {Text, TouchableOpacity} from 'react-native';
-import React from 'react';
+import { Text, TouchableOpacity } from "react-native";
+import React from "react";
 // import type { MenuItem } from './MenuItem';
 
 // export interface MenuRowProps {
@@ -9,10 +9,10 @@ import React from 'react';
 //   data: MenuItem;
 // }
 
-export const MenuRow = props => {
-  const {selected, onSelected, hasTVPreferredFocus, data} = props;
-  if (!data) return <></>;
-  const {label} = data;
+export const MenuRow = (props) => {
+  const { selected, onSelected, hasTVPreferredFocus, data } = props;
+  if (!data || data?.label === "CC") return <></>;
+  const { label } = data;
   // console.log('daaaaaaaaaaaata', data);
   return (
     <TouchableOpacity
@@ -21,13 +21,15 @@ export const MenuRow = props => {
         if (onSelected) {
           onSelected();
         }
-      }}>
+      }}
+    >
       <Text
         style={{
-          color: selected ? '#ffc50f' : 'white',
+          color: selected ? "#ffc50f" : "white",
           fontSize: 16,
           marginVertical: 5,
-        }}>
+        }}
+      >
         {label}
         {/* english */}
       </Text>

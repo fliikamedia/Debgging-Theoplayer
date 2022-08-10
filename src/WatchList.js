@@ -25,7 +25,7 @@ import IconMaterial from "react-native-vector-icons/MaterialIcons";
 import RbSheetMovieItem from "./components/RbSheetMovieItem";
 import RbSheetSeasonItem from "./components/RbSheetSeasonItem";
 import AsyncStorage from "@react-native-community/async-storage";
-import Orientation from "react-native-orientation";
+import Orientation from "react-native-orientation-locker";
 import moment from "moment";
 import firebase from "firebase";
 
