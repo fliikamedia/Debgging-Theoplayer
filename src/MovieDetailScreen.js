@@ -539,7 +539,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
               colors={["transparent", "#000"]}
               style={{
                 width: "100%",
-                height: 150,
+                // height: 150,
                 alignItems: "center",
                 justifyContent: "flex-end",
               }}
@@ -549,6 +549,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
                   flexDirection: "row",
                   width: "100%",
                   justifyContent: "space-between",
+                  height: 110,
                 }}
               >
                 <Animatable.View
