@@ -74,7 +74,8 @@ const VideoPlayerUI = ({
       onSeeks(time);
     }
   };
-  // console.log("selectedTextTrack", selectedTextTrack);
+  // console.log("selectedTextTrack", typeof (duration - currentTime));
+  // console.log("left", duration - currentTime < 10000);
   // console.log(currentTime);
   // var myVar;
 
@@ -322,6 +323,21 @@ const VideoPlayerUI = ({
           </View>
         )}
 
+        {/* {duration - currentTime < 10000 && (
+          <TouchableOpacity
+            style={{
+              width: 100,
+              height: 60,
+              borderWidth: 1,
+              borderColor: "#fff",
+              position: "absolute",
+              right: 20,
+              top: 200,
+            }}
+          >
+            <Text style={{ color: "#fff" }}>Next Episode</Text>
+          </TouchableOpacity>
+        )} */}
         {screenClicked && (
           <View style={styles.controlsContainer}>
             <SeekBar

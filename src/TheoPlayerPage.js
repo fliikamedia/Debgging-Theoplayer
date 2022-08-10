@@ -229,7 +229,7 @@ const TheoPlayerPage = ({ navigation, route }) => {
     chromeless: Platform.OS === "ios" ? false : true,
   };
   const theoSubtitles = movie?.subtitles_tracks?.map((subtitle, index) => ({
-    default: true,
+    // default: true,
     kind: "subtitles",
     label: subtitle.label,
     src: subtitle.url,
