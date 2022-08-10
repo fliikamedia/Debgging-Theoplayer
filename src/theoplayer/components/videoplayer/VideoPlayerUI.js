@@ -6,7 +6,13 @@ import {
   TextTrack,
 } from "react-native-theoplayer";
 
-import { Platform, Text, View, TouchableOpacity, Image } from "react-native";
+import {
+  Platform,
+  Text,
+  View,
+  TouchableOpacity,
+  StatusBar,
+} from "react-native";
 import { SeekBar } from "../seekbar/SeekBar";
 import styles from "./VideoPlayerUI.style";
 import { DelayedActivityIndicator } from "../delayedactivityindicator/DelayedActivityIndicator";
@@ -78,9 +84,9 @@ const VideoPlayerUI = ({
   //   }, 2000);
   // }
 
-  useEffect(() => {
-    onSetFullScreen(true);
-  }, []);
+  // useEffect(() => {
+  //   onSetFullScreen(true);
+  // }, []);
   function myStopFunction() {
     console.log(timer.current);
     clearTimeout(timer.current);
@@ -211,6 +217,7 @@ const VideoPlayerUI = ({
 
   return (
     <View style={[styles.container, style]}>
+      <StatusBar hidden></StatusBar>
       <TouchableOpacity
         onPress={() => {
           toggleScreenTouched();
@@ -414,13 +421,13 @@ const VideoPlayerUI = ({
               )} */}
 
               {/*Fullscreen*/}
-              {!Platform.isTV && (
+              {/* {!Platform.isTV && (
                 <ActionButton
                   icon={fullscreen ? FullScreenExitIcon : FullScreenIcon}
                   onPress={toggleFullScreen}
                   iconStyle={styles.menuIcon}
                 />
-              )}
+              )} */}
             </View>
           </View>
         )}

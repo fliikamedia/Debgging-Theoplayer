@@ -1,8 +1,8 @@
 // import type { ImageSourcePropType, ImageStyle, StyleProp, TextStyle, ViewStyle } from 'react-native';
-import React, {useState} from 'react';
-import {ActionButton} from '../actionbutton/ActionButton';
-import {ModalMenu} from '../modalmenu/ModalMenu';
-import {MenuRow} from '../modalmenu/MenuRow';
+import React, { useState } from "react";
+import { ActionButton } from "../actionbutton/ActionButton";
+import { ModalMenu } from "../modalmenu/ModalMenu";
+import { MenuRow } from "../modalmenu/MenuRow";
 // import type { MenuItem } from '../modalmenu/MenuItem';
 
 // export interface MenuButtonProps {
@@ -19,7 +19,7 @@ import {MenuRow} from '../modalmenu/MenuRow';
 //   style?: StyleProp<ViewStyle>;
 // }
 
-export const MenuButton = props => {
+export const MenuButton = (props) => {
   const {
     icon,
     title,
@@ -63,10 +63,11 @@ export const MenuButton = props => {
             setModalVisible(false);
             setScreenClicked(false);
           }}
-          title={title}>
+          title={title}
+        >
           {data.map((item, index) => (
             <MenuRow
-              key={keyExtractor ? keyExtractor(index) : ''}
+              key={keyExtractor ? keyExtractor(index) : ""}
               onSelected={() => {
                 if (onItemSelected) {
                   onItemSelected(index);
