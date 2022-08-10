@@ -70,11 +70,11 @@ const VideoPlayerUI = ({
   const timer = useRef();
   const navigation = useNavigation();
   const onSeek = (time) => {
-    // console.log(time);
     if (onSeeks) {
       onSeeks(time);
     }
   };
+  // console.log("selectedTextTrack", selectedTextTrack);
   // console.log(currentTime);
   // var myVar;
 
