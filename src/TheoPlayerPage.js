@@ -44,7 +44,7 @@ const TheoPlayerPage = ({ navigation, route }) => {
   const movie = movies.availableMovies.find((r) => r._id === movieId);
   let watchedTime;
   try {
-    watchedTime = user?.currentProfile?.watched.find(
+    watchedTime = user?.currentProfile?.watched?.find(
       (data) => data.movieId === movieId
     ).watchedAt;
   } catch (err) {
@@ -56,8 +56,16 @@ const TheoPlayerPage = ({ navigation, route }) => {
   //   android: "https://bitdash-a.akamaihd.net/content/sintel/sintel.mpd",
   //   default: "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8",
   // });
-  // console.log("watched", watchedTime);
-
+  let nextEpisode;
+  try {
+    nextEpisode = movies?.availableMovies?.find(
+      (item) =>
+        item.title === movie.title &&
+        item.episode_number === movie.episode_number + 1
+    );
+  } catch {
+    nextEpisode = null;
+  }
   const setWatchedMovie = async () => {
     if (movie.film_type == "movie") {
       AsyncStorage.setItem("isSeries", "movie");
@@ -286,7 +294,12 @@ const TheoPlayerPage = ({ navigation, route }) => {
   return (
     <View style={{ flex: 1 }}>
       <OrientationLocker orientation={LANDSCAPE} />
-      <ReactNativeTheoUI source={source} config={playerConfig} />
+      <ReactNativeTheoUI
+        source={source}
+        config={playerConfig}
+        watchedTime={watchedTime}
+        nextEpisode={nextEpisode}
+      />
     </View>
   );
 

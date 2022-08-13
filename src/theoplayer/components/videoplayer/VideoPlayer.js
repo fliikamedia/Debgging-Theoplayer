@@ -262,6 +262,8 @@ export class VideoPlayer extends PureComponent {
         {(chromeless == true || chromeless == undefined) && (
           <VideoPlayerUI
             sources={this.props.source}
+            watchedTime={this.props.watchedTime}
+            nextEpisode={this.props.nextEpisode}
             srcIndex={srcIndex}
             playbackRate={playbackRate}
             volume={volume}
