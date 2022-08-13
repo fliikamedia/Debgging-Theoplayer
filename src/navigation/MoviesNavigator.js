@@ -28,6 +28,7 @@ import {
   ACCOUNTSETTINGS,
   ACCOUNT,
   THEOPLAYER,
+  UPDATEPASSWORD,
 } from "../../constants/RouteNames";
 import { useNavigation } from "@react-navigation/native";
 import DrawerItems from "./DrawerItems";
@@ -35,6 +36,7 @@ import BottomNav from "./BottomNav";
 import ProfileScreen from "../BottomScreens/ProfileScreen";
 import Account from "../Account";
 import TheoPlayer from "../TheoPlayerPage";
+import UpdatePassword from "../UpdatePassword";
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 const MoviesNavogator = (props) => {
@@ -129,6 +131,16 @@ const MoviesNavogator = (props) => {
         options={{
           headerShown: true,
           headerTitle: ACCOUNT,
+          headerTitleAlign: "center",
+          headerTintColor: "#fff",
+        }}
+      />
+      <Stack.Screen
+        name={UPDATEPASSWORD}
+        component={UpdatePassword}
+        options={{
+          headerShown: true,
+          headerTitle: UPDATEPASSWORD,
           headerTitleAlign: "center",
           headerTintColor: "#fff",
         }}

@@ -1,17 +1,20 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useSelector } from "react-redux";
-const Account = () => {
+import { UPDATEPASSWORD } from "../constants/RouteNames";
+const Account = ({ navigation }) => {
   const user = useSelector((state) => state.user);
   return (
     <View>
       <View style={styles.itemContainer}>
         <Text style={styles.item}>{user.email}</Text>
-        <Text style={styles.change}>Change</Text>
+        {/* <Text style={styles.change}>Change</Text> */}
       </View>
       <View style={styles.itemContainer}>
         <Text style={styles.item}>Password: ********</Text>
-        <Text style={styles.change}>Change</Text>
+        <TouchableOpacity onPress={() => navigation.navigate(UPDATEPASSWORD)}>
+          <Text style={styles.change}>Change</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
