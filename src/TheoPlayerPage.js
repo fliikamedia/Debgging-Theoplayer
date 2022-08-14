@@ -311,6 +311,7 @@ const TheoPlayerPage = ({ navigation, route }) => {
         config={playerConfig}
         watchedTime={watchedTime}
         nextEpisode={nextEpisode}
+        title={movie.episode_title ? movie.episode_title : movie?.title}
       />
     </View>
   );

@@ -47,6 +47,7 @@ import IconAwesome from "react-native-vector-icons/FontAwesome5";
 import IconAnt from "react-native-vector-icons/AntDesign";
 import { THEOPLAYER } from "../../../../constants/RouteNames";
 import AsyncStorage from "@react-native-community/async-storage";
+import { SIZES } from "../../../../constants";
 const VideoPlayerUI = ({
   style,
   sources,
@@ -72,6 +73,7 @@ const VideoPlayerUI = ({
   onSeeks,
   watchedTime,
   nextEpisode,
+  title,
 }) => {
   const [screenClicked, setScreenClicked] = useState(false);
   const [seekingButton, setSeekingButton] = useState(false);
@@ -98,6 +100,12 @@ const VideoPlayerUI = ({
   //   onSetFullScreen(true);
   // }, []);
   // console.log("watchedTime", watchedTime);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     onSetPlayPause(true);
+  //   }, 1000);
+  // }, [title]);
+  console.log(watchedTime);
   const saveTiming = (x, y) => {
     AsyncStorage.setItem("duration", x);
     AsyncStorage.setItem("watched", y);
@@ -111,7 +119,7 @@ const VideoPlayerUI = ({
     }
   }, []);
   function myStopFunction() {
-    console.log(timer.current);
+    // console.log(timer.current);
     clearTimeout(timer.current);
   }
   useEffect(() => {
@@ -277,9 +285,31 @@ const VideoPlayerUI = ({
           </TouchableOpacity>
         )}
         {/*Background*/}
+        {screenClicked && (
+          <View
+            style={{
+              position: "absolute",
+              top: 20,
+              width: "100%",
+              // backgroundColor: "red",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text
+              style={{
+                color: "#fff",
+                fontFamily: "Sora-Regular",
+                fontSize: 16,
+              }}
+            >
+              {title}
+            </Text>
+          </View>
+        )}
         <View style={styles.background} />
 
-        {showLoadingIndicator && !paused && !seekingButton && (
+        {showLoadingIndicator && !paused && !seekingButton && !screenClicked && (
           <View style={styles.fullScreenCenter}>
             <DelayedActivityIndicator size="large" color="aqua" />
           </View>
@@ -442,6 +472,8 @@ const VideoPlayerUI = ({
               position: "absolute",
               right: 20,
               top: 200,
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
             <Text style={{ color: "#fff" }}>Next Episode</Text>
