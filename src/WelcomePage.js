@@ -24,7 +24,7 @@ import SVGImg from "../assets/fliika-logo.svg";
 import Spinner from "react-native-spinkit";
 
 const WelcomePage = ({ navigation }) => {
-  const [isPreloading, setIsPreloading] = useState(false);
+  const [isPreloading, setIsPreloading] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
 
   // Button Width Responsive

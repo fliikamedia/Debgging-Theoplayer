@@ -4,23 +4,40 @@ import { useSelector } from "react-redux";
 import { UPDATEPASSWORD } from "../constants/RouteNames";
 import DropDownPicker, { MyArrowUpIcon } from "react-native-dropdown-picker";
 import { Switch } from "react-native-paper";
-
+import { Dropdown } from "react-native-element-dropdown";
+import AntDesign from "react-native-vector-icons/AntDesign";
 const Account = ({ navigation }) => {
   const user = useSelector((state) => state.user);
-  const [value, setValue] = useState(null);
-  const [items, setItems] = useState([
-    { label: "English", value: "english" },
-    { label: "French", value: "french" },
-  ]);
-  const [open, setOpen] = useState(false);
-  const languages = [
+  // const [value, setValue] = useState(null);
+  // const [items, setItems] = useState([
+  //   { label: "English", value: "english" },
+  //   { label: "French", value: "french" },
+  // ]);
+  // const [open, setOpen] = useState(false);
+  // const languages = [
+  //   { label: "English", value: "english" },
+  //   { label: "French", value: "french" },
+  // ];
+  const data = [
     { label: "English", value: "english" },
     { label: "French", value: "french" },
   ];
+  const [value, setValue] = useState(null);
+  const [isFocus, setIsFocus] = useState(false);
   const [switchOn, setSwitchOn] = useState(false);
 
   const onToggleSwitch = () => {
     setSwitchOn(!switchOn);
+  };
+  const renderLabel = () => {
+    if (value || isFocus) {
+      return (
+        <Text style={[styles.label, isFocus && { color: "blue" }]}>
+          Dropdown label
+        </Text>
+      );
+    }
+    return null;
   };
   return (
     <View style={styles.container}>
@@ -37,13 +54,19 @@ const Account = ({ navigation }) => {
       </View>
       <Text style={styles.title}>Playback Settings</Text>
       <View style={styles.itemContainer}>
+        <Text style={styles.item}>My Watch History</Text>
+        <TouchableOpacity>
+          <Text style={styles.change}>Clear</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.itemContainer}>
         <Text style={styles.item}>Auto play subtitles</Text>
         <Switch value={switchOn} onValueChange={onToggleSwitch} color="aqua" />
       </View>
       <View style={styles.itemContainer}>
         <Text style={styles.item}>Favorite Language</Text>
         <View style={{ zIndex: 1000 }}>
-          <DropDownPicker
+          {/* <DropDownPicker
             showArrowIcon={true}
             // ArrowUpIconComponent={({ style }) => (
             //   <MyArrowUpIcon style={style} />
@@ -78,6 +101,36 @@ const Account = ({ navigation }) => {
               alignSelf: "center",
               opacity: 0.6,
             }}
+          /> */}
+          <Dropdown
+            style={[styles.dropdown, isFocus && { borderColor: "blue" }]}
+            placeholderStyle={styles.placeholderStyle}
+            selectedTextStyle={styles.selectedTextStyle}
+            inputSearchStyle={styles.inputSearchStyle}
+            iconStyle={styles.iconStyle}
+            data={data}
+            // search
+            // maxHeight={300}
+            labelField="label"
+            valueField="value"
+            placeholder={!isFocus ? "Select item" : "..."}
+            // searchPlaceholder="Search..."
+            dropdownPosition="auto"
+            value={value}
+            onFocus={() => setIsFocus(true)}
+            onBlur={() => setIsFocus(false)}
+            onChange={(item) => {
+              setValue(item.value);
+              setIsFocus(false);
+            }}
+            // renderLeftIcon={() => (
+            //   <AntDesign
+            //     style={styles.icon}
+            //     color={isFocus ? "blue" : "black"}
+            //     name="Safety"
+            //     size={20}
+            //   />
+            // )}
           />
         </View>
       </View>
@@ -119,6 +172,49 @@ const styles = StyleSheet.create({
     fontFamily: "Sora-Bold",
     fontSize: 18,
     marginBottom: 10,
+    marginTop: 20,
+  },
+  dropdown: {
+    // height: 50,
+    // borderColor: "gray",
+    // borderWidth: 0.5,
+    // borderRadius: 8,
+    // paddingHorizontal: 8,
+    width: 140,
+    height: "100%",
+    backgroundColor: "#202020",
+    borderRadius: 5,
+  },
+  icon: {
+    marginRight: 5,
+  },
+  label: {
+    position: "absolute",
+    backgroundColor: "white",
+    left: 22,
+    top: 8,
+    zIndex: 999,
+    paddingHorizontal: 8,
+    fontSize: 14,
+  },
+  placeholderStyle: {
+    fontSize: 16,
+    color: "#fff",
+    marginLeft: 5,
+  },
+  selectedTextStyle: {
+    fontSize: 18,
+    color: "#fff",
+    marginLeft: 5,
+    fontFamily: "Sora-Regular",
+  },
+  iconStyle: {
+    width: 20,
+    height: 20,
+  },
+  inputSearchStyle: {
+    height: 40,
+    fontSize: 16,
   },
 });
 export default Account;

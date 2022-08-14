@@ -30,6 +30,7 @@ import {
   PORTRAIT,
   LANDSCAPE,
 } from "react-native-orientation-locker";
+
 const TheoPlayerPage = ({ navigation, route }) => {
   const user = useSelector((state) => state.user);
   const movies = useSelector((state) => state.movies);
@@ -91,12 +92,12 @@ const TheoPlayerPage = ({ navigation, route }) => {
       }
     }
   };
-  // useEffect(() => {
-  //   Platform.OS == "android"
-  //     ? Orientation.lockToLandscapeLeft()
-  //     : Orientation.lockToLandscapeRight();
-  //   setWatchedMovie();
-  // }, []);
+  useEffect(() => {
+    // Platform.OS == "android"
+    //   ? Orientation.lockToLandscapeLeft()
+    //   : Orientation.lockToLandscapeRight();
+    setWatchedMovie();
+  }, []);
   const stopPlaying = async () => {
     // const didPlay = await AsyncStorage.getItem("didPlay");
     // //Orientation.lockToPortrait();
@@ -222,7 +223,18 @@ const TheoPlayerPage = ({ navigation, route }) => {
   } else {
     playURL = str;
   }
-
+  const saveMovieDetails = async () => {
+    await AsyncStorage.setItem("didPlay", "true"),
+      await AsyncStorage.setItem("movieName", movie.title),
+      await AsyncStorage.setItem("seasonNumber", String(movie.season_number)),
+      await AsyncStorage.setItem("episodeNumber", String(movie.episode_number)),
+      await AsyncStorage.setItem("movieId", String(movie._id)),
+      await AsyncStorage.setItem("userId", String(user.user._id)),
+      await AsyncStorage.setItem("profileId", String(user.currentProfile._id));
+  };
+  useEffect(() => {
+    saveMovieDetails();
+  }, [movie]);
   // Theo Player
 
   const license = Platform.select({

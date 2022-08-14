@@ -182,7 +182,7 @@ export const getUser = (email, authtoken) => async (dispatch) => {
           payload: result.data.profiles.find((r) => r.name == profileName),
         });
       } else { */
-      const fetchedProfile = result.data.profiles.find(
+      const fetchedProfile = result?.data?.profiles?.find(
         (r) => r.name == profileName
       );
       if (fetchedProfile) {

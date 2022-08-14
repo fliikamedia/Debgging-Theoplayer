@@ -46,6 +46,7 @@ import BackwardsSvg from "../../res/images/backwards.svg";
 import IconAwesome from "react-native-vector-icons/FontAwesome5";
 import IconAnt from "react-native-vector-icons/AntDesign";
 import { THEOPLAYER } from "../../../../constants/RouteNames";
+import AsyncStorage from "@react-native-community/async-storage";
 const VideoPlayerUI = ({
   style,
   sources,
@@ -96,11 +97,19 @@ const VideoPlayerUI = ({
   // useEffect(() => {
   //   onSetFullScreen(true);
   // }, []);
-  // useEffect(() => {
-  //   if (watchedTime) {
-  //     onSeeks(watchedTime);
-  //   }
-  // });
+  // console.log("watchedTime", watchedTime);
+  const saveTiming = (x, y) => {
+    AsyncStorage.setItem("duration", x);
+    AsyncStorage.setItem("watched", y);
+  };
+  useEffect(() => {
+    saveTiming(String(duration), String(currentTime));
+  }, [currentTime]);
+  useEffect(() => {
+    if (watchedTime) {
+      onSeeks(watchedTime);
+    }
+  }, []);
   function myStopFunction() {
     console.log(timer.current);
     clearTimeout(timer.current);

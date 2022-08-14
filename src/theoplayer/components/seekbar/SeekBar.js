@@ -1,4 +1,4 @@
-import React, {PureComponent} from 'react';
+import React, { PureComponent } from "react";
 // import 'react-native/tvos-types.d';
 import {
   findNodeHandle,
@@ -10,15 +10,15 @@ import {
   TouchableOpacity,
   TVEventHandler,
   View,
-} from 'react-native';
-import styles from './SeekBar.style';
+} from "react-native";
+import styles from "./SeekBar.style";
 import {
   SeekBarProps,
   SKIP_FORWARD_MSEC_DEFAULT,
   SKIP_BACKWARD_MSEC_DEFAULT,
   SEEK_TIMER_DELAY_MSEC,
   TIMEUPDATES_AFTER_SEEKING,
-} from './SeekBarProps';
+} from "./SeekBarProps";
 // import type { SeekBarPosition } from './SeekBarPosition';
 
 // interface SeekBarState {
@@ -67,8 +67,8 @@ export class SeekBar extends PureComponent {
       onMoveShouldSetPanResponder: () => true,
       onPanResponderTerminationRequest: () => false,
       onPanResponderGrant: () => {
-        this.setState({isScrubbing: false});
-        const {onStartScrubbing} = this.props;
+        this.setState({ isScrubbing: false });
+        const { onStartScrubbing } = this.props;
         if (onStartScrubbing) {
           onStartScrubbing();
         }
@@ -81,7 +81,7 @@ export class SeekBar extends PureComponent {
       },
       onPanResponderRelease: () => {
         // Note: isScrubbing state is disabled after a number of time updates.
-        const {onStopScrubbing} = this.props;
+        const { onStopScrubbing } = this.props;
         if (onStopScrubbing) {
           onStopScrubbing();
         }
@@ -92,22 +92,22 @@ export class SeekBar extends PureComponent {
   enableTVEventHandler() {
     this._tvEventHandler = new TVEventHandler();
     this._tvEventHandler.enable(this, (_cmp, evt) => {
-      const {focused} = this.state;
+      const { focused } = this.state;
       if (!focused) {
         return;
       }
-      if (Platform.OS == 'ios' && Platform.isTVOS) {
-        if (evt && evt.eventType === 'swipeRight') {
+      if (Platform.OS == "ios" && Platform.isTVOS) {
+        if (evt && evt.eventType === "swipeRight") {
           this.seekForward();
-        } else if (evt && evt.eventType === 'swipeLeft') {
+        } else if (evt && evt.eventType === "swipeLeft") {
           this.seekBackward();
         }
       } else {
-        if (evt && evt.eventType === 'right') {
+        if (evt && evt.eventType === "right") {
           if (evt.eventKeyAction === 1) {
             this.seekForward();
           }
-        } else if (evt && evt.eventType === 'left') {
+        } else if (evt && evt.eventType === "left") {
           if (evt.eventKeyAction === 1) {
             this.seekBackward();
           }
@@ -123,7 +123,7 @@ export class SeekBar extends PureComponent {
     }
   }
 
-  onSeekingPositionChanged = seekTime => {
+  onSeekingPositionChanged = (seekTime) => {
     const {
       onScrubbingPositionChanged,
       currentTime: prevTime,
@@ -134,9 +134,9 @@ export class SeekBar extends PureComponent {
     // clamp seekTime within seekable range.
     const clampedSeekTime = Math.max(
       this.seekableStart,
-      Math.min(this.duration, seekTime),
+      Math.min(this.duration, seekTime)
     );
-    this.setState({isScrubbing: true, seekTime: clampedSeekTime});
+    this.setState({ isScrubbing: true, seekTime: clampedSeekTime });
 
     if (this._seekTimer) {
       clearTimeout(this._seekTimer);
@@ -156,7 +156,7 @@ export class SeekBar extends PureComponent {
   };
 
   notifyDelayedSeek(seekTime) {
-    const {onSeek} = this.props;
+    const { onSeek } = this.props;
     if (onSeek) {
       onSeek(seekTime);
       this.setState({
@@ -167,16 +167,16 @@ export class SeekBar extends PureComponent {
   }
 
   seekForward() {
-    const {isScrubbing, seekTime} = this.state;
-    const {currentTime, skipForwardMsec} = this.props;
+    const { isScrubbing, seekTime } = this.state;
+    const { currentTime, skipForwardMsec } = this.props;
     const skip = skipForwardMsec ?? SKIP_FORWARD_MSEC_DEFAULT;
     const newSeekTime = isScrubbing ? seekTime + skip : currentTime + skip;
     this.onSeekingPositionChanged(newSeekTime);
   }
 
   seekBackward() {
-    const {isScrubbing, seekTime} = this.state;
-    const {currentTime, skipBackwardMsec} = this.props;
+    const { isScrubbing, seekTime } = this.state;
+    const { currentTime, skipBackwardMsec } = this.props;
     const skip = skipBackwardMsec ?? SKIP_BACKWARD_MSEC_DEFAULT;
     const newSeekTime = isScrubbing ? seekTime - skip : currentTime - skip;
     this.onSeekingPositionChanged(newSeekTime);
@@ -195,13 +195,13 @@ export class SeekBar extends PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const {isScrubbing: wasScrubbing} = prevState;
-    const {isScrubbing, waitForTimeUpdates} = this.state;
-    const {onStartScrubbing, onStopScrubbing, currentTime} = this.props;
-    const {currentTime: prevTime} = prevProps;
+    const { isScrubbing: wasScrubbing } = prevState;
+    const { isScrubbing, waitForTimeUpdates } = this.state;
+    const { onStartScrubbing, onStopScrubbing, currentTime } = this.props;
+    const { currentTime: prevTime } = prevProps;
 
     if (waitForTimeUpdates > 0 && currentTime !== prevTime) {
-      this.setState({waitForTimeUpdates: waitForTimeUpdates - 1});
+      this.setState({ waitForTimeUpdates: waitForTimeUpdates - 1 });
     }
 
     if (!isScrubbing && wasScrubbing && onStartScrubbing) {
@@ -211,7 +211,7 @@ export class SeekBar extends PureComponent {
     }
   }
 
-  setScrubberArea = ref => {
+  setScrubberArea = (ref) => {
     this._scrubberArea = ref;
     if (Platform.isTV && ref) {
       // on TV platforms we don't want to change focus when navigation left/right.
@@ -223,12 +223,12 @@ export class SeekBar extends PureComponent {
   };
 
   get seekableStart() {
-    const {seekable} = this.props;
+    const { seekable } = this.props;
     return seekable.length > 0 ? seekable[0].start : 0;
   }
 
   get duration() {
-    const {seekable, duration} = this.props;
+    const { seekable, duration } = this.props;
     const validDuration = isNaN(duration) ? 0 : duration;
     return seekable.length > 0
       ? seekable[seekable.length - 1].end - seekable[0].start
@@ -236,8 +236,8 @@ export class SeekBar extends PureComponent {
   }
 
   get currentProgress() {
-    const {currentTime} = this.props;
-    const {waitForTimeUpdates, isScrubbing, seekTime} = this.state;
+    const { currentTime } = this.props;
+    const { waitForTimeUpdates, isScrubbing, seekTime } = this.state;
     // use seekTime while waiting for time updates
     if (isScrubbing || waitForTimeUpdates > 0) {
       return seekTime;
@@ -253,7 +253,7 @@ export class SeekBar extends PureComponent {
   }
 
   get seekBarPosition() {
-    const {isScrubbing} = this.state;
+    const { isScrubbing } = this.state;
     return {
       currentProgress: this.currentProgress,
       currentProgressPercentage: this.currentProgressPercentage,
@@ -272,9 +272,9 @@ export class SeekBar extends PureComponent {
     }
   };
 
-  onTouchScrubber = event => {
-    const {currentTime} = this.props;
-    const {isScrubbing, seekTime} = this.state;
+  onTouchScrubber = (event) => {
+    const { currentTime } = this.props;
+    const { isScrubbing, seekTime } = this.state;
     const offsetX = Platform.select({
       default: event.nativeEvent.locationX,
       web: event.nativeEvent.offsetX,
@@ -290,15 +290,15 @@ export class SeekBar extends PureComponent {
   };
 
   onFocus = () => {
-    this.setState({focused: true});
+    this.setState({ focused: true });
   };
 
   onBlur = () => {
-    this.setState({focused: false});
+    this.setState({ focused: false });
   };
 
   onDotPress = () => {
-    const {onDotPress} = this.props;
+    const { onDotPress } = this.props;
     if (onDotPress) {
       onDotPress();
     }
@@ -308,12 +308,16 @@ export class SeekBar extends PureComponent {
     const currentProgressPercentage = this.currentProgressPercentage;
     const flexCompleted = currentProgressPercentage * 100;
     const flexRemaining = (1 - currentProgressPercentage) * 100;
-    const {focused} = this.state;
-    const {style, progressDotStyle, renderTopComponent, renderBottomComponent} =
-      this.props;
+    const { focused } = this.state;
+    const {
+      style,
+      progressDotStyle,
+      renderTopComponent,
+      renderBottomComponent,
+    } = this.props;
 
     return (
-      <View style={{flex: 1, flexDirection: 'column'}}>
+      <View style={{ flex: 1, flexDirection: "column" }}>
         {renderTopComponent && renderTopComponent(this.seekBarPosition)}
 
         <View style={[styles.container, style]}>
@@ -321,19 +325,20 @@ export class SeekBar extends PureComponent {
             <TouchableOpacity
               ref={this.setScrubberArea}
               hasTVPreferredFocus={true}
-              tvParallaxProperties={{enabled: false}}
+              tvParallaxProperties={{ enabled: false }}
               activeOpacity={1.0}
               style={styles.progress}
               onFocus={this.onFocus}
               onBlur={this.onBlur}
               onPress={this.onDotPress}
-              onLayout={this.measureScrubber}>
+              onLayout={this.measureScrubber}
+            >
               <View
                 style={[
                   styles.innerProgressCompleted,
                   {
                     flex: flexCompleted,
-                    backgroundColor: focused ? '#ffc50f' : '#ffc50faa',
+                    backgroundColor: focused ? "#ffc50f" : "#ffc50faa",
                   },
                 ]}
               />
@@ -341,7 +346,7 @@ export class SeekBar extends PureComponent {
                 <View style={[styles.progressDot, progressDotStyle]} />
               )}
               <View
-                style={[styles.innerProgressRemaining, {flex: flexRemaining}]}
+                style={[styles.innerProgressRemaining, { flex: flexRemaining }]}
               />
             </TouchableOpacity>
           )}
@@ -353,18 +358,18 @@ export class SeekBar extends PureComponent {
                   styles.innerProgressCompleted,
                   {
                     flex: flexCompleted,
-                    backgroundColor: 'aqua',
+                    backgroundColor: "aqua",
                     borderRadius: 3,
                   },
                 ]}
               />
               <View
-                style={[styles.progressDot, {zIndex: 1}, progressDotStyle]}
+                style={[styles.progressDot, { zIndex: 1 }, progressDotStyle]}
                 hitSlop={styles.progressHitSlop}
                 {...this._seekPanResponder.panHandlers}
               />
               <View
-                style={[styles.innerProgressRemaining, {flex: flexRemaining}]}
+                style={[styles.innerProgressRemaining, { flex: flexRemaining }]}
               />
               <TouchableOpacity
                 ref={this.setScrubberArea}
