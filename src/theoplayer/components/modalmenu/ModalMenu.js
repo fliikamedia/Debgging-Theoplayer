@@ -8,34 +8,26 @@ import {
   ViewProps,
   Platform,
   TouchableOpacity,
-} from 'react-native';
-import React from 'react';
-import styles from './ModalMenu.style';
+} from "react-native";
+import React from "react";
+import styles from "./ModalMenu.style";
 
-// export interface ModalMenuProps extends ViewProps {
-//   title?: string;
-//   style?: StyleProp<ViewStyle>;
-//   titleStyle?: StyleProp<TextStyle>;
-//   onRequestClose?: () => void;
-//   visible?: boolean;
-// }
-
-export const ModalMenu = props => {
-  const {visible, style, children, title, titleStyle, onRequestClose} = props;
-  // console.log('children', children);
+export const ModalMenu = (props) => {
+  const { visible, style, children, title, titleStyle, onRequestClose } = props;
   return (
     <>
       {visible && (
         <Modal
           animationType="fade"
-          supportedOrientations={['portrait', 'landscape']}
+          supportedOrientations={["landscape"]}
           transparent={true}
           visible={visible}
           onRequestClose={() => {
             if (onRequestClose) {
               onRequestClose();
             }
-          }}>
+          }}
+        >
           {!Platform.isTV && (
             <TouchableOpacity
               style={styles.container}
@@ -43,15 +35,17 @@ export const ModalMenu = props => {
                 if (onRequestClose) {
                   onRequestClose();
                 }
-              }}>
+              }}
+            >
               <View style={[styles.modal, style]}>
                 {title && (
                   <Text
                     style={[
                       styles.title,
                       titleStyle,
-                      {color: 'black', backgroundColor: '#ffc50f'},
-                    ]}>
+                      { color: "black", backgroundColor: "aqua" },
+                    ]}
+                  >
                     {title}
                   </Text>
                 )}
@@ -68,8 +62,9 @@ export const ModalMenu = props => {
                     style={[
                       styles.title,
                       titleStyle,
-                      {color: 'black', backgroundColor: '#ffc50f'},
-                    ]}>
+                      { color: "black", backgroundColor: "#ffc50f" },
+                    ]}
+                  >
                     {title}
                   </Text>
                 )}

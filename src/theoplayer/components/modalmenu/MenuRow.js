@@ -1,7 +1,7 @@
-import {Text, TouchableOpacity} from 'react-native';
-import React from 'react';
+import { Text, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
 // import type { MenuItem } from './MenuItem';
-
+import { Switch } from "react-native-paper";
 // export interface MenuRowProps {
 //   onSelected?: () => void;
 //   selected?: boolean;
@@ -9,28 +9,38 @@ import React from 'react';
 //   data: MenuItem;
 // }
 
-export const MenuRow = props => {
-  const {selected, onSelected, hasTVPreferredFocus, data} = props;
-  if (!data) return <></>;
-  const {label} = data;
-  // console.log('daaaaaaaaaaaata', data);
+export const MenuRow = (props) => {
+  const { selected, onSelected, hasTVPreferredFocus, data } = props;
+  const [isSwitchOn, setIsSwitchOn] = useState(false);
+  if (!data || data?.label === "CC") return <></>;
+  const { label } = data;
+  // console.log("daaaaaaaaaaaata", selected);
+  const onToggleSwitch = () => {
+    // setIsSwitchOn(!isSwitchOn);
+    if (onSelected) {
+      onSelected();
+    }
+  };
   return (
     <TouchableOpacity
       hasTVPreferredFocus={hasTVPreferredFocus}
-      onPress={() => {
-        if (onSelected) {
-          onSelected();
-        }
-      }}>
+      onPress={() => {}}
+      style={{
+        flexDirection: "row",
+        justifyContent: "space-between",
+        paddingBottom: 10,
+      }}
+    >
       <Text
         style={{
-          color: selected ? '#ffc50f' : 'white',
+          color: selected ? "#fff" : "darkgrey",
           fontSize: 16,
           marginVertical: 5,
-        }}>
+        }}
+      >
         {label}
-        {/* english */}
       </Text>
+      <Switch value={selected} onValueChange={onToggleSwitch} color="aqua" />
     </TouchableOpacity>
   );
 };

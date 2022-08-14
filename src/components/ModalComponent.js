@@ -17,8 +17,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { removeProfileError, getUser } from "../../store/actions/user";
 import Spinner from "react-native-spinkit";
 import firebase from "firebase";
+import IconAnt from "react-native-vector-icons/AntDesign";
 
-const ModalComponent = ({ text, type, isVisible }) => {
+const ModalComponent = ({ text, type, isVisible, setShowModal }) => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const modalFunc = () => {
@@ -40,6 +41,23 @@ const ModalComponent = ({ text, type, isVisible }) => {
               type={"ThreeBounce"}
               color={"#fff"}
             />
+          </View>
+        </View>
+      );
+    } else if (type === "update-password") {
+      return (
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>{text}</Text>
+            <IconAnt name="checkcircle" color="lime" size={70} />
+            <TouchableOpacity
+              style={styles.close}
+              onPress={() => {
+                setShowModal(false);
+              }}
+            >
+              <Text style={styles.textStyle}>Close</Text>
+            </TouchableOpacity>
           </View>
         </View>
       );

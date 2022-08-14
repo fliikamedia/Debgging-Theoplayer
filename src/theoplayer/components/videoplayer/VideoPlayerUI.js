@@ -6,7 +6,13 @@ import {
   TextTrack,
 } from "react-native-theoplayer";
 
-import { Platform, Text, View, TouchableOpacity, Image } from "react-native";
+import {
+  Platform,
+  Text,
+  View,
+  TouchableOpacity,
+  StatusBar,
+} from "react-native";
 import { SeekBar } from "../seekbar/SeekBar";
 import styles from "./VideoPlayerUI.style";
 import { DelayedActivityIndicator } from "../delayedactivityindicator/DelayedActivityIndicator";
@@ -35,6 +41,13 @@ import { ThumbnailView } from "../thumbnail/ThumbnailView";
 // import type { SeekBarPosition } from '../seekbar/SeekBarPosition';
 import Icon from "react-native-vector-icons/AntDesign";
 import { useNavigation } from "@react-navigation/native";
+import ForwardsSvg from "../../res/images/forwards.svg";
+import BackwardsSvg from "../../res/images/backwards.svg";
+import IconAwesome from "react-native-vector-icons/FontAwesome5";
+import IconAnt from "react-native-vector-icons/AntDesign";
+import { THEOPLAYER } from "../../../../constants/RouteNames";
+import AsyncStorage from "@react-native-community/async-storage";
+import { SIZES } from "../../../../constants";
 const VideoPlayerUI = ({
   style,
   sources,
@@ -58,17 +71,22 @@ const VideoPlayerUI = ({
   onSelectAudioTrack,
   onSelectSource,
   onSeeks,
+  watchedTime,
+  nextEpisode,
+  title,
 }) => {
   const [screenClicked, setScreenClicked] = useState(false);
   const [seekingButton, setSeekingButton] = useState(false);
   const timer = useRef();
   const navigation = useNavigation();
   const onSeek = (time) => {
-    // console.log(time);
     if (onSeeks) {
       onSeeks(time);
     }
   };
+  // console.log("selectedTextTrack", duration - currentTime);
+  // console.log("left", duration - currentTime < 10000);
+  // console.log(watchedTime);
   // console.log(currentTime);
   // var myVar;
 
@@ -78,11 +96,30 @@ const VideoPlayerUI = ({
   //   }, 2000);
   // }
 
+  // useEffect(() => {
+  //   onSetFullScreen(true);
+  // }, []);
+  // console.log("watchedTime", watchedTime);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     onSetPlayPause(true);
+  //   }, 1000);
+  // }, [title]);
+  console.log(watchedTime);
+  const saveTiming = (x, y) => {
+    AsyncStorage.setItem("duration", x);
+    AsyncStorage.setItem("watched", y);
+  };
   useEffect(() => {
-    onSetFullScreen(true);
+    saveTiming(String(duration), String(currentTime));
+  }, [currentTime]);
+  useEffect(() => {
+    if (watchedTime) {
+      onSeeks(watchedTime);
+    }
   }, []);
   function myStopFunction() {
-    console.log(timer.current);
+    // console.log(timer.current);
     clearTimeout(timer.current);
   }
   useEffect(() => {
@@ -211,6 +248,7 @@ const VideoPlayerUI = ({
 
   return (
     <View style={[styles.container, style]}>
+      <StatusBar hidden></StatusBar>
       <TouchableOpacity
         onPress={() => {
           toggleScreenTouched();
@@ -247,9 +285,31 @@ const VideoPlayerUI = ({
           </TouchableOpacity>
         )}
         {/*Background*/}
+        {screenClicked && (
+          <View
+            style={{
+              position: "absolute",
+              top: 20,
+              width: "100%",
+              // backgroundColor: "red",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text
+              style={{
+                color: "#fff",
+                fontFamily: "Sora-Regular",
+                fontSize: 16,
+              }}
+            >
+              {title}
+            </Text>
+          </View>
+        )}
         <View style={styles.background} />
 
-        {showLoadingIndicator && !paused && !seekingButton && (
+        {showLoadingIndicator && !paused && !seekingButton && !screenClicked && (
           <View style={styles.fullScreenCenter}>
             <DelayedActivityIndicator size="large" color="aqua" />
           </View>
@@ -263,12 +323,7 @@ const VideoPlayerUI = ({
           }}
         >
           {screenClicked && (
-            <ActionButton
-              touchable={!Platform.isTV}
-              icon={backwards}
-              style={styles.fullScreenCenter}
-              iconStyle={styles.playButton}
-              // onPress={togglePlayPause}
+            <TouchableOpacity
               onPress={() => {
                 setSeekingButton(true);
                 myStopFunction();
@@ -278,23 +333,80 @@ const VideoPlayerUI = ({
                 }, 2000);
                 onSeek(currentTime - 10000);
               }}
-            />
+              style={{
+                // backgroundColor: "red",
+                // alignItems: "center",
+                justifyContent: "center",
+                margin: 0,
+                padding: 0,
+              }}
+            >
+              <BackwardsSvg
+                width={80}
+                height={80}
+                color="#fff"
+                // style={{ margin: 0 }}
+              />
+            </TouchableOpacity>
+            // <ActionButton
+            //   touchable={!Platform.isTV}
+            //   icon={backwards}
+            //   style={styles.fullScreenCenter}
+            //   iconStyle={styles.playButton}
+            //   // onPress={togglePlayPause}
+            //   onPress={() => {
+            //     setSeekingButton(true);
+            //     myStopFunction();
+            //     timer.current = setTimeout(() => {
+            //       setScreenClicked(false);
+            //       setSeekingButton(false);
+            //     }, 2000);
+            //     onSeek(currentTime - 10000);
+            //   }}
+            // />
           )}
           {!error && screenClicked && (
-            <ActionButton
-              touchable={!Platform.isTV}
-              icon={paused ? PlayButton : pause}
-              style={styles.fullScreenCenter}
-              iconStyle={paused ? styles.playButton : styles.pauseButton}
+            <TouchableOpacity
+              style={{
+                // padding: 30,
+                minHeight: 100,
+                minWidth: 100,
+                maxHeight: 100,
+                maxWidth: 100,
+                borderRadius: 140,
+                justifyContent: "center",
+                alignItems: "center",
+                // elevation: 25,
+                borderWidth: 2,
+                borderColor: "#fff",
+                // borderWidth: 2,
+                // borderColor: "#fff",
+                // padding: 40,
+                // borderRadius: 100,
+              }}
               onPress={togglePlayPause}
-            />
+            >
+              {paused ? (
+                <IconAwesome
+                  name="play"
+                  size={40}
+                  color="#fff"
+                  style={{ marginLeft: 4 }}
+                />
+              ) : (
+                <IconAnt name="pause" color="#fff" size={50} />
+              )}
+            </TouchableOpacity>
+            // <ActionButton
+            //   touchable={!Platform.isTV}
+            //   icon={paused ? PlayButton : pause}
+            //   style={styles.fullScreenCenter}
+            //   iconStyle={paused ? styles.playButton : styles.pauseButton}
+            //   onPress={togglePlayPause}
+            // />
           )}
           {screenClicked && (
-            <ActionButton
-              touchable={!Platform.isTV}
-              icon={forwards}
-              style={styles.fullScreenCenter}
-              iconStyle={styles.playButton}
+            <TouchableOpacity
               onPress={() => {
                 setSeekingButton(true);
                 myStopFunction();
@@ -304,7 +416,36 @@ const VideoPlayerUI = ({
                 }, 2000);
                 onSeek(currentTime + 10000);
               }}
-            />
+              style={{
+                // backgroundColor: "red",
+                // alignItems: "center",
+                justifyContent: "center",
+                margin: 0,
+                padding: 0,
+              }}
+            >
+              <ForwardsSvg
+                width={80}
+                height={80}
+                color="#fff"
+                // style={{ margin: 0 }}
+              />
+            </TouchableOpacity>
+            // <ActionButton
+            //   touchable={!Platform.isTV}
+            //   icon={forwards}
+            //   style={styles.fullScreenCenter}
+            //   iconStyle={styles.playButton}
+            //   onPress={() => {
+            //     setSeekingButton(true);
+            //     myStopFunction();
+            //     timer.current = setTimeout(() => {
+            //       setScreenClicked(false);
+            //       setSeekingButton(false);
+            //     }, 2000);
+            //     onSeek(currentTime + 10000);
+            //   }}
+            // />
           )}
         </View>
         {error && (
@@ -315,6 +456,29 @@ const VideoPlayerUI = ({
           </View>
         )}
 
+        {nextEpisode && duration - currentTime < 10000 && (
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate(THEOPLAYER, {
+                movieId: nextEpisode?._id,
+              });
+              onSeeks(0);
+            }}
+            style={{
+              width: 100,
+              height: 60,
+              borderWidth: 1,
+              borderColor: "#fff",
+              position: "absolute",
+              right: 20,
+              top: 200,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Text style={{ color: "#fff" }}>Next Episode</Text>
+          </TouchableOpacity>
+        )}
         {screenClicked && (
           <View style={styles.controlsContainer}>
             <SeekBar
@@ -414,13 +578,13 @@ const VideoPlayerUI = ({
               )} */}
 
               {/*Fullscreen*/}
-              {!Platform.isTV && (
+              {/* {!Platform.isTV && (
                 <ActionButton
                   icon={fullscreen ? FullScreenExitIcon : FullScreenIcon}
                   onPress={toggleFullScreen}
                   iconStyle={styles.menuIcon}
                 />
-              )}
+              )} */}
             </View>
           </View>
         )}

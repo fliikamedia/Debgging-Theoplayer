@@ -47,7 +47,12 @@ const playerConfig = {
 //   ],
 // };
 
-export default function ReactNativeTheoUI({ source }) {
+export default function ReactNativeTheoUI({
+  source,
+  watchedTime,
+  nextEpisode,
+  title,
+}) {
   const [clicked, setClicked] = React.useState(false);
 
   const toggleClicked = () => {
@@ -55,5 +60,13 @@ export default function ReactNativeTheoUI({ source }) {
   };
 
   // console.log(clicked);
-  return <VideoPlayer source={source} config={playerConfig} />;
+  return (
+    <VideoPlayer
+      source={source}
+      config={playerConfig}
+      watchedTime={watchedTime}
+      nextEpisode={nextEpisode}
+      title={title}
+    />
+  );
 }

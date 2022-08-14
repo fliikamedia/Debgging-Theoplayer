@@ -55,7 +55,7 @@ import ReactNativeBitmovinPlayer, {
   ReactNativeBitmovinPlayerIntance,
 } from "@takeoffmedia/react-native-bitmovin-player";
 import AsyncStorage from "@react-native-community/async-storage";
-import Orientation from "react-native-orientation";
+import Orientation from "react-native-orientation-locker";
 import moment from "moment";
 import FastImage from "react-native-fast-image";
 import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
@@ -539,7 +539,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
               colors={["transparent", "#000"]}
               style={{
                 width: "100%",
-                height: 150,
+                // height: 150,
                 alignItems: "center",
                 justifyContent: "flex-end",
               }}
@@ -549,6 +549,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
                   flexDirection: "row",
                   width: "100%",
                   justifyContent: "space-between",
+                  height: 110,
                 }}
               >
                 <Animatable.View

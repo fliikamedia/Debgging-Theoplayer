@@ -108,7 +108,7 @@ export const addUser =
     try {
       dispatch({ type: ADD_USER });
       const result = await expressApi.post(`users/update-user`, data);
-      console.log(result);
+      // console.log(result);
       if (result.status == 200) {
         dispatch({
           type: ADD_USER_SUCCESS,
@@ -182,7 +182,7 @@ export const getUser = (email, authtoken) => async (dispatch) => {
           payload: result.data.profiles.find((r) => r.name == profileName),
         });
       } else { */
-      const fetchedProfile = result.data.profiles.find(
+      const fetchedProfile = result?.data?.profiles?.find(
         (r) => r.name == profileName
       );
       if (fetchedProfile) {
@@ -202,13 +202,13 @@ export const getUser = (email, authtoken) => async (dispatch) => {
       // });
       //}
     } else {
-      console.log("err");
+      console.log("err 2");
       dispatch({ type: GET_USER_FAILED });
     }
   } catch (err) {
     dispatch({ type: GET_USER_FAILED });
     alert(err);
-    console.log("err", err);
+    console.log("err 3", err);
   }
 };
 

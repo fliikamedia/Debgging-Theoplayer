@@ -125,7 +125,7 @@ const LoginScreen = ({ navigation }) => {
                 postGeolocation(email, response.data)(dispatch);
               })
               .catch((error) => {
-                console.log("err", error);
+                console.log("err 1", error);
               });
           }
 

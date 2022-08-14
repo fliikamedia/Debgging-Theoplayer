@@ -7,7 +7,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import Orientation from "react-native-orientation";
+// import Orientation from "react-native-orientation-locker";
 import {
   addToWatchList,
   removeFromWatchList,
@@ -25,6 +25,11 @@ import { PlayerConfiguration, THEOplayerView } from "react-native-theoplayer";
 import Icon from "react-native-vector-icons/AntDesign";
 import { SIZES } from "../constants";
 import ReactNativeTheoUI from "./theoplayer/ReactNativeTheoUI";
+import {
+  OrientationLocker,
+  PORTRAIT,
+  LANDSCAPE,
+} from "react-native-orientation-locker";
 
 const TheoPlayerPage = ({ navigation, route }) => {
   const user = useSelector((state) => state.user);
@@ -40,7 +45,7 @@ const TheoPlayerPage = ({ navigation, route }) => {
   const movie = movies.availableMovies.find((r) => r._id === movieId);
   let watchedTime;
   try {
-    watchedTime = user?.currentProfile?.watched.find(
+    watchedTime = user?.currentProfile?.watched?.find(
       (data) => data.movieId === movieId
     ).watchedAt;
   } catch (err) {
@@ -52,8 +57,16 @@ const TheoPlayerPage = ({ navigation, route }) => {
   //   android: "https://bitdash-a.akamaihd.net/content/sintel/sintel.mpd",
   //   default: "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8",
   // });
-  // console.log("watched", watchedTime);
-
+  let nextEpisode;
+  try {
+    nextEpisode = movies?.availableMovies?.find(
+      (item) =>
+        item.title === movie.title &&
+        item.episode_number === movie.episode_number + 1
+    );
+  } catch {
+    nextEpisode = null;
+  }
   const setWatchedMovie = async () => {
     if (movie.film_type == "movie") {
       AsyncStorage.setItem("isSeries", "movie");
@@ -80,9 +93,9 @@ const TheoPlayerPage = ({ navigation, route }) => {
     }
   };
   useEffect(() => {
-    Platform.OS == "android"
-      ? Orientation.lockToLandscapeLeft()
-      : Orientation.lockToLandscapeRight();
+    // Platform.OS == "android"
+    //   ? Orientation.lockToLandscapeLeft()
+    //   : Orientation.lockToLandscapeRight();
     setWatchedMovie();
   }, []);
   const stopPlaying = async () => {
@@ -210,7 +223,18 @@ const TheoPlayerPage = ({ navigation, route }) => {
   } else {
     playURL = str;
   }
-
+  const saveMovieDetails = async () => {
+    await AsyncStorage.setItem("didPlay", "true"),
+      await AsyncStorage.setItem("movieName", movie.title),
+      await AsyncStorage.setItem("seasonNumber", String(movie.season_number)),
+      await AsyncStorage.setItem("episodeNumber", String(movie.episode_number)),
+      await AsyncStorage.setItem("movieId", String(movie._id)),
+      await AsyncStorage.setItem("userId", String(user.user._id)),
+      await AsyncStorage.setItem("profileId", String(user.currentProfile._id));
+  };
+  useEffect(() => {
+    saveMovieDetails();
+  }, [movie]);
   // Theo Player
 
   const license = Platform.select({
@@ -225,7 +249,7 @@ const TheoPlayerPage = ({ navigation, route }) => {
     chromeless: Platform.OS === "ios" ? false : true,
   };
   const theoSubtitles = movie?.subtitles_tracks?.map((subtitle, index) => ({
-    default: true,
+    // default: true,
     kind: "subtitles",
     label: subtitle.label,
     src: subtitle.url,
@@ -279,7 +303,18 @@ const TheoPlayerPage = ({ navigation, route }) => {
   // };
   // End of theo player
 
-  return <ReactNativeTheoUI source={source} config={playerConfig} />;
+  return (
+    <View style={{ flex: 1 }}>
+      <OrientationLocker orientation={LANDSCAPE} />
+      <ReactNativeTheoUI
+        source={source}
+        config={playerConfig}
+        watchedTime={watchedTime}
+        nextEpisode={nextEpisode}
+        title={movie.episode_title ? movie.episode_title : movie?.title}
+      />
+    </View>
+  );
 
   return (
     <View

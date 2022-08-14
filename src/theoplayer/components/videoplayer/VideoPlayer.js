@@ -35,30 +35,6 @@ const TAG = "VideoPlayer";
 //   source => source.os.indexOf(Platform.OS) >= 0,
 // );
 
-// export interface VideoPlayerProps {
-//   config?: PlayerConfiguration;
-// }
-
-// interface VideoPlayerState {
-//   srcIndex: number;
-//   playbackRate: number;
-//   volume: number;
-//   muted: boolean;
-//   duration: number;
-//   seekable: TimeRange[];
-//   currentTime: number;
-//   paused: boolean;
-//   fullscreen: boolean;
-//   showLoadingIndicator: boolean;
-//   textTracks: TextTrack[];
-//   videoTracks: MediaTrack[];
-//   audioTracks: MediaTrack[];
-//   selectedTextTrack: number | undefined;
-//   selectedVideoTrack: number | undefined;
-//   selectedAudioTrack: number | undefined;
-//   error: PlayerError | undefined;
-// }
-
 export class VideoPlayer extends PureComponent {
   static initialState = {
     srcIndex: 0,
@@ -286,6 +262,9 @@ export class VideoPlayer extends PureComponent {
         {(chromeless == true || chromeless == undefined) && (
           <VideoPlayerUI
             sources={this.props.source}
+            watchedTime={this.props.watchedTime}
+            nextEpisode={this.props.nextEpisode}
+            title={this.props.title}
             srcIndex={srcIndex}
             playbackRate={playbackRate}
             volume={volume}

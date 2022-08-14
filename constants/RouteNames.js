@@ -25,3 +25,5 @@ export const SUBSCRIPTIONS = "Subscriptions";
 export const SELECTSUBSCRIPTION = "SELECTSUBSCRIPTION";
 export const ACCOUNT = "Account";
 export const THEOPLAYER = "Theo Player";
+export const UPDATEPASSWORD = "Update Password";
+export const MANAGESUBSCRIPTIONS = "Manage Subscriptions";

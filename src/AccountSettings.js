@@ -11,7 +11,7 @@ import UserProfile from "./components/UserProfile";
 import { useSelector, useDispatch } from "react-redux";
 import {
   PROFILESCREEN,
-  SUBSCRIPTIONS,
+  MANAGESUBSCRIPTIONS,
   WATCHLIST,
   ACCOUNT,
 } from "../constants/RouteNames";
@@ -26,7 +26,10 @@ const AccountSettings = ({ navigation }) => {
     { title: "Account", func: () => navigation.navigate(ACCOUNT) },
     { title: "Watchlist", func: () => navigation.navigate(WATCHLIST) },
     // { title: "App Settings", func: () => console.log("click") },
-    { title: "Subscriptions", func: () => navigation.navigate(SUBSCRIPTIONS) },
+    {
+      title: "Subscriptions",
+      func: () => navigation.navigate(MANAGESUBSCRIPTIONS),
+    },
     {
       title: "Switch Profiles",
       func: () => navigation.navigate(PROFILESCREEN),

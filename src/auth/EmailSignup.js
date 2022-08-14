@@ -110,17 +110,16 @@ const EmailSignup = ({ navigation }) => {
         setBtnClicked(false);
         subscribing()(dispatch);
       })
-      // .then(async => {
+      // .then(() => {
+      //   const user = firebase.auth().currentUser;
+
       //   const db = firebase.firestore();
-      //   await db
-      //     .collection("collected_emails")
-      //     .doc(currentUser.uid)
-      //     .set({
-      //       email: email,
-      //     })
+      //   db.collection("collected_emails").doc(user.uid).set({
+      //     email: email,
+      //   });
       // })
       .catch((error) => {
-        console.log("errrrr", error);
+        console.log("errrrrss1", error);
         setBtnClicked(false);
       });
     // const currentUser = firebase.auth().currentUser;
