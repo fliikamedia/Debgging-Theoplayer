@@ -84,7 +84,7 @@ const VideoPlayerUI = ({
       onSeeks(time);
     }
   };
-  // console.log("selectedTextTrack", duration - currentTime);
+  // console.log("selectedTextTrack", duration, currentTime);
   // console.log("left", duration - currentTime < 10000);
   // console.log(watchedTime);
   // console.log(currentTime);
@@ -105,7 +105,7 @@ const VideoPlayerUI = ({
   //     onSetPlayPause(true);
   //   }, 1000);
   // }, [title]);
-  console.log(watchedTime);
+  // console.log(watchedTime);
   const saveTiming = (x, y) => {
     AsyncStorage.setItem("duration", x);
     AsyncStorage.setItem("watched", y);
@@ -246,6 +246,7 @@ const VideoPlayerUI = ({
 
   const selectableTextTracks = filterRenderableTracks(textTracks);
 
+  // console.log("tracks", selectableTextTracks);
   return (
     <View style={[styles.container, style]}>
       <StatusBar hidden></StatusBar>
@@ -518,31 +519,33 @@ const VideoPlayerUI = ({
               <View style={{ flexGrow: 1 }} />
 
               {/*TextTrack menu */}
-              {selectableTextTracks && selectableTextTracks.length > 0 && (
-                <MenuButton
-                  setScreenClicked={setScreenClicked}
-                  cleartimeout={myStopFunction}
-                  title={"Subtitles"}
-                  icon={SubtitlesIcon}
-                  data={
-                    [...selectableTextTracks, null] ||
-                    [].map((textTrack) =>
-                      textTrack.label
-                        ? new MenuItem(getTrackLabel(textTrack))
-                        : new MenuItem("None")
-                    )
-                  }
-                  onItemSelected={selectTextTrack}
-                  selectedItem={
-                    selectedTextTrack
-                      ? textTracks.findIndex(
-                          (textTrack) => textTrack.uid === selectedTextTrack
-                        )
-                      : textTracks.length
-                  }
-                  keyExtractor={(index) => `sub${index}`}
-                />
-              )}
+              {selectableTextTracks &&
+                selectableTextTracks.length > 0 &&
+                selectableTextTracks[0]?.label !== "CC" && (
+                  <MenuButton
+                    setScreenClicked={setScreenClicked}
+                    cleartimeout={myStopFunction}
+                    title={"Subtitles"}
+                    icon={SubtitlesIcon}
+                    data={
+                      [...selectableTextTracks, null] ||
+                      [].map((textTrack) =>
+                        textTrack.label
+                          ? new MenuItem(getTrackLabel(textTrack))
+                          : new MenuItem("None")
+                      )
+                    }
+                    onItemSelected={selectTextTrack}
+                    selectedItem={
+                      selectedTextTrack
+                        ? textTracks.findIndex(
+                            (textTrack) => textTrack.uid === selectedTextTrack
+                          )
+                        : textTracks.length
+                    }
+                    keyExtractor={(index) => `sub${index}`}
+                  />
+                )}
 
               {/*AudioTrack menu */}
               {audioTracks && audioTracks.length > 0 && (

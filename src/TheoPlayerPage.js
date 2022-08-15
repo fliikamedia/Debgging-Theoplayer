@@ -246,7 +246,7 @@ const TheoPlayerPage = ({ navigation, route }) => {
 
   const playerConfig = {
     license,
-    chromeless: Platform.OS === "ios" ? false : true,
+    chromeless: Platform.OS === "ios" ? true : true,
   };
   const theoSubtitles = movie?.subtitles_tracks?.map((subtitle, index) => ({
     // default: true,

@@ -102,8 +102,12 @@ export class VideoPlayer extends PureComponent {
 
   onDurationChange = (data) => {
     const { duration } = data;
-    // console.log(TAG, 'durationchange', duration);
-    this.setState({ duration });
+    // console.log(TAG, "durationchange", duration);
+    if (Platform.OS === "android") {
+      this.setState({ duration });
+    } else {
+      this.setState({ duration: duration * 1000 });
+    }
   };
 
   onTextTrackListEvent = (data) => {
@@ -220,7 +224,7 @@ export class VideoPlayer extends PureComponent {
 
     const { config } = this.props;
     const chromeless = config?.chromeless;
-
+    // console.log(duration);
     return (
       <View style={styles.container}>
         <THEOplayerView
@@ -292,6 +296,7 @@ export class VideoPlayer extends PureComponent {
             onSetMuted={this.onUISetMuted}
             onSetPlaybackRate={this.onUISetPlaybackRate}
             onSetVolume={this.onUISetVolume}
+            onDurationChange={this.onDurationChange}
           />
         )}
       </View>
