@@ -40,7 +40,7 @@ import { THUMBNAIL_MODE, THUMBNAIL_SIZE } from "./VideoPlayerUIProps";
 import { ThumbnailView } from "../thumbnail/ThumbnailView";
 // import type { SeekBarPosition } from '../seekbar/SeekBarPosition';
 import Icon from "react-native-vector-icons/AntDesign";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import ForwardsSvg from "../../res/images/forwards.svg";
 import BackwardsSvg from "../../res/images/backwards.svg";
 import IconAwesome from "react-native-vector-icons/FontAwesome5";
@@ -77,14 +77,43 @@ const VideoPlayerUI = ({
 }) => {
   const [screenClicked, setScreenClicked] = useState(false);
   const [seekingButton, setSeekingButton] = useState(false);
+  const [isPlayNext, setIsPlayNext] = useState(false);
   const timer = useRef();
   const navigation = useNavigation();
+  const route = useRoute();
+  // const { isNext } = route?.params;
+  // console.log("isNext", isNext);
   const onSeek = (time) => {
     if (onSeeks) {
       onSeeks(time);
     }
   };
-  // console.log("selectedTextTrack", duration, currentTime);
+  console.log("Paused ?", paused);
+  console.log("isPlayNext", isPlayNext);
+  // useEffect(() => {
+  //   setIsPlayNext(isNext);
+  // }, [isNext]);
+  // console.log("routes", route);
+
+  useEffect(() => {
+    if (isPlayNext) {
+      console.log("neeeext");
+      if (!watchedTime) {
+        onSeek(0);
+      }
+      setTimeout(() => {
+        onSetPlayPause(false);
+        setIsPlayNext(undefined);
+      }, 2000);
+    }
+  }, [isPlayNext, paused]);
+  // const unpauseVideo = () => {
+  //   console.log("next");
+  //   setTimeout(() => {
+  //     console.log("unpause");
+  //     onSetPlayPause(!paused);
+  //   }, 2000);
+  // };
   // console.log("left", duration - currentTime < 10000);
   // console.log(watchedTime);
   // console.log(currentTime);
@@ -465,8 +494,11 @@ const VideoPlayerUI = ({
             onPress={() => {
               navigation.navigate(THEOPLAYER, {
                 movieId: nextEpisode?._id,
+                // isNext: true,
               });
-              onSeeks(0);
+              setIsPlayNext(true);
+              // onSeeks(0);
+              // unpauseVideo();
             }}
             style={{
               width: 100,
