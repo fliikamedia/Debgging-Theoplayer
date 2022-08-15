@@ -340,6 +340,7 @@ const VideoPlayerUI = ({
                 justifyContent: "center",
                 margin: 0,
                 padding: 0,
+                opacity: 0.6,
               }}
             >
               <BackwardsSvg
@@ -380,6 +381,7 @@ const VideoPlayerUI = ({
                 // elevation: 25,
                 borderWidth: 2,
                 borderColor: "#fff",
+                opacity: 0.6,
                 // borderWidth: 2,
                 // borderColor: "#fff",
                 // padding: 40,
@@ -423,6 +425,7 @@ const VideoPlayerUI = ({
                 justifyContent: "center",
                 margin: 0,
                 padding: 0,
+                opacity: 0.6,
               }}
             >
               <ForwardsSvg
