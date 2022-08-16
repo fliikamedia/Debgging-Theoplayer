@@ -40,7 +40,7 @@ import { THUMBNAIL_MODE, THUMBNAIL_SIZE } from "./VideoPlayerUIProps";
 import { ThumbnailView } from "../thumbnail/ThumbnailView";
 // import type { SeekBarPosition } from '../seekbar/SeekBarPosition';
 import Icon from "react-native-vector-icons/AntDesign";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import ForwardsSvg from "../../res/images/forwards.svg";
 import BackwardsSvg from "../../res/images/backwards.svg";
 import IconAwesome from "react-native-vector-icons/FontAwesome5";
@@ -77,14 +77,43 @@ const VideoPlayerUI = ({
 }) => {
   const [screenClicked, setScreenClicked] = useState(false);
   const [seekingButton, setSeekingButton] = useState(false);
+  const [isPlayNext, setIsPlayNext] = useState(false);
   const timer = useRef();
   const navigation = useNavigation();
+  const route = useRoute();
+  // const { isNext } = route?.params;
+  // console.log("isNext", isNext);
   const onSeek = (time) => {
     if (onSeeks) {
       onSeeks(time);
     }
   };
-  // console.log("selectedTextTrack", duration - currentTime);
+  console.log("Paused ?", paused);
+  console.log("isPlayNext", isPlayNext);
+  // useEffect(() => {
+  //   setIsPlayNext(isNext);
+  // }, [isNext]);
+  // console.log("routes", route);
+
+  useEffect(() => {
+    if (isPlayNext) {
+      console.log("neeeext");
+      if (!watchedTime) {
+        onSeek(0);
+      }
+      setTimeout(() => {
+        onSetPlayPause(false);
+        setIsPlayNext(undefined);
+      }, 2000);
+    }
+  }, [isPlayNext, paused]);
+  // const unpauseVideo = () => {
+  //   console.log("next");
+  //   setTimeout(() => {
+  //     console.log("unpause");
+  //     onSetPlayPause(!paused);
+  //   }, 2000);
+  // };
   // console.log("left", duration - currentTime < 10000);
   // console.log(watchedTime);
   // console.log(currentTime);
@@ -105,7 +134,7 @@ const VideoPlayerUI = ({
   //     onSetPlayPause(true);
   //   }, 1000);
   // }, [title]);
-  console.log(watchedTime);
+  // console.log(watchedTime);
   const saveTiming = (x, y) => {
     AsyncStorage.setItem("duration", x);
     AsyncStorage.setItem("watched", y);
@@ -246,6 +275,7 @@ const VideoPlayerUI = ({
 
   const selectableTextTracks = filterRenderableTracks(textTracks);
 
+  // console.log("tracks", selectableTextTracks);
   return (
     <View style={[styles.container, style]}>
       <StatusBar hidden></StatusBar>
@@ -339,6 +369,7 @@ const VideoPlayerUI = ({
                 justifyContent: "center",
                 margin: 0,
                 padding: 0,
+                opacity: 0.6,
               }}
             >
               <BackwardsSvg
@@ -379,6 +410,7 @@ const VideoPlayerUI = ({
                 // elevation: 25,
                 borderWidth: 2,
                 borderColor: "#fff",
+                opacity: 0.6,
                 // borderWidth: 2,
                 // borderColor: "#fff",
                 // padding: 40,
@@ -422,6 +454,7 @@ const VideoPlayerUI = ({
                 justifyContent: "center",
                 margin: 0,
                 padding: 0,
+                opacity: 0.6,
               }}
             >
               <ForwardsSvg
@@ -461,8 +494,11 @@ const VideoPlayerUI = ({
             onPress={() => {
               navigation.navigate(THEOPLAYER, {
                 movieId: nextEpisode?._id,
+                // isNext: true,
               });
-              onSeeks(0);
+              setIsPlayNext(true);
+              // onSeeks(0);
+              // unpauseVideo();
             }}
             style={{
               width: 100,
@@ -518,31 +554,33 @@ const VideoPlayerUI = ({
               <View style={{ flexGrow: 1 }} />
 
               {/*TextTrack menu */}
-              {selectableTextTracks && selectableTextTracks.length > 0 && (
-                <MenuButton
-                  setScreenClicked={setScreenClicked}
-                  cleartimeout={myStopFunction}
-                  title={"Subtitles"}
-                  icon={SubtitlesIcon}
-                  data={
-                    [...selectableTextTracks, null] ||
-                    [].map((textTrack) =>
-                      textTrack.label
-                        ? new MenuItem(getTrackLabel(textTrack))
-                        : new MenuItem("None")
-                    )
-                  }
-                  onItemSelected={selectTextTrack}
-                  selectedItem={
-                    selectedTextTrack
-                      ? textTracks.findIndex(
-                          (textTrack) => textTrack.uid === selectedTextTrack
-                        )
-                      : textTracks.length
-                  }
-                  keyExtractor={(index) => `sub${index}`}
-                />
-              )}
+              {selectableTextTracks &&
+                selectableTextTracks.length > 0 &&
+                selectableTextTracks[0]?.label !== "CC" && (
+                  <MenuButton
+                    setScreenClicked={setScreenClicked}
+                    cleartimeout={myStopFunction}
+                    title={"Subtitles"}
+                    icon={SubtitlesIcon}
+                    data={
+                      [...selectableTextTracks, null] ||
+                      [].map((textTrack) =>
+                        textTrack.label
+                          ? new MenuItem(getTrackLabel(textTrack))
+                          : new MenuItem("None")
+                      )
+                    }
+                    onItemSelected={selectTextTrack}
+                    selectedItem={
+                      selectedTextTrack
+                        ? textTracks.findIndex(
+                            (textTrack) => textTrack.uid === selectedTextTrack
+                          )
+                        : textTracks.length
+                    }
+                    keyExtractor={(index) => `sub${index}`}
+                  />
+                )}
 
               {/*AudioTrack menu */}
               {audioTracks && audioTracks.length > 0 && (
