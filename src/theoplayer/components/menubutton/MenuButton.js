@@ -60,6 +60,13 @@ export const MenuButton = (props) => {
                 setModalVisible(false);
                 setScreenClicked(false);
               }}
+              onUnselected={() => {
+                if (onItemSelected) {
+                  onItemSelected(-1);
+                }
+                setModalVisible(false);
+                setScreenClicked(false);
+              }}
               selected={selectedItem === index}
               data={item}
             />

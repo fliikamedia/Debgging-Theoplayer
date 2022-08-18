@@ -68,7 +68,6 @@ const TheoPlayerPage = ({ navigation, route }) => {
     nextEpisode = null;
   }
   const setWatchedMovie = async () => {
-    console.log("checkiiiing");
     if (movie.film_type == "movie") {
       AsyncStorage.setItem("isSeries", "movie");
       if (isWatched(user.currentProfile.watched, movie.title)) {

@@ -84,6 +84,7 @@ const VideoPlayerUI = ({
   const [screenClicked, setScreenClicked] = useState(false);
   const [seekingButton, setSeekingButton] = useState(false);
   const [isPlayNext, setIsPlayNext] = useState(false);
+  const [subtitleLabel, setSubtitleLabel] = useState("");
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
   const timer = useRef();
@@ -96,7 +97,7 @@ const VideoPlayerUI = ({
       onSeeks(time);
     }
   };
-  // console.log("Paused ?", paused);
+  // console.log("Paused ?", selectedTextTrack);
   // console.log("isPlayNext", nextEpisode.title, duration - currentTime);
   // console.log("watched at", watchedTime);
   // useEffect(() => {
@@ -295,12 +296,16 @@ const VideoPlayerUI = ({
   };
 
   const selectTextTrack = (index) => {
+    // console.log("index", index);
+    // console.log("onSelectTextTrack", onSelectTextTrack);
     if (onSelectTextTrack) {
       const uid =
         textTracks && index >= 0 && index < textTracks.length
           ? textTracks[index].uid
           : undefined;
       onSelectTextTrack(uid);
+      console.log("uid", textTracks[index]?.label);
+      setSubtitleLabel(textTracks[index]?.label);
     }
   };
 

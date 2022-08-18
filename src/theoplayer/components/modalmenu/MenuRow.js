@@ -10,15 +10,18 @@ import { Switch } from "react-native-paper";
 // }
 
 export const MenuRow = (props) => {
-  const { selected, onSelected, hasTVPreferredFocus, data } = props;
+  const { selected, onSelected, hasTVPreferredFocus, data, onUnselected } =
+    props;
   const [isSwitchOn, setIsSwitchOn] = useState(false);
   if (!data || data?.label === "CC") return <></>;
   const { label } = data;
   // console.log("daaaaaaaaaaaata", selected);
   const onToggleSwitch = () => {
     // setIsSwitchOn(!isSwitchOn);
-    if (onSelected) {
+    if (!selected) {
       onSelected();
+    } else {
+      onUnselected();
     }
   };
   return (
