@@ -90,6 +90,7 @@ const VideoPlayerUI = ({
   };
   console.log("Paused ?", paused);
   console.log("isPlayNext", isPlayNext);
+  console.log("watched at", watchedTime);
   // useEffect(() => {
   //   setIsPlayNext(isNext);
   // }, [isNext]);
@@ -100,6 +101,8 @@ const VideoPlayerUI = ({
       console.log("neeeext");
       if (!watchedTime) {
         onSeek(0);
+      } else {
+        onSeek(watchedTime);
       }
       setTimeout(() => {
         onSetPlayPause(false);
