@@ -48,6 +48,12 @@ import IconAnt from "react-native-vector-icons/AntDesign";
 import { THEOPLAYER } from "../../../../constants/RouteNames";
 import AsyncStorage from "@react-native-community/async-storage";
 import { SIZES } from "../../../../constants";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  addtoWatchedProfile,
+  updateWatchedProfile,
+} from "../../../../store/actions/user";
+import moment from "moment";
 const VideoPlayerUI = ({
   style,
   sources,
@@ -78,6 +84,8 @@ const VideoPlayerUI = ({
   const [screenClicked, setScreenClicked] = useState(false);
   const [seekingButton, setSeekingButton] = useState(false);
   const [isPlayNext, setIsPlayNext] = useState(false);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
   const timer = useRef();
   const navigation = useNavigation();
   const route = useRoute();
@@ -88,9 +96,9 @@ const VideoPlayerUI = ({
       onSeeks(time);
     }
   };
-  console.log("Paused ?", paused);
-  console.log("isPlayNext", isPlayNext);
-  console.log("watched at", watchedTime);
+  // console.log("Paused ?", paused);
+  // console.log("isPlayNext", nextEpisode.title, duration - currentTime);
+  // console.log("watched at", watchedTime);
   // useEffect(() => {
   //   setIsPlayNext(isNext);
   // }, [isNext]);
@@ -98,7 +106,7 @@ const VideoPlayerUI = ({
 
   useEffect(() => {
     if (isPlayNext) {
-      console.log("neeeext");
+      // console.log("neeeext");
       if (!watchedTime) {
         onSeek(0);
       } else {
@@ -138,6 +146,104 @@ const VideoPlayerUI = ({
   //   }, 1000);
   // }, [title]);
   // console.log(watchedTime);
+  const saveOnPlayNext = async () => {
+    const whatTime = await AsyncStorage.getItem("watched");
+    const whatDuration = await AsyncStorage.getItem("duration");
+    const didPlay = await AsyncStorage.getItem("didPlay");
+    const movieTitle = await AsyncStorage.getItem("movieName");
+    const seasonNumber = await AsyncStorage.getItem("seasonNumber");
+    const episodeNumber = await AsyncStorage.getItem("episodeNumber");
+    const movieId = await AsyncStorage.getItem("movieId");
+
+    const isWatchedMovie = await AsyncStorage.getItem("isWatchedBefore");
+    const userId = await AsyncStorage.getItem("userId");
+    const profileId = await AsyncStorage.getItem("profileId");
+
+    if (didPlay == "true") {
+      saveMovie(
+        userId,
+        profileId,
+        Number(whatDuration),
+        Number(whatTime),
+        movieId,
+        movieTitle,
+        isWatchedMovie,
+        Number(seasonNumber),
+        Number(episodeNumber)
+      );
+    }
+    if (Platform.OS == "android") {
+      //console.log('focused', didPlay);
+      if (didPlay === "true") {
+        //ReactNativeBitmovinPlayerIntance.destroy();
+        AsyncStorage.setItem("didPlay", "false");
+        // console.log("focused", didPlay);
+      }
+    } else {
+      // console.log('focused ios');
+      //ReactNativeBitmovinPlayerIntance.pause()
+    }
+
+    AsyncStorage.setItem("watched", "0");
+    AsyncStorage.setItem("duration", "0");
+    AsyncStorage.setItem("isWatchedBefore", "null");
+    AsyncStorage.setItem("movieId", "null");
+    AsyncStorage.setItem("userId", "null");
+    AsyncStorage.setItem("profileId", "null");
+  };
+  const saveMovie = (
+    userId,
+    profileId,
+    duration,
+    time,
+    movieId,
+    title,
+    isWatchedMovie,
+    seasonNumber,
+    episodeNumber
+  ) => {
+    // console.log(
+    //   "saving movie",
+    //   duration,
+    //   time,
+    //   title,
+    //   isWatchedMovie,
+    //   seasonNumber,
+    //   episodeNumber
+    // );
+    // console.log('iswatched',   isWatched(user.currentProfile.watched, title));
+    if (time > 0) {
+      if (isWatchedMovie === "false") {
+        // console.log("here 1 series");
+        addtoWatchedProfile(
+          moment(),
+          moment(),
+          userId,
+          movieId,
+          title,
+          duration,
+          time,
+          profileId,
+          seasonNumber,
+          episodeNumber
+        )(dispatch);
+      } else {
+        // console.log("here 2 series");
+        updateWatchedProfile(
+          moment(),
+          userId,
+          movieId,
+          title,
+          duration,
+          time,
+          profileId,
+          seasonNumber,
+          episodeNumber
+        )(dispatch);
+      }
+    }
+  };
+
   const saveTiming = (x, y) => {
     AsyncStorage.setItem("duration", x);
     AsyncStorage.setItem("watched", y);
@@ -494,7 +600,8 @@ const VideoPlayerUI = ({
 
         {nextEpisode && duration - currentTime < 10000 && (
           <TouchableOpacity
-            onPress={() => {
+            onPress={async () => {
+              await saveOnPlayNext();
               navigation.navigate(THEOPLAYER, {
                 movieId: nextEpisode?._id,
                 // isNext: true,
@@ -509,10 +616,12 @@ const VideoPlayerUI = ({
               borderWidth: 1,
               borderColor: "#fff",
               position: "absolute",
-              right: 20,
-              top: 200,
+              right: 10,
+              top: SIZES.width * 0.55,
+              // top: 200,
               alignItems: "center",
               justifyContent: "center",
+              borderRadius: 5,
             }}
           >
             <Text style={{ color: "#fff" }}>Next Episode</Text>
