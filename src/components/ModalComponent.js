@@ -61,6 +61,22 @@ const ModalComponent = ({ text, type, isVisible, setShowModal }) => {
           </View>
         </View>
       );
+    } else if (type === "seasons") {
+      return (
+        <View style={styles.centeredView}>
+          <View
+            style={{
+              flex: 1,
+              width: "100%",
+              backgroundColor: "rgba(0,0,0,0.6)",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Text style={{ color: "#fff" }}>Seasons</Text>
+          </View>
+        </View>
+      );
     } else {
       return (
         <View style={styles.centeredView}>

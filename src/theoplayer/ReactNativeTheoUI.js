@@ -52,6 +52,8 @@ export default function ReactNativeTheoUI({
   watchedTime,
   nextEpisode,
   title,
+  content_advisory,
+  film_rating,
 }) {
   const [clicked, setClicked] = React.useState(false);
 
@@ -67,6 +69,8 @@ export default function ReactNativeTheoUI({
       watchedTime={watchedTime}
       nextEpisode={nextEpisode}
       title={title}
+      content_advisory={content_advisory}
+      film_rating={film_rating}
     />
   );
 }

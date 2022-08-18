@@ -49,7 +49,7 @@ const TheoPlayerPage = ({ navigation, route }) => {
       (data) => data.movieId === movieId
     ).watchedAt;
   } catch (err) {
-    console.log("errrrrrrrs", err);
+    // console.log("errrrrrrrs", err);
     watchedTime = 0;
   }
   // const videoUrl = Platform.select({
@@ -97,7 +97,7 @@ const TheoPlayerPage = ({ navigation, route }) => {
     //   ? Orientation.lockToLandscapeLeft()
     //   : Orientation.lockToLandscapeRight();
     setWatchedMovie();
-  }, []);
+  }, [movie?._id]);
   const stopPlaying = async () => {
     // const didPlay = await AsyncStorage.getItem("didPlay");
     // //Orientation.lockToPortrait();
@@ -312,6 +312,8 @@ const TheoPlayerPage = ({ navigation, route }) => {
         watchedTime={watchedTime}
         nextEpisode={nextEpisode}
         title={movie.episode_title ? movie.episode_title : movie?.title}
+        content_advisory={movie?.content_advisory}
+        film_rating={movie?.film_rating}
       />
     </View>
   );

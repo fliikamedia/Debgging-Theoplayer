@@ -12,6 +12,7 @@ import {
   View,
   TouchableOpacity,
   StatusBar,
+  AppState,
 } from "react-native";
 import { SeekBar } from "../seekbar/SeekBar";
 import styles from "./VideoPlayerUI.style";
@@ -48,6 +49,12 @@ import IconAnt from "react-native-vector-icons/AntDesign";
 import { THEOPLAYER } from "../../../../constants/RouteNames";
 import AsyncStorage from "@react-native-community/async-storage";
 import { SIZES } from "../../../../constants";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  addtoWatchedProfile,
+  updateWatchedProfile,
+} from "../../../../store/actions/user";
+import moment from "moment";
 const VideoPlayerUI = ({
   style,
   sources,
@@ -74,13 +81,21 @@ const VideoPlayerUI = ({
   watchedTime,
   nextEpisode,
   title,
+  content_advisory,
+  film_rating,
 }) => {
   const [screenClicked, setScreenClicked] = useState(false);
   const [seekingButton, setSeekingButton] = useState(false);
   const [isPlayNext, setIsPlayNext] = useState(false);
+  const [showRating, setShowRating] = useState(false);
+  const [showedRating, setShowedRating] = useState(false);
+  const [subtitleLabel, setSubtitleLabel] = useState("");
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
   const timer = useRef();
   const navigation = useNavigation();
   const route = useRoute();
+  const appState = useRef(AppState.currentState);
   // const { isNext } = route?.params;
   // console.log("isNext", isNext);
   const onSeek = (time) => {
@@ -88,18 +103,48 @@ const VideoPlayerUI = ({
       onSeeks(time);
     }
   };
-  console.log("Paused ?", paused);
-  console.log("isPlayNext", isPlayNext);
+  // console.log("Paused ?", showLoadingIndicator);
+  // console.log("isPlayNext", nextEpisode.title, duration - currentTime);
+  // console.log("watched at", watchedTime);
   // useEffect(() => {
   //   setIsPlayNext(isNext);
   // }, [isNext]);
   // console.log("routes", route);
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", () => {
+      // console.log("unfocussed");
+      onSetPlayPause(true);
+    });
 
+    return () => {
+      subscription.remove();
+    };
+  }, [appState]);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!showedRating && !showLoadingIndicator) {
+        setShowRating(true);
+      }
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [showLoadingIndicator]);
+  useEffect(() => {
+    if (!showRating) return;
+    const timer = setTimeout(() => {
+      setShowRating(false);
+      setShowedRating(true);
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, [showRating]);
   useEffect(() => {
     if (isPlayNext) {
-      console.log("neeeext");
+      // console.log("neeeext");
       if (!watchedTime) {
         onSeek(0);
+      } else {
+        onSeek(watchedTime);
       }
       setTimeout(() => {
         onSetPlayPause(false);
@@ -135,6 +180,104 @@ const VideoPlayerUI = ({
   //   }, 1000);
   // }, [title]);
   // console.log(watchedTime);
+  const saveOnPlayNext = async () => {
+    const whatTime = await AsyncStorage.getItem("watched");
+    const whatDuration = await AsyncStorage.getItem("duration");
+    const didPlay = await AsyncStorage.getItem("didPlay");
+    const movieTitle = await AsyncStorage.getItem("movieName");
+    const seasonNumber = await AsyncStorage.getItem("seasonNumber");
+    const episodeNumber = await AsyncStorage.getItem("episodeNumber");
+    const movieId = await AsyncStorage.getItem("movieId");
+
+    const isWatchedMovie = await AsyncStorage.getItem("isWatchedBefore");
+    const userId = await AsyncStorage.getItem("userId");
+    const profileId = await AsyncStorage.getItem("profileId");
+
+    if (didPlay == "true") {
+      saveMovie(
+        userId,
+        profileId,
+        Number(whatDuration),
+        Number(whatTime),
+        movieId,
+        movieTitle,
+        isWatchedMovie,
+        Number(seasonNumber),
+        Number(episodeNumber)
+      );
+    }
+    if (Platform.OS == "android") {
+      //console.log('focused', didPlay);
+      if (didPlay === "true") {
+        //ReactNativeBitmovinPlayerIntance.destroy();
+        AsyncStorage.setItem("didPlay", "false");
+        // console.log("focused", didPlay);
+      }
+    } else {
+      // console.log('focused ios');
+      //ReactNativeBitmovinPlayerIntance.pause()
+    }
+
+    AsyncStorage.setItem("watched", "0");
+    AsyncStorage.setItem("duration", "0");
+    AsyncStorage.setItem("isWatchedBefore", "null");
+    AsyncStorage.setItem("movieId", "null");
+    AsyncStorage.setItem("userId", "null");
+    AsyncStorage.setItem("profileId", "null");
+  };
+  const saveMovie = (
+    userId,
+    profileId,
+    duration,
+    time,
+    movieId,
+    title,
+    isWatchedMovie,
+    seasonNumber,
+    episodeNumber
+  ) => {
+    // console.log(
+    //   "saving movie",
+    //   duration,
+    //   time,
+    //   title,
+    //   isWatchedMovie,
+    //   seasonNumber,
+    //   episodeNumber
+    // );
+    // console.log('iswatched',   isWatched(user.currentProfile.watched, title));
+    if (time > 0) {
+      if (isWatchedMovie === "false") {
+        // console.log("here 1 series");
+        addtoWatchedProfile(
+          moment(),
+          moment(),
+          userId,
+          movieId,
+          title,
+          duration,
+          time,
+          profileId,
+          seasonNumber,
+          episodeNumber
+        )(dispatch);
+      } else {
+        // console.log("here 2 series");
+        updateWatchedProfile(
+          moment(),
+          userId,
+          movieId,
+          title,
+          duration,
+          time,
+          profileId,
+          seasonNumber,
+          episodeNumber
+        )(dispatch);
+      }
+    }
+  };
+
   const saveTiming = (x, y) => {
     AsyncStorage.setItem("duration", x);
     AsyncStorage.setItem("watched", y);
@@ -186,12 +329,16 @@ const VideoPlayerUI = ({
   };
 
   const selectTextTrack = (index) => {
+    // console.log("index", index);
+    // console.log("onSelectTextTrack", onSelectTextTrack);
     if (onSelectTextTrack) {
       const uid =
         textTracks && index >= 0 && index < textTracks.length
           ? textTracks[index].uid
           : undefined;
       onSelectTextTrack(uid);
+      console.log("uid", textTracks[index]?.label);
+      setSubtitleLabel(textTracks[index]?.label);
     }
   };
 
@@ -330,11 +477,50 @@ const VideoPlayerUI = ({
               style={{
                 color: "#fff",
                 fontFamily: "Sora-Regular",
-                fontSize: 16,
+                fontSize: 14,
               }}
             >
               {title}
             </Text>
+          </View>
+        )}
+
+        {showRating && (
+          <View
+            style={{
+              backgroundColor: "rgba(0,0,0,0.2)",
+              position: "absolute",
+              flexDirection: "row",
+              top: SIZES.width * 0.26,
+              marginLeft: 40,
+              borderRadius: 5,
+            }}
+          >
+            <View
+              style={{
+                height: "100%",
+                backgroundColor: "aqua",
+                width: 4,
+                borderRadius: 5,
+                marginRight: 5,
+              }}
+            ></View>
+            <View>
+              <Text
+                style={{ fontFamily: "Sora-Bold", fontSize: 18, color: "#fff" }}
+              >
+                {film_rating}
+              </Text>
+              <Text
+                style={{
+                  fontFamily: "Sora-Regular",
+                  fontSize: 14,
+                  color: "#fff",
+                }}
+              >
+                {content_advisory}
+              </Text>
+            </View>
           </View>
         )}
         <View style={styles.background} />
@@ -491,7 +677,8 @@ const VideoPlayerUI = ({
 
         {nextEpisode && duration - currentTime < 10000 && (
           <TouchableOpacity
-            onPress={() => {
+            onPress={async () => {
+              await saveOnPlayNext();
               navigation.navigate(THEOPLAYER, {
                 movieId: nextEpisode?._id,
                 // isNext: true,
@@ -506,10 +693,12 @@ const VideoPlayerUI = ({
               borderWidth: 1,
               borderColor: "#fff",
               position: "absolute",
-              right: 20,
-              top: 200,
+              right: 10,
+              top: SIZES.width * 0.55,
+              // top: 200,
               alignItems: "center",
               justifyContent: "center",
+              borderRadius: 5,
             }}
           >
             <Text style={{ color: "#fff" }}>Next Episode</Text>
