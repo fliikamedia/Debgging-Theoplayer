@@ -80,10 +80,14 @@ const VideoPlayerUI = ({
   watchedTime,
   nextEpisode,
   title,
+  content_advisory,
+  film_rating,
 }) => {
   const [screenClicked, setScreenClicked] = useState(false);
   const [seekingButton, setSeekingButton] = useState(false);
   const [isPlayNext, setIsPlayNext] = useState(false);
+  const [showRating, setShowRating] = useState(false);
+  const [showedRating, setShowedRating] = useState(false);
   const [subtitleLabel, setSubtitleLabel] = useState("");
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
@@ -97,14 +101,31 @@ const VideoPlayerUI = ({
       onSeeks(time);
     }
   };
-  // console.log("Paused ?", selectedTextTrack);
+  console.log("Paused ?", showLoadingIndicator);
   // console.log("isPlayNext", nextEpisode.title, duration - currentTime);
   // console.log("watched at", watchedTime);
   // useEffect(() => {
   //   setIsPlayNext(isNext);
   // }, [isNext]);
   // console.log("routes", route);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!showedRating && !showLoadingIndicator) {
+        setShowRating(true);
+      }
+    }, 1000);
 
+    return () => clearTimeout(timer);
+  }, [showLoadingIndicator]);
+  useEffect(() => {
+    if (!showRating) return;
+    const timer = setTimeout(() => {
+      setShowRating(false);
+      setShowedRating(true);
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, [showRating]);
   useEffect(() => {
     if (isPlayNext) {
       // console.log("neeeext");
@@ -444,11 +465,50 @@ const VideoPlayerUI = ({
               style={{
                 color: "#fff",
                 fontFamily: "Sora-Regular",
-                fontSize: 16,
+                fontSize: 14,
               }}
             >
               {title}
             </Text>
+          </View>
+        )}
+
+        {showRating && (
+          <View
+            style={{
+              backgroundColor: "rgba(0,0,0,0.2)",
+              position: "absolute",
+              flexDirection: "row",
+              top: SIZES.width * 0.26,
+              marginLeft: 40,
+              borderRadius: 5,
+            }}
+          >
+            <View
+              style={{
+                height: "100%",
+                backgroundColor: "aqua",
+                width: 4,
+                borderRadius: 5,
+                marginRight: 5,
+              }}
+            ></View>
+            <View>
+              <Text
+                style={{ fontFamily: "Sora-Bold", fontSize: 18, color: "#fff" }}
+              >
+                {film_rating}
+              </Text>
+              <Text
+                style={{
+                  fontFamily: "Sora-Regular",
+                  fontSize: 14,
+                  color: "#fff",
+                }}
+              >
+                {content_advisory}
+              </Text>
+            </View>
           </View>
         )}
         <View style={styles.background} />

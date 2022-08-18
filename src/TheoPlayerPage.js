@@ -312,6 +312,8 @@ const TheoPlayerPage = ({ navigation, route }) => {
         watchedTime={watchedTime}
         nextEpisode={nextEpisode}
         title={movie.episode_title ? movie.episode_title : movie?.title}
+        content_advisory={movie?.content_advisory}
+        film_rating={movie?.film_rating}
       />
     </View>
   );
