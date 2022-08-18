@@ -12,6 +12,7 @@ import {
   View,
   TouchableOpacity,
   StatusBar,
+  AppState,
 } from "react-native";
 import { SeekBar } from "../seekbar/SeekBar";
 import styles from "./VideoPlayerUI.style";
@@ -94,6 +95,7 @@ const VideoPlayerUI = ({
   const timer = useRef();
   const navigation = useNavigation();
   const route = useRoute();
+  const appState = useRef(AppState.currentState);
   // const { isNext } = route?.params;
   // console.log("isNext", isNext);
   const onSeek = (time) => {
@@ -101,13 +103,23 @@ const VideoPlayerUI = ({
       onSeeks(time);
     }
   };
-  console.log("Paused ?", showLoadingIndicator);
+  // console.log("Paused ?", showLoadingIndicator);
   // console.log("isPlayNext", nextEpisode.title, duration - currentTime);
   // console.log("watched at", watchedTime);
   // useEffect(() => {
   //   setIsPlayNext(isNext);
   // }, [isNext]);
   // console.log("routes", route);
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", () => {
+      // console.log("unfocussed");
+      onSetPlayPause(true);
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, [appState]);
   useEffect(() => {
     const timer = setTimeout(() => {
       if (!showedRating && !showLoadingIndicator) {
