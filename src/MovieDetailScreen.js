@@ -65,6 +65,8 @@ import RbSheetSeasonItem from "./components/RbSheetSeasonItem";
 import ExtrasScreen from "./topTabScreens/ExtrasScreen";
 import DefaultScreen from "./topTabScreens/DefaultScreen";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import ModalComponent from "./components/ModalComponent";
+
 const MovieDetailScreen = ({ navigation, route }) => {
   const CURRENT_PLAYER = THEOPLAYER;
   const Tab = createMaterialTopTabNavigator();
@@ -98,6 +100,8 @@ const MovieDetailScreen = ({ navigation, route }) => {
   ]);
   const [activeTab, setActiveTab] = useState(SERIESEPISODESTAB);
   const [seasonOpen, setSeasonOpen] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+
   //console.log('currentProfile',user.currentProfile);
   /*   const getMovie = useCallback(async () => {
     const response = await FliikaApi.get(`/posts/${selectedMovie}`);
@@ -962,7 +966,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
                   }}
                 /> */}
                 <TouchableOpacity
-                  onPress={() => openRBSheet()}
+                  onPress={() => setShowModal(true)}
                   style={{
                     width: 110,
                     height: 50,
@@ -1036,6 +1040,12 @@ const MovieDetailScreen = ({ navigation, route }) => {
             listeners={{ focus: () => setActiveTab(SERIESEXTRASTAB) }}
           />
         </Tab.Navigator>
+        <ModalComponent
+          type="seasons"
+          isVisible={showModal}
+          // text="Subscription Canceled successfully!"
+          setShowModal={setShowModal}
+        />
         <RBSheet
           //animationType="slide"
           ref={refRBSheet}
