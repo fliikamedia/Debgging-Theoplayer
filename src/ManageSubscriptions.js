@@ -123,10 +123,10 @@ const ManageSubscriptions = () => {
           paddingLeft: 10,
         }}
       >
-        <Text style={styles.descriptionTxt}>{plan.nickname}</Text>
+        <Text style={styles.descriptionTxt}>{plan?.nickname}</Text>
         <Text style={styles.priceText}>
-          {parseCurr(plan.amount)}
-          {dynamicSlash(plan.nickname)}
+          {parseCurr(plan?.amount)}
+          {dynamicSlash(plan?.nickname)}
         </Text>
       </View>
       <Text
@@ -161,12 +161,12 @@ const ManageSubscriptions = () => {
           <Awesome name="cc-visa" size={30} color="#fff" />
           <Text
             style={{ color: "#fff", marginLeft: 10 }}
-          >{`*****${cardDetails.last4}`}</Text>
+          >{`*****${cardDetails?.last4}`}</Text>
         </View>
         <View>
           <Text
             style={{ color: "#fff", marginLeft: 30 }}
-          >{`Expires ${cardDetails.exp_month}/${cardDetails.exp_year}`}</Text>
+          >{`Expires ${cardDetails?.exp_month}/${cardDetails?.exp_year}`}</Text>
         </View>
       </View>
       <ModalComponent
