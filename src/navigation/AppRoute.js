@@ -114,30 +114,36 @@ export default AppRoute = () => {
           // );
           // console.log(
           //   "subscribed? ",
-          //   result.data?.subscriptions?.data[0]?.status
+          //   result.data?.subscriptions?.data[0]?.plan?.nickname ===
+          //     "Fliika Monthly" &&
+          //     result.data?.subscriptions?.data[0]?.start_date + 2629743 >
+          //       seconds &&
+          //     result.data?.subscriptions?.data[0]?.status === "canceled"
           // );
-          if (
+          if (result.data?.subscriptions?.data[0]?.status === "active") {
+            setReady(true);
+          } else if (
             // user?.user?.subscriptions?.length === 0 ||
             result.data?.subscriptions?.data[0]?.plan?.nickname ===
               "Fliika Monthly" &&
-            result.data?.subscriptions?.data[0]?.start_date + 2629743 <
+            result.data?.subscriptions?.data[0]?.start_date + 2629743 >
               seconds &&
-            result.data?.subscriptions?.data[0]?.status !== "active"
+            result.data?.subscriptions?.data[0]?.status === "canceled"
           ) {
             setReady(true);
-            subscribing()(dispatch);
+            // subscribing()(dispatch);
           } else if (
             result.data?.subscriptions?.data[0]?.plan?.nickname ===
               "Fliika Yearly" &&
-            result.data?.subscriptions?.data[0]?.start_date + 31556926 <
+            result.data?.subscriptions?.data[0]?.start_date + 31556926 >
               seconds &&
-            result.data?.subscriptions?.data[0]?.status !== "active"
+            result.data?.subscriptions?.data[0]?.status === "canceled"
           ) {
             setReady(true);
-            subscribing()(dispatch);
+            // subscribing()(dispatch);
           } else {
             setReady(true);
-            // loggedIn()(dispatch);
+            subscribing()(dispatch);
           }
         });
       } else {
