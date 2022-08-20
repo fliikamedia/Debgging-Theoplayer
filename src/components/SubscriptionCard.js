@@ -5,12 +5,18 @@ import {
   TouchableOpacity,
   StyleSheet,
   Platform,
+  Alert,
 } from "react-native";
 import firebase from "firebase";
 import { useStripe } from "@stripe/stripe-react-native";
 import expressApi from "../api/expressApi";
-import { fillingProfile } from "../../store/actions/user";
+import { fillingProfile, loggedIn } from "../../store/actions/user";
 import { useSelector, useDispatch } from "react-redux";
+import {
+  GET_MY_SUBSCRIPTION,
+  GET_MY_SUBSCRIPTION_SUCCESS,
+  GET_MY_SUBSCRIPTION_FAILED,
+} from "../../store/actions/subscriptions";
 const SubscriptionCard = ({
   plan,
   price,
@@ -23,6 +29,7 @@ const SubscriptionCard = ({
   const user = useSelector((state) => state.user);
   const subscriptions_state = useSelector((state) => state.subscriptions);
   const stripe = useStripe();
+  console.log("isUser?", user?.user?.profiles?.length > 0);
   const dynamicDescription = (plan) => {
     if (plan === "Fliika Yearly") {
       return "Annual Plan";
@@ -41,6 +48,7 @@ const SubscriptionCard = ({
 
   const subscribe = async (priceId) => {
     try {
+      dispatch({ type: GET_MY_SUBSCRIPTION });
       const idToken = await firebase.auth().currentUser.getIdToken();
       const response = await expressApi.post(
         "/mobile-subs/create-subscription",
@@ -67,7 +75,9 @@ const SubscriptionCard = ({
       const presentSheet = await stripe.presentPaymentSheet({
         clientSecret,
       });
-      if (presentSheet.error) return Alert.alert(presentSheet.error.message);
+      if (presentSheet.error)
+        return dispatch({ type: GET_MY_SUBSCRIPTION_FAILED });
+      // Alert.alert(presentSheet.error.message);
 
       // Alert.alert("Payment complete, thank you!");
       const result = await expressApi.post(
@@ -91,8 +101,15 @@ const SubscriptionCard = ({
           },
         }
       );
-      fillingProfile()(dispatch);
+      if (user?.user?.profiles?.length > 0) {
+        // loggedIn()(dispatch);
+        dispatch({ type: GET_MY_SUBSCRIPTION_SUCCESS, payload: result.data });
+      } else {
+        dispatch({ type: GET_MY_SUBSCRIPTION_SUCCESS, payload: result.data });
+        fillingProfile()(dispatch);
+      }
     } catch (err) {
+      dispatch({ type: GET_MY_SUBSCRIPTION_FAILED });
       console.error(err);
       Alert.alert("Something went wrong, try again later!");
     }

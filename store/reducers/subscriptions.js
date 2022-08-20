@@ -5,6 +5,9 @@ import {
   GET_MY_SUBSCRIPTION,
   GET_MY_SUBSCRIPTION_SUCCESS,
   GET_MY_SUBSCRIPTION_FAILED,
+  CANCEL_MY_SUBSCRIPTION,
+  CANCEL_MY_SUBSCRIPTION_SUCCESS,
+  CANCEL_MY_SUBSCRIPTION_FAILED,
 } from "../actions/subscriptions";
 const initialState = {
   isFetching: false,
@@ -25,6 +28,12 @@ const subscriptionReducer = (state = initialState, { type, payload }) => {
     case GET_MY_SUBSCRIPTION_SUCCESS:
       return { ...state, mySubscriptions: payload, isFetching: false };
     case GET_MY_SUBSCRIPTION_FAILED:
+      return { ...state, isFetching: false };
+    case CANCEL_MY_SUBSCRIPTION:
+      return { ...state, isFetching: true };
+    case CANCEL_MY_SUBSCRIPTION_SUCCESS:
+      return { ...state, isFetching: false };
+    case CANCEL_MY_SUBSCRIPTION_FAILED:
       return { ...state, isFetching: false };
     default:
       return state;

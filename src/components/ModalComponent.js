@@ -27,6 +27,7 @@ const ModalComponent = ({
   seasons,
   seasonNumber,
   setSeasonNumber,
+  fetchSubsctiption,
 }) => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -162,6 +163,30 @@ const ModalComponent = ({
         </View>
         // </View>
       );
+    } else if (type === "cancel-subscription") {
+      return (
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>{text}</Text>
+            <TouchableOpacity
+              style={styles.close}
+              onPress={() => {
+                setShowModal(false);
+                fetchSubsctiption();
+                firebase.auth().onAuthStateChanged(function (user) {
+                  if (user) {
+                    user.getIdToken().then(function (idToken) {
+                      getUser(user.email, idToken)(dispatch);
+                    });
+                  }
+                });
+              }}
+            >
+              <Text style={styles.textStyle}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      );
     } else {
       return (
         <View style={styles.centeredView}>
@@ -194,7 +219,7 @@ const ModalComponent = ({
       transparent={true}
       visible={isVisible}
       onRequestClose={() => {
-        console.log("closing");
+        // console.log("closing");
         removeProfileError()(dispatch);
       }}
     >
