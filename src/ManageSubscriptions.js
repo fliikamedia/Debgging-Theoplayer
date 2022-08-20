@@ -138,7 +138,7 @@ const ManageSubscriptions = () => {
       "active"
     ) {
       return (
-        <View>
+        <View style={{ marginTop: 30 }}>
           <Text style={styles.header}>Current Plan</Text>
           <View
             style={{
