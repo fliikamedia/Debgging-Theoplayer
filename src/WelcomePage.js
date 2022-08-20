@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   View,
   StyleSheet,
@@ -26,7 +26,17 @@ import Spinner from "react-native-spinkit";
 const WelcomePage = ({ navigation }) => {
   const [isPreloading, setIsPreloading] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
+  const [showImage, setShowImage] = useState(false);
+  const timer = useRef();
+  console.log(showImage);
+  useEffect(() => {
+    timer.current = setTimeout(() => {
+      setShowImage(true);
+      setIsPreloading(false);
+    }, 10000);
 
+    return () => clearTimeout(timer.current);
+  }, []);
   // Button Width Responsive
   var buttonWidth;
   if (Dimensions.get("window").width < 350) {
@@ -63,6 +73,17 @@ const WelcomePage = ({ navigation }) => {
   }, [navigation]);
 
   const video = React.useRef(null);
+
+  // if (showImage) {
+  //   return (
+  //     <View style={{ flex: 1 }}>
+  //       <FastImage
+  //         src="https://fliikaimages.azureedge.net/movies/Batman-2022/Batman_2022.webp"
+  //         style={styles.poster}
+  //       />
+  //     </View>
+  //   );
+  // }
   return (
     <View style={styles.container}>
       {isPreloading && (
@@ -82,20 +103,35 @@ const WelcomePage = ({ navigation }) => {
           />
         </View>
       )}
-      <Video
-        paused={isPaused}
-        onReadyForDisplay={() => setIsPreloading(false)}
-        ref={video}
-        style={styles.video}
-        source={{
-          uri: "https://fliikaimages.azureedge.net/hero-container/Zeenamore-hero-full.mp4",
-        }}
-        repeat={true}
-        muted={true}
-        shouldPlay
-        resizeMode="cover"
-        rate={1.0}
-      />
+      {showImage ? (
+        <View style={styles.posterContainer}>
+          <View style={styles.opa}></View>
+          <FastImage
+            source={{
+              uri: "https://fliikaimages.azureedge.net/movies/Batman-2022/Batman_2022.webp",
+            }}
+            style={styles.poster}
+          />
+        </View>
+      ) : (
+        <Video
+          paused={isPaused}
+          onReadyForDisplay={() => {
+            clearTimeout(timer.current);
+            setIsPreloading(false);
+          }}
+          ref={video}
+          style={styles.video}
+          source={{
+            uri: "https://fliikaimages.azureedge.net/hero-container/Zeenamore-hero-full.mp4",
+          }}
+          repeat={true}
+          muted={true}
+          shouldPlay
+          resizeMode="cover"
+          rate={1.0}
+        />
+      )}
       {isPreloading ? null : (
         <View style={styles.Wrapper}>
           {/* <FastImage
@@ -157,6 +193,7 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: "center",
     flexDirection: "column",
+    zIndex: 5,
   },
   logo: {
     marginTop: 30,
@@ -203,6 +240,30 @@ const styles = StyleSheet.create({
     letterSpacing: 3,
     color: "#f3f8ff",
     fontSize: Dimensions.get("window").width < 350 ? 12 : 16,
+  },
+  posterContainer: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "black",
+  },
+  poster: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
+  opa: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "rgba(0,0,0,0.6)",
+    zIndex: 2,
   },
 });
 
