@@ -1045,6 +1045,9 @@ const MovieDetailScreen = ({ navigation, route }) => {
           isVisible={showModal}
           // text="Subscription Canceled successfully!"
           setShowModal={setShowModal}
+          seasonNumber={seasonNumber}
+          seasons={seasons}
+          setSeasonNumber={setSeasonNumber}
         />
         <RBSheet
           //animationType="slide"

@@ -154,7 +154,7 @@ const Subscriptions = () => {
         colors={["#141a5c", "#218ae3", "#0d0526"]}
         style={{ flex: 1, justifyContent: "center" }}
       >
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={() =>
             firebase.auth().onAuthStateChanged(function (user) {
               if (user) {
@@ -168,7 +168,7 @@ const Subscriptions = () => {
               }
             })
           }
-        ></TouchableOpacity>
+        ></TouchableOpacity> */}
         {!subscriptions_state?.isFetching ? (
           showSubscriptions()
         ) : (
