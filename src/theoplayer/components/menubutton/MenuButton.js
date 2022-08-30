@@ -19,6 +19,7 @@ export const MenuButton = (props) => {
     minimumItems,
     cleartimeout,
     setScreenClicked,
+    subtitleLabel,
   } = props;
   const [modalVisible, setModalVisible] = useState(false);
   // console.log("dataaaaaaaaas", selectedItem);
@@ -69,6 +70,7 @@ export const MenuButton = (props) => {
               }}
               selected={selectedItem === index}
               data={item}
+              subtitleLabel={subtitleLabel}
             />
           ))}
         </ModalMenu>

@@ -113,11 +113,11 @@ const ModalComponent = ({
             onPress={() => {
               setShowModal(false);
             }}
-            style={{ position: "absolute", top: 50, right: 50 }}
+            style={{ position: "absolute", top: 70, right: 20 }}
           >
             <IconAnt
               name="closecircle"
-              size={50}
+              size={40}
               color="rgba(255,255,255, 0.8)"
             />
           </TouchableOpacity>

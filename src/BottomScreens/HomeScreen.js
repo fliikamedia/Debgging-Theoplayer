@@ -1481,7 +1481,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     elevation: 25,
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: "#4682B4",
     // marginBottom: 14,
   },
