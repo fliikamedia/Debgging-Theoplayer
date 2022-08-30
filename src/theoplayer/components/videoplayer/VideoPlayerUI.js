@@ -110,16 +110,16 @@ const VideoPlayerUI = ({
   //   setIsPlayNext(isNext);
   // }, [isNext]);
   // console.log("routes", route);
-  useEffect(() => {
-    const subscription = AppState.addEventListener("change", () => {
-      // console.log("unfocussed");
-      onSetPlayPause(true);
-    });
+  // useEffect(() => {
+  //   const subscription = AppState.addEventListener("change", () => {
+  //     // console.log("unfocussed");
+  //     onSetPlayPause(true);
+  //   });
 
-    return () => {
-      subscription.remove();
-    };
-  }, [appState]);
+  //   return () => {
+  //     subscription.remove();
+  //   };
+  // }, [appState]);
   useEffect(() => {
     const timer = setTimeout(() => {
       if (!showedRating && !showLoadingIndicator) {
@@ -327,7 +327,7 @@ const VideoPlayerUI = ({
       onSetMuted(!muted);
     }
   };
-
+  // console.log("subtitleLabel", textTracks);
   const selectTextTrack = (index) => {
     // console.log("index", index);
     // console.log("onSelectTextTrack", onSelectTextTrack);
@@ -336,6 +336,15 @@ const VideoPlayerUI = ({
         textTracks && index >= 0 && index < textTracks.length
           ? textTracks[index].uid
           : undefined;
+      if (Platform.OS === "ios" && index < 0) {
+        const emptyTrack = textTracks.find(
+          (track) => track.label === "CC"
+        )?.uid;
+        console.log("empty", emptyTrack);
+        onSelectTextTrack(emptyTrack);
+        setSubtitleLabel("");
+        return;
+      }
       onSelectTextTrack(uid);
       console.log("uid", textTracks[index]?.label);
       setSubtitleLabel(textTracks[index]?.label);
@@ -768,6 +777,7 @@ const VideoPlayerUI = ({
                         : textTracks.length
                     }
                     keyExtractor={(index) => `sub${index}`}
+                    subtitleLabel={subtitleLabel}
                   />
                 )}
 

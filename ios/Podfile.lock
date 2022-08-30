@@ -257,7 +257,7 @@ PODS:
     - React-Core
   - react-native-spinkit (1.4.1):
     - React
-  - react-native-theoplayer (1.3.0):
+  - react-native-theoplayer (1.4.0):
     - React-Core
     - THEOplayerSDK-basic
   - react-native-video (5.2.0):
@@ -644,7 +644,7 @@ SPEC CHECKSUMS:
   react-native-orientation-locker: 851f6510d8046ea2f14aa169b1e01fcd309a94ba
   react-native-safe-area-context: f0906bf8bc9835ac9a9d3f97e8bde2a997d8da79
   react-native-spinkit: da294fd828216ad211fe36a5c14c1e09f09e62db
-  react-native-theoplayer: 28539a68ae4089c051ea19463ffeaa0b7f93d4bb
+  react-native-theoplayer: e3725180abef1c9e326db6ae6ef2cc1b2d7895a4
   react-native-video: a4c2635d0802f983594b7057e1bce8f442f0ad28
   React-perflogger: 25373e382fed75ce768a443822f07098a15ab737
   React-RCTActionSheet: af7796ba49ffe4ca92e7277a5d992d37203f7da5

@@ -1,5 +1,5 @@
-import { Text, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
+import { Text, TouchableOpacity, Platform } from "react-native";
 // import type { MenuItem } from './MenuItem';
 import { Switch } from "react-native-paper";
 // export interface MenuRowProps {
@@ -10,18 +10,36 @@ import { Switch } from "react-native-paper";
 // }
 
 export const MenuRow = (props) => {
-  const { selected, onSelected, hasTVPreferredFocus, data, onUnselected } =
-    props;
+  const {
+    selected,
+    onSelected,
+    hasTVPreferredFocus,
+    data,
+    onUnselected,
+    subtitleLabel,
+  } = props;
   const [isSwitchOn, setIsSwitchOn] = useState(false);
   if (!data || data?.label === "CC") return <></>;
   const { label } = data;
-  // console.log("daaaaaaaaaaaata", selected);
+  // console.log("daaaaaaaaaaaata", subtitleLabel);
   const onToggleSwitch = () => {
     // setIsSwitchOn(!isSwitchOn);
-    if (!selected) {
-      onSelected();
+    if (Platform.OS === "android") {
+      if (!selected) {
+        console.log("activate");
+        onSelected();
+      } else {
+        console.log("deactivate");
+        onUnselected();
+      }
     } else {
-      onUnselected();
+      if (subtitleLabel !== label) {
+        console.log("activate");
+        onSelected();
+      } else {
+        console.log("deactivate");
+        onUnselected();
+      }
     }
   };
   return (
@@ -43,7 +61,11 @@ export const MenuRow = (props) => {
       >
         {label}
       </Text>
-      <Switch value={selected} onValueChange={onToggleSwitch} color="aqua" />
+      <Switch
+        value={selected || subtitleLabel === label}
+        onValueChange={onToggleSwitch}
+        color="aqua"
+      />
     </TouchableOpacity>
   );
 };
