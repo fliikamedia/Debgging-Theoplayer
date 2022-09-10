@@ -25,6 +25,7 @@
     "@takeoffmedia/react-native-bitmovin-player": "0.2.3",
     "axios": "^0.21.1",
     "firebase": "8.8.1",
+    "flutterwave-react-native": "^1.0.2",
     "global": "^4.4.0",
     "moment": "^2.29.1",
     "react": "17.0.1",
