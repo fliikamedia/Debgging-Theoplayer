@@ -65,7 +65,18 @@ export const CHOOSING_SUBSCRIPTION = "CHOOSING_SUBSCRIPTION";
 export const CREATE_USER = "CREATE_USER";
 export const CREATE_USER_SUCCESS = "CREATE_USER_SUCCESS";
 export const CREATE_USER_FAILED = "CREATE_USER_FAILED";
-
+export const ADD_LIKED_MOVIE = "ADD_LIKED_MOVIE";
+export const ADD_LIKED_MOVIE_SUCCESS = "ADD_LIKED_MOVIE_SUCCESS";
+export const ADD_LIKED_MOVIE_FAILED = "ADD_LIKED_MOVIE_FAILED";
+export const REMOVE_LIKED_MOVIE = "REMOVE_LIKED_MOVIE";
+export const REMOVE_LIKED_MOVIE_SUCCESS = "REMOVE_LIKED_MOVIE_SUCCESS";
+export const REMOVE_LIKED_MOVIE_FAILED = "REMOVE_LIKED_MOVIE_FAILED";
+export const ADD_DISLIKED_MOVIE = "ADD_DISLIKED_MOVIE";
+export const ADD_DISLIKED_MOVIE_SUCCESS = "ADD_DISLIKED_MOVIE_SUCCESS";
+export const ADD_DISLIKED_MOVIE_FAILED = "ADD_DISLIKED_MOVIE_FAILED";
+export const REMOVE_DISLIKED_MOVIE = "REMOVE_DISLIKED_MOVIE";
+export const REMOVE_DISLIKED_MOVIE_SUCCESS = "REMOVE_DISLIKED_MOVIE_SUCCESS";
+export const REMOVE_DISLIKED_MOVIE_FAILED = "REMOVE_DISLIKED_MOVIE_FAILED";
 export const createUser =
   (email, uid, authToken, emailVerified) => async (dispatch) => {
     let headers = {
@@ -650,3 +661,145 @@ export const changeProfileNew =
 export const removeProfileError = () => (dispatch) => {
   dispatch({ type: PROFILE_FOUND });
 };
+
+export const addLikedMovie =
+  (created, userId, movieId, title, profileId, season = null) =>
+  async (dispatch) => {
+    try {
+      dispatch({ type: ADD_LIKED_MOVIE });
+      const result = await expressApi.post(`/users/likedMovie`, {
+        userId: userId,
+        profileId: profileId,
+        newMovie: {
+          movieId,
+          title: title,
+        },
+        season: season,
+        created: created,
+      });
+      if (result.status == 200) {
+        // console.log('result',result.data);
+        dispatch({ type: ADD_LIKED_MOVIE_SUCCESS });
+        dispatch({
+          type: GET_USER_SUCCESS,
+          payload: result.data,
+        });
+
+        dispatch({
+          type: CURRENT_PROFILE,
+          payload: result?.data?.profiles?.find((r) => r._id == profileId),
+        });
+      } else {
+        dispatch({ type: ADD_TO_WATCHED_PROFILE_FAILED });
+        dispatch({ type: ADD_LIKED_MOVIE_FAILED });
+      }
+    } catch (err) {
+      console.log(err);
+      dispatch({ type: ADD_LIKED_MOVIE_FAILED });
+    }
+  };
+export const addDislikedMovie =
+  (created, userId, movieId, title, profileId, season = null) =>
+  async (dispatch) => {
+    try {
+      dispatch({ type: ADD_DISLIKED_MOVIE });
+      const result = await expressApi.post(`/users/dislikedMovie`, {
+        userId: userId,
+        profileId: profileId,
+        newMovie: {
+          movieId,
+          title: title,
+        },
+        season: season,
+        created: created,
+      });
+      if (result.status == 200) {
+        // console.log('result',result.data);
+        dispatch({ type: ADD_DISLIKED_MOVIE_SUCCESS });
+        dispatch({
+          type: GET_USER_SUCCESS,
+          payload: result.data,
+        });
+
+        dispatch({
+          type: CURRENT_PROFILE,
+          payload: result?.data?.profiles?.find((r) => r._id == profileId),
+        });
+      } else {
+        dispatch({ type: ADD_TO_WATCHED_PROFILE_FAILED });
+        dispatch({ type: ADD_DISLIKED_MOVIE_FAILED });
+      }
+    } catch (err) {
+      console.log(err);
+      dispatch({ type: ADD_DISLIKED_MOVIE_FAILED });
+    }
+  };
+
+export const removeLikedMovie =
+  (userId, movieId, title, profileId, season = null) =>
+  async (dispatch) => {
+    try {
+      dispatch({ type: REMOVE_LIKED_MOVIE });
+      const result = await expressApi.post(`/users/remove-likedMovie`, {
+        userId: userId,
+        profileId: profileId,
+        newMovie: {
+          movieId,
+          title: title,
+        },
+        season: season,
+      });
+      if (result.status == 200) {
+        dispatch({ type: REMOVE_LIKED_MOVIE_SUCCESS });
+        dispatch({
+          type: GET_USER_SUCCESS,
+          payload: result.data,
+        });
+
+        dispatch({
+          type: CURRENT_PROFILE,
+          payload: result?.data?.profiles?.find((r) => r._id == profileId),
+        });
+      } else {
+        dispatch({ type: ADD_TO_WATCHED_PROFILE_FAILED });
+        dispatch({ type: REMOVE_LIKED_MOVIE_FAILED });
+      }
+    } catch (err) {
+      console.log(err);
+      dispatch({ type: REMOVE_LIKED_MOVIE_FAILED });
+    }
+  };
+export const removeDislikedMovie =
+  (userId, movieId, title, profileId, season = null) =>
+  async (dispatch) => {
+    try {
+      dispatch({ type: REMOVE_DISLIKED_MOVIE });
+      const result = await expressApi.post(`/users/remove-dislikedMovie`, {
+        userId: userId,
+        profileId: profileId,
+        newMovie: {
+          movieId,
+          title: title,
+        },
+        season: season,
+      });
+      if (result.status == 200) {
+        dispatch({ type: REMOVE_DISLIKED_MOVIE_SUCCESS });
+        dispatch({
+          type: GET_USER_SUCCESS,
+          payload: result.data,
+        });
+
+        dispatch({
+          type: CURRENT_PROFILE,
+          payload: result?.data?.profiles?.find((r) => r._id == profileId),
+        });
+      } else {
+        dispatch({ type: ADD_TO_WATCHED_PROFILE_FAILED });
+        dispatch({ type: REMOVE_DISLIKED_MOVIE_FAILED });
+      }
+    } catch (err) {
+      console.log(err);
+      dispatch({ type: REMOVE_DISLIKED_MOVIE_FAILED });
+    }
+  };

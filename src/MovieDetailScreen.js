@@ -40,6 +40,10 @@ import {
   updateWatchedProfile,
   addToProfileWatchList,
   removeFromProfileWatchList,
+  addLikedMovie,
+  addDislikedMovie,
+  removeLikedMovie,
+  removeDislikedMovie,
 } from "../store/actions/user";
 import EpisodeItem from "./components/EmpisodeItem";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
@@ -66,6 +70,7 @@ import ExtrasScreen from "./topTabScreens/ExtrasScreen";
 import DefaultScreen from "./topTabScreens/DefaultScreen";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import ModalComponent from "./components/ModalComponent";
+import Spinner from "react-native-spinkit";
 
 const MovieDetailScreen = ({ navigation, route }) => {
   const CURRENT_PLAYER = THEOPLAYER;
@@ -101,7 +106,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
   const [activeTab, setActiveTab] = useState(SERIESEPISODESTAB);
   const [seasonOpen, setSeasonOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
-
+  // console.log("is Fetching", seasonNumber);
   //console.log('currentProfile',user.currentProfile);
   /*   const getMovie = useCallback(async () => {
     const response = await FliikaApi.get(`/posts/${selectedMovie}`);
@@ -253,6 +258,58 @@ const MovieDetailScreen = ({ navigation, route }) => {
       return found;
     } catch (err) {}
   };
+
+  const isLikedMovie = (movieArray, movieName, seriesSeason) => {
+    try {
+      var found = false;
+      for (var i = 0; i < movieArray.length; i++) {
+        if (seriesSeason) {
+          if (
+            movieArray[i]?.title == movieName &&
+            movieArray[i]?.season === seasonNumber
+          ) {
+            found = true;
+            break;
+          }
+        } else {
+          if (movieArray[i]?.title == movieName) {
+            found = true;
+            break;
+          }
+        }
+      }
+      return found;
+    } catch (err) {}
+  };
+  // console.log(
+  //   isLikedMovie(
+  //     user?.currentProfile?.movies_liked,
+  //     currentMovie?.title,
+  //     currentMovie?.season_number
+  //   )
+  // );
+  const isDisikedMovie = (movieArray, movieName, seriesSeason) => {
+    try {
+      var found = false;
+      for (var i = 0; i < movieArray.length; i++) {
+        if (seriesSeason) {
+          if (
+            movieArray[i]?.title == movieName &&
+            movieArray[i]?.season === seasonNumber
+          ) {
+            found = true;
+            break;
+          }
+        } else {
+          if (movieArray[i]?.title == movieName) {
+            found = true;
+            break;
+          }
+        }
+      }
+      return found;
+    } catch (err) {}
+  };
   const isWatched = (movieArray, movieName) => {
     try {
       var movieWatched = false;
@@ -264,6 +321,170 @@ const MovieDetailScreen = ({ navigation, route }) => {
       }
       return movieWatched;
     } catch (err) {}
+  };
+
+  const renderLikeDislikeSection = () => {
+    return (
+      <View
+        style={{
+          flexDirection: "row",
+          width: "30%",
+          justifyContent: "space-between",
+          marginTop: 10,
+        }}
+      >
+        {isLikedMovie(
+          user?.currentProfile?.movies_liked,
+          currentMovie?.title,
+          seasonNumber
+        ) === true ? (
+          <TouchableOpacity
+            style={{
+              backgroundColor: "rgba(255,255,255,0.3)",
+              borderRadius: 100,
+              padding: 10,
+              borderWidth: 1,
+              borderColor: "#fff",
+            }}
+            disabled={user.isFetching}
+            onPress={() => {
+              removeLikedMovie(
+                user.user._id,
+                currentMovie._id,
+                currentMovie.title,
+                user.currentProfile._id,
+                seasonNumber
+              )(dispatch);
+            }}
+          >
+            <IconAnt name="like1" color="#fff" size={25} />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={{
+              // backgroundColor: "rgba(255,255,255,0.3)",
+              borderRadius: 100,
+              padding: 10,
+              borderWidth: 1,
+              borderColor: "#fff",
+            }}
+            disabled={user.isFetching}
+            onPress={() => {
+              if (
+                isDisikedMovie(
+                  user?.currentProfile?.movies_disliked,
+                  currentMovie?.title,
+                  seasonNumber
+                ) === true
+              ) {
+                removeDislikedMovie(
+                  user.user._id,
+                  currentMovie._id,
+                  currentMovie.title,
+                  user.currentProfile._id,
+                  seasonNumber
+                )(dispatch).then(() => {
+                  addLikedMovie(
+                    moment(),
+                    user.user._id,
+                    currentMovie._id,
+                    currentMovie.title,
+                    user.currentProfile._id,
+                    seasonNumber
+                  )(dispatch);
+                });
+              } else {
+                addLikedMovie(
+                  moment(),
+                  user.user._id,
+                  currentMovie._id,
+                  currentMovie.title,
+                  user.currentProfile._id,
+                  seasonNumber
+                )(dispatch);
+              }
+            }}
+          >
+            <IconAnt name="like2" color="#fff" size={25} />
+          </TouchableOpacity>
+        )}
+        {isDisikedMovie(
+          user?.currentProfile?.movies_disliked,
+          currentMovie?.title,
+          seasonNumber
+        ) === true ? (
+          <TouchableOpacity
+            style={{
+              backgroundColor: "rgba(255,255,255,0.3)",
+              borderRadius: 100,
+              padding: 10,
+              borderWidth: 1,
+              borderColor: "#fff",
+            }}
+            disabled={user.isFetching}
+            onPress={() => {
+              removeDislikedMovie(
+                user.user._id,
+                currentMovie._id,
+                currentMovie.title,
+                user.currentProfile._id,
+                seasonNumber
+              )(dispatch);
+            }}
+          >
+            <IconAnt name="dislike1" color="#fff" size={25} />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={{
+              // backgroundColor: "rgba(255,255,255,0.3)",
+              borderRadius: 100,
+              padding: 10,
+              borderWidth: 1,
+              borderColor: "#fff",
+            }}
+            disabled={user.isFetching}
+            onPress={() => {
+              if (
+                isLikedMovie(
+                  user?.currentProfile?.movies_liked,
+                  currentMovie?.title,
+                  seasonNumber
+                ) === true
+              ) {
+                removeLikedMovie(
+                  user.user._id,
+                  currentMovie._id,
+                  currentMovie.title,
+                  user.currentProfile._id,
+                  seasonNumber
+                )(dispatch).then(() => {
+                  addDislikedMovie(
+                    moment(),
+                    user.user._id,
+                    currentMovie._id,
+                    currentMovie.title,
+                    user.currentProfile._id,
+                    seasonNumber
+                  )(dispatch);
+                });
+              } else {
+                addDislikedMovie(
+                  moment(),
+                  user.user._id,
+                  currentMovie._id,
+                  currentMovie.title,
+                  user.currentProfile._id,
+                  seasonNumber
+                )(dispatch);
+              }
+            }}
+          >
+            <IconAnt name="dislike2" color="#fff" size={25} />
+          </TouchableOpacity>
+        )}
+      </View>
+    );
   };
   const saveMovie = (
     duration,
@@ -651,6 +872,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
               >
                 {currentMovie.title}
               </Text>
+              {renderLikeDislikeSection()}
             </LinearGradient>
           </View>
         </ImageBackground>
@@ -849,12 +1071,27 @@ const MovieDetailScreen = ({ navigation, route }) => {
 
   if (isSeries == "series") {
     return !seasonNumber ? (
-      <ActivityIndicator
-        animating
-        color={"teal"}
-        size="large"
-        style={{ flex: 1, position: "absolute", top: "50%", left: "45%" }}
-      />
+      // <ActivityIndicator
+      //   animating
+      //   color={"teal"}
+      //   size="large"
+      //   style={{ flex: 1, position: "absolute", top: "50%", left: "45%" }}
+      // />
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "black",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Spinner
+          isVisible={!seasonNumber}
+          size={70}
+          type={"ThreeBounce"}
+          color={"#fff"}
+        />
+      </View>
     ) : (
       <ScrollView style={{ flexGrow: 1 }}>
         {renderHeaderSection()}

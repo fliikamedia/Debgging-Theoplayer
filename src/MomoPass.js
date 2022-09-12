@@ -7,13 +7,19 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { PayWithFlutterwave } from "flutterwave-react-native";
+import { useDispatch } from "react-redux";
+import { fillingProfile } from "../store/actions/user";
 const MomoPass = ({ route }) => {
+  const dispatch = useDispatch();
   const { userCurrency, email, fullName, phoneNumber, amountToPay } =
     route.params;
-  console.log(route.params);
+  // console.log(route.params);
   /* An example function called when transaction is completed successfully or canceled */
   const handleOnRedirect = (data) => {
     console.log(data);
+    if (data.status === "failed") {
+      fillingProfile()(dispatch);
+    }
   };
 
   /* An example function to generate a random transaction reference */
@@ -39,7 +45,7 @@ const MomoPass = ({ route }) => {
             name: fullName,
             phonenumber: phoneNumber,
           },
-          amount: 0.1,
+          amount: 1,
           currency: userCurrency,
           // payment_options: "card",
         }}
