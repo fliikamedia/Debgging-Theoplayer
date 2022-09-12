@@ -22,13 +22,16 @@ import Video from "react-native-video";
 import FastImage from "react-native-fast-image";
 import SVGImg from "../assets/fliika-logo.svg";
 import Spinner from "react-native-spinkit";
-
+import { useSelector, useDispatch } from "react-redux";
+import { fetchMovies } from "../store/actions/movies";
 const WelcomePage = ({ navigation }) => {
   const [isPreloading, setIsPreloading] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
   const [showImage, setShowImage] = useState(false);
+  const dispatch = useDispatch();
   const timer = useRef();
-  console.log(showImage);
+  const movies = useSelector((state) => state.movies);
+
   useEffect(() => {
     timer.current = setTimeout(() => {
       setShowImage(true);
@@ -36,6 +39,9 @@ const WelcomePage = ({ navigation }) => {
     }, 10000);
 
     return () => clearTimeout(timer.current);
+  }, []);
+  useEffect(() => {
+    fetchMovies()(dispatch);
   }, []);
   // Button Width Responsive
   var buttonWidth;
@@ -47,6 +53,15 @@ const WelcomePage = ({ navigation }) => {
     buttonWidth = 350;
   }
 
+  let bannerUrl;
+  try {
+    bannerUrl = movies?.availableMovies?.find(
+      (movie) => movie.active_banner === "YES"
+    )?.dvd_thumbnail_link;
+  } catch (err) {
+    bannerUrl =
+      "https://fliikaimages.azureedge.net/movies/Batman-2022/Batman_2022.webp";
+  }
   const createBtn = {
     backgroundColor: "#f3f8ff",
     padding: 15,
@@ -108,7 +123,7 @@ const WelcomePage = ({ navigation }) => {
           <View style={styles.opa}></View>
           <FastImage
             source={{
-              uri: "https://fliikaimages.azureedge.net/movies/Batman-2022/Batman_2022.webp",
+              uri: bannerUrl,
             }}
             style={styles.poster}
           />

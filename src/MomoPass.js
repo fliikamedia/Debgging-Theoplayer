@@ -37,11 +37,11 @@ const MomoPass = ({ route }) => {
           customer: {
             email: email,
             name: fullName,
-            phone_number: phoneNumber,
+            phonenumber: phoneNumber,
           },
-          amount: amountToPay,
+          amount: 0.1,
           currency: userCurrency,
-          payment_options: "card",
+          // payment_options: "card",
         }}
       />
     </ScrollView>
