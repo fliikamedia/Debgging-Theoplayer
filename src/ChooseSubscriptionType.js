@@ -7,7 +7,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { useSelector } from "react-redux";
-import { SUBSCRIPTIONS } from "../constants/RouteNames";
+import { MOBILEMONEY, SUBSCRIPTIONS } from "../constants/RouteNames";
 import LinearGradient from "react-native-linear-gradient";
 import { SIZES } from "../constants";
 import Awesome from "react-native-vector-icons/FontAwesome";
@@ -44,6 +44,23 @@ const ChooseSubscriptionType = ({ navigation }) => {
             <Awesome name="cc-jcb" size={30} color="#fff" />
           </View>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.stripeCard}
+          onPress={() => navigation.navigate(MOBILEMONEY)}
+        >
+          <Text style={styles.momoTitlet}>Buy Access Pass - Mobile Money</Text>
+          <Text style={styles.subscribeText}>
+            Get access to our catalog for 1month, 6months or 12months
+          </Text>
+          {/* <View style={styles.cardsContainer}>
+            <Awesome name="cc-mastercard" size={30} color="#fff" />
+            <Awesome name="cc-visa" size={30} color="#fff" />
+            <Fontisto name="american-express" size={26} color="#fff" />
+            <Awesome name="cc-discover" size={30} color="#fff" />
+            <Fontisto name="apple-pay" size={26} color="#fff" />
+            <Awesome name="cc-jcb" size={30} color="#fff" />
+          </View> */}
+        </TouchableOpacity>
       </LinearGradient>
     </ScrollView>
   );
@@ -76,6 +93,14 @@ const styles = StyleSheet.create({
     fontFamily: "Sora-Bold",
     marginTop: 20,
     marginBottom: 10,
+  },
+  momoTitlet: {
+    color: "#fff",
+    fontSize: 14,
+    fontFamily: "Sora-Bold",
+    marginTop: 20,
+    marginBottom: 10,
+    textAlign: "center",
   },
   subscribeText: {
     color: "#fff",

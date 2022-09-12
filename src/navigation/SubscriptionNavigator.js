@@ -1,9 +1,19 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 
-import { SUBSCRIPTIONS, SELECTSUBSCRIPTION } from "../../constants/RouteNames";
+import {
+  SUBSCRIPTIONS,
+  SELECTSUBSCRIPTION,
+  MOBILEMONEY,
+  MOMOPASS,
+  MOMOPASSCLIENTDETAILS,
+} from "../../constants/RouteNames";
 import ChooseSubscriptionType from "../ChooseSubscriptionType";
 import Subscriptions from "../StripeSubscriptions";
+import MobileMoney from "../MobileMoney";
+import MobileMoneyPassCard from "../components/MobileMoneyPassCard";
+import MomoPass from "../MomoPass";
+import MomoPassClientDetails from "../MomoPassClientDetails";
 const Stack = createStackNavigator();
 export default SubscriptionNavigator = (props) => {
   return (
@@ -56,6 +66,36 @@ export default SubscriptionNavigator = (props) => {
         options={{
           headerShown: true,
           headerTitle: "Stripe",
+          headerTitleAlign: "center",
+          headerTintColor: "#fff",
+        }}
+      />
+      <Stack.Screen
+        name={MOBILEMONEY}
+        component={MobileMoney}
+        options={{
+          headerShown: true,
+          headerTitle: "Mobile Money",
+          headerTitleAlign: "center",
+          headerTintColor: "#fff",
+        }}
+      />
+      <Stack.Screen
+        name={MOMOPASS}
+        component={MomoPass}
+        options={{
+          headerShown: true,
+          headerTitle: "Mobile Money Pass",
+          headerTitleAlign: "center",
+          headerTintColor: "#fff",
+        }}
+      />
+      <Stack.Screen
+        name={MOMOPASSCLIENTDETAILS}
+        component={MomoPassClientDetails}
+        options={{
+          headerShown: true,
+          headerTitle: "Mobile Money Pass",
           headerTitleAlign: "center",
           headerTintColor: "#fff",
         }}
