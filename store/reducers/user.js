@@ -57,6 +57,18 @@ import {
   CREATE_USER,
   CREATE_USER_SUCCESS,
   CREATE_USER_FAILED,
+  ADD_LIKED_MOVIE,
+  ADD_LIKED_MOVIE_SUCCESS,
+  ADD_LIKED_MOVIE_FAILED,
+  ADD_DISLIKED_MOVIE,
+  ADD_DISLIKED_MOVIE_SUCCESS,
+  ADD_DISLIKED_MOVIE_FAILED,
+  REMOVE_LIKED_MOVIE,
+  REMOVE_LIKED_MOVIE_SUCCESS,
+  REMOVE_LIKED_MOVIE_FAILED,
+  REMOVE_DISLIKED_MOVIE,
+  REMOVE_DISLIKED_MOVIE_SUCCESS,
+  REMOVE_DISLIKED_MOVIE_FAILED,
 } from "../actions/user";
 const initialState = {
   profileName: null,
@@ -200,6 +212,30 @@ const userReducer = (state = initialState, { type, payload }) => {
       return { ...state, isProfileFetching: true };
     case FETCH_PROFILE_SUCCESS:
       return { ...state, isProfileFetching: false };
+    case ADD_LIKED_MOVIE:
+      return { ...state, isFetching: true };
+    case ADD_LIKED_MOVIE_SUCCESS:
+      return { ...state, isFetching: false };
+    case ADD_LIKED_MOVIE_FAILED:
+      return { ...state, isFetching: false };
+    case ADD_DISLIKED_MOVIE:
+      return { ...state, isFetching: true };
+    case ADD_DISLIKED_MOVIE_SUCCESS:
+      return { ...state, isFetching: false };
+    case ADD_DISLIKED_MOVIE_FAILED:
+      return { ...state, isFetching: false };
+    case REMOVE_LIKED_MOVIE:
+      return { ...state, isFetching: true };
+    case REMOVE_LIKED_MOVIE_SUCCESS:
+      return { ...state, isFetching: false };
+    case REMOVE_LIKED_MOVIE_FAILED:
+      return { ...state, isFetching: false };
+    case REMOVE_DISLIKED_MOVIE:
+      return { ...state, isFetching: true };
+    case REMOVE_DISLIKED_MOVIE_SUCCESS:
+      return { ...state, isFetching: false };
+    case REMOVE_DISLIKED_MOVIE_FAILED:
+      return { ...state, isFetching: false };
     case FETCH_PROFILE_FALED:
       return { ...state, isProfileFetching: false };
     default:

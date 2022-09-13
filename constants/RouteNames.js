@@ -27,3 +27,6 @@ export const ACCOUNT = "Account";
 export const THEOPLAYER = "Theo Player";
 export const UPDATEPASSWORD = "Update Password";
 export const MANAGESUBSCRIPTIONS = "Manage Subscriptions";
+export const MOBILEMONEY = "Mobile Money";
+export const MOMOPASS = "Momo Pass";
+export const MOMOPASSCLIENTDETAILS = "Momo pass client details";
