@@ -28,7 +28,7 @@ const ManageSubscriptions = () => {
 
   const user_state = useSelector((state) => state.user);
   const [showModal, setShowModal] = useState(false);
-  console.log(subscriptions_state.mySubscriptions.subscriptions.data[0].plan);
+  // console.log(subscriptions_state.mySubscriptions.subscriptions.data[0].plan);
   const fetchSubsctiption = () => {
     firebase.auth().onAuthStateChanged(function (user) {
       if (user) {
