@@ -265,6 +265,8 @@ PODS:
     - react-native-video/Video (= 5.2.0)
   - react-native-video/Video (5.2.0):
     - React-Core
+  - react-native-webview (11.23.1):
+    - React-Core
   - React-perflogger (0.64.2)
   - React-RCTActionSheet (0.64.2):
     - React-Core/RCTActionSheetHeaders (= 0.64.2)
@@ -447,6 +449,7 @@ DEPENDENCIES:
   - react-native-spinkit (from `../node_modules/react-native-spinkit`)
   - react-native-theoplayer (from `../node_modules/react-native-theoplayer`)
   - react-native-video (from `../node_modules/react-native-video`)
+  - react-native-webview (from `../node_modules/react-native-webview`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
@@ -549,6 +552,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-theoplayer"
   react-native-video:
     :path: "../node_modules/react-native-video"
+  react-native-webview:
+    :path: "../node_modules/react-native-webview"
   React-perflogger:
     :path: "../node_modules/react-native/ReactCommon/reactperflogger"
   React-RCTActionSheet:
@@ -646,6 +651,7 @@ SPEC CHECKSUMS:
   react-native-spinkit: da294fd828216ad211fe36a5c14c1e09f09e62db
   react-native-theoplayer: e3725180abef1c9e326db6ae6ef2cc1b2d7895a4
   react-native-video: a4c2635d0802f983594b7057e1bce8f442f0ad28
+  react-native-webview: d33e2db8925d090871ffeb232dfa50cb3a727581
   React-perflogger: 25373e382fed75ce768a443822f07098a15ab737
   React-RCTActionSheet: af7796ba49ffe4ca92e7277a5d992d37203f7da5
   React-RCTAnimation: 6a2e76ab50c6f25b428d81b76a5a45351c4d77aa

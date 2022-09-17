@@ -664,13 +664,15 @@ const MovieDetailScreen = ({ navigation, route }) => {
         <TouchableOpacity
           style={{ minHeight: 40, minWidth: 40, justifyContent: "center" }}
           onPress={() => {
-            showToast("Removed from watch list");
+            // showToast("Removed from watch list");
             removeFromProfileWatchList(
               user.user._id,
               currentMovie,
               user.currentProfile._id,
               seasonNumber
-            )(dispatch);
+            )(dispatch).then(() => {
+              showToast("Removed from watch list");
+            });
           }}
         >
           <Icon
@@ -685,14 +687,16 @@ const MovieDetailScreen = ({ navigation, route }) => {
         <TouchableOpacity
           style={{ minHeight: 40, minWidth: 40, justifyContent: "center" }}
           onPress={() => {
-            showToast("Added to watch list");
+            // showToast("Added to watch list");
             addToProfileWatchList(
               user.user._id,
               currentMovie,
               user.currentProfile._id,
               seasonNumber,
               moment()
-            )(dispatch);
+            )(dispatch).then(() => {
+              showToast("Added to watch list");
+            });
           }}
         >
           <IconFeather name="plus" size={30} color={COLORS.white} />
