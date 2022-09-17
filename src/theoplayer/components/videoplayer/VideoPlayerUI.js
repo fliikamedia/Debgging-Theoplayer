@@ -103,7 +103,11 @@ const VideoPlayerUI = ({
       onSeeks(time);
     }
   };
-  // console.log("Paused ?", showLoadingIndicator);
+  console.log(
+    "Paused ?",
+    duration - watchedTime
+    // nextEpisode && duration - currentTime < 10000 && paused
+  );
   // console.log("isPlayNext", nextEpisode.title, duration - currentTime);
   // console.log("watched at", watchedTime);
   // useEffect(() => {
@@ -120,6 +124,26 @@ const VideoPlayerUI = ({
   //     subscription.remove();
   //   };
   // }, [appState]);
+
+  const onPlayNext = async () => {
+    await saveOnPlayNext();
+    navigation.navigate(THEOPLAYER, {
+      movieId: nextEpisode?._id,
+      // isNext: true,
+    });
+    setIsPlayNext(true);
+    // onSeeks(0);
+    // unpauseVideo();
+  };
+
+  useEffect(() => {
+    if (nextEpisode && duration - currentTime < 10000 && paused) {
+      console.log("neeext");
+      onPlayNext();
+    }
+
+    // return () => onPlayNext();
+  }, [currentTime, paused]);
   useEffect(() => {
     const timer = setTimeout(() => {
       if (!showedRating && !showLoadingIndicator) {
@@ -141,10 +165,15 @@ const VideoPlayerUI = ({
   useEffect(() => {
     if (isPlayNext) {
       // console.log("neeeext");
-      if (!watchedTime) {
-        onSeek(0);
-      } else {
+      // if (!watchedTime) {
+      //   onSeek(0);
+      // } else {
+      //   onSeek(watchedTime);
+      // }
+      if (duration - watchedTime > 3000) {
         onSeek(watchedTime);
+      } else {
+        onSeek(0);
       }
       setTimeout(() => {
         onSetPlayPause(false);
@@ -286,10 +315,11 @@ const VideoPlayerUI = ({
     saveTiming(String(duration), String(currentTime));
   }, [currentTime]);
   useEffect(() => {
-    if (watchedTime) {
+    if (!duration) return;
+    if (duration - watchedTime > 3000) {
       onSeeks(watchedTime);
     }
-  }, []);
+  }, [duration]);
   function myStopFunction() {
     // console.log(timer.current);
     clearTimeout(timer.current);
