@@ -310,7 +310,7 @@ const HomeScreen = ({ navigation }) => {
           width: 250,
           borderRadius: 10,
           height: 50,
-          marginBottom: 30,
+          marginBottom: 60,
         }}
         text2Style={{
           fontSize: 15,
@@ -915,13 +915,14 @@ const HomeScreen = ({ navigation }) => {
               true ? (
                 <TouchableWithoutFeedback
                   onPress={() => {
-                    showToast("Removed from watch list");
                     removeFromProfileWatchList(
                       user.user._id,
                       item,
                       user.currentProfile._id,
                       item.season_number
-                    )(dispatch);
+                    )(dispatch).then(() => {
+                      showToast("Removed from watch list");
+                    });
                   }}
                 >
                   <Icon
@@ -934,14 +935,16 @@ const HomeScreen = ({ navigation }) => {
               ) : (
                 <TouchableWithoutFeedback
                   onPress={() => {
-                    showToast("Added to watch list");
+                    // showToast("Added to watch list");
                     addToProfileWatchList(
                       user.user._id,
                       item,
                       user.currentProfile._id,
                       item.season_number,
                       moment()
-                    )(dispatch);
+                    )(dispatch).then(() => {
+                      showToast("Added to watch list");
+                    });
                   }}
                 >
                   <IconMaterial

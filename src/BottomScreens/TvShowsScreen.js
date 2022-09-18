@@ -42,6 +42,7 @@ import RbSheetSeasonItem from "../components/RbSheetSeasonItem";
 import moment from "moment";
 import firebase from "firebase";
 import Spinner from "react-native-spinkit";
+import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
 
 const TvShowsScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -71,6 +72,75 @@ const TvShowsScreen = ({ navigation }) => {
     });
     return () => unsubscribe();
   }, [navigation]);
+
+  // Toast config
+  const showToast = (text) => {
+    console.log("show");
+    Toast.show({
+      type: "success",
+      text2: text,
+      position: "bottom",
+      visibilityTime: 2000,
+    });
+  };
+
+  const toastConfig = {
+    /*
+      Overwrite 'success' type,
+      by modifying the existing `BaseToast` component
+    */
+    success: (props) => (
+      <BaseToast
+        {...props}
+        style={{
+          borderLeftColor: "#404040",
+          backgroundColor: "#404040",
+          width: 250,
+          borderRadius: 10,
+          height: 50,
+          // marginBottom: 60,
+          position: "absolute",
+          bottom: 60,
+          // zIndex: 2000,
+        }}
+        text2Style={{
+          fontSize: 15,
+          fontWeight: "400",
+          textAlign: "center",
+          color: "#fff",
+        }}
+      />
+    ),
+    /*
+      Overwrite 'error' type,
+      by modifying the existing `ErrorToast` component
+    */
+    error: (props) => (
+      <ErrorToast
+        {...props}
+        text1Style={{
+          fontSize: 17,
+        }}
+        text2Style={{
+          fontSize: 15,
+        }}
+      />
+    ),
+    /*
+      Or create a completely new type - `tomatoToast`,
+      building the layout from scratch.
+  
+      I can consume any custom `props` I want.
+      They will be passed when calling the `show` method (see below)
+    */
+    tomatoToast: ({ text1, props }) => (
+      <View style={{ height: 60, width: "100%", backgroundColor: "tomato" }}>
+        <Text>{text1}</Text>
+        <Text>{props.uuid}</Text>
+      </View>
+    ),
+  };
+  // End of Toast
   let series;
   series = movies.availableMovies.filter(
     (e) =>
@@ -153,12 +223,15 @@ const TvShowsScreen = ({ navigation }) => {
                 <TouchableOpacity
                   style={styles.carouselIcon}
                   onPress={() => {
+                    // showToast("Removed from watch list");
                     removeFromProfileWatchList(
                       user.user._id,
                       item,
                       user.currentProfile._id,
                       item.season_number
-                    )(dispatch);
+                    )(dispatch).then(() => {
+                      showToast("Removed from watch list");
+                    });
                   }}
                 >
                   <Icon
@@ -172,13 +245,16 @@ const TvShowsScreen = ({ navigation }) => {
                 <TouchableOpacity
                   style={styles.carouselIcon}
                   onPress={() => {
+                    showToast("Added to watch list");
                     addToProfileWatchList(
                       user.user._id,
                       item,
                       user.currentProfile._id,
                       item.season_number,
                       moment()
-                    )(dispatch);
+                    )(dispatch).then(() => {
+                      showToast("Added to watch list");
+                    });
                   }}
                 >
                   <IconMaterial name="library-add" size={30} color="white" />
@@ -299,6 +375,7 @@ const TvShowsScreen = ({ navigation }) => {
             {background.desc}
           </Text>
         </View>
+
         {/* </LinearGradient>
         </ImageBackground> */}
       </View>
@@ -487,6 +564,7 @@ const TvShowsScreen = ({ navigation }) => {
           {renderBottomSheetMovies()}
         </ScrollView>
       )}
+      <Toast config={toastConfig} />
     </View>
   );
 };
