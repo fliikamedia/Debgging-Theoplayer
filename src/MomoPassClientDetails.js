@@ -208,6 +208,7 @@ const MomoPassClientDetails = ({ navigation, route }) => {
                 fullName,
                 phoneNumber,
                 amountToPay: Math.round(localPrice),
+                planNickname,
               })
             }
             disabled={!value || !fullName || !email || !phoneNumber}

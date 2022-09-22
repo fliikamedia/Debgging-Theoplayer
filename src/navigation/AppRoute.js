@@ -76,7 +76,11 @@ export default AppRoute = () => {
   // }
   // console.log("user", ready);
   var seconds = new Date().getTime() / 1000;
-  // console.log(seconds + 2629743);
+  // console.log(
+  //   user?.user?.access_pass_momo[0]?.status === "failed" &&
+  //     user?.user?.access_pass_momo[0]?.plan === "Fliika Monthly Pass" &&
+  //     user?.user?.access_pass_expiration + 2629743 > seconds
+  // );
   React.useEffect(() => {
     if (!user?.user?.stripe_customer_id) {
       setReady(true);
@@ -141,6 +145,24 @@ export default AppRoute = () => {
           ) {
             setReady(true);
             // subscribing()(dispatch);
+          } else if (
+            user?.user?.access_pass_momo[0]?.status === "failed" &&
+            user?.user?.access_pass_momo[0]?.plan === "Fliika Monthly Pass" &&
+            user?.user?.access_pass_expiration + 2629743 > seconds
+          ) {
+            setReady(true);
+          } else if (
+            user?.user?.access_pass_momo[0]?.status === "success" &&
+            user?.user?.access_pass_momo[0]?.plan === "Fliika 6 Months Pass" &&
+            user?.user?.access_pass_expiration + 15768000 > seconds
+          ) {
+            setReady();
+          } else if (
+            user?.user?.access_pass_momo[0]?.status === "success" &&
+            user?.user?.access_pass_momo[0]?.plan === "Fliika Yearly Pass" &&
+            user?.user?.access_pass_expiration + 31556926 > seconds
+          ) {
+            setReady(true);
           } else {
             setReady(true);
             subscribing()(dispatch);
