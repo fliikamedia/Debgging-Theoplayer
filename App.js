@@ -16,6 +16,7 @@ import WelcomeNavigator from "./src/navigation/WelcomeNavigator";
 import AsyncStorage from "@react-native-community/async-storage";
 import AppRoute from "./src/navigation/AppRoute";
 import { StripeProvider } from "@stripe/stripe-react-native";
+import "./constants/DCSLocalize";
 StatusBar.setBarStyle("light-content");
 if (Platform.OS === "android") {
   StatusBar.setBackgroundColor("rgba(0,0,0,0)");

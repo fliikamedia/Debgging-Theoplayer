@@ -32,6 +32,7 @@ import FastImage from "react-native-fast-image";
 import moment from "moment";
 import { COLORS, SIZES, icons } from ".././constants";
 import MovieDetailIcon from "./components/MovieDetailIcon";
+import { useTranslation } from "react-i18next";
 
 const EpisodeDetailScreen = ({ navigation, route }) => {
   const CURRENT_PLAYER = THEOPLAYER;
@@ -44,7 +45,7 @@ const EpisodeDetailScreen = ({ navigation, route }) => {
   //LogBox.ignoreAllLogs()
   const [watched, setWatched] = useState(0);
   const [duration, setDuration] = useState(0);
-
+  const { t } = useTranslation();
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", async () => {
       Orientation.lockToPortrait();
@@ -288,7 +289,9 @@ const EpisodeDetailScreen = ({ navigation, route }) => {
             }}
           ></View>
           <View style={{ width: "100%", paddingHorizontal: 10 }}>
-            <Text style={styles.moreText}>More Information</Text>
+            <Text style={styles.moreText}>
+              {t("moviesDetailsPage:moreInfo")}
+            </Text>
             <Text style={styles.titleText}>Content Advisory</Text>
             <Text style={styles.detailText}>
               {episode.content_advisory.toString().replace(/,/g, ", ")}
@@ -363,7 +366,7 @@ const EpisodeDetailScreen = ({ navigation, route }) => {
             marginLeft: 10,
           }}
         >
-          People Also Watched
+          {t("moviesDetailsPage:peopleAlsoWatched")}
         </Text>
       </View>
     );

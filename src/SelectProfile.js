@@ -22,6 +22,8 @@ import IconFeather from "react-native-vector-icons/Feather";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import FastImage from "react-native-fast-image";
 import Spinner from "react-native-spinkit";
+import { useTranslation } from "react-i18next";
+
 const SelectProfile = ({ navigation }) => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -29,6 +31,7 @@ const SelectProfile = ({ navigation }) => {
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState("");
   const [imageName, setImageName] = useState("");
+  const { t } = useTranslation();
   useEffect(() => {
     firebase.auth().onAuthStateChanged(function (user) {
       if (user) {
@@ -82,7 +85,7 @@ const SelectProfile = ({ navigation }) => {
             navigate={false}
           />
           <TextInput
-            placeholder="Name"
+            placeholder={t("common:name")}
             placeholderTextColor="white"
             style={styles.input}
             onChangeText={(newValue) => setName(newValue)}
@@ -96,7 +99,7 @@ const SelectProfile = ({ navigation }) => {
               marginHorizontal: 20,
             }}
           >
-            <Text style={{ color: "white" }}>Choose an image</Text>
+            <Text style={{ color: "white" }}>{t("common:selectImg")}</Text>
             <Image
               source={icons.right_arrow}
               style={{
@@ -130,7 +133,10 @@ const SelectProfile = ({ navigation }) => {
               style={styles.save}
               onPress={() => creatingProfile()}
             >
-              <Text style={{ color: "white", fontSize: 18 }}>Save</Text>
+              <Text style={{ color: "white", fontSize: 18 }}>
+                {" "}
+                {t("common:save")}
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.cancel}
@@ -139,7 +145,10 @@ const SelectProfile = ({ navigation }) => {
                 setCreating(false);
               }}
             >
-              <Text style={{ color: "white", fontSize: 18 }}>Cancel</Text>
+              <Text style={{ color: "white", fontSize: 18 }}>
+                {" "}
+                {t("common:cancel")}
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -206,7 +215,7 @@ const SelectProfile = ({ navigation }) => {
                 marginTop: 20,
               }}
             >
-              Who's Watching ?
+              {t("common:whosWatching")}
             </Text>
             {/*    <UserProfile
               editing={editing}
@@ -258,7 +267,7 @@ const SelectProfile = ({ navigation }) => {
             }}
           >
             <Text style={{ color: "white", fontFamily: "Sora-Bold" }}>
-              Manage Profiles
+              {t("common:manageProfiles")}
             </Text>
           </TouchableOpacity>
         </View>
@@ -343,7 +352,7 @@ const styles = StyleSheet.create({
   },
   save: {
     height: 60,
-    width: 120,
+    width: 130,
     borderWidth: 2,
     borderColor: "white",
     borderRadius: 5,
@@ -353,7 +362,7 @@ const styles = StyleSheet.create({
   },
   cancel: {
     height: 60,
-    width: 120,
+    width: 130,
     borderWidth: 2,
     borderColor: "white",
     borderRadius: 5,

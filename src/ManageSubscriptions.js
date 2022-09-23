@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import {
   View,
   Text,
@@ -22,13 +22,17 @@ import ModalComponent from "./components/ModalComponent";
 import SubscriptionCard from "./components/SubscriptionCard";
 import LinearGradient from "react-native-linear-gradient";
 import Spinner from "react-native-spinkit";
+import { useTranslation } from "react-i18next";
+
 const ManageSubscriptions = () => {
   const dispatch = useDispatch();
   const subscriptions_state = useSelector((state) => state.subscriptions);
-
+  const { t } = useTranslation();
   const user_state = useSelector((state) => state.user);
   const [showModal, setShowModal] = useState(false);
-  // console.log(subscriptions_state.mySubscriptions.subscriptions.data[0].plan);
+  console.log(
+    subscriptions_state?.mySubscriptions?.subscriptions?.data[0]?.status
+  );
   const fetchSubsctiption = () => {
     firebase.auth().onAuthStateChanged(function (user) {
       if (user) {
@@ -129,109 +133,13 @@ const ManageSubscriptions = () => {
     plan = {};
     periodEnd = null;
   }
-  // console.log(user_state?.user);
-  // const renderSubscriptions = () => {
-  //   if (
-  //     subscriptions_state?.mySubscriptions?.subscriptions?.data[0]?.status ===
-  //     "active"
-  //   ) {
-  //     return (
-  //       <View style={{ marginTop: 30 }}>
-  //         <Text style={styles.header}>Current Plan</Text>
-  //         <View
-  //           style={{
-  //             flexDirection: "row",
-  //             justifyContent: "space-between",
-  //             width: "95%",
-  //             paddingLeft: 10,
-  //           }}
-  //         >
-  //           <Text style={styles.descriptionTxt}>{plan?.nickname}</Text>
-  //           <Text style={styles.priceText}>
-  //             {parseCurr(plan?.amount)}
-  //             {dynamicSlash(plan?.nickname)}
-  //           </Text>
-  //         </View>
-  //         <Text
-  //           style={{
-  //             color: "#fff",
-  //             fontFamily: "Sora-Regular",
-  //             fontSize: 16,
-  //             marginLeft: 10,
-  //           }}
-  //         >{`Your plan renews on ${toDateTime(periodEnd)}`}</Text>
-  //         {/* Buttons */}
-  //         <View>
-  //           <TouchableOpacity
-  //             style={styles.cancelBTN}
-  //             onPress={() => cancelSubscription()}
-  //           >
-  //             <Text style={styles.cancelBtnTxt}>Cancel Subscription</Text>
-  //           </TouchableOpacity>
-  //         </View>
-  //         <View style={styles.separator}></View>
 
-  //         <Text style={styles.header}>Payment Method</Text>
-  //         <View
-  //           style={{
-  //             flexDirection: "row",
-  //             alignItems: "center",
-  //             //   justifyContent: "space-evenly",
-  //             paddingLeft: 10,
-  //           }}
-  //         >
-  //           <View style={{ flexDirection: "row", alignItems: "center" }}>
-  //             <Awesome name="cc-visa" size={30} color="#fff" />
-  //             <Text
-  //               style={{ color: "#fff", marginLeft: 10 }}
-  //             >{`*****${cardDetails?.last4}`}</Text>
-  //           </View>
-  //           <View>
-  //             <Text
-  //               style={{ color: "#fff", marginLeft: 30 }}
-  //             >{`Expires ${cardDetails?.exp_month}/${cardDetails?.exp_year}`}</Text>
-  //           </View>
-  //         </View>
-  //         <ModalComponent
-  //           type="cancel-subscription"
-  //           isVisible={showModal}
-  //           text="Subscription Canceled successfully!"
-  //           setShowModal={setShowModal}
-  //           fetchSubsctiption={fetchSubsctiption}
-  //         />
-  //       </View>
-  //     );
-  //   } else {
-  //     return (
-  //       <LinearGradient
-  //         start={{ x: 0, y: 0 }}
-  //         end={{ x: 1, y: 1 }}
-  //         // start={{ x: 0.7, y: 0 }}
-  //         //colors={["#003366", "#483D8B", "#4682B4"]}
-  //         // colors={["#000020", "#000080", "#4682B4"]}
-  //         // colors={["#000025", "#000020", "black"]}
-  //         colors={["#141a5c", "#218ae3", "#0d0526"]}
-  //         style={{ flex: 1, justifyContent: "center" }}
-  //       >
-  //         {subscriptions_state.subscriptions.map((subscription, index) => (
-  //           <SubscriptionCard
-  //             key={index}
-  //             plan={subscription?.nickname}
-  //             trialText="14 days free trial"
-  //             price={subscription?.unit_amount}
-  //             description="Create up to 5 profiles for family members and loved ones"
-  //             btnText="Start Free Trial"
-  //             id={subscription.id}
-  //           />
-  //         ))}
-  //       </LinearGradient>
-  //     );
-  //   }
-  // };
   const renderSubscriptions = () => {
     return (
       <View style={{ marginTop: 30 }}>
-        <Text style={styles.header}>Current Plan</Text>
+        <Text style={styles.header}>
+          {t("manageSubscriptions:currentPlan")}
+        </Text>
         <View
           style={{
             flexDirection: "row",
@@ -253,12 +161,12 @@ const ManageSubscriptions = () => {
             fontSize: 16,
             marginLeft: 10,
           }}
-        >{`Your plan ${
+        >{`${t("manageSubscriptions:yourPlan")} ${
           subscriptions_state?.mySubscriptions?.subscriptions?.data[0]
             ?.status === "active"
-            ? "renews"
-            : "ends"
-        } on ${toDateTime(periodEnd)}`}</Text>
+            ? `${t("manageSubscriptions:renews")}`
+            : `${t("manageSubscriptions:ends")}`
+        } ${t("manageSubscriptions:on")} ${toDateTime(periodEnd)}`}</Text>
         {/* Buttons */}
         <View>
           {subscriptions_state?.mySubscriptions?.subscriptions?.data[0]
@@ -267,7 +175,9 @@ const ManageSubscriptions = () => {
               style={styles.cancelBTN}
               onPress={() => cancelSubscription()}
             >
-              <Text style={styles.cancelBtnTxt}>Cancel Subscription</Text>
+              <Text style={styles.cancelBtnTxt}>
+                {t("manageSubscriptions:cancelSubscription")}
+              </Text>
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
@@ -275,34 +185,41 @@ const ManageSubscriptions = () => {
               // onPress={() => cancelSubscription()}
             >
               <Text style={styles.cancelBtnTxt}>
-                Subscription has been canceled
+                {t("manageSubscriptions:subscriptionCanceled")}
               </Text>
             </TouchableOpacity>
           )}
         </View>
-        <View style={styles.separator}></View>
-
-        <Text style={styles.header}>Payment Method</Text>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            //   justifyContent: "space-evenly",
-            paddingLeft: 10,
-          }}
-        >
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Awesome name="cc-visa" size={30} color="#fff" />
-            <Text
-              style={{ color: "#fff", marginLeft: 10 }}
-            >{`*****${cardDetails?.last4}`}</Text>
-          </View>
+        {subscriptions_state?.mySubscriptions?.subscriptions?.data[0]
+          ?.status === "active" && (
           <View>
-            <Text
-              style={{ color: "#fff", marginLeft: 30 }}
-            >{`Expires ${cardDetails?.exp_month}/${cardDetails?.exp_year}`}</Text>
+            <View style={styles.separator}></View>
+
+            <Text style={styles.header}>
+              {t("manageSubscriptions:paymentMethod")}
+            </Text>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                //   justifyContent: "space-evenly",
+                paddingLeft: 10,
+              }}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Awesome name="cc-visa" size={30} color="#fff" />
+                <Text
+                  style={{ color: "#fff", marginLeft: 10 }}
+                >{`*****${cardDetails?.last4}`}</Text>
+              </View>
+              <View>
+                <Text style={{ color: "#fff", marginLeft: 30 }}>{`${t(
+                  "manageSubscriptions:expires"
+                )} ${cardDetails?.exp_month}/${cardDetails?.exp_year}`}</Text>
+              </View>
+            </View>
           </View>
-        </View>
+        )}
         <ModalComponent
           type="cancel-subscription"
           isVisible={showModal}

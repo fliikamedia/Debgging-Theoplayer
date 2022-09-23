@@ -3,11 +3,13 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import NewTextInput from "./components/TextInput";
 import firebase from "firebase";
 import ModalComponent from "./components/ModalComponent";
+import { useTranslation } from "react-i18next";
 const UpdatePassword = () => {
   const [oldPassword, setOldPassword] = useState("");
   const [password, setPassword] = useState("");
   const [confirmMassword, setConfirmPassword] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const { t } = useTranslation();
   const updateUserPassword = () => {
     if (!password || !confirmMassword) return;
     const user = firebase.auth().currentUser;
@@ -48,7 +50,7 @@ const UpdatePassword = () => {
         iconName="lock"
         iconSize={25}
         iconColor="darkgrey"
-        placeholder="Enter your current password"
+        placeholder={t("common:currentPassword")}
         type="password"
         value={oldPassword}
         onChangeText={(password) => setOldPassword(password)}
@@ -59,7 +61,7 @@ const UpdatePassword = () => {
         iconName="lock"
         iconSize={25}
         iconColor="darkgrey"
-        placeholder="Enter new password"
+        placeholder={t("common:newPassword")}
         type="password"
         value={password}
         onChangeText={(password) => setPassword(password)}
@@ -70,7 +72,7 @@ const UpdatePassword = () => {
         iconName="lock"
         iconSize={25}
         iconColor="darkgrey"
-        placeholder="confirm password"
+        placeholder={t("common:confirmPassword")}
         type="password"
         value={confirmMassword}
         onChangeText={(password) => setConfirmPassword(password)}
@@ -78,7 +80,7 @@ const UpdatePassword = () => {
         autoCapitalize="none"
       />
       <TouchableOpacity onPress={updateUserPassword} style={styles.updateBTN}>
-        <Text style={styles.updateBtnText}>Update Password</Text>
+        <Text style={styles.updateBtnText}>{t("common:updatePassword")}</Text>
       </TouchableOpacity>
       <ModalComponent
         type="update-password"

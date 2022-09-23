@@ -33,6 +33,7 @@ import FastImage from "react-native-fast-image";
 import { removeProfileError } from "../../store/actions/user";
 import ModalComponent from "../components/ModalComponent";
 import Spinner from "react-native-spinkit";
+import { useTranslation } from "react-i18next";
 
 const ProfileScreen = ({ navigation, route }) => {
   const user = useSelector((state) => state.user);
@@ -43,6 +44,7 @@ const ProfileScreen = ({ navigation, route }) => {
   const [imageName, setImageName] = useState("");
   const [refreshing, setRefreshing] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", async () => {
@@ -114,7 +116,7 @@ const ProfileScreen = ({ navigation, route }) => {
             navigate={true}
           />
           <TextInput
-            placeholder="Name"
+            placeholder={t("common:name")}
             placeholderTextColor="white"
             style={styles.input}
             onChangeText={(newValue) => setName(newValue)}
@@ -128,7 +130,15 @@ const ProfileScreen = ({ navigation, route }) => {
               marginHorizontal: 20,
             }}
           >
-            <Text style={{ color: "white" }}>Choose an image</Text>
+            <Text
+              style={{
+                color: "white",
+                fontFamily: "Sora-Regular",
+                fontSize: 16,
+              }}
+            >
+              {t("common:selectImg")}
+            </Text>
             <Image
               source={icons.right_arrow}
               style={{
@@ -162,7 +172,10 @@ const ProfileScreen = ({ navigation, route }) => {
               style={styles.save}
               onPress={() => creatingProfile()}
             >
-              <Text style={{ color: "white", fontSize: 18 }}>Save</Text>
+              <Text style={{ color: "white", fontSize: 18 }}>
+                {" "}
+                {t("common:save")}
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.cancel}
@@ -171,7 +184,10 @@ const ProfileScreen = ({ navigation, route }) => {
                 setCreating(false);
               }}
             >
-              <Text style={{ color: "white", fontSize: 18 }}>Cancel</Text>
+              <Text style={{ color: "white", fontSize: 18 }}>
+                {" "}
+                {t("common:cancel")}
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -238,7 +254,7 @@ const ProfileScreen = ({ navigation, route }) => {
                 marginTop: 20,
               }}
             >
-              Who's Watching ?
+              {t("common:whosWatching")}
             </Text>
             {/*    <UserProfile
               editing={editing}
@@ -289,7 +305,7 @@ const ProfileScreen = ({ navigation, route }) => {
             }}
           >
             <Text style={{ color: "white", fontFamily: "Sora-Bold" }}>
-              Manage Profiles
+              {t("common:manageProfiles")}
             </Text>
           </TouchableOpacity>
         </View>
@@ -404,7 +420,7 @@ const styles = StyleSheet.create({
   },
   save: {
     height: 60,
-    width: 120,
+    width: 130,
     borderWidth: 2,
     borderColor: "white",
     borderRadius: 5,
@@ -414,7 +430,7 @@ const styles = StyleSheet.create({
   },
   cancel: {
     height: 60,
-    width: 120,
+    width: 130,
     borderWidth: 2,
     borderColor: "white",
     borderRadius: 5,

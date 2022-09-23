@@ -11,10 +11,11 @@ import { useSelector } from "react-redux";
 import MoviesItem from "../components/MoviesItem";
 import IconFeather from "react-native-vector-icons/Feather";
 import LinearGradient from "react-native-linear-gradient";
+import { useTranslation } from "react-i18next";
 
 const SearchScreen = ({ navigation }) => {
   const movies = useSelector((state) => state.movies);
-
+  const { t } = useTranslation();
   const [term, setTerm] = useState("");
   //console.log(movies.availableMovies[0]);
 
@@ -151,7 +152,7 @@ const SearchScreen = ({ navigation }) => {
             <TextInput
               placeholderTextColor="white"
               style={styles.textInput}
-              placeholder="Search by movie title, actor ..."
+              placeholder={t("searchPage:inputPlaceHolder")}
               onChangeText={(newTerm) => setTerm(newTerm)}
               value={term}
               autoCapitalize="none"
@@ -166,7 +167,7 @@ const SearchScreen = ({ navigation }) => {
             />
           </View>
         </LinearGradient>
-        {!term && <Text style={styles.explore}>Explore</Text>}
+        {!term && <Text style={styles.explore}>{t("searchPage:explore")}</Text>}
         <ScrollView
           contentContainerStyle={{
             flexGrow: 1,
@@ -188,10 +189,11 @@ const styles = StyleSheet.create({
   },
   textInput: {
     flex: 1,
-    fontSize: 18,
+    fontSize: 15,
     height: 50,
     paddingHorizontal: 10,
     color: "white",
+    fontFamily: "Sora-Regular",
   },
   iconStyle: {
     fontSize: 35,

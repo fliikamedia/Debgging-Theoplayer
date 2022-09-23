@@ -55,12 +55,15 @@ import RbSheetSeasonItem from "../components/RbSheetSeasonItem";
 import RbSheetMovieItem from "../components/RbSheetMovieItem";
 import Spinner from "react-native-spinkit";
 import { useIsFocused } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
+
 const HomeScreen = ({ navigation }) => {
   const CURRENT_PLAYER = THEOPLAYER;
   const appState = useRef(AppState.currentState);
   const refRBSheet = useRef(null);
   const refRBSheetMovies = useRef(null);
   const isFocused = useIsFocused();
+  const { t } = useTranslation();
   //LogBox.ignoreAllLogs();
   //LogBox.ignoreLogs(["Calling `getNode()`"]);
   const user = useSelector((state) => state.user);
@@ -714,7 +717,7 @@ const HomeScreen = ({ navigation }) => {
                 fontFamily: "Sora-Bold",
               }}
             >
-              Continue watching
+              {t("homePage:continueWatching")}
             </Text>
             <Image
               source={icons.right_arrow}
@@ -921,7 +924,7 @@ const HomeScreen = ({ navigation }) => {
                       user.currentProfile._id,
                       item.season_number
                     )(dispatch).then(() => {
-                      showToast("Removed from watch list");
+                      showToast(`${t("common:removedFromWatchlist")}`);
                     });
                   }}
                 >
@@ -943,7 +946,7 @@ const HomeScreen = ({ navigation }) => {
                       item.season_number,
                       moment()
                     )(dispatch).then(() => {
-                      showToast("Added to watch list");
+                      showToast(`${t("common:addedToWatchlist")}`);
                     });
                   }}
                 >
@@ -1000,7 +1003,7 @@ const HomeScreen = ({ navigation }) => {
                 fontFamily: "Sora-Bold",
               }}
             >
-              Fliika Originals
+              {t("homePage:fliikaOriginals")}
             </Text>
             <View style={styles.carouselContainerView}>
               <Carousel
@@ -1169,7 +1172,7 @@ const HomeScreen = ({ navigation }) => {
                   marginLeft: 10,
                 }}
               >
-                Go to details
+                {t("homePage:rbGoToDetails")}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -1194,7 +1197,7 @@ const HomeScreen = ({ navigation }) => {
                   marginLeft: 10,
                 }}
               >
-                Remove from list
+                {t("homePage:rbRemoveFromList")}
               </Text>
             </TouchableOpacity>
           </View>

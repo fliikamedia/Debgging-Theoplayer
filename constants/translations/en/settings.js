@@ -1,0 +1,18 @@
+export default {
+  account: "Account",
+  watchlist: "Watchlist",
+  subscriptions: "Manage Subscriptions",
+  accessPass: "Manage Access Pass",
+  switchProfiles: "Switch Profiles",
+  legal: "Legal",
+  help: "Help",
+  logout: "Log Out",
+  credentials: "Account Information",
+  playbackSettings: "Playback Settings",
+  password: "Password",
+  myWatchHistory: "My Watch History",
+  autoPlaySubtitles: "Auto Play Subtitles",
+  preferredLanguage: "Preferred Language",
+  change: "Change",
+  clear: "Clear",
+};

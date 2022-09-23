@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import {
   StyleSheet,
   Text,
@@ -8,23 +8,19 @@ import {
   AppState,
   Dimensions,
   FlatList,
-  Image,
   ActivityIndicator,
 } from "react-native";
 import firebase from "firebase";
 import { LOGIN, MOVIES } from "../../constants/RouteNames";
-import { TextInput, HelperText } from "react-native-paper";
 import { LogBox } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { addUser, loggedIn, postGeolocation } from "../../store/actions/user";
+import { addUser, loggedIn } from "../../store/actions/user";
 import { useDispatch } from "react-redux";
-import { firebaseConfig } from "../api/FirebaseConfig";
-import AsyncStorage from "@react-native-community/async-storage";
 import profileImgs from "../../constants/profileImgs";
 import NewTextInput from "../components/TextInput";
 import LinearGradient from "react-native-linear-gradient";
 import FastImage from "react-native-fast-image";
-import axios from "axios";
+import { useTranslation } from "react-i18next";
 
 const SignupScreen = ({ navigation }) => {
   const appState = useRef(AppState.currentState);
@@ -43,7 +39,7 @@ const SignupScreen = ({ navigation }) => {
   const [show, setShow] = useState(false);
   const [imageName, setImageName] = useState(profileImgs[0]);
   const [btnClicked, setBtnClicked] = useState(false);
-
+  const { t } = useTranslation();
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     const year = currentDate.getFullYear();
@@ -210,171 +206,28 @@ const SignupScreen = ({ navigation }) => {
             marginTop: Dimensions.get("window").height < 900 ? 0 : 80,
           }}
         >
-          Create your account
+          {t("fillProfileScreen:title")}
         </Text>
         <NewTextInput
           iconName="user"
           iconSize={25}
           iconColor="darkgrey"
-          placeholder="First name"
+          placeholder={t("fillProfileScreen:firstName")}
           onChangeText={(firstName) => setFirstName(firstName)}
           autoCorrect={false}
           autoCapitalize="none"
           value={firstName}
         />
-        {/* <TextInput
-          label="First Name"
-          onChangeText={(firstName) => setFirstName(firstName)}
-          style={styles.textInput}
-          autoCorrect={false}
-          autoCapitalize="words"
-          value={firstName}
-          mode="outlined"
-          theme={{
-            colors: { primary: `${inputColor}`, underlineColor: "transparent" },
-          }}
-        /> */}
         <NewTextInput
           iconName="user"
           iconSize={25}
           iconColor="darkgrey"
-          placeholder="Last name"
+          placeholder={t("fillProfileScreen:lastName")}
           onChangeText={(lastName) => setLastName(lastName)}
           autoCorrect={false}
           autoCapitalize="none"
           value={lastName}
         />
-        {/* <TextInput
-          label="Last Name"
-          onChangeText={(lastName) => setLastName(lastName)}
-          style={styles.textInput}
-          autoCorrect={false}
-          autoCapitalize="words"
-          value={lastName}
-          mode="outlined"
-          theme={{
-            colors: { primary: `${inputColor}`, underlineColor: "transparent" },
-          }}
-        /> */}
-        {/* <TextInput
-          label="Email"
-          onChangeText={(email) => setEmail(email)}
-          style={styles.textInput}
-          autoCorrect={false}
-          autoCapitalize="none"
-          value={email}
-          mode="outlined"
-          keyboardType="email-address"
-          onEndEditing={() => setDoneEmail(true)}
-          theme={{
-            colors: { primary: `${inputColor}`, underlineColor: "transparent" },
-          }}
-        />
-        {email && doneEmail && !email.includes("@") ? (
-          <HelperText
-            style={{ fontSize: 14 }}
-            type="error"
-            visible={email && doneEmail && !email.includes("@")}
-          >
-            Email address is invalid!
-          </HelperText>
-        ) : null} */}
-        {/*    <TextInput
-          label="Password"
-          value={password}
-          onChangeText={(password) => setPassword(password)}
-          style={styles.textInput}
-          autoCorrect={false}
-          autoCapitalize="none"
-          secureTextEntry
-          mode="outlined"
-          onEndEditing={() => setDonePassword(true)}
-          theme={{
-            colors: { primary: `${inputColor}`, underlineColor: "transparent" },
-          }}
-        />
-        {password && donePassword && password.length < 6 ? (
-          <HelperText
-            style={{ fontSize: 14 }}
-            type="error"
-            visible={password && donePassword && password.length < 6}
-          >
-            Password must be at least 6 characters long
-          </HelperText>
-        ) : null} */}
-        {/* <NewTextInput
-          onFocus={() => showDatepicker()}
-          iconName="calendar"
-          iconSize={25}
-          iconColor="darkgrey"
-          placeholder="Date of birth"
-          onChangeText={(yearOfBirth) => setYearOfBirth(yearOfBirth)}
-          autoCorrect={false}
-          autoCapitalize="none"
-          value={yearOfBirth}
-          showSoftInputOnFocus={false}
-        /> */}
-        {/* <TextInput
-          showSoftInputOnFocus={false}
-          onFocus={() => showDatepicker()}
-          label="Date of birth"
-          value={yearOfBirth}
-          onChangeText={(yearOfBirth) => setYearOfBirth(yearOfBirth)}
-          style={styles.textInput}
-          autoCorrect={false}
-          autoCapitalize="none"
-          mode="outlined"
-          theme={{
-            colors: { primary: `${inputColor}`, underlineColor: "transparent" },
-          }}
-        /> */}
-        {/* <NewTextInput
-          iconName="phone"
-          onFocus={() => setPhoneNumber("+")}
-          iconSize={22}
-          iconColor="darkgrey"
-          placeholder="Phone number"
-          onChangeText={(phoneNumber) => setPhoneNumber(phoneNumber)}
-          autoCorrect={false}
-          autoCapitalize="none"
-          value={phoneNumber}
-          keyboardType="numeric"
-        /> */}
-        {/* <TextInput
-          label="Phone number"
-          onFocus={() => setPhoneNumber("+")}
-          value={phoneNumber}
-          onChangeText={(phoneNumber) => setPhoneNumber(phoneNumber)}
-          style={styles.textInput}
-          autoCorrect={false}
-          autoCapitalize="none"
-          mode="outlined"
-          keyboardType="numeric"
-          theme={{
-            colors: { primary: `${inputColor}`, underlineColor: "transparent" },
-          }}
-        /> */}
-        {error == "The email address is already in use by another account." ? (
-          <View>
-            <Text style={{ color: "red", textAlign: "center" }}>{error}</Text>
-            <TouchableOpacity onPress={() => resetPassword(email)}>
-              <Text
-                style={{
-                  color: "aquamarine",
-                  textTransform: "uppercase",
-                  fontStyle: "italic",
-                  fontWeight: "bold",
-                  fontSize: 16,
-                  textDecorationLine: "underline",
-                  textAlign: "center",
-                  marginTop: 10,
-                }}
-              >
-                Reset Password?
-              </Text>
-            </TouchableOpacity>
-          </View>
-        ) : null}
         <View style={{ marginVertical: 20 }}>
           <Text
             style={{
@@ -384,7 +237,7 @@ const SignupScreen = ({ navigation }) => {
               marginBottom: 20,
             }}
           >
-            Choose a profile image
+            {t("fillProfileScreen:selectImg")}
           </Text>
           <FlatList
             showsHorizontalScrollIndicator={false}
@@ -443,7 +296,7 @@ const SignupScreen = ({ navigation }) => {
                   textTransform: "uppercase",
                 }}
               >
-                Submit Profile
+                {t("fillProfileScreen:submit")}
               </Text>
             )}
           </LinearGradient>
@@ -456,7 +309,7 @@ const SignupScreen = ({ navigation }) => {
             marginTop: 30,
           }}
         >
-          Already have an account ?
+          {t("signupPage:AlreadyHaveAccount")}
         </Text>
         <TouchableOpacity
           onPress={() => navigation.navigate(LOGIN)}
@@ -469,7 +322,7 @@ const SignupScreen = ({ navigation }) => {
               textAlign: "center",
             }}
           >
-            Sign in
+            {t("signupPage:SignIn")}
           </Text>
         </TouchableOpacity>
       </ScrollView>
