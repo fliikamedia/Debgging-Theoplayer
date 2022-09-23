@@ -278,6 +278,13 @@ const TheoPlayerPage = ({ navigation, route }) => {
       },
     ],
     textTracks: theoSubtitles,
+    contentProtection: {
+      widevine: {
+        licenseAcquisitionURL:
+          "https://fliikamediaservice.keydelivery.eastus.media.azure.net/Widevine/?kid=f40c52c7-9b45-42e8-a90f-afad341a488e",
+      },
+      integration: "ezdrm",
+    },
     // textTracks: [
     //   {
     //     kind: "subtitles",
