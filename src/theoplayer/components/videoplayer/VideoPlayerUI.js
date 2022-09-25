@@ -46,6 +46,7 @@ import ForwardsSvg from "../../res/images/forwards.svg";
 import BackwardsSvg from "../../res/images/backwards.svg";
 import IconAwesome from "react-native-vector-icons/FontAwesome5";
 import IconAnt from "react-native-vector-icons/AntDesign";
+import IconMaterial from "react-native-vector-icons/MaterialCommunityIcons";
 import { THEOPLAYER } from "../../../../constants/RouteNames";
 import AsyncStorage from "@react-native-community/async-storage";
 import { SIZES } from "../../../../constants";
@@ -55,6 +56,8 @@ import {
   updateWatchedProfile,
 } from "../../../../store/actions/user";
 import moment from "moment";
+import FastImage from "react-native-fast-image";
+import LinearGradient from "react-native-linear-gradient";
 const VideoPlayerUI = ({
   style,
   sources,
@@ -83,6 +86,10 @@ const VideoPlayerUI = ({
   title,
   content_advisory,
   film_rating,
+  recommendOne,
+  recommendTwo,
+  recommendThree,
+  recommendFour,
 }) => {
   const [screenClicked, setScreenClicked] = useState(false);
   const [seekingButton, setSeekingButton] = useState(false);
@@ -90,8 +97,10 @@ const VideoPlayerUI = ({
   const [showRating, setShowRating] = useState(false);
   const [showedRating, setShowedRating] = useState(false);
   const [subtitleLabel, setSubtitleLabel] = useState("");
+  const [hideRecommend, setHideRecommend] = useState(false);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
+  const movies = useSelector((state) => state.movies);
   const timer = useRef();
   const navigation = useNavigation();
   const route = useRoute();
@@ -103,11 +112,19 @@ const VideoPlayerUI = ({
       onSeeks(time);
     }
   };
-  console.log(
-    "Paused ?",
-    duration - watchedTime
-    // nextEpisode && duration - currentTime < 10000 && paused
-  );
+  // console.log(
+  //   "Paused ?",
+  //   duration,
+  //   watchedTime
+  //   // nextEpisode && duration - currentTime < 10000 && paused
+  // );
+  console.log("is next ", isPlayNext, hideRecommend);
+  // console.log(
+  //   recommendOne?.title,
+  //   recommendTwo?.title,
+  //   recommendThree?.title,
+  //   recommendFour?.title
+  // );
   // console.log("isPlayNext", nextEpisode.title, duration - currentTime);
   // console.log("watched at", watchedTime);
   // useEffect(() => {
@@ -138,7 +155,7 @@ const VideoPlayerUI = ({
 
   useEffect(() => {
     if (nextEpisode && duration - currentTime < 10000 && paused) {
-      console.log("neeext");
+      // console.log("neeext");
       onPlayNext();
     }
 
@@ -178,6 +195,7 @@ const VideoPlayerUI = ({
       setTimeout(() => {
         onSetPlayPause(false);
         setIsPlayNext(undefined);
+        setHideRecommend(false);
       }, 2000);
     }
   }, [isPlayNext, paused]);
@@ -319,7 +337,7 @@ const VideoPlayerUI = ({
     if (duration - watchedTime > 3000) {
       onSeeks(watchedTime);
     }
-  }, [duration]);
+  }, []);
   function myStopFunction() {
     // console.log(timer.current);
     clearTimeout(timer.current);
@@ -460,6 +478,238 @@ const VideoPlayerUI = ({
   };
 
   const selectableTextTracks = filterRenderableTracks(textTracks);
+
+  const renderRecommendations = () => {
+    return (
+      <View
+        style={{
+          flex: 1,
+          zIndex: 2000,
+          backgroundColor: "black",
+          flexDirection: "row",
+          justifyContent: "space-around",
+          // alignItems: "center",
+        }}
+      >
+        <TouchableOpacity
+          // style={{left: 0, zIndex: 10}}
+          // icon={backAarrow}
+          onPress={() => navigation.goBack()}
+          style={{
+            position: "absolute",
+            left: 30,
+            top: 30,
+            zIndex: 100,
+          }}
+        >
+          {/* <Image source={backAarrow} style={{ height: 20, width: 30 }} /> */}
+          <Icon name="arrowleft" size={30} color="#fff" />
+        </TouchableOpacity>
+        <View
+          style={{
+            // flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+            // backgroundColor: "red",
+            alignSelf: "center",
+            // width: SIZES.height * 0.3,
+            marginLeft: SIZES.height * 0.06,
+          }}
+        >
+          <TouchableOpacity onPress={togglePlayPause}>
+            <IconMaterial name="replay" size={70} color="#fff" />
+            <Text
+              style={{ fontSize: 20, fontFamily: "Sora-Bold", color: "#fff" }}
+            >
+              Replay
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <View>
+          {/* <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          > */}
+          <View
+            style={{
+              flexWrap: "wrap",
+              // backgroundColor: "red",
+              justifyContent: "center",
+            }}
+          >
+            <View style={styles.recommendContainer}>
+              <LinearGradient
+                colors={[
+                  "#fff",
+                  "#17C8FF",
+                  "#329BFF",
+                  // "#4C64FF",
+                  // "#6536FF",
+                  // "#8000FF",
+                ]}
+                start={{ x: 0.0, y: 1.0 }}
+                end={{ x: 1.0, y: 1.0 }}
+                style={styles.linearBorder}
+              >
+                <TouchableOpacity
+                  style={styles.touchableContainer}
+                  onPress={async () => {
+                    await saveOnPlayNext();
+                    navigation.navigate(THEOPLAYER, {
+                      movieId: recommendOne?._id,
+                      // isNext: true,
+                    });
+                    setIsPlayNext(true);
+                    setHideRecommend(true);
+                    // onSeeks(0);
+                    // unpauseVideo();
+                  }}
+                >
+                  <FastImage
+                    // opacity={0.7}
+                    style={styles.recommendImage}
+                    source={{ uri: recommendOne?.wide_thumbnail_link }}
+                  />
+                  <Text style={styles.recommendTitle}>
+                    {recommendOne?.title}
+                  </Text>
+                </TouchableOpacity>
+              </LinearGradient>
+            </View>
+            <View style={styles.recommendContainer}>
+              <LinearGradient
+                colors={[
+                  "#fff",
+                  "#17C8FF",
+                  "#329BFF",
+                  // "#4C64FF",
+                  // "#6536FF",
+                  // "#8000FF",
+                ]}
+                start={{ x: 0.0, y: 1.0 }}
+                end={{ x: 1.0, y: 1.0 }}
+                style={styles.linearBorder}
+              >
+                <TouchableOpacity
+                  onPress={async () => {
+                    await saveOnPlayNext();
+                    navigation.navigate(THEOPLAYER, {
+                      movieId: recommendTwo?._id,
+                      // isNext: true,
+                    });
+                    setIsPlayNext(true);
+                    setHideRecommend(true);
+                    // onSeeks(0);
+                    // unpauseVideo();
+                  }}
+                  style={styles.touchableContainer}
+                >
+                  <FastImage
+                    // opacity={0.7}
+                    style={styles.recommendImage}
+                    source={{ uri: recommendTwo?.wide_thumbnail_link }}
+                  />
+                  <Text style={styles.recommendTitle}>
+                    {recommendTwo?.title}
+                  </Text>
+                </TouchableOpacity>
+              </LinearGradient>
+            </View>
+            {/* </View> */}
+            {/* <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          > */}
+            <View style={styles.recommendContainer}>
+              <LinearGradient
+                colors={[
+                  "#329BFF",
+                  "#17C8FF",
+                  "#fff",
+                  // "#4C64FF",
+                  // "#6536FF",
+                  // "#8000FF",
+                ]}
+                start={{ x: 0.0, y: 1.0 }}
+                end={{ x: 1.0, y: 1.0 }}
+                style={styles.linearBorder}
+              >
+                <TouchableOpacity
+                  onPress={async () => {
+                    await saveOnPlayNext();
+                    navigation.navigate(THEOPLAYER, {
+                      movieId: recommendThree?._id,
+                      // isNext: true,
+                    });
+                    setIsPlayNext(true);
+                    setHideRecommend(true);
+                    // onSeeks(0);
+                    // unpauseVideo();
+                  }}
+                  style={styles.touchableContainer}
+                >
+                  <FastImage
+                    // opacity={0.7}
+                    style={styles.recommendImage}
+                    source={{ uri: recommendThree?.wide_thumbnail_link }}
+                  />
+                  <Text style={styles.recommendTitle}>
+                    {recommendThree?.title}
+                  </Text>
+                </TouchableOpacity>
+              </LinearGradient>
+            </View>
+            <View style={styles.recommendContainer}>
+              <LinearGradient
+                colors={[
+                  "#329BFF",
+                  "#17C8FF",
+                  "#fff",
+                  // "#4C64FF",
+                  // "#6536FF",
+                  // "#8000FF",
+                ]}
+                start={{ x: 0.0, y: 1.0 }}
+                end={{ x: 1.0, y: 1.0 }}
+                style={styles.linearBorder}
+              >
+                <TouchableOpacity
+                  onPress={async () => {
+                    await saveOnPlayNext();
+                    navigation.navigate(THEOPLAYER, {
+                      movieId: recommendFour?._id,
+                      // isNext: true,
+                    });
+                    setIsPlayNext(true);
+                    setHideRecommend(true);
+                    // onSeeks(0);
+                    // unpauseVideo();
+                  }}
+                  style={styles.touchableContainer}
+                >
+                  <FastImage
+                    // opacity={0.7}
+                    style={styles.recommendImage}
+                    source={{ uri: recommendFour?.wide_thumbnail_link }}
+                  />
+                  <Text style={styles.recommendTitle}>
+                    {recommendFour?.title}
+                  </Text>
+                </TouchableOpacity>
+              </LinearGradient>
+            </View>
+          </View>
+        </View>
+        {/* </View> */}
+      </View>
+    );
+  };
 
   // console.log("tracks", selectableTextTracks);
   return (
@@ -856,6 +1106,11 @@ const VideoPlayerUI = ({
           </View>
         )}
       </TouchableOpacity>
+      {!nextEpisode &&
+        duration - currentTime < 10000 &&
+        paused &&
+        !hideRecommend &&
+        renderRecommendations()}
     </View>
   );
 };

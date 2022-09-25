@@ -57,6 +57,9 @@ const TheoPlayerPage = ({ navigation, route }) => {
   //   android: "https://bitdash-a.akamaihd.net/content/sintel/sintel.mpd",
   //   default: "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8",
   // });
+  const allMovies = [...movies?.availableMovies];
+  const shuffled = allMovies?.sort(() => 0.5 - Math.random());
+  // console.log("shuffled", shuffled);
   let nextEpisode;
   try {
     nextEpisode = movies?.availableMovies?.find(
@@ -275,16 +278,20 @@ const TheoPlayerPage = ({ navigation, route }) => {
           Platform.OS === "android"
             ? "application/dash+xml"
             : "application/x-mpegurl",
+        contentProtection: {
+          widevine: {
+            licenseAcquisitionURL:
+              "https://fliikamediaservice.keydelivery.eastus.media.azure.net/Widevine/?kid=e3829c72-787d-41e3-81de-e1645b74a83e",
+          },
+          // FairPlay: {
+          //   certificateURL:
+          //     "skd://fliikamediaservice.keydelivery.eastus.media.azure.net/FairPlay/?kid=e3829c72-787d-41e3-81de-e1645b74a83e",
+          // },
+        },
       },
     ],
     textTracks: theoSubtitles,
-    contentProtection: {
-      widevine: {
-        licenseAcquisitionURL:
-          "https://fliikamediaservice.keydelivery.eastus.media.azure.net/Widevine/?kid=f40c52c7-9b45-42e8-a90f-afad341a488e",
-      },
-      integration: "ezdrm",
-    },
+
     // textTracks: [
     //   {
     //     kind: "subtitles",
@@ -321,6 +328,10 @@ const TheoPlayerPage = ({ navigation, route }) => {
         title={movie.episode_title ? movie.episode_title : movie?.title}
         content_advisory={movie?.content_advisory}
         film_rating={movie?.film_rating}
+        recommendOne={shuffled[0]}
+        recommendTwo={shuffled[1]}
+        recommendThree={shuffled[2]}
+        recommendFour={shuffled[3]}
       />
     </View>
   );

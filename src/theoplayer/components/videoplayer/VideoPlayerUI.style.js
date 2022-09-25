@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-
+import { SIZES } from "../../../../constants";
 export default StyleSheet.create({
   container: {
     position: "absolute",
@@ -101,5 +101,57 @@ export default StyleSheet.create({
   },
   thumbnailCarousel: {
     margin: 4,
+  },
+  recommendTitle: {
+    fontFamily: "Sora-Bold",
+    color: "#fff",
+    textAlign: "center",
+    marginBottom: 5,
+    fontSize: 15,
+  },
+  recommendContainer: {
+    width: SIZES.height * 0.3,
+    height: SIZES.width * 0.35,
+    borderRadius: 2,
+    marginHorizontal: 5,
+    marginVertical: 5,
+    justifyContent: "flex-end",
+    borderRadius: 5,
+    backgroundColor: "#fff",
+  },
+  recommendImage: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    borderRadius: 5,
+  },
+  touchableContainer: {
+    position: "absolute",
+    top: 2,
+    bottom: 2,
+    left: 2,
+    right: 2,
+    borderRadius: 5,
+    justifyContent: "flex-end",
+  },
+  linearBorder: {
+    // flexDirection: "row",
+    // width: "90%",
+    // height: SIZES.height < 900 ? 65 : 75,
+    // paddingHorizontal: 1.5,
+    // paddingVertical: 1.5,
+    flex: 1,
+    paddingTop: 1.5,
+    paddingBottom: 1.5,
+    paddingLeft: 1.5,
+    paddingRight: 1.5,
+    // alignSelf: "center",
+    // borderWidth: 1,
+    // borderColor: "deepskyblue",
+    borderRadius: 5,
+    // alignItems: "center",
+    // marginVertical: 8,
   },
 });
