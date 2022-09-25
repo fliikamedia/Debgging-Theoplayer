@@ -118,7 +118,7 @@ const VideoPlayerUI = ({
   //   watchedTime
   //   // nextEpisode && duration - currentTime < 10000 && paused
   // );
-  console.log("is next ", isPlayNext, hideRecommend);
+  console.log("is next ", watchedTime);
   // console.log(
   //   recommendOne?.title,
   //   recommendTwo?.title,
@@ -337,7 +337,7 @@ const VideoPlayerUI = ({
     if (duration - watchedTime > 3000) {
       onSeeks(watchedTime);
     }
-  }, []);
+  }, [duration]);
   function myStopFunction() {
     // console.log(timer.current);
     clearTimeout(timer.current);
