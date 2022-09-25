@@ -30,7 +30,7 @@ import {
   PORTRAIT,
   LANDSCAPE,
 } from "react-native-orientation-locker";
-
+import FastImage from "react-native-fast-image";
 const TheoPlayerPage = ({ navigation, route }) => {
   const user = useSelector((state) => state.user);
   const movies = useSelector((state) => state.movies);
@@ -60,6 +60,26 @@ const TheoPlayerPage = ({ navigation, route }) => {
   const allMovies = [...movies?.availableMovies];
   const shuffled = allMovies?.sort(() => 0.5 - Math.random());
   // console.log("shuffled", shuffled);
+  useEffect(() => {
+    FastImage.preload([
+      {
+        uri: shuffled[0]?.wide_thumbnail_link,
+        // headers: { Authorization: 'someAuthToken' },
+      },
+      {
+        uri: shuffled[1]?.wide_thumbnail_link,
+        // headers: { Authorization: 'someAuthToken' },
+      },
+      {
+        uri: shuffled[2]?.wide_thumbnail_link,
+        // headers: { Authorization: 'someAuthToken' },
+      },
+      {
+        uri: shuffled[3]?.wide_thumbnail_link,
+        // headers: { Authorization: 'someAuthToken' },
+      },
+    ]);
+  }, shuffled);
   let nextEpisode;
   try {
     nextEpisode = movies?.availableMovies?.find(
