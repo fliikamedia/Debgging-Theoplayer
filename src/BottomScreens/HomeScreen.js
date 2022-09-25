@@ -733,7 +733,8 @@ const HomeScreen = ({ navigation }) => {
           data={byOnlyLastEpisode}
           keyExtractor={(item) => item._id}
           renderItem={({ item, index }) => {
-            if (calculateProgress(item._id) < 100) {
+            // Using 99 instead of 100 because duration does not equal watched time
+            if (calculateProgress(item._id) < 99) {
               return (
                 <TouchableWithoutFeedback
                   onLongPress={() => {
