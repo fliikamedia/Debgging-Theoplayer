@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
   input: {
     // flex: 1,
     // marginRight: 6,
-    fontSize: 18,
+    fontSize: 16,
     // textAlign: "center",
     color: "#E8E8E8",
     padding: 15,

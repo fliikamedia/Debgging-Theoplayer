@@ -14,8 +14,10 @@ import MobileMoney from "../MobileMoney";
 import MobileMoneyPassCard from "../components/MobileMoneyPassCard";
 import MomoPass from "../MomoPass";
 import MomoPassClientDetails from "../MomoPassClientDetails";
+import { useTranslation } from "react-i18next";
 const Stack = createStackNavigator();
 export default SubscriptionNavigator = (props) => {
+  const { t } = useTranslation();
   return (
     <Stack.Navigator
       mode="modal"
@@ -55,7 +57,7 @@ export default SubscriptionNavigator = (props) => {
         component={ChooseSubscriptionType}
         options={{
           headerShown: true,
-          headerTitle: "Subscriptions",
+          headerTitle: `${t("headers:subscriptions")}`,
           headerTitleAlign: "center",
           headerTintColor: "#fff",
         }}

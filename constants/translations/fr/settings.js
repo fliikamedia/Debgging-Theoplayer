@@ -1,0 +1,18 @@
+export default {
+  account: "Compte",
+  watchlist: "Liste à regarder",
+  subscriptions: "Gérer les abonnements",
+  accessPass: "Gérer le pass d'accès",
+  switchProfiles: "Changer de profils",
+  legal: "Légal",
+  help: "Aide",
+  logout: "Se déconnecter",
+  credentials: "Informations du compte",
+  playbackSettings: "Paramètres de lecture",
+  password: "mot de passe",
+  myWatchHistory: "Mon historique regardé",
+  autoPlaySubtitles: "Sous-titres en lecture automatique",
+  preferredLanguage: "langue préférée",
+  change: "Changer",
+  clear: "Effacer",
+};

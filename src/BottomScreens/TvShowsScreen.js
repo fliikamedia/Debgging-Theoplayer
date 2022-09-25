@@ -43,6 +43,7 @@ import moment from "moment";
 import firebase from "firebase";
 import Spinner from "react-native-spinkit";
 import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
+import { useTranslation } from "react-i18next";
 
 const TvShowsScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -54,6 +55,7 @@ const TvShowsScreen = ({ navigation }) => {
   const [result, setResult] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [rbSeries, setRbSeries] = useState({});
+  const { t } = useTranslation();
   const getSeries = useCallback(async () => {
     const response = await FliikaApi.get("/posts");
     setResult(response.data);
@@ -230,7 +232,7 @@ const TvShowsScreen = ({ navigation }) => {
                       user.currentProfile._id,
                       item.season_number
                     )(dispatch).then(() => {
-                      showToast("Removed from watch list");
+                      showToast(`${t("common:removedFromWatchlist")}`);
                     });
                   }}
                 >
@@ -245,7 +247,7 @@ const TvShowsScreen = ({ navigation }) => {
                 <TouchableOpacity
                   style={styles.carouselIcon}
                   onPress={() => {
-                    showToast("Added to watch list");
+                    // showToast("Added to watch list");
                     addToProfileWatchList(
                       user.user._id,
                       item,
@@ -253,7 +255,7 @@ const TvShowsScreen = ({ navigation }) => {
                       item.season_number,
                       moment()
                     )(dispatch).then(() => {
-                      showToast("Added to watch list");
+                      showToast(`${t("common:addedToWatchlist")}`);
                     });
                   }}
                 >

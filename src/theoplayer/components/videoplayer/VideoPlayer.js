@@ -269,6 +269,10 @@ export class VideoPlayer extends PureComponent {
             watchedTime={this.props.watchedTime}
             nextEpisode={this.props.nextEpisode}
             film_rating={this.props.film_rating}
+            recommendOne={this.props.recommendOne}
+            recommendTwo={this.props.recommendTwo}
+            recommendThree={this.props.recommendThree}
+            recommendFour={this.props.recommendFour}
             content_advisory={this.props.content_advisory}
             title={this.props.title}
             srcIndex={srcIndex}

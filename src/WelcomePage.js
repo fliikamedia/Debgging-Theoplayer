@@ -24,6 +24,7 @@ import SVGImg from "../assets/fliika-logo.svg";
 import Spinner from "react-native-spinkit";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchMovies } from "../store/actions/movies";
+import { useTranslation } from "react-i18next";
 const WelcomePage = ({ navigation }) => {
   const [isPreloading, setIsPreloading] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
@@ -31,7 +32,7 @@ const WelcomePage = ({ navigation }) => {
   const dispatch = useDispatch();
   const timer = useRef();
   const movies = useSelector((state) => state.movies);
-
+  const { t, i18n } = useTranslation();
   useEffect(() => {
     timer.current = setTimeout(() => {
       setShowImage(true);
@@ -156,22 +157,25 @@ const WelcomePage = ({ navigation }) => {
           <SVGImg width={130} height={40} style={styles.logo} />
           <View>
             <Text style={styles.textDescriptionLg}>
-              Watch African movies you love
+              {t("welcomePage:welcomeTitle")}
             </Text>
             <Text style={styles.textDescriptionSm}>
-              Sign Up for your account today and watch amazing blockbuster
-              African movies. Save 30% if you sign up annually
+              {t("welcomePage:welcomeDescription")}
             </Text>
           </View>
-          <View>
-            <Text style={styles.textDescriptionSb}>join us now</Text>
+          <View style={styles.btnsContainer}>
+            <Text style={styles.textDescriptionSb}>
+              {t("welcomePage:joinUs")}
+            </Text>
             <TouchableOpacity
               style={createBtn}
               onPress={() => {
                 setIsPaused(true), navigation.navigate(EMAILSIGNUP);
               }}
             >
-              <Text style={styles.createText}>create account</Text>
+              <Text style={styles.createText}>
+                {t("welcomePage:createBtn")}
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
@@ -179,7 +183,7 @@ const WelcomePage = ({ navigation }) => {
               }}
               style={loginBtn}
             >
-              <Text style={styles.loginText}>login</Text>
+              <Text style={styles.loginText}>{t("welcomePage:loginBtn")}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -279,6 +283,9 @@ const styles = StyleSheet.create({
     right: 0,
     backgroundColor: "rgba(0,0,0,0.6)",
     zIndex: 2,
+  },
+  btnsContainer: {
+    alignItems: "center",
   },
 });
 

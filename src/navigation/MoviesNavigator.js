@@ -39,9 +39,12 @@ import Account from "../Account";
 import TheoPlayer from "../TheoPlayerPage";
 import UpdatePassword from "../UpdatePassword";
 import ManageSubscriptions from "../ManageSubscriptions";
+import { useTranslation } from "react-i18next";
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
+
 const MoviesNavogator = (props) => {
+  const { t } = useTranslation();
   return (
     <Stack.Navigator
       mode="modal"
@@ -122,7 +125,7 @@ const MoviesNavogator = (props) => {
         component={WatchList}
         options={{
           headerShown: true,
-          headerTitle: "My Watchlist",
+          headerTitle: `${t("headers:watchlist")}`,
           headerTitleAlign: "center",
           headerTintColor: "#fff",
         }}
@@ -132,7 +135,7 @@ const MoviesNavogator = (props) => {
         component={Account}
         options={{
           headerShown: true,
-          headerTitle: ACCOUNT,
+          headerTitle: `${t("headers:account")}`,
           headerTitleAlign: "center",
           headerTintColor: "#fff",
         }}
@@ -142,7 +145,7 @@ const MoviesNavogator = (props) => {
         component={UpdatePassword}
         options={{
           headerShown: true,
-          headerTitle: UPDATEPASSWORD,
+          headerTitle: `${t("headers:updatePassword")}`,
           headerTitleAlign: "center",
           headerTintColor: "#fff",
         }}
@@ -152,7 +155,7 @@ const MoviesNavogator = (props) => {
         component={ManageSubscriptions}
         options={{
           headerShown: true,
-          headerTitle: MANAGESUBSCRIPTIONS,
+          headerTitle: `${t("headers:manageSubscription")}`,
           headerTitleAlign: "center",
           headerTintColor: "#fff",
         }}

@@ -36,6 +36,7 @@ import {
   CREATE_USER_FAILED,
 } from "../../store/actions/user";
 import ModalComponent from "../components/ModalComponent";
+import { useTranslation } from "react-i18next";
 // import { firestore } from "@react-native-firebase/firestore";
 const EmailSignup = ({ navigation }) => {
   const appState = useRef(AppState.currentState);
@@ -55,7 +56,7 @@ const EmailSignup = ({ navigation }) => {
   const [time, setTime] = useState(Date.now());
   const [signedup, setSignedup] = useState(false);
   const [btnClicked, setBtnClicked] = useState(false);
-
+  const { t, i18n } = useTranslation();
   const resetPassword = (email) => {
     firebase
       .auth()
@@ -71,6 +72,7 @@ const EmailSignup = ({ navigation }) => {
   const signupUser = async (email, password) => {
     setEmailFunc(email)(dispatch);
     setBtnClicked(true);
+    setDonePassword(true);
     // try {
     await firebase
       .auth()
@@ -175,6 +177,7 @@ const EmailSignup = ({ navigation }) => {
     // }
   };
   /// to be fixed
+
   LogBox.ignoreLogs(["Setting a timer"]);
   const inputColor = "teal";
 
@@ -190,7 +193,7 @@ const EmailSignup = ({ navigation }) => {
           marginTop: Dimensions.get("window").height < 900 ? 0 : 80,
         }}
       >
-        Enter Your Email To Get Started
+        {t("signupPage:signupTitle")}
       </Text>
       {/* <TextInput
           label="Email"
@@ -211,7 +214,7 @@ const EmailSignup = ({ navigation }) => {
         iconSize={25}
         iconColor="darkgrey"
         type="email"
-        placeholder="Enter your Email"
+        placeholder={t("common:emailInputPlaceholder")}
         onChangeText={(email) => setEmail(email)}
         autoCorrect={false}
         autoCapitalize="none"
@@ -229,14 +232,14 @@ const EmailSignup = ({ navigation }) => {
           type="error"
           visible={email && doneEmail && !email.includes("@")}
         >
-          Email address is invalid!
+          {t("common:invalidEmail")}
         </HelperText>
       ) : null}
       <NewTextInput
         iconName="lock"
         iconSize={25}
         iconColor="darkgrey"
-        placeholder="Enter your password"
+        placeholder={t("common:passwordInputPlaceholder")}
         type="password"
         value={password}
         onChangeText={(password) => setPassword(password)}
@@ -254,14 +257,14 @@ const EmailSignup = ({ navigation }) => {
           type="error"
           visible={password && donePassword && password.length < 6}
         >
-          Password must be at least 6 characters long
+          {t("common:passwordLength")}
         </HelperText>
       ) : null}
       <NewTextInput
         iconName="lock"
         iconSize={25}
         iconColor="darkgrey"
-        placeholder="Confirm your password"
+        placeholder={t("common:passwordConfirmInputPlaceholder")}
         type="password"
         value={passwordConfirm}
         onChangeText={(passwordConfirm) => setPasswordConfirm(passwordConfirm)}
@@ -283,7 +286,7 @@ const EmailSignup = ({ navigation }) => {
             password !== passwordConfirm
           }
         >
-          Password confirmation do not match
+          {t("common:passwordConfirmDoNotMatch")}
         </HelperText>
       ) : null}
       {error == "The email address is already in use by another account." ? (
@@ -333,7 +336,7 @@ const EmailSignup = ({ navigation }) => {
               textTransform: "uppercase",
             }}
           >
-            GET STARTED
+            {t("signupPage:getStartedBtn")}
           </Text>
         </LinearGradient>
       </TouchableOpacity>
@@ -345,7 +348,7 @@ const EmailSignup = ({ navigation }) => {
           marginTop: 30,
         }}
       >
-        Already have an account ?
+        {t("signupPage:AlreadyHaveAccount")}
       </Text>
       <TouchableOpacity
         onPress={() => navigation.navigate(LOGIN)}
@@ -358,7 +361,7 @@ const EmailSignup = ({ navigation }) => {
             textAlign: "center",
           }}
         >
-          Sign in
+          {t("signupPage:SignIn")}
         </Text>
       </TouchableOpacity>
       <ModalComponent isVisible={btnClicked} type="loader" />

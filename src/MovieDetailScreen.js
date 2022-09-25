@@ -71,6 +71,7 @@ import DefaultScreen from "./topTabScreens/DefaultScreen";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import ModalComponent from "./components/ModalComponent";
 import Spinner from "react-native-spinkit";
+import { useTranslation } from "react-i18next";
 
 const MovieDetailScreen = ({ navigation, route }) => {
   const CURRENT_PLAYER = THEOPLAYER;
@@ -78,7 +79,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
 
   const user = useSelector((state) => state.user);
   const movies = useSelector((state) => state.movies);
-
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const scrollRef = useRef();
   const refRBSheet = useRef(null);
@@ -665,13 +666,14 @@ const MovieDetailScreen = ({ navigation, route }) => {
           style={{ minHeight: 40, minWidth: 40, justifyContent: "center" }}
           onPress={() => {
             // showToast("Removed from watch list");
+
             removeFromProfileWatchList(
               user.user._id,
               currentMovie,
               user.currentProfile._id,
               seasonNumber
             )(dispatch).then(() => {
-              showToast("Removed from watch list");
+              showToast(`${t("common:removedFromWatchlist")}`);
             });
           }}
         >
@@ -695,7 +697,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
               seasonNumber,
               moment()
             )(dispatch).then(() => {
-              showToast("Added to watch list");
+              showToast(`${t("common:addedToWatchlist")}`);
             });
           }}
         >
@@ -908,7 +910,9 @@ const MovieDetailScreen = ({ navigation, route }) => {
                 </Text>
               </View>
               <View style={{ width: "100%", paddingHorizontal: 10 }}>
-                <Text style={styles.moreText}>More Information</Text>
+                <Text style={styles.moreText}>
+                  {t("moviesDetailsPage:moreInfo")}
+                </Text>
                 <Text style={styles.titleText}>Content Advisory</Text>
                 <Text style={styles.detailText}>
                   {currentMovie.content_advisory.toString().replace(/,/g, ", ")}
@@ -989,7 +993,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
                 marginLeft: 10,
               }}
             >
-              People Also Watched
+              {t("moviesDetailsPage:peopleAlsoWatched")}
             </Text>
           </View>
         ) : null}
@@ -1216,9 +1220,9 @@ const MovieDetailScreen = ({ navigation, route }) => {
                     alignItems: "center",
                   }}
                 >
-                  <Text
-                    style={{ color: "#fff", fontSize: 16 }}
-                  >{`Season ${seasonNumber}`}</Text>
+                  <Text style={{ color: "#fff", fontSize: 16 }}>{`${t(
+                    "moviesDetailsPage:season"
+                  )} ${seasonNumber}`}</Text>
                   {seasonOpen ? (
                     <IconAnt name="up" size={15} color="#fff" />
                   ) : (
@@ -1267,7 +1271,7 @@ const MovieDetailScreen = ({ navigation, route }) => {
             listeners={{ focus: () => setActiveTab(SERIESEPISODESTAB) }}
           />
           <Tab.Screen
-            name={SERIESDETAILSTAB}
+            name={`${t("headers:moreDetails")}`}
             component={
               activeTab === SERIESDETAILSTAB ? SeriesDetailsTab : DefaultScreen
             }

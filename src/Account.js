@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useSelector } from "react-redux";
 import { UPDATEPASSWORD } from "../constants/RouteNames";
@@ -6,8 +6,11 @@ import DropDownPicker, { MyArrowUpIcon } from "react-native-dropdown-picker";
 import { Switch } from "react-native-paper";
 import { Dropdown } from "react-native-element-dropdown";
 import AntDesign from "react-native-vector-icons/AntDesign";
+import { useTranslation } from "react-i18next";
 const Account = ({ navigation }) => {
   const user = useSelector((state) => state.user);
+  const { t, i18n } = useTranslation();
+  const selectedLanguageCode = i18n.language;
   // const [value, setValue] = useState(null);
   // const [items, setItems] = useState([
   //   { label: "English", value: "english" },
@@ -18,14 +21,28 @@ const Account = ({ navigation }) => {
   //   { label: "English", value: "english" },
   //   { label: "French", value: "french" },
   // ];
+  // console.log(selectedLanguageCode);
+
   const data = [
-    { label: "English", value: "english" },
-    { label: "French", value: "french" },
+    { label: "English", value: "en" },
+    { label: "French", value: "fr" },
   ];
   const [value, setValue] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
   const [switchOn, setSwitchOn] = useState(false);
+  const [currentLanguage, setCurrentLanguage] = useState("");
 
+  const setLanguage = (code) => {
+    return i18n.changeLanguage(code);
+  };
+
+  console.log(currentLanguage);
+  useEffect(() => {
+    const lang = data?.find(
+      (lang) => lang.value === selectedLanguageCode
+    ).label;
+    setCurrentLanguage(lang);
+  }, [selectedLanguageCode]);
   const onToggleSwitch = () => {
     setSwitchOn(!switchOn);
   };
@@ -39,32 +56,40 @@ const Account = ({ navigation }) => {
     }
     return null;
   };
+
+  const renderItem = (item) => {
+    return (
+      <View style={styles.item}>
+        <Text style={styles.textItem}>{item.label}</Text>
+      </View>
+    );
+  };
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Account Credentials</Text>
+      <Text style={styles.title}>{t("settings:credentials")}</Text>
       <View style={styles.itemContainer}>
         <Text style={styles.item}>{user.email}</Text>
         {/* <Text style={styles.change}>Change</Text> */}
       </View>
       <View style={styles.itemContainer}>
-        <Text style={styles.item}>Password: ********</Text>
+        <Text style={styles.item}>{t("settings:password")}: ********</Text>
         <TouchableOpacity onPress={() => navigation.navigate(UPDATEPASSWORD)}>
-          <Text style={styles.change}>Change</Text>
+          <Text style={styles.change}>{t("settings:change")}</Text>
         </TouchableOpacity>
       </View>
-      <Text style={styles.title}>Playback Settings</Text>
+      <Text style={styles.title}>{t("settings:playbackSettings")}</Text>
       <View style={styles.itemContainer}>
-        <Text style={styles.item}>My Watch History</Text>
+        <Text style={styles.item}>{t("settings:myWatchHistory")}</Text>
         <TouchableOpacity>
-          <Text style={styles.change}>Clear</Text>
+          <Text style={styles.change}>{t("settings:clear")}</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.itemContainer}>
-        <Text style={styles.item}>Auto play subtitles</Text>
+        <Text style={styles.item}>{t("settings:autoPlaySubtitles")}</Text>
         <Switch value={switchOn} onValueChange={onToggleSwitch} color="aqua" />
       </View>
       <View style={styles.itemContainer}>
-        <Text style={styles.item}>Favorite Language</Text>
+        <Text style={styles.item}>{t("settings:preferredLanguage")}</Text>
         <View style={{ zIndex: 1000 }}>
           {/* <DropDownPicker
             showArrowIcon={true}
@@ -109,20 +134,24 @@ const Account = ({ navigation }) => {
             inputSearchStyle={styles.inputSearchStyle}
             iconStyle={styles.iconStyle}
             data={data}
+            statusBarIsTranslucent={true}
+            containerStyle={styles.dropdownItemContainer}
             // search
             // maxHeight={300}
             labelField="label"
             valueField="value"
-            placeholder={!isFocus ? "Select item" : "..."}
+            placeholder={!isFocus ? currentLanguage : "..."}
             // searchPlaceholder="Search..."
-            dropdownPosition="auto"
-            value={value}
+            dropdownPosition="bottom"
+            value={currentLanguage}
             onFocus={() => setIsFocus(true)}
             onBlur={() => setIsFocus(false)}
             onChange={(item) => {
               setValue(item.value);
+              setLanguage(item.value);
               setIsFocus(false);
             }}
+            renderItem={(item) => renderItem(item)}
             // renderLeftIcon={() => (
             //   <AntDesign
             //     style={styles.icon}
@@ -158,7 +187,7 @@ const styles = StyleSheet.create({
   item: {
     color: "#fff",
     fontFamily: "Sora-Regular",
-    fontSize: 16,
+    fontSize: 15,
     // marginTop: 10,
     // marginBottom: 15,
   },
@@ -184,6 +213,9 @@ const styles = StyleSheet.create({
     height: "100%",
     backgroundColor: "#202020",
     borderRadius: 5,
+  },
+  dropdownItemContainer: {
+    backgroundColor: "#202020",
   },
   icon: {
     marginRight: 5,
@@ -215,6 +247,12 @@ const styles = StyleSheet.create({
   inputSearchStyle: {
     height: 40,
     fontSize: 16,
+  },
+  textItem: {
+    color: "#fff",
+    fontSize: 16,
+    paddingVertical: 20,
+    paddingLeft: 10,
   },
 });
 export default Account;

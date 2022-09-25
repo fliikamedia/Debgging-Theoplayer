@@ -30,7 +30,7 @@ import {
   PORTRAIT,
   LANDSCAPE,
 } from "react-native-orientation-locker";
-
+import FastImage from "react-native-fast-image";
 const TheoPlayerPage = ({ navigation, route }) => {
   const user = useSelector((state) => state.user);
   const movies = useSelector((state) => state.movies);
@@ -57,6 +57,29 @@ const TheoPlayerPage = ({ navigation, route }) => {
   //   android: "https://bitdash-a.akamaihd.net/content/sintel/sintel.mpd",
   //   default: "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8",
   // });
+  const allMovies = [...movies?.availableMovies];
+  const shuffled = allMovies?.sort(() => 0.5 - Math.random());
+  // console.log("shuffled", shuffled);
+  useEffect(() => {
+    FastImage.preload([
+      {
+        uri: shuffled[0]?.wide_thumbnail_link,
+        // headers: { Authorization: 'someAuthToken' },
+      },
+      {
+        uri: shuffled[1]?.wide_thumbnail_link,
+        // headers: { Authorization: 'someAuthToken' },
+      },
+      {
+        uri: shuffled[2]?.wide_thumbnail_link,
+        // headers: { Authorization: 'someAuthToken' },
+      },
+      {
+        uri: shuffled[3]?.wide_thumbnail_link,
+        // headers: { Authorization: 'someAuthToken' },
+      },
+    ]);
+  }, shuffled);
   let nextEpisode;
   try {
     nextEpisode = movies?.availableMovies?.find(
@@ -275,9 +298,20 @@ const TheoPlayerPage = ({ navigation, route }) => {
           Platform.OS === "android"
             ? "application/dash+xml"
             : "application/x-mpegurl",
+        contentProtection: {
+          widevine: {
+            licenseAcquisitionURL:
+              "https://fliikamediaservice.keydelivery.eastus.media.azure.net/Widevine/?kid=e3829c72-787d-41e3-81de-e1645b74a83e",
+          },
+          // FairPlay: {
+          //   certificateURL:
+          //     "skd://fliikamediaservice.keydelivery.eastus.media.azure.net/FairPlay/?kid=e3829c72-787d-41e3-81de-e1645b74a83e",
+          // },
+        },
       },
     ],
     textTracks: theoSubtitles,
+
     // textTracks: [
     //   {
     //     kind: "subtitles",
@@ -314,6 +348,10 @@ const TheoPlayerPage = ({ navigation, route }) => {
         title={movie.episode_title ? movie.episode_title : movie?.title}
         content_advisory={movie?.content_advisory}
         film_rating={movie?.film_rating}
+        recommendOne={shuffled[0]}
+        recommendTwo={shuffled[1]}
+        recommendThree={shuffled[2]}
+        recommendFour={shuffled[3]}
       />
     </View>
   );

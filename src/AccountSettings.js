@@ -18,25 +18,43 @@ import {
 import { loggedOut } from "../store/actions/user";
 import firebase from "firebase";
 import Icon from "react-native-vector-icons/AntDesign";
+import { useTranslation } from "react-i18next";
 const AccountSettings = ({ navigation }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
+  const { t } = useTranslation();
   const [editing, setEditing] = useState(false);
   const accountItems = [
-    { title: "Account", func: () => navigation.navigate(ACCOUNT) },
-    { title: "Watchlist", func: () => navigation.navigate(WATCHLIST) },
+    {
+      title: `${t("settings:account")}`,
+      func: () => navigation.navigate(ACCOUNT),
+    },
+    {
+      title: `${t("settings:watchlist")}`,
+      func: () => navigation.navigate(WATCHLIST),
+    },
     // { title: "App Settings", func: () => console.log("click") },
     {
-      title: "Subscriptions",
+      title: `${t("settings:subscriptions")}`,
       func: () => navigation.navigate(MANAGESUBSCRIPTIONS),
     },
     {
-      title: "Switch Profiles",
+      title: `${t("settings:accessPass")}`,
+      func: () => console.log("access pass"),
+    },
+    {
+      title: `${t("settings:switchProfiles")}`,
       func: () => navigation.navigate(PROFILESCREEN),
     },
-    { title: "Legal", func: () => console.log("click") },
-    { title: "Help", func: () => console.log("click") },
-    { title: "Log Out", func: () => logOut() },
+    {
+      title: `${t("settings:legal")}`,
+      func: () => console.log("click"),
+    },
+    {
+      title: `${t("settings:help")}`,
+      func: () => console.log("click"),
+    },
+    { title: `${t("settings:logout")}`, func: () => logOut() },
   ];
 
   const logOut = async () => {

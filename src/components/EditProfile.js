@@ -16,6 +16,7 @@ import profileImgs from "../../constants/profileImgs";
 import { updateUserImage, updateProfile } from "../../store/actions/user";
 import { useDispatch, useSelector } from "react-redux";
 import FastImage from "react-native-fast-image";
+import { useTranslation } from "react-i18next";
 
 const EditProfile = ({ navigation, route }) => {
   const user = useSelector((state) => state.user);
@@ -23,6 +24,7 @@ const EditProfile = ({ navigation, route }) => {
   const { main, profileName, imageTitle, profileId } = route.params;
   const [name, setName] = useState(profileName);
   const [imageName, setImageName] = useState(imageTitle);
+  const { t } = useTranslation();
   //console.log(main);
   const creatingProfile = () => {
     //  let profileId = user?.user?.profiles[0]?._id;
@@ -56,7 +58,7 @@ const EditProfile = ({ navigation, route }) => {
         <UserProfile image={imageName} editing={false} main={false} name="" />
         {!main ? (
           <TextInput
-            placeholder="Name"
+            placeholder={t("common:name")}
             placeholderTextColor="white"
             style={styles.input}
             onChangeText={(newValue) => setName(newValue)}
@@ -71,7 +73,11 @@ const EditProfile = ({ navigation, route }) => {
             marginHorizontal: 20,
           }}
         >
-          <Text style={{ color: "white" }}>Choose an image</Text>
+          <Text
+            style={{ color: "white", fontFamily: "Sora-Regular", fontSize: 16 }}
+          >
+            {t("common:selectImg")}
+          </Text>
           <Image
             source={icons.right_arrow}
             style={{
@@ -105,7 +111,9 @@ const EditProfile = ({ navigation, route }) => {
             style={styles.save}
             onPress={() => creatingProfile()}
           >
-            <Text style={{ color: "white", fontSize: 18 }}>Save</Text>
+            <Text style={{ color: "white", fontSize: 18 }}>
+              {t("common:save")}
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.cancel}
@@ -113,7 +121,9 @@ const EditProfile = ({ navigation, route }) => {
               navigation.goBack();
             }}
           >
-            <Text style={{ color: "white", fontSize: 18 }}>Cancel</Text>
+            <Text style={{ color: "white", fontSize: 18 }}>
+              {t("common:cancel")}
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -143,7 +153,7 @@ const styles = StyleSheet.create({
   },
   save: {
     height: 60,
-    width: 120,
+    width: 130,
     borderWidth: 2,
     borderColor: "white",
     borderRadius: 5,
@@ -153,7 +163,7 @@ const styles = StyleSheet.create({
   },
   cancel: {
     height: 60,
-    width: 120,
+    width: 130,
     borderWidth: 2,
     borderColor: "white",
     borderRadius: 5,

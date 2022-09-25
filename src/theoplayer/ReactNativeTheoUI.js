@@ -54,6 +54,10 @@ export default function ReactNativeTheoUI({
   title,
   content_advisory,
   film_rating,
+  recommendOne,
+  recommendTwo,
+  recommendThree,
+  recommendFour,
 }) {
   const [clicked, setClicked] = React.useState(false);
 
@@ -71,6 +75,10 @@ export default function ReactNativeTheoUI({
       title={title}
       content_advisory={content_advisory}
       film_rating={film_rating}
+      recommendOne={recommendOne}
+      recommendTwo={recommendTwo}
+      recommendThree={recommendThree}
+      recommendFour={recommendFour}
     />
   );
 }

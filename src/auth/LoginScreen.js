@@ -33,6 +33,8 @@ import geoLocationApi from "../api/geoLocationApi";
 import axios from "axios";
 import { StackActions } from "@react-navigation/native";
 import ModalComponent from "../components/ModalComponent";
+import { useTranslation } from "react-i18next";
+
 const LoginScreen = ({ navigation }) => {
   const userState = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -40,7 +42,7 @@ const LoginScreen = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [btnClicked, setBtnClicked] = useState(false);
-
+  const { t } = useTranslation();
   // console.log("before", userState.user);
 
   // const navigateUser = () => {
@@ -168,14 +170,14 @@ const LoginScreen = ({ navigation }) => {
           marginBottom: 30,
         }}
       >
-        Sign in to your account
+        {t("loginPage:loginTitle")}
       </Text>
       <NewTextInput
         iconName="mail"
         iconSize={25}
         iconColor="darkgrey"
         type="email"
-        placeholder="Enter your Email"
+        placeholder={t("common:emailInputPlaceholder")}
         label="Email"
         onChangeText={(email) => setEmail(email)}
         autoCorrect={false}
@@ -191,7 +193,7 @@ const LoginScreen = ({ navigation }) => {
         iconName="lock"
         iconSize={25}
         iconColor="darkgrey"
-        placeholder="Enter your password"
+        placeholder={t("common:passwordInputPlaceholder")}
         type="password"
         value={password}
         onChangeText={(password) => setPassword(password)}
@@ -324,7 +326,7 @@ const LoginScreen = ({ navigation }) => {
               textTransform: "uppercase",
             }}
           >
-            Sign in
+            {t("loginPage:SignIn")}
           </Text>
         </LinearGradient>
       </TouchableOpacity>
@@ -340,7 +342,7 @@ const LoginScreen = ({ navigation }) => {
             marginTop: 30,
           }}
         >
-          Forgot password ?
+          {t("common:forgotPassword")}
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
@@ -354,7 +356,7 @@ const LoginScreen = ({ navigation }) => {
             textAlign: "center",
           }}
         >
-          Create Account
+          {t("loginPage:createBtn")}
         </Text>
       </TouchableOpacity>
       <ModalComponent isVisible={btnClicked} type="loader" />
