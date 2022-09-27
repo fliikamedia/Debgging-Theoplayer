@@ -19,9 +19,10 @@ export const MenuRow = (props) => {
     subtitleLabel,
   } = props;
   const [isSwitchOn, setIsSwitchOn] = useState(false);
-  if (!data || data?.label === "CC") return <></>;
+  if (!data || data?.label === "CC" || data?.label === "" || !data?.label)
+    return <></>;
   const { label } = data;
-  // console.log("daaaaaaaaaaaata", subtitleLabel);
+  // console.log("daaaaaaaaaaaata", data);
   const onToggleSwitch = () => {
     // setIsSwitchOn(!isSwitchOn);
     if (Platform.OS === "android") {
