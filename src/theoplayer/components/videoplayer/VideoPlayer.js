@@ -106,7 +106,7 @@ export class VideoPlayer extends PureComponent {
     if (Platform.OS === "android") {
       this.setState({ duration });
     } else {
-      this.setState({ duration: duration * 1000 });
+      this.setState({ duration: duration });
     }
   };
 

@@ -107,6 +107,12 @@ const VideoPlayerUI = ({
   const appState = useRef(AppState.currentState);
   // const { isNext } = route?.params;
   // console.log("isNext", isNext);
+  // console.log(
+  //   "isNext",
+  //   duration,
+  //   currentTime,
+  //   Math.trunc(duration) === Math.trunc(currentTime)
+  // );
   const onSeek = (time) => {
     if (onSeeks) {
       onSeeks(time);
@@ -118,7 +124,7 @@ const VideoPlayerUI = ({
   //   watchedTime
   //   // nextEpisode && duration - currentTime < 10000 && paused
   // );
-  console.log("is next ", watchedTime);
+  // console.log("is next ", watchedTime);
   // console.log(
   //   recommendOne?.title,
   //   recommendTwo?.title,
