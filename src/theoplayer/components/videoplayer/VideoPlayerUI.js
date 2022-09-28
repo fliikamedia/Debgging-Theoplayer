@@ -392,7 +392,7 @@ const VideoPlayerUI = ({
           : undefined;
       if (Platform.OS === "ios" && index < 0) {
         const emptyTrack = textTracks.find(
-          (track) => track.label === "CC"
+          (track) => track.label === "CC" || track.label === ""
         )?.uid;
         console.log("empty", emptyTrack);
         onSelectTextTrack(emptyTrack);
@@ -484,7 +484,7 @@ const VideoPlayerUI = ({
   };
 
   const selectableTextTracks = filterRenderableTracks(textTracks);
-
+  // console.log(selectableTextTracks);
   const renderRecommendations = () => {
     return (
       <View
@@ -1040,7 +1040,7 @@ const VideoPlayerUI = ({
               {/*TextTrack menu */}
               {selectableTextTracks &&
                 selectableTextTracks.length > 0 &&
-                selectableTextTracks[0]?.label !== "CC" && (
+                selectableTextTracks[0]?.label !== "" && (
                   <MenuButton
                     setScreenClicked={setScreenClicked}
                     cleartimeout={myStopFunction}
