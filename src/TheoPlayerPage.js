@@ -235,17 +235,17 @@ const TheoPlayerPage = ({ navigation, route }) => {
     AsyncStorage.setItem("watched", y);
   };
 
-  let str = movie.play_url;
-  let playURL;
-  if (Platform.OS === "android") {
-    if (str.includes("m3u8-cmaf")) {
-      playURL = str.replace("m3u8-cmaf", "mpd-time-cmaf");
-    } else if (str.includes("m3u8-aapl")) {
-      playURL = str.replace("m3u8-aapl", "mpd-time-cmaf");
-    }
-  } else {
-    playURL = str;
-  }
+  // let str = movie.play_url;
+  // let playURL;
+  // if (Platform.OS === "android") {
+  //   if (str.includes("m3u8-cmaf")) {
+  //     playURL = str.replace("m3u8-cmaf", "mpd-time-cmaf");
+  //   } else if (str.includes("m3u8-aapl")) {
+  //     playURL = str.replace("m3u8-aapl", "mpd-time-cmaf");
+  //   }
+  // } else {
+  //   playURL = str;
+  // }
   const saveMovieDetails = async () => {
     await AsyncStorage.setItem("didPlay", "true"),
       await AsyncStorage.setItem("movieName", movie.title),
@@ -289,7 +289,58 @@ const TheoPlayerPage = ({ navigation, route }) => {
   //     },
   //   ],
   //   textTracks: theoSubtitles,
+  const fairPlayEncryptionHLS = "(format=m3u8-aapl,encryption=cbcs-aapl).m3u8";
+  const noEncryptionHLS = "(format=m3u8-aapl).m3u8";
+  const widevineEncryptionDASH = "(format=mpd-time-cmaf,encryption=cenc).mpd";
+  const noEncryptionDASH = "(format=mpd-time-cmaf).mpd";
+  const playReadyEncryptionSMOOTH = "(encryption=cenc)";
+  const noEncryptionSMOOTH = "";
 
+  let str = movie.play_url;
+  let playURL;
+  if (Platform.OS === "android") {
+    if (str.includes(fairPlayEncryptionHLS)) {
+      str.replace(fairPlayEncryptionHLS, widevineEncryptionDASH);
+    } else if (str.includes("encryption=cenc")) {
+      if (str.includes("csf")) {
+        playURL = `${str.replace("csf", "cmaf")}.mpd`;
+      } else {
+        playURL = `${str}.mpd`;
+      }
+    } else if (str.includes("m3u8-cmaf")) {
+      playURL = str.replace("m3u8-cmaf", "mpd-time-cmaf");
+    } else if (str.includes("m3u8-aapl")) {
+      playURL = str.replace("m3u8-aapl", "mpd-time-cmaf");
+    } else {
+      playURL = str;
+    }
+  } else if (Platform.OS === "ios") {
+    if (str.includes(widevineEncryptionDASH)) {
+      str.replace(widevineEncryptionDASH, fairPlayEncryptionHLS);
+    } else if (str.includes("(format=mpd-time-csf,encryption=cenc)")) {
+      playURL = str.replace(
+        "(format=mpd-time-csf,encryption=cenc)",
+        fairPlayEncryptionHLS
+      );
+    } else if (str.includes("encryption=cbcs-aapl")) {
+      playURL = `${str}.m3u8`;
+    } else if (str.includes("mpd-time-csf")) {
+      playURL = str.replace("mpd-time-csf", "m3u8-aapl");
+    } else if (str.includes("mpd-time-cmaf")) {
+      playURL = str.replace("mpd-time-cmaf", "m3u8-aapl");
+    } else {
+      playURL = str;
+    }
+  }
+  // let newDash =
+  //   "https://fliikamediaservice-usea.streaming.media.azure.net/1f78762a-f6ff-4fcb-b575-3f1c6c7a67ba/BatmanDarkKnight.ism/manifest(format=mpd-time-cmaf,encryption=cenc)";
+  // let postsDash =
+  //   "https://fliikamediaservice-usea.streaming.media.azure.net/1f78762a-f6ff-4fcb-b575-3f1c6c7a67ba/BatmanDarkKnight.ism/manifest(format=mpd-time-cmaf,encryption=cenc).mpd";
+  // const dash =
+  //   "https://fliikamediaservice-usea.streaming.media.azure.net/8a569f21-6e46-4964-a09f-f716be5066dd/BatmanDarkKnight.ism/manifest(format=mpd-time-cmaf,encryption=cenc).mpd";
+  // const hls =
+  //   "https://fliikamediaservice-usea.streaming.media.azure.net/8a569f21-6e46-4964-a09f-f716be5066dd/BatmanDarkKnight.ism/manifest(format=m3u8-aapl,encryption=cbcs-aapl).m3u8";
+  // console.log("uuuurs", playURL, dash);
   const source = {
     sources: [
       {
@@ -301,7 +352,13 @@ const TheoPlayerPage = ({ navigation, route }) => {
         contentProtection: {
           widevine: {
             licenseAcquisitionURL:
-              "https://fliikamediaservice.keydelivery.eastus.media.azure.net/Widevine/?kid=e3829c72-787d-41e3-81de-e1645b74a83e",
+              "https://fliikamediaservice.keydelivery.eastus.media.azure.net/Widevine/?kid=f5eddbea-f922-46dc-be21-0272c1209e82",
+          },
+          fairplay: {
+            licenseAcquisitionURL:
+              "https://fliikamediaservice.keydelivery.eastus.media.azure.net/FairPlay/?kid=88937495-9b26-40ba-90e0-713666d5d1c0",
+            certificateURL:
+              "https://fliikamediaservice-usea.streaming.media.azure.net/85e29d77-aa15-4311-9ec7-ac6e32399d06/fairplay.cer",
           },
           // FairPlay: {
           //   certificateURL:
