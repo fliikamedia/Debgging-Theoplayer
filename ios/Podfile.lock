@@ -418,7 +418,7 @@ PODS:
     - BitmovinAnalyticsCollector/Core (= 1.20.0-beta2)
     - BitmovinPlayer (= 2.66.0)
     - React-Core
-  - THEOplayerSDK-basic (3.6.1)
+  - THEOplayerSDK-basic (4.1.0)
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -478,6 +478,7 @@ DEPENDENCIES:
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - "stripe-react-native (from `../node_modules/@stripe/stripe-react-native`)"
   - "takeoffmedia-react-native-bitmovin-player (from `../node_modules/@takeoffmedia/react-native-bitmovin-player`)"
+  - THEOplayerSDK-basic (= 4.1.0)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -690,9 +691,9 @@ SPEC CHECKSUMS:
   StripeFinancialConnections: 982115b82af429968d8aa78d329a42ed7ba3feab
   StripeUICore: 08c1efbd7e3c54ee7fa74334a37a1d4c08ba944d
   takeoffmedia-react-native-bitmovin-player: c7453ed9d140d0fd7dd91e6f37c670c338a0693a
-  THEOplayerSDK-basic: a64ddb55de397c078896beebbaf70dd39e4fa974
+  THEOplayerSDK-basic: c098600baf70f4d28c9cb6493856b47ba0088c12
   Yoga: 575c581c63e0d35c9a83f4b46d01d63abc1100ac
 
-PODFILE CHECKSUM: 02af9ef60b722344773c1e766231e92653ae62b3
+PODFILE CHECKSUM: ed465742ffb66991a66e38a15568d3b4ce33076f
 
 COCOAPODS: 1.11.3
