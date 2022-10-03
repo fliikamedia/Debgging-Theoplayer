@@ -17,6 +17,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 import AppRoute from "./src/navigation/AppRoute";
 import { StripeProvider } from "@stripe/stripe-react-native";
 import "./constants/DCSLocalize";
+
 StatusBar.setBarStyle("light-content");
 if (Platform.OS === "android") {
   StatusBar.setBackgroundColor("rgba(0,0,0,0)");
@@ -29,6 +30,21 @@ export default App = () => {
   } else {
     firebase.app(); // if already initialized, use that one
   }
+
+  // React.useEffect(() => {
+
+  // }, []);
+
+  // React.useEffect(() => {
+  //   setTimeout(() => {
+  //     console.log("hiding");
+  //     SplashScreen.hide();
+  //   }, 4000);
+
+  //   return () => {
+  //     clearTimeout();
+  //   };
+  // }, []);
   return (
     <StoreProvider store={store}>
       <PersistGate persistor={persistor} loading={null}>
