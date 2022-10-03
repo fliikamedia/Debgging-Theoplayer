@@ -77,6 +77,8 @@ export const ADD_DISLIKED_MOVIE_FAILED = "ADD_DISLIKED_MOVIE_FAILED";
 export const REMOVE_DISLIKED_MOVIE = "REMOVE_DISLIKED_MOVIE";
 export const REMOVE_DISLIKED_MOVIE_SUCCESS = "REMOVE_DISLIKED_MOVIE_SUCCESS";
 export const REMOVE_DISLIKED_MOVIE_FAILED = "REMOVE_DISLIKED_MOVIE_FAILED";
+export const HIDE_SPLASH = "HIDE_SPLASH";
+export const SHOW_SPLASH = "SHOW_SPLASH";
 export const createUser =
   (email, uid, authToken, emailVerified) => async (dispatch) => {
     let headers = {
@@ -803,3 +805,11 @@ export const removeDislikedMovie =
       dispatch({ type: REMOVE_DISLIKED_MOVIE_FAILED });
     }
   };
+
+export const hideSplashScreen = () => (dispatch) => {
+  dispatch({ type: HIDE_SPLASH });
+};
+
+export const showSplashScreen = () => (dispatch) => {
+  dispatch({ type: SHOW_SPLASH });
+};

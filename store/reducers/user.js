@@ -69,6 +69,8 @@ import {
   REMOVE_DISLIKED_MOVIE,
   REMOVE_DISLIKED_MOVIE_SUCCESS,
   REMOVE_DISLIKED_MOVIE_FAILED,
+  HIDE_SPLASH,
+  SHOW_SPLASH,
 } from "../actions/user";
 const initialState = {
   profileName: null,
@@ -89,6 +91,7 @@ const initialState = {
   authToken: "",
   profileNotFoundError: false,
   isProfileFetching: false,
+  hideSplash: false,
 };
 
 const userReducer = (state = initialState, { type, payload }) => {
@@ -238,6 +241,10 @@ const userReducer = (state = initialState, { type, payload }) => {
       return { ...state, isFetching: false };
     case FETCH_PROFILE_FALED:
       return { ...state, isProfileFetching: false };
+    case HIDE_SPLASH:
+      return { ...state, hideSplash: true };
+    case SHOW_SPLASH:
+      return { ...state, hideSplash: false };
     default:
       return state;
   }

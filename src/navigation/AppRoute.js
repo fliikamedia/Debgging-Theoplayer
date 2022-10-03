@@ -17,9 +17,16 @@ import AsyncStorage from "@react-native-community/async-storage";
 import { NavigationContainer } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { createStackNavigator } from "@react-navigation/stack";
-import { loggedIn, loggedOut, subscribing } from "../../store/actions/user";
+import {
+  loggedIn,
+  loggedOut,
+  subscribing,
+  hideSplashScreen,
+  showSplashScreen,
+} from "../../store/actions/user";
 import Spinner from "react-native-spinkit";
 import expressApi from "../api/expressApi";
+import SplashScreen from "../components/SplashScreen";
 /* StatusBar.setBarStyle("light-content");
 if (Platform.OS === "android") {
   StatusBar.setBackgroundColor("rgba(0,0,0,0)");
@@ -28,6 +35,7 @@ if (Platform.OS === "android") {
  */
 export default AppRoute = () => {
   const user = useSelector((state) => state.user);
+  const [splash, setSplash] = React.useState(true);
   const dispatch = useDispatch();
   const [verified, setVerified] = React.useState(false);
   const [ready, setReady] = React.useState(false);
@@ -81,6 +89,26 @@ export default AppRoute = () => {
   //     user?.user?.access_pass_momo[0]?.plan === "Fliika Monthly Pass" &&
   //     user?.user?.access_pass_expiration + 2629743 > seconds
   // );
+  React.useEffect(() => {
+    showSplashScreen()(dispatch);
+  }, []);
+
+  // React.useEffect(() => {
+  //   setTimeout(() => {
+  //     setSplash(false);
+  //   }, 4000);
+
+  //   return () => {
+  //     clearTimeout();
+  //   };
+  // }, []);
+  console.log("show splash", ready, user.hideSplash);
+  // React.useEffect(() => {
+  //   if (splash != !ready || !user.hideSplash)
+  //     setSplash(!ready || !user.hideSplash);
+  // }, [ready, user.hideSplash]);
+  // console.log(user.hideSplash);
+
   React.useEffect(() => {
     if (!user?.user?.stripe_customer_id) {
       setReady(true);
@@ -194,9 +222,13 @@ export default AppRoute = () => {
       return <WelcomeNavigator routeName={WELCOMESCREEN} />;
     }
   };
+
+  if (!user.hideSplash) {
+    return <SplashScreen />;
+  }
   return (
     <NavigationContainer>
-      {!ready ? (
+      {/* {!ready && user.hideSplash ? (
         <View
           style={{
             flex: 1,
@@ -212,9 +244,9 @@ export default AppRoute = () => {
             color={"#fff"}
           />
         </View>
-      ) : (
-        navigatorFunc()
-      )}
+      ) : ( */}
+      {navigatorFunc()}
+      {/* )} */}
     </NavigationContainer>
   );
 };
