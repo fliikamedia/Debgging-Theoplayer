@@ -102,7 +102,7 @@ export default AppRoute = () => {
   //     clearTimeout();
   //   };
   // }, []);
-  console.log("show splash", ready, user.hideSplash);
+  // console.log("show splash", ready, user.hideSplash);
   // React.useEffect(() => {
   //   if (splash != !ready || !user.hideSplash)
   //     setSplash(!ready || !user.hideSplash);

@@ -24,7 +24,7 @@ const SplashScreen = () => {
         onReadyForDisplay={() => setIsVideoReady(true)}
         resizeMode="cover"
         onEnd={() => {
-          console.log("eeeeeend");
+          // console.log("eeeeeend");
           hideSplashScreen()(dispatch);
         }}
       />
