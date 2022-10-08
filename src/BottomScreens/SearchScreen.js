@@ -169,11 +169,13 @@ const SearchScreen = ({ navigation }) => {
         </LinearGradient>
         {!term && <Text style={styles.explore}>{t("searchPage:explore")}</Text>}
         <ScrollView
+          showsVerticalScrollIndicator={false}
           contentContainerStyle={{
             flexGrow: 1,
             flexDirection: "row",
             flexWrap: "wrap",
             justifyContent: "center",
+            paddingBottom: 60,
           }}
         >
           {renderSearch()}
