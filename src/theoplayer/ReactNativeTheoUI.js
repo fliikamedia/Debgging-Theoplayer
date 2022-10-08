@@ -58,6 +58,7 @@ export default function ReactNativeTheoUI({
   recommendTwo,
   recommendThree,
   recommendFour,
+  movieDuration,
 }) {
   const [clicked, setClicked] = React.useState(false);
 
@@ -71,6 +72,7 @@ export default function ReactNativeTheoUI({
       source={source}
       config={playerConfig}
       watchedTime={watchedTime}
+      movieDuration={movieDuration}
       nextEpisode={nextEpisode}
       title={title}
       content_advisory={content_advisory}

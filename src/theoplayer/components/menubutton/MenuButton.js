@@ -68,7 +68,7 @@ export const MenuButton = (props) => {
                 setModalVisible(false);
                 setScreenClicked(false);
               }}
-              selected={selectedItem === index || subtitleLabel === item?.label}
+              selected={selectedItem === index}
               data={item}
               subtitleLabel={subtitleLabel}
             />

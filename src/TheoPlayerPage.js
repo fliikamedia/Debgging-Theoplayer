@@ -44,10 +44,14 @@ const TheoPlayerPage = ({ navigation, route }) => {
   const playerRef = useRef(null);
   const movie = movies.availableMovies.find((r) => r._id === movieId);
   let watchedTime;
+  let movieDuration;
   try {
     watchedTime = user?.currentProfile?.watched?.find(
       (data) => data.movieId === movieId
-    ).watchedAt;
+    )?.watchedAt;
+    movieDuration = user?.currentProfile?.watched?.find(
+      (data) => data.movieId === movieId
+    )?.duration;
   } catch (err) {
     // console.log("errrrrrrrs", err);
     watchedTime = 0;
@@ -401,6 +405,7 @@ const TheoPlayerPage = ({ navigation, route }) => {
         source={source}
         config={playerConfig}
         watchedTime={watchedTime}
+        movieDuration={movieDuration}
         nextEpisode={nextEpisode}
         title={movie.episode_title ? movie.episode_title : movie?.title}
         content_advisory={movie?.content_advisory}
