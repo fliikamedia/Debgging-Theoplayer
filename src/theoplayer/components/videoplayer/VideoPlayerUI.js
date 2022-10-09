@@ -90,6 +90,7 @@ const VideoPlayerUI = ({
   recommendTwo,
   recommendThree,
   recommendFour,
+  movieDuration,
 }) => {
   const [screenClicked, setScreenClicked] = useState(false);
   const [seekingButton, setSeekingButton] = useState(false);
@@ -113,6 +114,7 @@ const VideoPlayerUI = ({
   //   currentTime,
   //   Math.trunc(duration) === Math.trunc(currentTime)
   // );
+  // console.log("watchedDuration", movieDuration - watchedTime);
   const onSeek = (time) => {
     if (onSeeks) {
       onSeeks(time);
@@ -339,11 +341,11 @@ const VideoPlayerUI = ({
     saveTiming(String(duration), String(currentTime));
   }, [currentTime]);
   useEffect(() => {
-    if (!duration) return;
-    if (duration - watchedTime > 3000) {
+    // if (!duration) return;
+    if (movieDuration - watchedTime > 3000) {
       onSeeks(watchedTime);
     }
-  }, [duration]);
+  }, []);
   function myStopFunction() {
     // console.log(timer.current);
     clearTimeout(timer.current);
